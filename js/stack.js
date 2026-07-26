@@ -28,7 +28,7 @@
   ];
 
   var APP_DB = {
-    claude: { free: "sonnet-5", paid: "opus-4-8" },
+    claude: { free: "sonnet-5", paid: "claude-opus-5" },
     chatgpt: { free: "gpt-5-5", paid: "gpt-5-5" },
     gemini: { free: "gemini-3-5-flash", paid: "gemini-3-1-pro" },
     perplexity: { free: "sonar", paid: "sonar-pro" }

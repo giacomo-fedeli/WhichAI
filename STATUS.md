@@ -1,10 +1,21 @@
 # WhichAI (ex PromptCompass) — STATUS
 
-Ultimo aggiornamento: 2026-07-21 (sessione 28 - GPT-5.6)
-Versione app: v0.27.0 (in cartella; live ancora v0.21: il prossimo deploy porta v0.22→v0.27 insieme)
+Ultimo aggiornamento: 2026-07-26 (sessione 29 - Claude)
+Versione app: v0.28.0 (in cartella; live ancora v0.21: il prossimo deploy porta v0.22→v0.28 insieme)
 Sito live: https://whichai.wiki · https://promptcompass.vercel.app resta come alias
 
 ## Fase corrente: Growth - fase 1 del piano brainstorming (SEO statico, sicurezza, retention di base)
+
+## Fatto (sessione 29, 2026-07-26 - Claude)
+
+- **Protocollo AI-SYNC rispettato**: letto il diff delle sessioni 27-28 di GPT-5.6 (welcome/morph/brands) prima di toccare qualsiasi cosa; aree di questa sessione (dati, arena, community) senza sovrapposizioni; entrambe le suite verdi prima del commit.
+- **REFRESH DATI 26/7 (settimana pazza)**: **Claude Opus 5 è uscito il 24/7** e passa da rumored a public col nuovo snapshot AA del 24/7 (mirror BenchLM, 167 modelli): **nuovo #1 a 60.7**, Agentic Index 55.3, 1M ctx, $5/$25 invariato (Fast mode $10/$50, cache $0.50/M); ora è la scelta Claude a pagamento in finder e Stack Optimizer. Anthropic occupa i primi due posti (Fable 5 59.9). **+3 modelli → 108**: Gemini 3.6 Flash (21/7, $1.50/$7.50, 1M ctx, free tier day one → nuovo default BYOK gemini-3.6-flash), Gemini 3.5 Flash-Lite ($0.30/$2.50), Qwen3.8 Max preview (stima dichiarata). Correzioni coda tabella: Mercury 2 21.4, K-Exaone 22.1, Trinity Large 18.2, Gemma 4 12B 21.8. Router/catalogo aggiornati; route OpenRouter :free riverificate (Nemotron+Qwen3 Coder ok). Radar: +5 voci con fonti (Opus 5, snapshot, FLUX 3, Gemini 3.6, settimana Qwen); pesi K3 restano "In arrivo" (27/7). Wiki rigenerata: 161 pagine, sitemap 162 URL, nuovi testa-a-testa con Opus 5.
+- **BLIND ARENA** (`js/arena.js`, `#arena`, nel menu More, 8 voci): sfide A/B alla cieca sui prompt dell'utente tra i modelli che le SUE chiavi gratuite possono eseguire (Gemini, Llama via Groq, open via OpenRouter); voto → reveal → **Elo personale locale** (pc_elo_v1, K=32, pareggio 0.5) con classifica e reset. Framing onesto ovunque: misura la preferenza personale, non la qualità globale; senza 2 chiavi mostra spiegazione + link Settings; round con errori non contati. 18 chiavi i18n ×11 (=293).
+- **COMMUNITY KIT**: `CONTRIBUTING.md` (regole, schema del DB, comandi test), `.github/ISSUE_TEMPLATE/` (bug, correzione dati con fonte obbligatoria, feature request, config), `docs/RELEASE-NOTES-v0.28.md` pronto da incollare nella prima GitHub Release (con mini-guida in italiano). README: sezione Contributing.
+- **Versioni**: v0.28 ovunque (badge, footer, APP_VERSION, SW cache whichai-v0.28.0 con arena.js nel precache).
+- **TEST**: 115 statici + 62 smoke = **177/177 PASSATI**.
+- **PENDING invariati**: demo GIF per README (serve una registrazione dal vivo, la fa Jack o GPT-5.6 con accesso al browser); Personal Benchmark completo/Council/Consensus (limite BYOK documentato); pipeline CI.
+- [ ] **Jack**: (1) pubblica su GitHub (live fermo a v0.21 → questo deploy porta v0.22→v0.28; file NUOVI di oggi: `js/arena.js`, `CONTRIBUTING.md`, cartella `.github/`, `docs/RELEASE-NOTES-v0.28.md`); (2) crea la prima GitHub Release seguendo docs/RELEASE-NOTES-v0.28.md; (3) Search Console: reinvia la sitemap (ora 162 URL); (4) test live: #arena con le tue chiavi (2+ modelli), scheda Claude Opus 5 in guida, radar con le novità, wiki /models/claude-opus-5.html.
 
 ## Fatto (sessione 28, 2026-07-21 - GPT-5.6)
 

@@ -9,7 +9,7 @@
   "use strict";
 
   var Bench = {
-    updated: "July 19, 2026",
+    updated: "July 26, 2026",
 
     disclaimer:
       "Snapshot curated from public leaderboards and comparisons. Rankings shift fast - treat this as guidance, not gospel.",
@@ -24,7 +24,7 @@
       claude: {
         label: "Claude",
         vendor: "Anthropic",
-        topModel: "Claude Opus 4.8 / Fable 5 (Pro, $20/mo)",
+        topModel: "Claude Opus 5 / Fable 5 (Pro, $20/mo)",
         freeModel: "Claude Sonnet 5 (usage limits vary by demand)"
       },
       chatgpt: {
@@ -37,7 +37,7 @@
         label: "Gemini",
         vendor: "Google",
         topModel: "Gemini 3.1 Pro (AI Pro, $19.99/mo)",
-        freeModel: "Gemini 3.5 Flash (most generous free tier, includes a monthly Deep Research allowance)"
+        freeModel: "Gemini 3.6 Flash (most generous free tier, includes a monthly Deep Research allowance)"
       },
       perplexity: {
         label: "Perplexity",
@@ -56,7 +56,8 @@
       { id: "pplx", label: "Perplexity plans, features and Sonar (2026)", url: "https://suprmind.ai/hub/perplexity/pricing/" },
       { id: "open", label: "Open-weight model benchmarks (2026)", url: "https://benchlm.ai/blog/posts/best-chinese-llm" },
       { id: "subs", label: "AI subscription pricing comparison (2026)", url: "https://www.sentisight.ai/ai-price-comparison-gemini-chatgpt-claude-grok/" },
-      { id: "aidx", label: "AA Intelligence Index snapshot, July 16, 2026 (BenchLM mirror)", url: "https://benchlm.ai/benchmarks/artificialAnalysis" },
+      { id: "aidx", label: "AA Intelligence Index snapshot, July 24, 2026 (BenchLM mirror)", url: "https://benchlm.ai/benchmarks/artificialAnalysis" },
+      { id: "opus5", label: "Claude Opus 5 launch coverage (July 24, 2026)", url: "https://www.marktechpost.com/2026/07/24/meet-the-new-claude-opus-5-frontier-class-agentic-coding-and-computer-use-at-unchanged-opus-pricing/" },
       { id: "orfree", label: "OpenRouter free-model list (July 2026)", url: "https://costgoat.com/pricing/openrouter-free-models" },
       { id: "price", label: "Vendor API pricing mirror (July 2026)", url: "https://benchlm.ai/anthropic/api-pricing" }
     ],
@@ -78,7 +79,7 @@
       coding: {
         confidence: "high",
         summary:
-          "It is nearly a tie at the top: Claude leads the toughest real-repo benchmark and now also LMArena's coding board (July 16), while GPT-5.6 Sol tops the new Coding Agent Index (80). Kimi K3 debuted #1 on the Frontend Code Arena - open-ish challengers now sit a fraction of the cost behind.",
+          "It is nearly a tie at the top: Claude leads the toughest real-repo benchmark and LMArena's coding board, and the new Opus 5 leads AA's Agentic Index (55.3, July 24) with computer use at unchanged pricing; GPT-5.6 Sol tops the Coding Agent Index. Kimi K3 debuted #1 on the Frontend Code Arena.",
         ranking: [
           { app: "claude", note: "Leads SWE-bench Pro (uncontaminated, real repositories) at 69.2%, sits at the top of SWE-bench Verified (88.6%), and Fable 5 now leads LMArena's coding board (July 16 snapshot) - strongest at multi-file, real-project work." },
           { app: "chatgpt", note: "Statistically tied on SWE-bench Verified (88.7%); the Codex variant is built specifically for coding workflows." },
@@ -93,7 +94,7 @@
         summary:
           "The top models are close on reasoning. Claude leads the overall intelligence index, Gemini 3.1 Pro leads several reasoning boards, and ChatGPT has the most mature built-in tools for uploaded data files.",
         ranking: [
-          { app: "claude", note: "Tops the July 16 AA index snapshot (Fable 5 = 59.9, Opus 4.8 = 55.7) with careful, assumption-stating reasoning - a good default for rigorous analysis." },
+          { app: "claude", note: "Holds the top two spots on the July 24 AA snapshot (Opus 5 = 60.7, Fable 5 = 59.9) with careful, assumption-stating reasoning - a good default for rigorous analysis." },
           { app: "gemini", note: "Leads several reasoning benchmarks and handles very long documents well." },
           { app: "chatgpt", note: "Best built-in tooling for spreadsheets and data files you upload directly in chat." },
           { app: "perplexity", note: "Good for pulling in current external data and benchmarks to feed the analysis, with citations." }
@@ -158,7 +159,7 @@
         summary:
           "The top tier has never been closer - the top ten sit within about 28 Elo points on LMArena (July 16 update). Claude holds #1 overall, GPT-5.6 is right behind, and the July surprise Kimi K3 joined the leaders; Perplexity is the specialist you add for anything that needs sources.",
         ranking: [
-          { app: "claude", note: "#1 on the LMArena overall leaderboard, and Fable 5 tops the July 16 AA snapshot (59.9) - GPT-5.6 Sol sits one point behind (58.9) while leading the Coding Agent Index (80) at about a third of the cost per task; Moonshot's new Kimi K3 (57.1) is now the closest outside challenger." },
+          { app: "claude", note: "The new Opus 5 (July 24) tops the AA snapshot at 60.7 with Fable 5 right behind (59.9): Anthropic holds the top two spots. GPT-5.6 Sol follows (58.9) and stays the value pick for agentic work; Moonshot's Kimi K3 (57.1) remains the closest outside challenger." },
           { app: "chatgpt", note: "A hair behind on aggregate scores, and the most complete all-round app." },
           { app: "gemini", note: "Close third, with the most generous free tier of the three." },
           { app: "perplexity", note: "Not a generalist - but the first stop whenever the answer must be current and cited." }
@@ -178,7 +179,8 @@
           { name: "Claude Opus 4.8", vendor: "Anthropic", access: "Claude Pro ($20/mo); limited on free tier", note: "#1 on LMArena overall, top-3 on the Artificial Analysis index (56); leads real-repo coding (SWE-bench Pro 69.2%)." },
           { name: "GPT-5.5 Pro", vendor: "OpenAI", access: "ChatGPT Pro ($200/mo); standard GPT-5.5 on Plus ($20/mo)", note: "OpenAI's maximum-reasoning tier, statistically tied with Opus on many boards - and the new GPT-5.6 series (Sol/Terra/Luna, July 9) sits one point behind Fable 5 at max effort - Sol leads the Coding Agent Index." },
           { name: "Gemini 3.1 Pro", vendor: "Google", access: "Google AI Pro ($19.99/mo); also inside Perplexity Pro", note: "#1 in LMArena's coding arena, top-tier reasoning, deep Google Workspace integration." },
-          { name: "Claude Fable 5", vendor: "Anthropic", access: "Claude Pro / Max plans · API $10/$50 per 1M", note: "Anthropic's newest flagship, purpose-built for creative work - tops creative-writing benchmarks and the July 16 AA index (59.9)." },
+          { name: "Claude Opus 5", vendor: "Anthropic", access: "Claude Pro / Max plans · API $5/$25 per 1M", note: "July 24: the new overall #1 (AA 60.7; Agentic Index 55.3) with 1M context, default thinking and computer use at unchanged Opus pricing." },
+          { name: "Claude Fable 5", vendor: "Anthropic", access: "Claude Pro / Max plans · API $10/$50 per 1M", note: "Purpose-built for creative work - tops creative-writing benchmarks; #2 overall (59.9) behind its new sibling Opus 5." },
           { name: "Kimi K3", vendor: "Moonshot AI", access: "API $3/$15 per 1M · open weights announced for July 27", note: "July 16 surprise: 2.8T-parameter MoE, 1M context, native vision - #3 on the AA index (57.1), best published BrowseComp (91.2%), #1 Frontend Code Arena at launch." }
         ]
       },
@@ -192,7 +194,7 @@
           { name: "Claude Sonnet 5", vendor: "Anthropic", access: "Free tier of claude.ai", note: "Rated the strongest free option for writing and coding quality." },
           { name: "Claude Sonnet 4.6", vendor: "Anthropic", access: "Claude Pro ($20/mo)", note: "The balanced default of the Claude line - near-flagship quality with higher limits." },
           { name: "Claude Haiku 4.5", vendor: "Anthropic", access: "All Claude tiers; cheapest Claude via API", note: "Fastest and cheapest of the line - quick answers, light tasks, high volume." },
-          { name: "Gemini 3.5 Flash", vendor: "Google", access: "Free (the most generous free tier around)", note: "Same fast model behind Google's paid defaults; free Deep Research allowance included." }
+          { name: "Gemini 3.6 Flash", vendor: "Google", access: "Free (the most generous free tier around)", note: "July 21 refresh of the free workhorse (AA 50.1): cheaper output than 3.5 Flash, 1M context, free Deep Research allowance included." }
         ]
       },
       {

@@ -17,7 +17,7 @@ function check(name, cond, detail) {
 globalThis.window = globalThis;
 
 /* ---------- 1. Syntax of every shipped JS file ---------- */
-const jsFiles = ["js/engine.js", "js/benchmarks.js", "js/chains.js", "js/i18n.js", "js/models-db.js", "js/merge.js", "js/charts.js", "js/glossary.js", "js/finder.js", "js/modelcompare.js", "js/stack.js", "js/doctor.js", "js/changes.js", "js/radar.js", "js/sharecard.js", "js/brands.js", "js/welcome.js", "js/app.js", "sw.js"];
+const jsFiles = ["js/engine.js", "js/benchmarks.js", "js/chains.js", "js/i18n.js", "js/models-db.js", "js/merge.js", "js/charts.js", "js/glossary.js", "js/finder.js", "js/modelcompare.js", "js/stack.js", "js/doctor.js", "js/changes.js", "js/radar.js", "js/sharecard.js", "js/brands.js", "js/welcome.js", "js/arena.js", "js/app.js", "sw.js"];
 for (const f of jsFiles) {
   try { execSync("node --check " + f, { stdio: "pipe" }); check("syntax " + f, true); }
   catch (e) { check("syntax " + f, false, String(e.stderr || e)); }
@@ -71,7 +71,7 @@ const Brands = require("../js/brands.js");
   check("db: inkling present with measured score", DB.models.some(m => m.id === "inkling" && m.score.aa === 40.7 && !m.score.est));
   const specCount = DB.models.filter(m => m.spec).length;
   check("db: spec data on " + specCount + " models (>=15)", specCount >= 15);
-  check("db: updated field refreshed", /July 19, 2026/.test(DB.updated));
+  check("db: updated field refreshed", /July 26, 2026/.test(DB.updated));
   const brandFiles = new Set();
   Object.values(Brands.FAMILIES).concat(Object.values(Brands.VENDORS)).forEach(b => {
     if (b.icon) brandFiles.add(b.icon);
@@ -92,7 +92,7 @@ const Brands = require("../js/brands.js");
     for (const sid of r.sourceIds) if (!Bench.sources.some(s => s.id === sid)) { ok = false; msg = t + " src " + sid; }
   }
   check("bench: 8 tasks × 4 apps, sources resolve", ok, msg);
-  check("bench: updated July 19", /July 19, 2026/.test(Bench.updated));
+  check("bench: updated July 26", /July 26, 2026/.test(Bench.updated));
   check("bench: recommend falls back", Bench.recommend("nope") === Bench.taskTypes.general);
 }
 
@@ -195,9 +195,29 @@ const Brands = require("../js/brands.js");
     if (!c.note || c.note.length < 30) badChange = c.title + " note";
   }
   check("radar: " + ChangesFeed.CHANGES.length + " changes valid (dates, types, dbIds, sources)", !badChange, badChange);
-  check("radar: unseen counting works", ChangesFeed.unseenCount("", "2026-07-20") === 10 && ChangesFeed.unseenCount("2026-07-16", "2026-07-20") === 0 && ChangesFeed.unseenCount("2026-07-10", "2026-07-20") > 0);
+  check("radar: unseen counting works", ChangesFeed.unseenCount("", "2026-07-26") === ChangesFeed.past("2026-07-26").length && ChangesFeed.unseenCount("2026-07-25", "2026-07-26") === 0 && ChangesFeed.unseenCount("2026-07-10", "2026-07-26") > 4);
   check("radar: upcoming separated", ChangesFeed.upcoming("2026-07-20").every(c => c.date > "2026-07-20"));
   check("radar + sharecard modules export", typeof Radar.init === "function" && typeof ShareCard.share === "function");
+}
+
+/* ---------- 9d. v0.28: July 26 refresh + arena ---------- */
+{
+  const Arena = require("../js/arena.js");
+  const o5 = DB.models.find(m => m.id === "claude-opus-5");
+  check("v28: Claude Opus 5 public #1 with specs", o5 && o5.status === "public" && o5.score.aa === 60.7 && !o5.score.est && o5.spec.priceIn === 5 && o5.family === "claude");
+  check("v28: measured #1 is Claude Opus 5", DB.models.filter(m => m.score && m.score.aa && !m.score.est).sort((a, b) => b.score.aa - a.score.aa)[0].id === "claude-opus-5");
+  check("v28: Gemini 3.6 Flash + Flash-Lite present", ["gemini-3-6-flash", "gemini-3-5-flash-lite"].every(id => DB.models.some(m => m.id === id && !m.score.est)));
+  check("v28: Qwen 3.8 preview clearly estimated", DB.models.some(m => m.id === "qwen-3-8-max-preview" && m.status === "preview" && m.score.est));
+  check("v28: lower-table corrections applied", DB.models.find(m => m.id === "mercury-2").score.aa === 21.4 && DB.models.find(m => m.id === "trinity-large").score.aa === 18.2);
+  check("v28: db + bench dated July 26", /July 26, 2026/.test(DB.updated) && /July 26, 2026/.test(Bench.updated));
+  check("v28: gemini BYOK default bumped", readFileSync("js/app.js", "utf8").includes('DEFAULT_GEMINI_MODEL = "gemini-3.6-flash"'));
+  check("v28: finder/stack paid Claude pick is Opus 5", readFileSync("js/finder.js", "utf8").includes('low: "claude-opus-5"') && readFileSync("js/stack.js", "utf8").includes('paid: "claude-opus-5"'));
+  const elo = Arena._elo({}, "a", "b", 1);
+  check("v28: arena elo math (winner +16 at equal ratings)", elo.a.r === 1016 && elo.b.r === 984 && elo.a.g === 1);
+  const elo2 = Arena._elo({ a: { r: 1016, g: 1 }, b: { r: 984, g: 1 } }, "a", "b", 0.5);
+  check("v28: arena elo tie pulls ratings together", elo2.a.r < 1016 && elo2.b.r > 984);
+  const pair = Arena._pickTwo([{ id: "x" }, { id: "y" }, { id: "z" }]);
+  check("v28: arena picks two distinct models", pair.length === 2 && pair[0].id !== pair[1].id);
 }
 
 /* ---------- 10. HTML ↔ JS id cross-check ---------- */
@@ -234,10 +254,10 @@ const Brands = require("../js/brands.js");
   const html = readFileSync("index.html", "utf8");
   const app = readFileSync("js/app.js", "utf8");
   const sw = readFileSync("sw.js", "utf8");
-  check("version: badge v0.27", html.includes(">v0.27 · Growth<"));
-  check("version: footer v0.27", html.includes("WhichAI v0.27"));
-  check("version: APP_VERSION v0.27", app.includes('APP_VERSION = "v0.27"'));
-  check("version: SW cache v0.27", sw.includes('"whichai-v0.27.0"'));
+  check("version: badge v0.28", html.includes(">v0.28 · Growth<"));
+  check("version: footer v0.28", html.includes("WhichAI v0.28"));
+  check("version: APP_VERSION v0.28", app.includes('APP_VERSION = "v0.28"'));
+  check("version: SW cache v0.28", sw.includes('"whichai-v0.28.0"'));
   const welcomeJs = readFileSync("js/welcome.js", "utf8");
   check("v0.27: morph reaches target before opacity fade", welcomeJs.includes("offset: 0.76") && welcomeJs.includes("opacity: 0") && welcomeJs.includes("1050"));
   check("v0.27: dark wordmarks use a light treatment", /\[data-theme="dark"\] \.ai-brand-wordmark\s*\{[^}]*invert\(1\)/s.test(readFileSync("styles.css", "utf8")));

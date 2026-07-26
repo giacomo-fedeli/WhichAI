@@ -2,6 +2,24 @@
 
 (Older release-by-release history lives in `STATUS.md`, the project's working memory.)
 
+## v0.28.0 (2026-07-26)
+
+Data refresh for a wild week, the Blind Arena, and the community kit.
+
+### Data refresh (sources retrieved 2026-07-26)
+- **Claude Opus 5 is real and is the new #1**: released July 24, it moves from rumored to public in the database with measured data: AA Intelligence Index 60.7 (July 24 snapshot), Agentic Index 55.3, 1M context, 128K output, $5/$25 per 1M unchanged (Fast mode $10/$50, cache hits $0.50/M). It becomes the paid Claude pick in the finder and Stack Optimizer. Sources: BenchLM mirror, MarkTechPost, artificialanalysis.ai.
+- **AA July 24 snapshot (167 models)**: Anthropic holds the top two spots (Opus 5 60.7, Fable 5 59.9). Lower-table corrections: Mercury 2 21.4, K-Exaone 22.1, Trinity Large 18.2, Gemma 4 12B 21.8.
+- **New models (108 total)**: Gemini 3.6 Flash (July 21: $1.50/$7.50, 1M ctx, free tier day one; now the BYOK Gemini default), Gemini 3.5 Flash-Lite ($0.30/$2.50), Qwen3.8 Max preview (clearly estimated). Benchmark router notes and catalog updated; OpenRouter free routes re-verified (Nemotron 3 Ultra and Qwen3 Coder still free).
+- **Model Radar**: 5 new sourced entries (Opus 5, July 24 snapshot, FLUX 3, Gemini 3.6 Flash, Qwen week); Kimi K3 weights stay in "Coming up" for July 27.
+- Static wiki regenerated: 161 pages, sitemap 162 URLs, including new head-to-heads (Opus 5 vs Fable 5, Opus 5 vs GPT-5.6 Sol).
+
+### Added
+- **Blind Arena** (`js/arena.js`, `#arena`, in the More menu): anonymous A/B rounds on YOUR prompts between the models your free keys can auto-run; vote, names are revealed, and a personal local Elo builds up (K=32, ties count half). Honest framing throughout: it measures your preference on your prompts among your available models, not global quality. Clear no-keys state linking Settings; failed rounds are not counted. 18 i18n keys in 11 languages (293 total).
+- **Community kit**: `CONTRIBUTING.md` (ground rules, database schema, test commands), GitHub issue templates (bug, data correction with mandatory source, feature request), `docs/RELEASE-NOTES-v0.28.md` ready to paste into the first GitHub Release.
+
+### Tests
+- Static suite: 115 checks (July 26 data assertions, Opus 5 as measured #1, arena Elo math, pick-two distinctness). DOM smoke: 62 (arena view + no-keys path, More menu at 8 items). **177/177 green.**
+
 ## v0.27.0 (2026-07-21)
 
 ### Fixed

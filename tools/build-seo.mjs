@@ -22,7 +22,7 @@ const esc = s => String(s == null ? "" : s)
 const brand = (subject, label, options = {}) => Brands.markHTML(subject, label, { base: "/assets/brands/", ...options });
 
 const COMPARE_PAIRS = [
-  ["fable-5", "gpt-5-6-sol"], ["fable-5", "opus-4-8"], ["gpt-5-6-sol", "kimi-k3"],
+  ["claude-opus-5", "fable-5"], ["claude-opus-5", "gpt-5-6-sol"], ["fable-5", "gpt-5-6-sol"], ["fable-5", "opus-4-8"], ["gpt-5-6-sol", "kimi-k3"],
   ["kimi-k3", "glm-5-2"], ["sonnet-5", "gpt-5-5"], ["gemini-3-1-pro", "gpt-5-6-terra"],
   ["gemini-3-5-flash", "gpt-5-6-luna"], ["opus-4-8", "gpt-5-5"], ["grok-4-5", "gpt-5-6-terra"],
   ["deepseek-v4-pro", "qwen-3-7-max"], ["inkling", "nemotron-3-ultra"], ["kimi-k3", "opus-4-8"]

@@ -110,9 +110,9 @@
   var CHAINS_KEY = "pc_chains_v1";
   var LANG_KEY = "pc_lang";
   var THEME_KEY = "pc_theme";
-  var DEFAULT_GEMINI_MODEL = "gemini-3.5-flash";
+  var DEFAULT_GEMINI_MODEL = "gemini-3.6-flash";
   var DEFAULT_GROQ_MODEL = "llama-3.3-70b-versatile";
-  var APP_VERSION = "v0.27";
+  var APP_VERSION = "v0.28";
   var BRAND = "WhichAI";
   var TASK_ICONS = {
     writing: '<svg class="guide-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M4 20l1-4L16.5 4.5a2.1 2.1 0 013 3L8 19l-4 1z"/><path d="M13.5 7.5l3 3"/></svg>',
@@ -177,6 +177,8 @@
     setText("#nav-glossary strong", "footGlossary");
     setText("#nav-radar strong", "navRadar");
     setText("#nav-radar-sub", "navRadarSub");
+    setText("#nav-arena strong", "navArena");
+    setText("#nav-arena-sub", "navArenaSub");
     if (window.WhichAIWelcome) window.WhichAIWelcome.setLanguage(T);
     setText("#nav-chains-sub", "navChainsSub");
     setText("#nav-stack-sub", "navStackSub");
@@ -316,6 +318,7 @@
     if (window.WhichAIStack) window.WhichAIStack.rerender();
     if (window.WhichAIDoctor) window.WhichAIDoctor.rerender();
     if (window.WhichAIRadar) window.WhichAIRadar.rerender();
+    if (window.WhichAIArena) window.WhichAIArena.rerender();
     renderDemo();
     var glv = document.getElementById("glossary-view");
     if (glv && !glv.hidden) initGlossary();
@@ -878,6 +881,8 @@
     if (doctorView) doctorView.hidden = name !== "doctor";
     var radarView = document.getElementById("radar-view");
     if (radarView) radarView.hidden = name !== "radar";
+    var arenaView = document.getElementById("arena-view");
+    if (arenaView) arenaView.hidden = name !== "arena";
     if ($mergeView) $mergeView.hidden = name !== "merge";
     $navGenerator.classList.toggle("active", name === "generator");
     $navGuide.classList.toggle("active", name === "guide");
@@ -893,13 +898,33 @@
     if (navGlossary) navGlossary.classList.toggle("active", name === "glossary");
     var navRadar = document.getElementById("nav-radar");
     if (navRadar) navRadar.classList.toggle("active", name === "radar");
+    var navArena = document.getElementById("nav-arena");
+    if (navArena) navArena.classList.toggle("active", name === "arena");
     var moreBtn = document.getElementById("nav-more");
-    if (moreBtn) moreBtn.classList.toggle("active", ["chains", "stack", "doctor", "glossary", "about", "settings", "radar"].indexOf(name) !== -1);
+    if (moreBtn) moreBtn.classList.toggle("active", ["chains", "stack", "doctor", "glossary", "about", "settings", "radar", "arena"].indexOf(name) !== -1);
     closeMorePanel();
     if (name === "guide" && !guideBuilt) buildGuide();
     if (name === "compare") renderCompare();
     if (name === "chains") renderChainHistory();
     if (name === "glossary") initGlossary();
+    if (name === "arena" && window.WhichAIArena) {
+      window.WhichAIArena.init(document.getElementById("arena-wrap"), {
+        T: T,
+        openSettings: function () { location.hash = "#settings"; },
+        families: function () {
+          return Engine.MODEL_ORDER.filter(function (f) { return RUNNERS[f]; }).map(function (f) {
+            var ok = false;
+            try {
+              if (f === "gemini") ok = !!settings.geminiKey;
+              else if (f === "llama") ok = !!settings.groqKey;
+              else ok = !!settings.openrouterKey && !!(settings.orModels && (settings.orModels[f] || "").trim());
+            } catch (e) { ok = false; }
+            return { id: f, label: Engine.MODELS[f].label, available: ok };
+          });
+        },
+        run: function (f, prompt) { return RUNNERS[f].call(settings, prompt); }
+      });
+    }
     if (name === "radar" && window.WhichAIRadar) {
       window.WhichAIRadar.init(document.getElementById("radar-wrap"), {
         T: T,
@@ -945,8 +970,9 @@
     var isStack = h.indexOf("#stack") === 0;
     var isDoctor = h.indexOf("#doctor") === 0;
     var isRadar = h.indexOf("#radar") === 0;
+    var isArena = h.indexOf("#arena") === 0;
     if (isModel) { openModelById(decodeURIComponent(h.slice(7))); return; }
-    setView(h === "#guide" ? "guide" : isCompare ? "compare" : isChains ? "chains" : isMerge ? "merge" : isAbout ? "about" : isGlossary ? "glossary" : isStack ? "stack" : isDoctor ? "doctor" : isRadar ? "radar" : h === "#settings" ? "settings" : "generator");
+    setView(h === "#guide" ? "guide" : isCompare ? "compare" : isChains ? "chains" : isMerge ? "merge" : isAbout ? "about" : isGlossary ? "glossary" : isStack ? "stack" : isDoctor ? "doctor" : isRadar ? "radar" : isArena ? "arena" : h === "#settings" ? "settings" : "generator");
     if (isChains) importChainFromHash();
     if (isCompare) {
       // Model comparison is the default; outputs win only when explicitly asked

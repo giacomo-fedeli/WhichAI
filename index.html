@@ -41,7 +41,7 @@
           <path class="brand-needle" d="M15.5 8.5l-2.2 5-5 2.2 2.2-5z" fill="currentColor" stroke="none"></path>
         </svg>
         <span class="brand-name">WhichAI</span>
-        <span class="badge">v0.27 · Growth</span>
+        <span class="badge">v0.28 · Growth</span>
         <span class="badge badge-privacy" title="Runs entirely in your browser. No account, no server, no tracking. API keys stay on your device."><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><rect x="4" y="10" width="16" height="10" rx="2"></rect><path d="M8 10V7a4 4 0 0 1 8 0v3"></path></svg><span id="privacy-text">Private by design</span></span>
       </div>
       <nav class="site-nav" aria-label="Views">
@@ -55,6 +55,7 @@
             <a href="#chains" id="nav-chains" class="more-item"><strong>Chains</strong><span class="more-sub" id="nav-chains-sub">Multi-step workflows, one model per step</span></a>
             <a href="#stack" id="nav-stack" class="more-item"><strong>Stack Optimizer</strong><span class="more-sub" id="nav-stack-sub">Which subscriptions to keep, what to use free</span></a>
             <a href="#doctor" id="nav-doctor" class="more-item"><strong>Prompt Doctor</strong><span class="more-sub" id="nav-doctor-sub">Score a prompt, see the optimized version</span></a>
+            <a href="#arena" id="nav-arena" class="more-item"><strong>Blind Arena</strong><span class="more-sub" id="nav-arena-sub">Blind A/B rounds on your prompts, personal Elo</span></a>
             <a href="#glossary" id="nav-glossary" class="more-item"><strong>Glossary</strong><span class="more-sub" id="nav-glossary-sub">Every AI term in one plain sentence</span></a>
             <a href="#about" id="nav-about" class="more-item"><strong>About</strong><span class="more-sub" id="nav-about-sub">FAQ, methodology, similar tools</span></a>
             <a href="#settings" id="nav-settings" class="more-item"><strong>Settings</strong><span class="more-sub" id="nav-settings-sub">Free API keys, your data, backup</span></a>
@@ -429,7 +430,7 @@
       <div class="field">
         <label for="gemini-model">Model</label>
         <input type="text" id="gemini-model" autocomplete="off" />
-        <p class="field-hint">Default: gemini-3.5-flash (free tier). Change only if Google renames its models.</p>
+        <p class="field-hint">Default: gemini-3.6-flash (free tier). Change only if Google renames its models.</p>
       </div>
       <div class="test-row"><button id="test-gemini" class="btn-copy btn-test" type="button">Test key</button><span class="run-status test-status" id="test-gemini-status" hidden></span></div>
 
@@ -561,6 +562,11 @@
     <div id="radar-wrap"></div>
   </main>
 
+  <!-- ============ Blind Arena view ============ -->
+  <main class="layout-guide view" id="arena-view" hidden>
+    <div id="arena-wrap"></div>
+  </main>
+
   <!-- ============ Stack Optimizer view ============ -->
   <main class="layout-guide view" id="stack-view" hidden>
     <div id="stack-wrap"></div>
@@ -589,7 +595,7 @@
       <a href="#about-contribute" id="foot-contribute">Contribute</a>
       <a href="#glossary" id="foot-glossary">Glossary</a>
     </nav>
-    <p>WhichAI v0.27 · Growth · Runs entirely in your browser: no account, no server, your keys and data never leave your device.</p>
+    <p>WhichAI v0.28 · Growth · Runs entirely in your browser: no account, no server, your keys and data never leave your device.</p>
   </footer>
 
   <noscript><p style="text-align:center;padding:24px;">WhichAI needs JavaScript to run.</p></noscript>
@@ -609,6 +615,7 @@
   <script src="js/changes.js"></script>
   <script src="js/radar.js"></script>
   <script src="js/sharecard.js"></script>
+  <script src="js/arena.js"></script>
   <script src="js/brands.js"></script>
   <script src="js/welcome.js"></script>
   <script src="js/app.js"></script>

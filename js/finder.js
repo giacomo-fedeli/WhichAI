@@ -71,7 +71,7 @@
   var APP_META = {
     claude: { label: "Claude", bestFor: "polished writing, careful reasoning, long documents",
       limit: "No free API for auto-run; free-tier limits vary with demand.",
-      models: { free: "sonnet-5", low: "opus-4-8", any: "opus-4-8", creative: "fable-5", devLow: "sonnet-5", devAny: "opus-4-8" } },
+      models: { free: "sonnet-5", low: "claude-opus-5", any: "claude-opus-5", creative: "fable-5", devLow: "sonnet-5", devAny: "claude-opus-5" } },
     chatgpt: { label: "ChatGPT", bestFor: "all-round work, brainstorming, files and data tooling",
       limit: "Free tier has message caps; the strongest modes need Plus or Pro.",
       models: { free: "gpt-5-5", low: "gpt-5-5", any: "gpt-5-5-pro", devLow: "gpt-5-6-terra", devAny: "gpt-5-6-sol", devFree: "gpt-5-5" } },

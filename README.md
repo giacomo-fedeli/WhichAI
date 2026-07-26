@@ -46,6 +46,10 @@ node tests/run-tests.mjs     # 57 static checks - no dependencies
 node tests/smoke-dom.mjs     # full DOM smoke test - requires `npm i jsdom`
 ```
 
+## Contributing
+
+Data corrections, bug reports and small PRs are very welcome: see [CONTRIBUTING.md](CONTRIBUTING.md) and the issue templates. The model database is also published as an open dataset (`data/models.json`, CC BY 4.0).
+
 ## Deploy
 
 Static site: deploy the folder as-is to any static host (Vercel, Netlify, GitHub Pages).

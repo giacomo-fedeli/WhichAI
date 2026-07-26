@@ -2,11 +2,11 @@
  "project": "WhichAI",
  "site": "https://whichai.wiki",
  "license": "CC BY 4.0 (attribution: WhichAI, whichai.wiki)",
- "generated": "2026-07-20",
- "snapshot": "July 19, 2026",
- "scaleNote": "Artificial Analysis Intelligence Index, 2026 rebased scale (top models ≈ 55–60). Snapshot: July 16, 2026 (BenchLM mirror), retrieved July 19, 2026.",
+ "generated": "2026-07-26",
+ "snapshot": "July 26, 2026",
+ "scaleNote": "Artificial Analysis Intelligence Index, 2026 rebased scale (top models ≈ 55–60). Snapshot: July 24, 2026 (BenchLM mirror), retrieved July 26, 2026.",
  "specNote": "Context, price and release data come from vendor pages and public pricing mirrors (retrieved July 19, 2026). Missing values are not published or not yet verified - shown as -.",
- "count": 105,
+ "count": 108,
  "models": [
   {
    "id": "gpt-6",
@@ -555,28 +555,39 @@
    "id": "claude-opus-5",
    "name": "Claude Opus 5",
    "vendor": "Anthropic",
-   "family": null,
-   "status": "rumored",
-   "access": "Not announced",
+   "family": "claude",
+   "status": "public",
+   "access": "Released July 24, 2026 · Claude Pro / Max plans · API $5/$25 per 1M tokens (Fast mode $10/$50)",
    "tags": [
-    "rumored",
-    "info-only"
+    "paid",
+    "api",
+    "prompt-target"
    ],
    "labels": [
     "reasoning",
-    "coding"
+    "coding",
+    "agents",
+    "long-context"
    ],
+   "spec": {
+    "released": "2026-07-24",
+    "ctx": "1M",
+    "modal": "Text + vision",
+    "priceIn": 5,
+    "priceOut": 25,
+    "note": "cache hits $0.50/M; Batch -50%; 128K output"
+   },
    "score": {
-    "aa": 62,
-    "est": true,
+    "aa": 60.7,
+    "est": false,
     "cat": {
-     "coding": 92,
-     "reasoning": 92,
+     "coding": 93,
+     "reasoning": 94,
      "writing": 88,
-     "agents": 92
+     "agents": 95
     }
    },
-   "review": "Widely expected as the next step of the Opus line, but Anthropic has announced nothing - date, name and capabilities are speculation."
+   "review": "Anthropic's fourth release in two months and the new overall #1: tops the AA Intelligence Index (60.7) and the Agentic Index (55.3) with 1M context, default thinking and computer use, at unchanged Opus pricing. Near-Fable quality at half the price."
   },
   {
    "id": "mythos-5",
@@ -965,6 +976,75 @@
    "review": "#1 in LMArena's coding arena at launch, deep Google Workspace integration and strong multimodal work."
   },
   {
+   "id": "gemini-3-6-flash",
+   "name": "Gemini 3.6 Flash",
+   "vendor": "Google",
+   "family": "gemini",
+   "status": "public",
+   "access": "Free tier in AI Studio and the Gemini app (rate-limited) · API $1.50/$7.50 per 1M tokens",
+   "tags": [
+    "free",
+    "paid",
+    "api",
+    "prompt-target",
+    "auto-run"
+   ],
+   "labels": [
+    "speed",
+    "value"
+   ],
+   "spec": {
+    "released": "2026-07-21",
+    "ctx": "1M",
+    "priceIn": 1.5,
+    "priceOut": 7.5
+   },
+   "score": {
+    "aa": 50.1,
+    "est": false,
+    "cat": {
+     "coding": 76,
+     "reasoning": 78,
+     "writing": 72,
+     "agents": 76
+    }
+   },
+   "review": "Google's July refresh of the free workhorse: 3.5 Flash quality with cheaper output ($7.50 vs $9), 1M context, day one in AI Studio, the API and the app. The new default of the Gemini line."
+  },
+  {
+   "id": "gemini-3-5-flash-lite",
+   "name": "Gemini 3.5 Flash-Lite",
+   "vendor": "Google",
+   "family": "gemini",
+   "status": "public",
+   "access": "API $0.30/$2.50 per 1M tokens",
+   "tags": [
+    "paid",
+    "api",
+    "prompt-target"
+   ],
+   "labels": [
+    "speed",
+    "value"
+   ],
+   "spec": {
+    "released": "2026-07-21",
+    "priceIn": 0.3,
+    "priceOut": 2.5
+   },
+   "score": {
+    "aa": 36.5,
+    "est": false,
+    "cat": {
+     "coding": 58,
+     "reasoning": 60,
+     "writing": 56,
+     "agents": 55
+    }
+   },
+   "review": "The routing tier of the July refresh: classification, extraction, tagging and short summaries at commodity prices. Not built for hard reasoning."
+  },
+  {
    "id": "gemini-3-5-flash",
    "name": "Gemini 3.5 Flash",
    "vendor": "Google",
@@ -1181,7 +1261,7 @@
     "speed"
    ],
    "score": {
-    "aa": 22,
+    "aa": 21.8,
     "est": false,
     "cat": {
      "coding": 42,
@@ -1822,6 +1902,37 @@
     }
    },
    "review": "The January 2025 release that shocked the market by open-sourcing o1-class reasoning. Historic; superseded."
+  },
+  {
+   "id": "qwen-3-8-max-preview",
+   "name": "Qwen3.8 Max (preview)",
+   "vendor": "Alibaba",
+   "family": "qwen",
+   "status": "preview",
+   "access": "Early preview via Qwen chat and Alibaba Cloud (July 19) · specs not final",
+   "tags": [
+    "preview",
+    "api",
+    "prompt-target"
+   ],
+   "labels": [
+    "reasoning",
+    "multilingual"
+   ],
+   "spec": {
+    "released": "2026-07-19"
+   },
+   "score": {
+    "aa": 48,
+    "est": true,
+    "cat": {
+     "coding": 80,
+     "reasoning": 82,
+     "writing": 74,
+     "agents": 78
+    }
+   },
+   "review": "Alibaba's next flagship in early preview. No published index score yet; expect it above Qwen3.7 Max (46.0) once measured. Everything here is provisional."
   },
   {
    "id": "qwen-3-7-max",
@@ -2662,7 +2773,7 @@
     "speed"
    ],
    "score": {
-    "aa": 25.3,
+    "aa": 21.4,
     "est": false,
     "cat": {
      "coding": 52,
@@ -2803,7 +2914,7 @@
     "enterprise"
    ],
    "score": {
-    "aa": 24.7,
+    "aa": 22.1,
     "est": false,
     "cat": {
      "coding": 46,
@@ -2859,7 +2970,7 @@
     "value"
    ],
    "score": {
-    "aa": 24.5,
+    "aa": 18.2,
     "est": false,
     "cat": {
      "coding": 46,

@@ -24,7 +24,7 @@ w.confirm = () => true;
 w.URL.createObjectURL = w.URL.createObjectURL || (() => "blob:test");
 w.URL.revokeObjectURL = w.URL.revokeObjectURL || (() => {});
 
-const scripts = ["js/engine.js", "js/benchmarks.js", "js/chains.js", "js/i18n.js", "js/models-db.js", "js/merge.js", "js/charts.js", "js/glossary.js", "js/finder.js", "js/modelcompare.js", "js/stack.js", "js/doctor.js", "js/changes.js", "js/radar.js", "js/sharecard.js", "js/brands.js", "js/welcome.js", "js/app.js"];
+const scripts = ["js/engine.js", "js/benchmarks.js", "js/chains.js", "js/i18n.js", "js/models-db.js", "js/merge.js", "js/charts.js", "js/glossary.js", "js/finder.js", "js/modelcompare.js", "js/stack.js", "js/doctor.js", "js/changes.js", "js/radar.js", "js/sharecard.js", "js/brands.js", "js/welcome.js", "js/arena.js", "js/app.js"];
 let bootError = null;
 for (const s of scripts) {
   try { w.eval(readFileSync(s, "utf8")); }
@@ -173,13 +173,19 @@ const goBtn2 = d.querySelector("#stack-wrap .stack-go");
 if (goBtn2 && !goBtn2.disabled) { goBtn2.click(); }
 check("v25: stack result offers share as image", [...d.querySelectorAll("#stack-wrap button")].some(b => b.textContent.includes("Share") || b.textContent.includes("image")));
 
+/* --- v0.28: blind arena (no keys in jsdom -> need-keys path) --- */
+w.location.hash = "#arena";
+await new Promise(r => setTimeout(r, 30));
+check("v28: arena view opens", !d.getElementById("arena-view").hidden);
+check("v28: arena explains missing keys + links Settings", !!d.querySelector("#arena-wrap .arena-warn") && [...d.querySelectorAll("#arena-wrap button")].length >= 1);
+
 /* --- v0.24: demo card, More menu, stack, doctor --- */
 w.location.hash = "";
 await new Promise(r => setTimeout(r, 30));
 check("v24: demo card rendered with actions", !d.getElementById("demo-card").hidden && d.querySelectorAll("#demo-card button").length === 2);
 const moreBtn = d.getElementById("nav-more");
 moreBtn.click();
-check("v24: More panel opens with 7 items", !d.getElementById("nav-more-panel").hidden && d.querySelectorAll("#nav-more-panel .more-item").length === 7);
+check("v24: More panel opens with 8 items", !d.getElementById("nav-more-panel").hidden && d.querySelectorAll("#nav-more-panel .more-item").length === 8);
 w.location.hash = "#stack";
 await new Promise(r => setTimeout(r, 30));
 check("v24: stack view opens, panel closed", !d.getElementById("stack-view").hidden && d.getElementById("nav-more-panel").hidden);

@@ -9,6 +9,21 @@
   "use strict";
 
   var CHANGES = [
+    { date: "2026-07-24", type: "new-model", title: "Claude Opus 5: the new overall #1", dbId: "claude-opus-5",
+      note: "Anthropic's fourth release in two months tops the AA Intelligence Index (60.7) and the Agentic Index (55.3): 1M context, default thinking, computer use, unchanged $5/$25 pricing (Fast mode $10/$50).",
+      src: { label: "MarkTechPost", url: "https://www.marktechpost.com/2026/07/24/meet-the-new-claude-opus-5-frontier-class-agentic-coding-and-computer-use-at-unchanged-opus-pricing/" } },
+    { date: "2026-07-24", type: "score", title: "AA index: July 24 snapshot (167 models)", dbId: "claude-opus-5",
+      note: "Anthropic takes the top two spots: Opus 5 60.7, Fable 5 59.9, GPT-5.6 Sol 58.9, Kimi K3 57.1. WhichAI scores are realigned; lower-table corrections for Mercury 2, K-Exaone and Trinity Large.",
+      src: { label: "BenchLM mirror", url: "https://benchlm.ai/benchmarks/artificialAnalysis" } },
+    { date: "2026-07-23", type: "new-model", title: "FLUX 3: Black Forest Labs goes multimodal frontier",
+      note: "The image-generation lab ships its first multimodal frontier model. Outside WhichAI's text-model scope for now; tracked here because it reshapes the image side of the market.",
+      src: { label: "Release trackers", url: "https://llm-stats.com/llm-updates" } },
+    { date: "2026-07-21", type: "new-model", title: "Gemini 3.6 Flash (+3.5 Flash-Lite)", dbId: "gemini-3-6-flash",
+      note: "Google refreshes the free workhorse: $1.50/$7.50 per 1M (output down from $9), 1M context, day one in AI Studio, API and app. Flash-Lite lands at $0.30/$2.50 for routing jobs. WhichAI's BYOK default is now gemini-3.6-flash.",
+      src: { label: "Pricing guide", url: "https://apidog.com/blog/gemini-3-6-flash-pricing/" } },
+    { date: "2026-07-19", type: "new-model", title: "Qwen week: 3.8 Max preview, Audio 3.0, Image 3.0", dbId: "qwen-3-8-max-preview",
+      note: "Alibaba previews its next flagship (July 19) and ships new audio (July 20) and image (July 21) models. No index score published for 3.8 Max yet; listed as a clearly-marked preview.",
+      src: { label: "AI Release Tracker", url: "https://aireleasetracker.com/latest" } },
     { date: "2026-08-31", type: "upcoming", title: "Claude Sonnet 5 intro pricing ends", dbId: "sonnet-5",
       note: "The $2/$10 per 1M intro API price runs to Aug 31; standard $3/$15 starts Sept 1.",
       src: { label: "Anthropic pricing (mirror)", url: "https://benchlm.ai/anthropic/api-pricing" } },
