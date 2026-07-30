@@ -2,6 +2,24 @@
 
 (Older release-by-release history lives in `STATUS.md`, the project's working memory.)
 
+## v0.29.0 (2026-07-30)
+
+Real social proof, a way to support the project, a way home, and a new reading section.
+
+### Added
+- **AI Debates** (`js/topics.js`, `#topics`, in the More menu, plus 7 static wiki pages under `/topics/`): the six biggest AI-and-society questions (energy and data centers, jobs, the bubble, copyright, regulation, open vs closed weights) summarized honestly: the numbers people cite, the concern AND the counter-view, where things stand, and 2-4 linked sources each (IEA, Stanford HAI, WEF, Goldman Sachs, US Copyright Office, EU Commission and more). English content, translated chrome, explicit not-advice disclaimer. Designed to become community-extendable later.
+- **Real visit counter** (`js/support.js` + `js/config.js`): GoatCounter integration (free, open source, no cookies). Once the owner sets a site code in `js/config.js`, the site counts real visits and shows the true public total in the footer and on the welcome screen, with a live pulse dot. By explicit design the counter never displays invented numbers: it stays hidden until a real value exists.
+- **Support button**: a warm but quiet "Support ♥" link in the footer plus a Support card in About with an honest pitch and a no-influence note. Hidden until `donateUrl` is set in `js/config.js` (Ko-fi or PayPal.Me recommended; a raw personal IBAN is deliberately not supported).
+- **Logo goes home**: clicking (or keyboard-activating) the WhichAI brand in the header returns to the minimal welcome screen. Implemented by adding a clean `show()` to the welcome module's public API, coordinated with the other assistant's morph code (nothing else touched).
+
+### Data refresh (verified 2026-07-30)
+- **Kimi K3 weights confirmed live** on Hugging Face (July 27, Modified MIT): entry now carries open-weights and free tags; radar entry updated from promise to fact.
+- **Gemini 3.5 Pro added as clearly-marked rumor** (info-only, estimated score): release-timing reports around the K3 launch called it imminent; nothing official from Google.
+- Database and router re-verified July 30 (109 models); wiki regenerated: 169 pages, sitemap 170 URLs.
+
+### Tests
+- Static suite: 127 checks (topics validity and sourcing, config defaults keep counter/donate hidden, welcome `show()` API, CSP scope, K3 tags, rumor hygiene). DOM smoke: 67 (debates view, hidden-by-default support UI, brand-to-welcome round trip). **194/194 green.**
+
 ## v0.28.0 (2026-07-26)
 
 Data refresh for a wild week, the Blind Arena, and the community kit.

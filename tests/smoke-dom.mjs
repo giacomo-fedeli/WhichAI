@@ -24,7 +24,7 @@ w.confirm = () => true;
 w.URL.createObjectURL = w.URL.createObjectURL || (() => "blob:test");
 w.URL.revokeObjectURL = w.URL.revokeObjectURL || (() => {});
 
-const scripts = ["js/engine.js", "js/benchmarks.js", "js/chains.js", "js/i18n.js", "js/models-db.js", "js/merge.js", "js/charts.js", "js/glossary.js", "js/finder.js", "js/modelcompare.js", "js/stack.js", "js/doctor.js", "js/changes.js", "js/radar.js", "js/sharecard.js", "js/brands.js", "js/welcome.js", "js/arena.js", "js/app.js"];
+const scripts = ["js/engine.js", "js/benchmarks.js", "js/chains.js", "js/i18n.js", "js/models-db.js", "js/merge.js", "js/charts.js", "js/glossary.js", "js/finder.js", "js/modelcompare.js", "js/stack.js", "js/doctor.js", "js/changes.js", "js/radar.js", "js/sharecard.js", "js/brands.js", "js/welcome.js", "js/config.js", "js/support.js", "js/topics.js", "js/arena.js", "js/app.js"];
 let bootError = null;
 for (const s of scripts) {
   try { w.eval(readFileSync(s, "utf8")); }
@@ -34,7 +34,7 @@ check("boot: all scripts execute without throwing", !bootError, bootError);
 if (bootError) { console.log("aborting"); process.exit(1); }
 
 check("boot: generator visible, nav active", !d.getElementById("generator-view").hidden && d.getElementById("nav-generator").classList.contains("active"));
-check("boot: footer links present", d.querySelectorAll(".footer-links a").length === 4);
+check("boot: footer links present (4 + hidden support)", d.querySelectorAll(".footer-links a").length === 5);
 check("v0.26: welcome is minimal and has four staged actions", !!d.getElementById("welcome-brand") && d.querySelectorAll(".welcome-action").length === 4);
 check("v0.26: all 13 generator families have local brand icons", d.querySelectorAll(".model-check[data-ai-brand] .ai-brand-icon").length === 13);
 check("v0.26: native welcome controller initialized", !!w.WhichAIWelcome && typeof w.WhichAIWelcome.leave === "function");
@@ -173,6 +173,19 @@ const goBtn2 = d.querySelector("#stack-wrap .stack-go");
 if (goBtn2 && !goBtn2.disabled) { goBtn2.click(); }
 check("v25: stack result offers share as image", [...d.querySelectorAll("#stack-wrap button")].some(b => b.textContent.includes("Share") || b.textContent.includes("image")));
 
+/* --- v0.29: AI debates, support defaults, brand -> welcome --- */
+w.location.hash = "#topics";
+await new Promise(r => setTimeout(r, 30));
+check("v29: debates view renders 6 items", !d.getElementById("topics-view").hidden && d.querySelectorAll("#topics-wrap .topic-item").length === 6);
+check("v29: each debate has sides + sources", d.querySelectorAll("#topics-wrap .topic-side").length === 12 && d.querySelectorAll("#topics-wrap .topic-srcs a").length >= 12);
+check("v29: counter + donate stay hidden without config", d.getElementById("visit-counter").hidden && d.getElementById("foot-support").hidden && d.getElementById("about-support").hidden);
+d.querySelector(".brand").click();
+await new Promise(r => setTimeout(r, 30));
+check("v29: brand click returns to the minimal welcome", d.body.classList.contains("welcome-active") && !d.body.classList.contains("app-entered"));
+d.querySelectorAll(".welcome-action")[0].click();
+await new Promise(r => setTimeout(r, 1200));
+check("v29: welcome can be left again after returning", d.body.classList.contains("app-entered"));
+
 /* --- v0.28: blind arena (no keys in jsdom -> need-keys path) --- */
 w.location.hash = "#arena";
 await new Promise(r => setTimeout(r, 30));
@@ -185,7 +198,7 @@ await new Promise(r => setTimeout(r, 30));
 check("v24: demo card rendered with actions", !d.getElementById("demo-card").hidden && d.querySelectorAll("#demo-card button").length === 2);
 const moreBtn = d.getElementById("nav-more");
 moreBtn.click();
-check("v24: More panel opens with 8 items", !d.getElementById("nav-more-panel").hidden && d.querySelectorAll("#nav-more-panel .more-item").length === 8);
+check("v24: More panel opens with 9 items", !d.getElementById("nav-more-panel").hidden && d.querySelectorAll("#nav-more-panel .more-item").length === 9);
 w.location.hash = "#stack";
 await new Promise(r => setTimeout(r, 30));
 check("v24: stack view opens, panel closed", !d.getElementById("stack-view").hidden && d.getElementById("nav-more-panel").hidden);

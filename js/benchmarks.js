@@ -9,7 +9,7 @@
   "use strict";
 
   var Bench = {
-    updated: "July 26, 2026",
+    updated: "July 30, 2026",
 
     disclaimer:
       "Snapshot curated from public leaderboards and comparisons. Rankings shift fast - treat this as guidance, not gospel.",

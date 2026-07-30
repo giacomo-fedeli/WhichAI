@@ -17,7 +17,7 @@ function check(name, cond, detail) {
 globalThis.window = globalThis;
 
 /* ---------- 1. Syntax of every shipped JS file ---------- */
-const jsFiles = ["js/engine.js", "js/benchmarks.js", "js/chains.js", "js/i18n.js", "js/models-db.js", "js/merge.js", "js/charts.js", "js/glossary.js", "js/finder.js", "js/modelcompare.js", "js/stack.js", "js/doctor.js", "js/changes.js", "js/radar.js", "js/sharecard.js", "js/brands.js", "js/welcome.js", "js/arena.js", "js/app.js", "sw.js"];
+const jsFiles = ["js/engine.js", "js/benchmarks.js", "js/chains.js", "js/i18n.js", "js/models-db.js", "js/merge.js", "js/charts.js", "js/glossary.js", "js/finder.js", "js/modelcompare.js", "js/stack.js", "js/doctor.js", "js/changes.js", "js/radar.js", "js/sharecard.js", "js/brands.js", "js/welcome.js", "js/arena.js", "js/config.js", "js/support.js", "js/topics.js", "js/app.js", "sw.js"];
 for (const f of jsFiles) {
   try { execSync("node --check " + f, { stdio: "pipe" }); check("syntax " + f, true); }
   catch (e) { check("syntax " + f, false, String(e.stderr || e)); }
@@ -71,7 +71,7 @@ const Brands = require("../js/brands.js");
   check("db: inkling present with measured score", DB.models.some(m => m.id === "inkling" && m.score.aa === 40.7 && !m.score.est));
   const specCount = DB.models.filter(m => m.spec).length;
   check("db: spec data on " + specCount + " models (>=15)", specCount >= 15);
-  check("db: updated field refreshed", /July 26, 2026/.test(DB.updated));
+  check("db: updated field refreshed", /July 30, 2026/.test(DB.updated));
   const brandFiles = new Set();
   Object.values(Brands.FAMILIES).concat(Object.values(Brands.VENDORS)).forEach(b => {
     if (b.icon) brandFiles.add(b.icon);
@@ -92,7 +92,7 @@ const Brands = require("../js/brands.js");
     for (const sid of r.sourceIds) if (!Bench.sources.some(s => s.id === sid)) { ok = false; msg = t + " src " + sid; }
   }
   check("bench: 8 tasks × 4 apps, sources resolve", ok, msg);
-  check("bench: updated July 26", /July 26, 2026/.test(Bench.updated));
+  check("bench: updated July 30", /July 30, 2026/.test(Bench.updated));
   check("bench: recommend falls back", Bench.recommend("nope") === Bench.taskTypes.general);
 }
 
@@ -209,7 +209,7 @@ const Brands = require("../js/brands.js");
   check("v28: Gemini 3.6 Flash + Flash-Lite present", ["gemini-3-6-flash", "gemini-3-5-flash-lite"].every(id => DB.models.some(m => m.id === id && !m.score.est)));
   check("v28: Qwen 3.8 preview clearly estimated", DB.models.some(m => m.id === "qwen-3-8-max-preview" && m.status === "preview" && m.score.est));
   check("v28: lower-table corrections applied", DB.models.find(m => m.id === "mercury-2").score.aa === 21.4 && DB.models.find(m => m.id === "trinity-large").score.aa === 18.2);
-  check("v28: db + bench dated July 26", /July 26, 2026/.test(DB.updated) && /July 26, 2026/.test(Bench.updated));
+  check("v28+: db + bench freshly dated", /July 30, 2026/.test(DB.updated) && /July 30, 2026/.test(Bench.updated));
   check("v28: gemini BYOK default bumped", readFileSync("js/app.js", "utf8").includes('DEFAULT_GEMINI_MODEL = "gemini-3.6-flash"'));
   check("v28: finder/stack paid Claude pick is Opus 5", readFileSync("js/finder.js", "utf8").includes('low: "claude-opus-5"') && readFileSync("js/stack.js", "utf8").includes('paid: "claude-opus-5"'));
   const elo = Arena._elo({}, "a", "b", 1);
@@ -218,6 +218,22 @@ const Brands = require("../js/brands.js");
   check("v28: arena elo tie pulls ratings together", elo2.a.r < 1016 && elo2.b.r > 984);
   const pair = Arena._pickTwo([{ id: "x" }, { id: "y" }, { id: "z" }]);
   check("v28: arena picks two distinct models", pair.length === 2 && pair[0].id !== pair[1].id);
+}
+
+/* ---------- 9e. v0.29: topics, support config, welcome home ---------- */
+{
+  const TopicsMod = require("../js/topics.js");
+  const Cfg = require("../js/config.js");
+  const SupportMod = require("../js/support.js");
+  check("v29: 6 debates, all sourced, both sides", TopicsMod.TOPICS.length === 6 && TopicsMod.TOPICS.every(t => t.sideA && t.sideB && t.status && t.sources.length >= 2 && t.sources.every(s => /^https:/.test(s.url))));
+  check("v29: debates carry numbers with labels", TopicsMod.TOPICS.every(t => t.numbers.length >= 2 && t.numbers.every(n => n.v && n.label)));
+  check("v29: no em dash in topics", !readFileSync("js/topics.js", "utf8").includes("\u2014"));
+  check("v29: config defaults keep counter+donate hidden", Cfg.goatCode === "" && Cfg.donateUrl === "" && typeof SupportMod.init === "function");
+  check("v29: welcome exposes show()", readFileSync("js/welcome.js", "utf8").includes("show: show"));
+  check("v29: CSP allows goatcounter only", (() => { const h = readFileSync("index.html", "utf8"); return h.includes("https://gc.zgo.at") && h.includes("https://*.goatcounter.com"); })());
+  check("v29: kimi k3 now open-weights", DB.models.some(m => m.id === "kimi-k3" && m.tags.includes("open-weights")));
+  check("v29: gemini 3.5 pro rumor is info-only + estimated", DB.models.some(m => m.id === "gemini-3-5-pro" && m.status === "rumored" && m.score.est && m.tags.includes("info-only")));
+  check("v29: support/topics ids in html", ["foot-support", "visit-counter", "welcome-visits", "about-support", "support-btn", "topics-view", "topics-wrap", "nav-topics"].every(id => readFileSync("index.html", "utf8").includes('id="' + id + '"')));
 }
 
 /* ---------- 10. HTML ↔ JS id cross-check ---------- */
@@ -254,10 +270,10 @@ const Brands = require("../js/brands.js");
   const html = readFileSync("index.html", "utf8");
   const app = readFileSync("js/app.js", "utf8");
   const sw = readFileSync("sw.js", "utf8");
-  check("version: badge v0.28", html.includes(">v0.28 · Growth<"));
-  check("version: footer v0.28", html.includes("WhichAI v0.28"));
-  check("version: APP_VERSION v0.28", app.includes('APP_VERSION = "v0.28"'));
-  check("version: SW cache v0.28", sw.includes('"whichai-v0.28.0"'));
+  check("version: badge v0.29", html.includes(">v0.29 · Growth<"));
+  check("version: footer v0.29", html.includes("WhichAI v0.29"));
+  check("version: APP_VERSION v0.29", app.includes('APP_VERSION = "v0.29"'));
+  check("version: SW cache v0.29", sw.includes('"whichai-v0.29.0"'));
   const welcomeJs = readFileSync("js/welcome.js", "utf8");
   check("v0.27: morph reaches target before opacity fade", welcomeJs.includes("offset: 0.76") && welcomeJs.includes("opacity: 0") && welcomeJs.includes("1050"));
   check("v0.27: dark wordmarks use a light treatment", /\[data-theme="dark"\] \.ai-brand-wordmark\s*\{[^}]*invert\(1\)/s.test(readFileSync("styles.css", "utf8")));

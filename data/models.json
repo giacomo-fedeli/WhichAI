@@ -2,11 +2,11 @@
  "project": "WhichAI",
  "site": "https://whichai.wiki",
  "license": "CC BY 4.0 (attribution: WhichAI, whichai.wiki)",
- "generated": "2026-07-26",
- "snapshot": "July 26, 2026",
- "scaleNote": "Artificial Analysis Intelligence Index, 2026 rebased scale (top models ≈ 55–60). Snapshot: July 24, 2026 (BenchLM mirror), retrieved July 26, 2026.",
+ "generated": "2026-07-30",
+ "snapshot": "July 30, 2026",
+ "scaleNote": "Artificial Analysis Intelligence Index, 2026 rebased scale (top models ≈ 55–60). Snapshot: July 24, 2026 (BenchLM mirror), retrieved July 26, 2026; sources re-verified July 30, 2026.",
  "specNote": "Context, price and release data come from vendor pages and public pricing mirrors (retrieved July 19, 2026). Missing values are not published or not yet verified - shown as -.",
- "count": 108,
+ "count": 109,
  "models": [
   {
    "id": "gpt-6",
@@ -974,6 +974,33 @@
     }
    },
    "review": "#1 in LMArena's coding arena at launch, deep Google Workspace integration and strong multimodal work."
+  },
+  {
+   "id": "gemini-3-5-pro",
+   "name": "Gemini 3.5 Pro",
+   "vendor": "Google",
+   "family": null,
+   "status": "rumored",
+   "access": "Not announced. Release-timing reports around the Kimi K3 launch called it imminent; nothing official from Google",
+   "tags": [
+    "rumored",
+    "info-only"
+   ],
+   "labels": [
+    "reasoning",
+    "coding"
+   ],
+   "score": {
+    "aa": 55,
+    "est": true,
+    "cat": {
+     "coding": 88,
+     "reasoning": 89,
+     "writing": 80,
+     "agents": 86
+    }
+   },
+   "review": "The widely expected Pro refresh of the Gemini line. Third-party release trackers treated it as imminent in late July; until Google speaks, everything here (including the name) is rumor and the score is a placeholder estimate."
   },
   {
    "id": "gemini-3-6-flash",
@@ -2118,10 +2145,12 @@
    "vendor": "Moonshot AI",
    "family": "kimi",
    "status": "public",
-   "access": "API $3/$15 per 1M tokens ($0.30 cached) · kimi.com chat · open weights announced for July 27 (Modified MIT)",
+   "access": "API $3/$15 per 1M tokens ($0.30 cached) · free kimi.com chat · open weights on Hugging Face (July 27, Modified MIT)",
    "tags": [
+    "free",
     "paid",
     "api",
+    "open-weights",
     "prompt-target"
    ],
    "labels": [

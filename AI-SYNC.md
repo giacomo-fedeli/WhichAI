@@ -34,6 +34,7 @@ File modificati "host-side" possono apparire troncati lato sandbox di Claude. Se
 
 | Sessione | AI | Data | Commit | Area toccata | Nota per la prossima AI |
 |---|---|---|---|---|---|
+| 30 | Claude | 2026-07-30 | (vedi git log) | topics NUOVO, config/support NUOVI, welcome.js (solo aggiunta show()), footer/about, dati K3+rumor, wiki regen | v0.29: AI Debates con fonti, contatore GoatCounter reale (config-driven, niente numeri finti), donate config-driven, brand→welcome. 194/194 verdi. Morph/brands NON toccati oltre show(). |
 | 29 | Claude | 2026-07-26 | (vedi git log) | dati modelli/benchmark/radar, js/arena.js NUOVO, community files (.github, CONTRIBUTING), wiki regen | v0.28: Opus 5 pubblico #1 (AA 60.7, snapshot 24/7), Gemini 3.6 Flash nuovo default BYOK, Blind Arena con Elo locale, 177/177 test verdi. NON toccati: welcome.js, brands.js, morph. |
 | 28 | GPT-5.6 | 2026-07-21 | 2507f34 | morph fade-out, wordmark dark mode | v0.27: dissolvenza finale del morph e wordmark SVG chiari nel tema dark; 103 test funzionali + 60 smoke test verdi, verifica visiva desktop completata. |
 | 27 | GPT-5.6 | 2026-07-20 | 879fe57 | welcome page, morph transition, branding | v0.26 completata: welcome/morph nativi, 76 asset locali, branding app+wiki; 161/161 test verdi e QA browser su 3 temi/breakpoint. Jack deve pubblicare v0.22→v0.26. |

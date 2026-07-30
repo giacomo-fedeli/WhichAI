@@ -20,7 +20,7 @@
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Ccircle cx='12' cy='12' r='10' fill='%2317181c'/%3E%3Cpath d='M15.8 8.2l-2.4 5.2-5.2 2.4 2.4-5.2z' fill='white'/%3E%3C/svg%3E" />
   <link rel="manifest" href="manifest.webmanifest" />
   <meta name="theme-color" content="#17181c" />
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-uVjMAdQkvQ3Tc+Gj0ADuYv/YlXHQ2pY4F+fpZpsZvR8='; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self' https://generativelanguage.googleapis.com https://api.groq.com https://openrouter.ai; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://gc.zgo.at 'sha256-uVjMAdQkvQ3Tc+Gj0ADuYv/YlXHQ2pY4F+fpZpsZvR8='; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: https://*.goatcounter.com; connect-src 'self' https://generativelanguage.googleapis.com https://api.groq.com https://openrouter.ai https://*.goatcounter.com; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'" />
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-title" content="WhichAI" />
@@ -41,7 +41,7 @@
           <path class="brand-needle" d="M15.5 8.5l-2.2 5-5 2.2 2.2-5z" fill="currentColor" stroke="none"></path>
         </svg>
         <span class="brand-name">WhichAI</span>
-        <span class="badge">v0.28 · Growth</span>
+        <span class="badge">v0.29 · Growth</span>
         <span class="badge badge-privacy" title="Runs entirely in your browser. No account, no server, no tracking. API keys stay on your device."><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><rect x="4" y="10" width="16" height="10" rx="2"></rect><path d="M8 10V7a4 4 0 0 1 8 0v3"></path></svg><span id="privacy-text">Private by design</span></span>
       </div>
       <nav class="site-nav" aria-label="Views">
@@ -52,6 +52,7 @@
           <button id="nav-more" class="nav-more" type="button" aria-haspopup="true" aria-expanded="false">More ▾</button>
           <div id="nav-more-panel" class="nav-more-panel" hidden>
             <a href="#radar" id="nav-radar" class="more-item"><strong>Model Radar</strong><span class="more-sub" id="nav-radar-sub">What changed: new models, prices, free tiers</span></a>
+            <a href="#topics" id="nav-topics" class="more-item"><strong>AI Debates</strong><span class="more-sub" id="nav-topics-sub">Energy, jobs, the bubble: both sides, with sources</span></a>
             <a href="#chains" id="nav-chains" class="more-item"><strong>Chains</strong><span class="more-sub" id="nav-chains-sub">Multi-step workflows, one model per step</span></a>
             <a href="#stack" id="nav-stack" class="more-item"><strong>Stack Optimizer</strong><span class="more-sub" id="nav-stack-sub">Which subscriptions to keep, what to use free</span></a>
             <a href="#doctor" id="nav-doctor" class="more-item"><strong>Prompt Doctor</strong><span class="more-sub" id="nav-doctor-sub">Score a prompt, see the optimized version</span></a>
@@ -95,6 +96,7 @@
           <span id="welcome-explore">Explore all tools</span><span class="welcome-arrow" aria-hidden="true">↗</span>
         </button>
       </nav>
+      <p id="welcome-visits" class="visit-counter" hidden></p>
     </div>
   </section>
 
@@ -547,6 +549,15 @@
       <p class="router-meta">Limits: benchmarks are partial proxies of real work; snapshots age between refreshes; category blends involve judgment. When in doubt, run your own comparison in Compare.</p>
     </div>
 
+    <div class="card about-card" id="about-support" hidden>
+      <h2 class="card-title" id="support-title">Support WhichAI</h2>
+      <p class="about-text" id="support-text">WhichAI is free, has no ads, no sponsors and no server: the only costs are the domain and the hours that go into keeping 100+ models honest and up to date. If it saved you time, a small donation keeps it independent.</p>
+      <div class="compare-actions">
+        <a id="support-btn" class="btn-primary btn-inline btn-official" href="#" target="_blank" rel="noopener">Donate ♥</a>
+      </div>
+      <p class="router-meta">Donations never influence rankings: methodology and sources stay public.</p>
+    </div>
+
     <div class="card about-card" id="about-contribute">
       <h2 class="card-title">Contribute &amp; contact</h2>
       <p class="about-text">WhichAI is open source and built in public. Suggest features, report wrong data, add models to the database, improve translations - or just say what confused you:</p>
@@ -560,6 +571,11 @@
   <!-- ============ Model Radar view ============ -->
   <main class="layout-guide view" id="radar-view" hidden>
     <div id="radar-wrap"></div>
+  </main>
+
+  <!-- ============ AI Debates view ============ -->
+  <main class="layout-guide view" id="topics-view" hidden>
+    <div id="topics-wrap"></div>
   </main>
 
   <!-- ============ Blind Arena view ============ -->
@@ -594,8 +610,10 @@
       <a href="#about-similar" id="foot-similar">Similar tools</a>
       <a href="#about-contribute" id="foot-contribute">Contribute</a>
       <a href="#glossary" id="foot-glossary">Glossary</a>
+      <a href="#" id="foot-support" class="foot-support" target="_blank" rel="noopener" hidden>Support ♥</a>
     </nav>
-    <p>WhichAI v0.28 · Growth · Runs entirely in your browser: no account, no server, your keys and data never leave your device.</p>
+    <p>WhichAI v0.29 · Growth · Runs entirely in your browser: no account, no server, your keys and data never leave your device.</p>
+    <p id="visit-counter" class="visit-counter" hidden></p>
   </footer>
 
   <noscript><p style="text-align:center;padding:24px;">WhichAI needs JavaScript to run.</p></noscript>
@@ -615,6 +633,9 @@
   <script src="js/changes.js"></script>
   <script src="js/radar.js"></script>
   <script src="js/sharecard.js"></script>
+  <script src="js/config.js"></script>
+  <script src="js/support.js"></script>
+  <script src="js/topics.js"></script>
   <script src="js/arena.js"></script>
   <script src="js/brands.js"></script>
   <script src="js/welcome.js"></script>

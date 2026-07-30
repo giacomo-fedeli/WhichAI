@@ -150,7 +150,23 @@
     if (nav) nav.setAttribute("aria-label", t("welcomeNavLabel"));
   }
 
-  root.WhichAIWelcome = { leave: leave, skip: skip, setLanguage: setLanguage };
+  function show() {
+    if (!welcome) return;
+    leaving = false;
+    entered = false;
+    Array.prototype.slice.call(document.querySelectorAll(".welcome-morph-clone")).forEach(function (n) { n.remove(); });
+    body.classList.remove("app-entered", "app-reveal", "welcome-leaving", "welcome-header-ready");
+    body.classList.add("welcome-active");
+    welcome.removeAttribute("aria-hidden");
+    if (root.location.hash) {
+      if (root.history && root.history.replaceState) root.history.replaceState(null, "", root.location.pathname + root.location.search);
+      else root.location.hash = "";
+      root.dispatchEvent(new Event("hashchange"));
+    }
+    root.scrollTo(0, 0);
+  }
+
+  root.WhichAIWelcome = { leave: leave, skip: skip, setLanguage: setLanguage, show: show };
 
   if (!welcome || root.location.hash) {
     complete(root.location.hash || "", null);

@@ -22,8 +22,8 @@
   "use strict";
 
   var DB = {
-    updated: "July 26, 2026",
-    scaleNote: "Artificial Analysis Intelligence Index, 2026 rebased scale (top models ≈ 55–60). Snapshot: July 24, 2026 (BenchLM mirror), retrieved July 26, 2026.",
+    updated: "July 30, 2026",
+    scaleNote: "Artificial Analysis Intelligence Index, 2026 rebased scale (top models ≈ 55–60). Snapshot: July 24, 2026 (BenchLM mirror), retrieved July 26, 2026; sources re-verified July 30, 2026.",
     specNote: "Context, price and release data come from vendor pages and public pricing mirrors (retrieved July 19, 2026). Missing values are not published or not yet verified - shown as -.",
     /* Official apps per prompt family, plus vendor fallbacks (checked July 2026) */
     links: {
@@ -228,6 +228,11 @@
         tags: ["paid", "api", "prompt-target"], labels: ["coding", "long-context", "vision"],
         score: { aa: 46.5, est: false, cat: { coding: 84, reasoning: 78, writing: 74, agents: 78 } },
         review: "#1 in LMArena's coding arena at launch, deep Google Workspace integration and strong multimodal work." },
+      { id: "gemini-3-5-pro", name: "Gemini 3.5 Pro", vendor: "Google", family: null, status: "rumored",
+        access: "Not announced. Release-timing reports around the Kimi K3 launch called it imminent; nothing official from Google",
+        tags: ["rumored", "info-only"], labels: ["reasoning", "coding"],
+        score: { aa: 55, est: true, cat: { coding: 88, reasoning: 89, writing: 80, agents: 86 } },
+        review: "The widely expected Pro refresh of the Gemini line. Third-party release trackers treated it as imminent in late July; until Google speaks, everything here (including the name) is rumor and the score is a placeholder estimate." },
       { id: "gemini-3-6-flash", name: "Gemini 3.6 Flash", vendor: "Google", family: "gemini", status: "public",
         access: "Free tier in AI Studio and the Gemini app (rate-limited) · API $1.50/$7.50 per 1M tokens",
         tags: ["free", "paid", "api", "prompt-target", "auto-run"], labels: ["speed", "value"],
@@ -445,8 +450,8 @@
         score: { aa: 30, est: true, cat: { coding: 68, reasoning: 52, writing: 44, agents: 58 } },
         review: "The strongest free coding route on OpenRouter right now - 1M context, tool use, zero cost within the daily free limits." },
       { id: "kimi-k3", name: "Kimi K3", vendor: "Moonshot AI", family: "kimi", status: "public",
-        access: "API $3/$15 per 1M tokens ($0.30 cached) · kimi.com chat · open weights announced for July 27 (Modified MIT)",
-        tags: ["paid", "api", "prompt-target"], labels: ["coding", "reasoning", "agents", "vision", "long-context"],
+        access: "API $3/$15 per 1M tokens ($0.30 cached) · free kimi.com chat · open weights on Hugging Face (July 27, Modified MIT)",
+        tags: ["free", "paid", "api", "open-weights", "prompt-target"], labels: ["coding", "reasoning", "agents", "vision", "long-context"],
         spec: { released: "2026-07-16", ctx: "1M", modal: "Text + vision", priceIn: 3, priceOut: 15 },
         score: { aa: 57.1, est: false, cat: { coding: 90, reasoning: 91, writing: 78, agents: 94 } },
         review: "Moonshot's July 16 flagship: 2.8T-parameter MoE with 1M context and native vision. #3 on the AA index (57.1), best published BrowseComp (91.2%) and #1 Frontend Code Arena at launch - the strongest agentic challenger to the US frontier." },

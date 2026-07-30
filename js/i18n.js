@@ -2861,6 +2861,174 @@
   S.ar.arenaReset = "امسح سجل الحلبة";
   S.ar.arenaNote = "هذا تفضيلك أنت على موجّهاتك أنت، مقاسًا بشكل أعمى. ليس ترتيبًا عالميًا للجودة؛ المجموعة تضم فقط النماذج التي تستطيع مفاتيحك تشغيلها.";
 
+
+  /* ---------------- v0.29: AI debates, support, visit counter ---------------- */
+
+  S.en.navTopics = "AI Debates";
+  S.en.navTopicsSub = "Energy, jobs, the bubble: both sides, with sources";
+  S.en.topicsTitle = "AI Debates";
+  S.en.topicsSub = "The big AI-and-society questions, summarized honestly: the numbers people cite, both sides of each argument, and where things stand. Every claim links a source.";
+  S.en.topicsNumbers = "The numbers people cite";
+  S.en.topicsCaseA = "The concern";
+  S.en.topicsCaseB = "The counter-view";
+  S.en.topicsStatus = "Where it stands";
+  S.en.topicsDisclaimer = "Curated summaries of public reporting and research, refreshed with the data updates. Not investment, career or legal advice.";
+  S.en.footSupport = "Support ♥";
+  S.en.supportTitle = "Support WhichAI";
+  S.en.supportText = "WhichAI is free, has no ads, no sponsors and no server: the only costs are the domain and the hours that keep 100+ models honest and up to date. If it saved you time, a small donation keeps it independent.";
+  S.en.supportBtn = "Donate ♥";
+  S.en.visitsLabel = "visits";
+
+  S.it.navTopics = "Dibattiti AI";
+  S.it.navTopicsSub = "Energia, lavoro, bolla: le due campane, con fonti";
+  S.it.topicsTitle = "Dibattiti AI";
+  S.it.topicsSub = "Le grandi domande su AI e società, riassunte con onestà: i numeri che si citano, le due campane di ogni argomento e a che punto siamo. Ogni affermazione ha la fonte.";
+  S.it.topicsNumbers = "I numeri che si citano";
+  S.it.topicsCaseA = "La preoccupazione";
+  S.it.topicsCaseB = "La contro-tesi";
+  S.it.topicsStatus = "A che punto siamo";
+  S.it.topicsDisclaimer = "Sintesi curate di stampa e ricerca pubblica, aggiornate coi refresh dei dati. Non sono consigli finanziari, di carriera o legali.";
+  S.it.footSupport = "Sostienici ♥";
+  S.it.supportTitle = "Sostieni WhichAI";
+  S.it.supportText = "WhichAI è gratuito, senza pubblicità, sponsor né server: gli unici costi sono il dominio e le ore per tenere onesti e aggiornati 100+ modelli. Se ti ha fatto risparmiare tempo, una piccola donazione lo mantiene indipendente.";
+  S.it.supportBtn = "Dona ♥";
+  S.it.visitsLabel = "visite";
+
+  S.fr.navTopics = "Débats IA";
+  S.fr.navTopicsSub = "Énergie, emploi, bulle : les deux camps, avec sources";
+  S.fr.topicsTitle = "Débats IA";
+  S.fr.topicsSub = "Les grandes questions IA et société, résumées honnêtement : les chiffres cités, les deux camps de chaque débat et où en sont les choses. Chaque affirmation cite sa source.";
+  S.fr.topicsNumbers = "Les chiffres cités";
+  S.fr.topicsCaseA = "L'inquiétude";
+  S.fr.topicsCaseB = "Le contre-argument";
+  S.fr.topicsStatus = "Où on en est";
+  S.fr.topicsDisclaimer = "Synthèses de presse et de recherche publiques, mises à jour avec les données. Ni conseil financier, ni de carrière, ni juridique.";
+  S.fr.footSupport = "Soutenir ♥";
+  S.fr.supportTitle = "Soutenir WhichAI";
+  S.fr.supportText = "WhichAI est gratuit, sans pub, sans sponsor ni serveur : les seuls coûts sont le domaine et les heures passées à garder 100+ modèles honnêtes et à jour. Un petit don le garde indépendant.";
+  S.fr.supportBtn = "Faire un don ♥";
+  S.fr.visitsLabel = "visites";
+
+  S.es.navTopics = "Debates de IA";
+  S.es.navTopicsSub = "Energía, empleo, burbuja: ambos lados, con fuentes";
+  S.es.topicsTitle = "Debates de IA";
+  S.es.topicsSub = "Las grandes preguntas sobre IA y sociedad, resumidas con honestidad: las cifras que se citan, ambos lados de cada debate y dónde estamos. Cada afirmación enlaza su fuente.";
+  S.es.topicsNumbers = "Las cifras que se citan";
+  S.es.topicsCaseA = "La preocupación";
+  S.es.topicsCaseB = "El contraargumento";
+  S.es.topicsStatus = "Dónde estamos";
+  S.es.topicsDisclaimer = "Resúmenes curados de prensa e investigación públicas, actualizados con los datos. No es consejo financiero, laboral ni legal.";
+  S.es.footSupport = "Apóyanos ♥";
+  S.es.supportTitle = "Apoya WhichAI";
+  S.es.supportText = "WhichAI es gratis, sin anuncios, sin patrocinadores y sin servidor: los únicos costes son el dominio y las horas para mantener honestos y al día 100+ modelos. Una pequeña donación lo mantiene independiente.";
+  S.es.supportBtn = "Donar ♥";
+  S.es.visitsLabel = "visitas";
+
+  S.de.navTopics = "KI-Debatten";
+  S.de.navTopicsSub = "Energie, Jobs, Blase: beide Seiten, mit Quellen";
+  S.de.topicsTitle = "KI-Debatten";
+  S.de.topicsSub = "Die großen Fragen zu KI und Gesellschaft, ehrlich zusammengefasst: die zitierten Zahlen, beide Seiten jedes Arguments und der Stand der Dinge. Jede Aussage verlinkt ihre Quelle.";
+  S.de.topicsNumbers = "Die zitierten Zahlen";
+  S.de.topicsCaseA = "Die Sorge";
+  S.de.topicsCaseB = "Die Gegenposition";
+  S.de.topicsStatus = "Stand der Dinge";
+  S.de.topicsDisclaimer = "Kuratierte Zusammenfassungen öffentlicher Berichte und Forschung, mit den Daten-Refreshes aktualisiert. Keine Finanz-, Karriere- oder Rechtsberatung.";
+  S.de.footSupport = "Unterstützen ♥";
+  S.de.supportTitle = "WhichAI unterstützen";
+  S.de.supportText = "WhichAI ist kostenlos, ohne Werbung, Sponsoren oder Server: die einzigen Kosten sind die Domain und die Stunden, die 100+ Modelle ehrlich und aktuell halten. Eine kleine Spende hält es unabhängig.";
+  S.de.supportBtn = "Spenden ♥";
+  S.de.visitsLabel = "Besuche";
+
+  S.pt.navTopics = "Debates de IA";
+  S.pt.navTopicsSub = "Energia, empregos, bolha: os dois lados, com fontes";
+  S.pt.topicsTitle = "Debates de IA";
+  S.pt.topicsSub = "As grandes questões de IA e sociedade, resumidas com honestidade: os números citados, os dois lados de cada debate e onde as coisas estão. Cada afirmação tem fonte.";
+  S.pt.topicsNumbers = "Os números citados";
+  S.pt.topicsCaseA = "A preocupação";
+  S.pt.topicsCaseB = "O contraponto";
+  S.pt.topicsStatus = "Onde estamos";
+  S.pt.topicsDisclaimer = "Resumos curados de imprensa e pesquisa públicas, atualizados com os dados. Não é conselho financeiro, de carreira ou jurídico.";
+  S.pt.footSupport = "Apoie ♥";
+  S.pt.supportTitle = "Apoie o WhichAI";
+  S.pt.supportText = "O WhichAI é grátis, sem anúncios, sem patrocinadores e sem servidor: os únicos custos são o domínio e as horas para manter 100+ modelos honestos e atualizados. Uma pequena doação o mantém independente.";
+  S.pt.supportBtn = "Doar ♥";
+  S.pt.visitsLabel = "visitas";
+
+  S.zh.navTopics = "AI 议题";
+  S.zh.navTopicsSub = "能源、就业、泡沫：正反两面，附来源";
+  S.zh.topicsTitle = "AI 议题";
+  S.zh.topicsSub = "关于 AI 与社会的重大问题，诚实总结：人们引用的数字、每个议题的正反两面、以及当前进展。每个论断都附来源。";
+  S.zh.topicsNumbers = "人们引用的数字";
+  S.zh.topicsCaseA = "担忧";
+  S.zh.topicsCaseB = "反方观点";
+  S.zh.topicsStatus = "当前进展";
+  S.zh.topicsDisclaimer = "基于公开报道与研究的整理摘要，随数据更新刷新。不构成投资、职业或法律建议。";
+  S.zh.footSupport = "支持我们 ♥";
+  S.zh.supportTitle = "支持 WhichAI";
+  S.zh.supportText = "WhichAI 免费、无广告、无赞助、无服务器：唯一的成本是域名和让 100+ 模型保持诚实与最新的时间。一点小额捐助能让它保持独立。";
+  S.zh.supportBtn = "捐助 ♥";
+  S.zh.visitsLabel = "次访问";
+
+  S.hi.navTopics = "AI बहसें";
+  S.hi.navTopicsSub = "ऊर्जा, नौकरियाँ, बुलबुला: दोनों पक्ष, स्रोतों सहित";
+  S.hi.topicsTitle = "AI बहसें";
+  S.hi.topicsSub = "AI और समाज के बड़े सवाल, ईमानदारी से संक्षेप में: लोग जो आँकड़े देते हैं, हर बहस के दोनों पक्ष, और अभी स्थिति क्या है। हर दावे का स्रोत जुड़ा है।";
+  S.hi.topicsNumbers = "जो आँकड़े दिए जाते हैं";
+  S.hi.topicsCaseA = "चिंता";
+  S.hi.topicsCaseB = "प्रति-तर्क";
+  S.hi.topicsStatus = "स्थिति";
+  S.hi.topicsDisclaimer = "सार्वजनिक रिपोर्टिंग और शोध के संकलित सारांश, डेटा अपडेट के साथ ताज़ा। यह वित्तीय, करियर या कानूनी सलाह नहीं है।";
+  S.hi.footSupport = "सहयोग ♥";
+  S.hi.supportTitle = "WhichAI का सहयोग करें";
+  S.hi.supportText = "WhichAI मुफ़्त है: कोई विज्ञापन, प्रायोजक या सर्वर नहीं। लागत केवल डोमेन और 100+ मॉडलों को ईमानदार व ताज़ा रखने के घंटे हैं। छोटा दान इसे स्वतंत्र रखता है।";
+  S.hi.supportBtn = "दान करें ♥";
+  S.hi.visitsLabel = "विज़िट";
+
+  S.ru.navTopics = "Дебаты об ИИ";
+  S.ru.navTopicsSub = "Энергия, работа, пузырь: обе стороны, с источниками";
+  S.ru.topicsTitle = "Дебаты об ИИ";
+  S.ru.topicsSub = "Большие вопросы об ИИ и обществе, честно и кратко: цифры, которые приводят, обе стороны каждого спора и текущее положение. Каждое утверждение со ссылкой.";
+  S.ru.topicsNumbers = "Цифры, которые приводят";
+  S.ru.topicsCaseA = "Опасение";
+  S.ru.topicsCaseB = "Контраргумент";
+  S.ru.topicsStatus = "Положение дел";
+  S.ru.topicsDisclaimer = "Кураторские сводки публичных материалов и исследований, обновляются вместе с данными. Не финансовый, карьерный или юридический совет.";
+  S.ru.footSupport = "Поддержать ♥";
+  S.ru.supportTitle = "Поддержать WhichAI";
+  S.ru.supportText = "WhichAI бесплатен: без рекламы, спонсоров и сервера. Расходы только на домен и часы, которые держат 100+ моделей честными и актуальными. Небольшое пожертвование сохраняет независимость.";
+  S.ru.supportBtn = "Пожертвовать ♥";
+  S.ru.visitsLabel = "визитов";
+
+  S.ja.navTopics = "AI論争";
+  S.ja.navTopicsSub = "エネルギー、雇用、バブル：両論併記、出典つき";
+  S.ja.topicsTitle = "AI論争";
+  S.ja.topicsSub = "AIと社会をめぐる大きな問いを誠実に要約：よく引用される数字、各論点の両側の主張、現状。すべての主張に出典があります。";
+  S.ja.topicsNumbers = "よく引用される数字";
+  S.ja.topicsCaseA = "懸念";
+  S.ja.topicsCaseB = "反論";
+  S.ja.topicsStatus = "現状";
+  S.ja.topicsDisclaimer = "公開報道と研究のキュレーション要約で、データ更新とともに刷新。投資・キャリア・法律の助言ではありません。";
+  S.ja.footSupport = "支援する ♥";
+  S.ja.supportTitle = "WhichAIを支援";
+  S.ja.supportText = "WhichAIは無料で、広告もスポンサーもサーバーもありません。コストはドメイン代と、100以上のモデルを誠実に最新に保つ時間だけ。小さな寄付が独立を支えます。";
+  S.ja.supportBtn = "寄付する ♥";
+  S.ja.visitsLabel = "回の訪問";
+
+  S.ar.navTopics = "نقاشات الذكاء الاصطناعي";
+  S.ar.navTopicsSub = "الطاقة، الوظائف، الفقاعة: الجانبان، مع المصادر";
+  S.ar.topicsTitle = "نقاشات الذكاء الاصطناعي";
+  S.ar.topicsSub = "الأسئلة الكبرى حول الذكاء الاصطناعي والمجتمع، ملخّصة بصدق: الأرقام المتداولة، وجانبا كل نقاش، وأين وصلت الأمور. كل ادعاء بمصدره.";
+  S.ar.topicsNumbers = "الأرقام المتداولة";
+  S.ar.topicsCaseA = "القلق";
+  S.ar.topicsCaseB = "الرأي المقابل";
+  S.ar.topicsStatus = "أين وصلنا";
+  S.ar.topicsDisclaimer = "ملخصات منسّقة من تقارير وأبحاث عامة، تُحدَّث مع تحديثات البيانات. ليست نصيحة مالية أو مهنية أو قانونية.";
+  S.ar.footSupport = "ادعمنا ♥";
+  S.ar.supportTitle = "ادعم WhichAI";
+  S.ar.supportText = "WhichAI مجاني، بلا إعلانات ولا رعاة ولا خادم: التكلفة الوحيدة هي النطاق والساعات التي تُبقي أكثر من 100 نموذج صادقة ومحدثة. تبرع صغير يبقيه مستقلًا.";
+  S.ar.supportBtn = "تبرّع ♥";
+  S.ar.visitsLabel = "زيارة";
+
   var I18n = {
     LANGS: LANGS,
     STRINGS: S,

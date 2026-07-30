@@ -112,7 +112,7 @@
   var THEME_KEY = "pc_theme";
   var DEFAULT_GEMINI_MODEL = "gemini-3.6-flash";
   var DEFAULT_GROQ_MODEL = "llama-3.3-70b-versatile";
-  var APP_VERSION = "v0.28";
+  var APP_VERSION = "v0.29";
   var BRAND = "WhichAI";
   var TASK_ICONS = {
     writing: '<svg class="guide-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M4 20l1-4L16.5 4.5a2.1 2.1 0 013 3L8 19l-4 1z"/><path d="M13.5 7.5l3 3"/></svg>',
@@ -179,6 +179,13 @@
     setText("#nav-radar-sub", "navRadarSub");
     setText("#nav-arena strong", "navArena");
     setText("#nav-arena-sub", "navArenaSub");
+    setText("#nav-topics strong", "navTopics");
+    setText("#nav-topics-sub", "navTopicsSub");
+    setText("#foot-support", "footSupport");
+    setText("#support-title", "supportTitle");
+    setText("#support-text", "supportText");
+    var supBtn = document.getElementById("support-btn");
+    if (supBtn) supBtn.textContent = T("supportBtn");
     if (window.WhichAIWelcome) window.WhichAIWelcome.setLanguage(T);
     setText("#nav-chains-sub", "navChainsSub");
     setText("#nav-stack-sub", "navStackSub");
@@ -319,6 +326,8 @@
     if (window.WhichAIDoctor) window.WhichAIDoctor.rerender();
     if (window.WhichAIRadar) window.WhichAIRadar.rerender();
     if (window.WhichAIArena) window.WhichAIArena.rerender();
+    if (window.WhichAITopics) window.WhichAITopics.rerender();
+    if (window.WhichAISupport) window.WhichAISupport.relabel();
     renderDemo();
     var glv = document.getElementById("glossary-view");
     if (glv && !glv.hidden) initGlossary();
@@ -883,6 +892,8 @@
     if (radarView) radarView.hidden = name !== "radar";
     var arenaView = document.getElementById("arena-view");
     if (arenaView) arenaView.hidden = name !== "arena";
+    var topicsView = document.getElementById("topics-view");
+    if (topicsView) topicsView.hidden = name !== "topics";
     if ($mergeView) $mergeView.hidden = name !== "merge";
     $navGenerator.classList.toggle("active", name === "generator");
     $navGuide.classList.toggle("active", name === "guide");
@@ -900,13 +911,18 @@
     if (navRadar) navRadar.classList.toggle("active", name === "radar");
     var navArena = document.getElementById("nav-arena");
     if (navArena) navArena.classList.toggle("active", name === "arena");
+    var navTopics = document.getElementById("nav-topics");
+    if (navTopics) navTopics.classList.toggle("active", name === "topics");
     var moreBtn = document.getElementById("nav-more");
-    if (moreBtn) moreBtn.classList.toggle("active", ["chains", "stack", "doctor", "glossary", "about", "settings", "radar", "arena"].indexOf(name) !== -1);
+    if (moreBtn) moreBtn.classList.toggle("active", ["chains", "stack", "doctor", "glossary", "about", "settings", "radar", "arena", "topics"].indexOf(name) !== -1);
     closeMorePanel();
     if (name === "guide" && !guideBuilt) buildGuide();
     if (name === "compare") renderCompare();
     if (name === "chains") renderChainHistory();
     if (name === "glossary") initGlossary();
+    if (name === "topics" && window.WhichAITopics) {
+      window.WhichAITopics.init(document.getElementById("topics-wrap"), { T: T });
+    }
     if (name === "arena" && window.WhichAIArena) {
       window.WhichAIArena.init(document.getElementById("arena-wrap"), {
         T: T,
@@ -971,8 +987,9 @@
     var isDoctor = h.indexOf("#doctor") === 0;
     var isRadar = h.indexOf("#radar") === 0;
     var isArena = h.indexOf("#arena") === 0;
+    var isTopics = h.indexOf("#topics") === 0;
     if (isModel) { openModelById(decodeURIComponent(h.slice(7))); return; }
-    setView(h === "#guide" ? "guide" : isCompare ? "compare" : isChains ? "chains" : isMerge ? "merge" : isAbout ? "about" : isGlossary ? "glossary" : isStack ? "stack" : isDoctor ? "doctor" : isRadar ? "radar" : isArena ? "arena" : h === "#settings" ? "settings" : "generator");
+    setView(h === "#guide" ? "guide" : isCompare ? "compare" : isChains ? "chains" : isMerge ? "merge" : isAbout ? "about" : isGlossary ? "glossary" : isStack ? "stack" : isDoctor ? "doctor" : isRadar ? "radar" : isArena ? "arena" : isTopics ? "topics" : h === "#settings" ? "settings" : "generator");
     if (isChains) importChainFromHash();
     if (isCompare) {
       // Model comparison is the default; outputs win only when explicitly asked
@@ -3043,6 +3060,23 @@
   initNavAutoScroll();
   initMoreMenu();
   updateRadarDot();
+
+  /* v0.29: brand click returns to the minimal welcome */
+  (function initBrandHome() {
+    var brand = document.querySelector(".brand");
+    if (!brand || !window.WhichAIWelcome || !window.WhichAIWelcome.show) return;
+    brand.classList.add("brand-clickable");
+    brand.setAttribute("role", "button");
+    brand.setAttribute("tabindex", "0");
+    brand.setAttribute("aria-label", "WhichAI home");
+    function goHome() { window.WhichAIWelcome.show(); }
+    brand.addEventListener("click", goHome);
+    brand.addEventListener("keydown", function (e) {
+      if (e.key === "Enter" || e.key === " ") { e.preventDefault(); goHome(); }
+    });
+  })();
+
+  if (window.WhichAISupport) window.WhichAISupport.init({ T: T });
 
   var openDoctorBtn = document.getElementById("open-doctor");
   if (openDoctorBtn) openDoctorBtn.addEventListener("click", function () {

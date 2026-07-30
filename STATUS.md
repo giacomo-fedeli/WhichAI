@@ -1,10 +1,21 @@
 # WhichAI (ex PromptCompass) — STATUS
 
-Ultimo aggiornamento: 2026-07-26 (sessione 29 - Claude)
-Versione app: v0.28.0 (in cartella; live ancora v0.21: il prossimo deploy porta v0.22→v0.28 insieme)
+Ultimo aggiornamento: 2026-07-30 (sessione 30 - Claude)
+Versione app: v0.29.0 (in cartella; live ancora v0.21: il primo push porta v0.22→v0.29 insieme)
 Sito live: https://whichai.wiki · https://promptcompass.vercel.app resta come alias
 
 ## Fase corrente: Growth - fase 1 del piano brainstorming (SEO statico, sicurezza, retention di base)
+
+## Fatto (sessione 30, 2026-07-30 - Claude)
+
+- **AI DEBATES (richiesta Jack)**: nuova sezione `#topics` (menu More) + 7 pagine wiki statiche `/topics/`: i 6 grandi dibattiti AI-società (energia/data center, lavoro, bolla, copyright, regolamentazione, open vs closed) riassunti con onestà: numeri citati, preoccupazione E contro-tesi, "a che punto siamo", 2-4 fonti linkate ciascuno (IEA, Stanford HAI, WEF, Goldman, US Copyright Office, Commissione UE...). Contenuto EN, chrome tradotto ×11, disclaimer esplicito. Predisposto per diventare interattivo in futuro.
+- **CONTATORE VISITE REALE (richiesta Jack, con paletto)**: integrazione GoatCounter (gratuito, open source, zero cookie) via `js/config.js` + `js/support.js`: quando Jack imposta il site code, il sito conta le visite vere e mostra il TOTALE PUBBLICO REALE nel footer e nella welcome (pallino "live" pulsante). NIENTE numero finto di partenza (384): in conflitto diretto con l'asset "honest data"/methodology del sito; il contatore resta nascosto finché non esiste un valore vero. Spiegato a Jack nel report. CSP estesa solo a gc.zgo.at e *.goatcounter.com.
+- **DONAZIONI (richiesta Jack)**: link "Support ♥" nel footer (caldo ma discreto) + card in About con pitch onesto e nota "le donazioni non influenzano i ranking". Nascosti finché `donateUrl` è vuoto in config. NIENTE IBAN personale pubblico (rischio frodi SDD + privacy): consigliati Ko-fi (0% fee su PayPal) o PayPal.Me; guida nel report.
+- **LOGO → WELCOME (richiesta Jack)**: click/tastiera sul brand nell'header riporta alla welcome minimale. Implementato AGGIUNGENDO `show()` all'API pubblica di welcome.js (modulo di GPT-5.6): modifica minima e coordinata, morph intatto; round-trip testato in smoke.
+- **Refresh dati 30/7**: pesi Kimi K3 CONFERMATI live su Hugging Face (27/7, Modified MIT) → tag open-weights+free, voce radar da promessa a fatto (fonte kimi.com/blog); **Gemini 3.5 Pro aggiunto come RUMOR dichiarato** (info-only, stima) dai report di timing attorno al lancio K3; DB e router riverificati (109 modelli); wiki rigenerata: 169 pagine, sitemap 170 URL.
+- **Versioni**: v0.29 ovunque (badge, footer, APP_VERSION, SW cache whichai-v0.29.0 con config/support/topics nel precache).
+- **TEST**: 127 statici + 67 smoke = **194/194 PASSATI**.
+- [ ] **Jack (guida completa nel report della sessione)**: (1) `git push origin main` da PowerShell (primo push: `gh auth login`); (2) crea account GoatCounter e metti il code in js/config.js; (3) crea pagina Ko-fi/PayPal.Me e metti l'URL in js/config.js; (4) prima GitHub Release (docs/RELEASE-NOTES-v0.28.md, usa tag v0.29.0); (5) Search Console: sitemap 170 URL; (6) marketing settimana 1 (docs/MARKETING.md).
 
 ## Fatto (sessione 29, 2026-07-26 - Claude)
 

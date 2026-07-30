@@ -11,6 +11,7 @@ globalThis.window = globalThis;
 const DB = require("../js/models-db.js");
 const Bench = require("../js/benchmarks.js");
 const Glossary = require("../js/glossary.js");
+const Topics = require("../js/topics.js");
 const Engine = require("../js/engine.js");
 const Brands = require("../js/brands.js");
 
@@ -306,6 +307,47 @@ for (const pr of COMPARE_PAIRS) {
     </ul></div>`;
   writeFileSync("compare/index.html", shell({ path: "/compare/", title: "AI model comparisons: head-to-head with real data (2026) | WhichAI", desc: "Claude vs GPT, Kimi vs GLM and more: honest head-to-head comparisons with benchmarks, prices and context windows.", body, crumb: `<a href="/">WhichAI</a> / Compare` }));
   pages.push("/compare/");
+}
+
+/* ---------- AI debates pages ---------- */
+mkdirSync("topics", { recursive: true });
+for (const t of Topics.TOPICS) {
+  const p = `/topics/${t.id}.html`;
+  const body = `    <div class="guide-head">
+      <h1>${esc(t.title)}</h1>
+      <p>${esc(t.question)} · updated ${esc(Topics.UPDATED)}</p>
+    </div>
+    <div class="card about-card">
+      <p class="about-text">${esc(t.summary)}</p>
+      <div class="topic-nums" style="margin-top:10px">
+        ${t.numbers.map(n => `<div class="topic-num"><strong>${esc(n.v)}</strong><span>${esc(n.label)}</span></div>`).join("\n        ")}
+      </div>
+    </div>
+    <div class="card about-card">
+      <h2 class="card-title">The concern</h2>
+      <p class="about-text">${esc(t.sideA)}</p>
+      <h2 class="card-title">The counter-view</h2>
+      <p class="about-text">${esc(t.sideB)}</p>
+      <p class="topic-status">${esc(t.status)}</p>
+      <p class="router-meta">Sources: ${t.sources.map(x => `<a href="${esc(x.url)}" rel="noopener">${esc(x.label)}</a>`).join(" · ")}</p>
+      <div class="compare-actions">
+        <a class="btn-copy" href="/#topics">All AI debates</a>
+        <a class="btn-copy" href="/#finder">Find the right AI for you</a>
+      </div>
+    </div>`;
+  writeFileSync("topics/" + t.id + ".html", shell({ path: p, title: `${t.title}: the debate, summarized (2026) | WhichAI`, desc: t.question + " " + t.summary.slice(0, 120), body, crumb: `<a href="/">WhichAI</a> / <a href="/topics/">AI Debates</a> / ${esc(t.title)}` }));
+  pages.push(p);
+}
+{
+  const body = `    <div class="guide-head">
+      <h1>AI Debates</h1>
+      <p>The big AI-and-society questions, summarized honestly with sources. Updated ${esc(Topics.UPDATED)}.</p>
+    </div>
+    <div class="card about-card"><ul class="catalog-list">
+      ${Topics.TOPICS.map(t => `<li><span class="router-app"><a href="/topics/${t.id}.html">${esc(t.title)}</a></span><span class="router-free">${esc(t.question)}</span></li>`).join("\n      ")}
+    </ul></div>`;
+  writeFileSync("topics/index.html", shell({ path: "/topics/", title: "AI Debates: energy, jobs, the bubble and more, with sources | WhichAI", desc: "Honest two-sided summaries of the biggest AI debates: environment, jobs, the bubble, copyright, regulation, open weights.", body, crumb: `<a href="/">WhichAI</a> / AI Debates` }));
+  pages.push("/topics/");
 }
 
 /* ---------- open dataset ---------- */
