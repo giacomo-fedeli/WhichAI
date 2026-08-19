@@ -112,7 +112,7 @@
   var THEME_KEY = "pc_theme";
   var DEFAULT_GEMINI_MODEL = "gemini-3.6-flash";
   var DEFAULT_GROQ_MODEL = "llama-3.3-70b-versatile";
-  var APP_VERSION = "v0.29";
+  var APP_VERSION = "v0.30";
   var BRAND = "WhichAI";
   var TASK_ICONS = {
     writing: '<svg class="guide-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M4 20l1-4L16.5 4.5a2.1 2.1 0 013 3L8 19l-4 1z"/><path d="M13.5 7.5l3 3"/></svg>',
@@ -337,6 +337,8 @@
     setText("#keymode-local-lbl", "keymodeLocal");
     setText("#keymode-hint", "keymodeHint");
     setText("#keys-clear", "keysClear");
+    setText("#keymode-warn", "keymodeWarn");
+    setText("#key-risk-title", "keyRiskTitle");
     setText("#data-title", "dataTitle");
     setText("#data-hint", "dataHint");
     setText("#data-export", "dataExport");
@@ -478,6 +480,9 @@
     var rl = document.getElementById("keymode-local");
     if (!rs || !rl) return;
     (keyMode() === "local" ? rl : rs).checked = true;
+    var warn = document.getElementById("keymode-warn");
+    function paintWarn() { if (warn) warn.hidden = keyMode() !== "local"; }
+    paintWarn();
     function setMode(mode) {
       try {
         localStorage.setItem(KEYMODE_KEY, mode);
@@ -486,9 +491,11 @@
         dst.setItem(SETTINGS_KEY, JSON.stringify(settings));
         other.removeItem(SETTINGS_KEY);
       } catch (e) { /* ignore */ }
+      paintWarn();
     }
     rs.addEventListener("change", function () { if (rs.checked) setMode("session"); });
     rl.addEventListener("change", function () { if (rl.checked) setMode("local"); });
+    initKeyReveal();
     var clearBtn = document.getElementById("keys-clear");
     var clearSt = document.getElementById("keys-clear-status");
     if (clearBtn) clearBtn.addEventListener("click", function () {
@@ -503,6 +510,25 @@
         dst.setItem(SETTINGS_KEY, JSON.stringify(settings));
       } catch (e) { /* ignore */ }
       if (clearSt) { setRunStatus(clearSt, T("keysCleared"), false); setTimeout(function () { clearSt.hidden = true; }, 2400); }
+    });
+  }
+
+  /* ---------- v0.30: show/hide a pasted key without retyping it ---------- */
+
+  function initKeyReveal() {
+    var btns = document.querySelectorAll(".key-reveal");
+    Array.prototype.forEach.call(btns, function (btn) {
+      if (btn.dataset.wired) return;
+      btn.dataset.wired = "1";
+      btn.addEventListener("click", function () {
+        var input = document.getElementById(btn.getAttribute("data-key-target"));
+        if (!input) return;
+        var show = input.type === "password";
+        input.type = show ? "text" : "password";
+        btn.setAttribute("aria-pressed", show ? "true" : "false");
+        btn.textContent = show ? T("keyHide") : T("keyShow");
+      });
+      btn.textContent = T("keyShow");
     });
   }
 
@@ -1622,6 +1648,7 @@
     guideBuilt = true;
     $guideGrid.innerHTML = "";
     if ($guideUpdated) $guideUpdated.textContent = "Benchmark snapshot: " + Bench.updated + ". " + Bench.disclaimer;
+    if (window.WhichAIApi) window.WhichAIApi.renderStatus(document.getElementById("api-status"));
 
     Engine.TASK_ORDER.forEach(function (key) {
       var rec = Bench.taskTypes[key];
@@ -1706,8 +1733,10 @@
       card.appendChild(blurb);
       var ul = document.createElement("ul");
       ul.className = "catalog-list";
-      cat.models.forEach(function (m) {
+      var VISIBLE = 5;
+      cat.models.forEach(function (m, i) {
         var li = document.createElement("li");
+        if (i >= VISIBLE) li.className = "catalog-extra";
         var name = document.createElement("span");
         name.className = "router-app";
         setBrandMark(name, m.vendor, m.name, { small: true });
@@ -1724,6 +1753,24 @@
         ul.appendChild(li);
       });
       card.appendChild(ul);
+      /* Categories hold very different numbers of models. Folding the tail
+         keeps the three columns close in height, which is what made the
+         previous layout hard to scan. */
+      if (cat.models.length > VISIBLE) {
+        var hidden = cat.models.length - VISIBLE;
+        var more = document.createElement("button");
+        more.type = "button";
+        more.className = "btn-link catalog-more";
+        more.setAttribute("aria-expanded", "false");
+        more.textContent = T("catalogShowAll") + " (" + cat.models.length + ")";
+        more.addEventListener("click", function () {
+          var open = card.classList.toggle("catalog-open");
+          more.setAttribute("aria-expanded", open ? "true" : "false");
+          more.textContent = open ? T("catalogShowLess") : T("catalogShowAll") + " (" + cat.models.length + ")";
+        });
+        more.title = hidden + " more in this category";
+        card.appendChild(more);
+      }
       grid.appendChild(card);
     });
   }

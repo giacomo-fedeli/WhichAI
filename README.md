@@ -3,17 +3,21 @@
 
 Turn a plain-language goal into prompts optimized for each AI model - and know which model to use for the job.
 
-**Live:** https://whichai.wiki · **Status:** Growth · v0.27.0 · zero-cost architecture (free tiers only) · responsive, installable (PWA) and offline-capable
+**Live:** https://whichai.wiki · **Status:** Growth · v0.30.0 · zero-cost architecture (free tiers only) · static frontend + read-only serverless API · responsive, installable (PWA) and offline-capable
 
 **Two ways in.** Describe a goal and get optimized prompts - or take the **guided finder**: a few quick questions (task, budget, must-haves) and WhichAI recommends the right AI with reasons, honest limitations and pricing. No prompt needed.
 
 **Thirteen prompt targets, grouped.** AI assistants (Claude, ChatGPT, Gemini, Perplexity), ecosystem assistants (Grok, Copilot, Meta AI) and open models (Llama, GLM, Kimi, Nemotron, DeepSeek, Qwen), each with its own prompt style and "why it works" notes.
 
-**Private by design.** No account, no server, no tracking: everything runs client-side, and API keys never leave the browser.
+**Private by design.** No account, no tracking: the interface runs client-side and your goals, prompts and API keys never leave the browser. The `/api` endpoints are read-only, serve the public model catalog and accept no request body.
+
+**A real API, and an open dataset.** The catalog is not locked inside the page. Five read-only serverless endpoints serve it with filters, pagination, edge caching and CORS: `/api/health`, `/api/models`, `/api/benchmarks`, `/api/recommend` (send a plain-language goal, get the detected task, the recommended AI and a free alternative) and `/api/stats`. No key, no account, no request body, nothing stored. Documented in [docs/API.md](docs/API.md); dataset under CC BY 4.0.
+
+**The data maintains itself, up to the point where judgement starts.** A scheduled workflow queries public sources every week: it verifies that every free model route the app ships still exists, flags price and context drift, lists models released since the last snapshot, regenerates the static wiki and sitemap, and runs the full suite. Anything that needs editorial judgement - intelligence scores above all - opens a pull request with the evidence instead of being rewritten silently. Continuous integration runs 165 static checks, 82 DOM smoke checks and 42 API checks on every push.
 
 **Auto-run with your own free keys (BYOK).** Compare and Chains can execute prompts directly from the browser with free keys: Google AI Studio (Gemini), Groq (Llama) and OpenRouter (Nemotron 3 Ultra and Qwen3 Coder on genuinely free ":free" routes - ~20 requests/min, 200/day). Keys never leave the browser.
 
-**Searchable model database with real specs.** 105 models from 34 vendors - public, private (Claude Mythos 5), preview, legacy and clearly-flagged rumored entries. Search matches partial names, vendors, tags and strengths; filter chips narrow by status and strength. Every model gets an overall score (Artificial Analysis index, July 16, 2026 snapshot, where published - clearly-marked estimates elsewhere), four 0–100 category ratings, and - where sourced - release date, context window, modalities, API price and speed. A **Market at a glance** section adds two minimal SVG charts: top measured scores and price-vs-performance (only models with published price *and* measured score are plotted).
+**Searchable model database with real specs.** 109 models from 34 vendors - public, private (Claude Mythos 5), preview, legacy and clearly-flagged rumored entries. Search matches partial names, vendors, tags and strengths; filter chips narrow by status and strength. Every model gets an overall score (Artificial Analysis index, July 16, 2026 snapshot, where published - clearly-marked estimates elsewhere), four 0–100 category ratings, and - where sourced - release date, context window, modalities, API price and speed. A **Market at a glance** section adds two minimal SVG charts: top measured scores and price-vs-performance (only models with published price *and* measured score are plotted).
 
 **Compare, two modes.** *Output comparison*: run the same optimized prompt in each AI app (auto-run where you have a key), paste answers, score them 1–5, save versions, export Markdown, merge the best parts in the Merge studio. *Model comparison*: pick 2–3 models and compare them on paper - scores, category profiles, context, price, strengths - with unavailable values shown honestly as "n/a" and estimates marked "~".
 

@@ -24,7 +24,7 @@
   "use strict";
 
   var Config = {
-    goatCode: "",   // e.g. "whichai" once the GoatCounter account exists
+    goatCode: "whichai",   // e.g. "whichai" once the GoatCounter account exists
     donateUrl: ""   // e.g. "https://ko-fi.com/whichai"
   };
 

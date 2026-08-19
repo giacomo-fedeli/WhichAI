@@ -2,6 +2,34 @@
 
 (Older release-by-release history lives in `STATUS.md`, the project's working memory.)
 
+## v0.30.0 (2026-08-19)
+
+Answering an external technical review: a real backend, data that maintains itself, an even layout, and a privacy promise restated to stay true.
+
+### Added
+- **A read-only serverless API** (`api/`): five Vercel Functions sharing the exact data modules the browser uses, so the API can never drift from the page. `GET /api/health` (status, volumes, endpoint index), `GET /api/models` (search, tag/vendor/status filters, `minScore`, `measuredOnly`, sorting, pagination, `fields`, `?id=` for one model), `GET /api/benchmarks` (`?task=` runs the router server-side), `GET /api/recommend` (`?goal=` in plain language: task detection, best pick with the reason, runner-up and a free alternative), `GET /api/stats` (totals, score distribution, tallies, leaderboard). Weak ETags, `s-maxage=3600` with `stale-while-revalidate`, open CORS, `405` on anything but GET/HEAD/OPTIONS, no request body accepted, nothing stored. Documented in `docs/API.md`, runnable locally with `tools/api-dev.mjs`.
+- **API client with a fallback, not a dependency** (`js/api.js`): 3.5s timeout, `AbortController`, resolves to `null` on any failure, `credentials: "omit"`, sends no user data. The Model guide shows an honest status pill: live with the served model count and snapshot, or "using the built-in catalog" when the backend is unreachable. The service worker deliberately bypasses `/api/`.
+- **Scheduled data check** (`tools/refresh-data.mjs` + `.github/workflows/data-refresh.yml`): every Monday it queries the public OpenRouter API and verifies that every `:free` route the app ships as a default still exists (read straight from `DEFAULT_OR_MODELS`, so the check cannot drift from what users get), flags price drift over 15% and context drift over 25%, and lists models released since the last snapshot. It regenerates the static wiki and sitemap, runs the suites, opens a pull request with the evidence, and opens an issue when a shipped free route has died. Intelligence scores are never rewritten by a script: they need a human and a cited snapshot.
+- **Continuous integration** (`.github/workflows/ci.yml`): static checks, DOM smoke test and API tests on every push and pull request, plus a production build.
+- **Production build** (`tools/build.mjs` + `vercel.json`): esbuild minifies 23 JS files and the CSS, HTML whitespace is collapsed while inline script bodies stay byte-identical, and the CSP sha256 hash is recomputed and verified before the build is allowed to pass. 614 KB to 473 KB of JS, 90 KB to 66 KB of CSS. Security headers (HSTS, nosniff, Referrer-Policy, Permissions-Policy, X-Frame-Options) configured at the edge.
+- **`LICENSE.md`**: the dataset stays open under CC BY 4.0; the application source is all rights reserved.
+- **"How WhichAI is different from a leaderboard"** in About: an honest three-column comparison against LMArena/Artificial Analysis and Hugging Face, stating plainly that WhichAI does not run its own benchmarks and pointing readers to those sites when a ranking is all they need.
+- **"How the data stays current"** in About: what is automated weekly, what runs on every change, and what deliberately still needs a person.
+
+### Changed
+- **One measure per view.** Content blocks used to cap themselves at six different widths (640 to 920 px) and align left, so the right edge of the page moved as you scrolled. The container now sets the measure and every block fills it: heading, cards and tables share one left and one right edge.
+- **Even cards.** Router cards stretch to equal height with their call to action pinned to the bottom and summaries clamped; catalog categories fold past five models behind "Show all (N)". The Model guide is 400 px shorter and scans in rows instead of steps.
+- **API key safety.** The risk model is spelled out: what a stolen key can and cannot do, exactly where it travels, why a server-side proxy would be less private rather than more, revocation links for all three providers, and good habits. A warning appears only in device-storage mode, and every key field has a Show/Hide toggle.
+- **The privacy promise, restated to stay true.** With an API in production, "no server" was no longer accurate. Six claim-bearing strings were rewritten in all 11 languages and throughout the HTML: no account, no tracking, and a read-only API that serves the public catalog and never sees what you type. A test now prevents the old wording from returning.
+- **Task detection** covers modern coding vocabulary (react, vue, node, java, rust, component, endpoint, unit test, docker, algorithm and more).
+
+### Fixed
+- `js/support.js` called `fetch` unguarded: with a visit-counter code configured, boot threw in any environment without `fetch`. Now guarded, and it degrades to no counter rather than to a broken page.
+- The v0.29 config test asserted that the owner's counter code was empty, which broke the moment the owner legitimately set one. It now asserts the mechanism (hide when unset, never invent a number).
+
+### Tests
+165 static + 82 DOM smoke + 42 API = **289 passing**.
+
 ## v0.29.0 (2026-07-30)
 
 Real social proof, a way to support the project, a way home, and a new reading section.

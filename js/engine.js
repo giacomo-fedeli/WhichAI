@@ -515,7 +515,7 @@
 
   var DETECT_KEYWORDS = {
     writing: ["write", "draft", "rewrite", "blog", "article", "email", "newsletter", "headline", "essay", "letter", "caption", "post", "scrivi", "scrivere", "riscrivi", "articolo", "testo", "titolo", "bozza", "lettera", "descrizione"],
-    coding: ["code", "coding", "script", "function", "debug", "bug", "fix", "python", "javascript", "typescript", "sql", "html", "css", "api", "regex", "refactor", "program", "develop", "website", "webapp", "app", "codice", "funzione", "errore", "sviluppa", "programma", "sito"],
+    coding: ["code", "coding", "script", "function", "debug", "bug", "fix", "python", "javascript", "typescript", "sql", "html", "css", "api", "regex", "refactor", "program", "develop", "website", "webapp", "app", "react", "vue", "angular", "node", "java", "rust", "golang", "component", "endpoint", "unit test", "algorithm", "compile", "docker", "repository", "codice", "funzione", "errore", "sviluppa", "programma", "sito"],
     analysis: ["analyze", "analyse", "analysis", "data", "dataset", "csv", "excel", "chart", "metrics", "statistics", "trend", "forecast", "kpi", "analizza", "analisi", "dati", "statistiche", "grafico", "metriche", "previsione", "confronta"],
     research: ["research", "summarize", "summarise", "summary", "sources", "literature", "investigate", "overview", "ricerca", "riassumi", "riassunto", "sintesi", "fonti", "approfondisci", "panoramica"],
     brainstorming: ["brainstorm", "ideas", "options", "alternatives", "suggestions", "concepts", "names", "name ideas", "idee", "nomi", "proposte", "alternative", "spunti"],

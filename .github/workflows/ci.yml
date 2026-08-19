@@ -1,0 +1,42 @@
+# Every push and every pull request runs the whole suite. Nothing reaches
+# production without the static checks, the DOM smoke test and the API tests
+# passing first.
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  tests:
+    name: Test suite
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install test-only dependencies
+        run: npm ci --no-audit --no-fund || npm install --no-audit --no-fund
+
+      - name: Static checks (syntax, data integrity, i18n, versions)
+        run: node tests/run-tests.mjs
+
+      - name: DOM smoke test (boots the real app in jsdom)
+        run: node tests/smoke-dom.mjs
+
+      - name: API tests (serverless endpoints)
+        run: node tests/api-tests.mjs
+
+      - name: Static wiki regenerates cleanly
+        run: |
+          node tools/build-seo.mjs
+          git diff --stat -- models best-ai-for glossary compare sitemap.xml
+
+      - name: Production build
+        run: node tools/build.mjs

@@ -228,12 +228,102 @@ const Brands = require("../js/brands.js");
   check("v29: 6 debates, all sourced, both sides", TopicsMod.TOPICS.length === 6 && TopicsMod.TOPICS.every(t => t.sideA && t.sideB && t.status && t.sources.length >= 2 && t.sources.every(s => /^https:/.test(s.url))));
   check("v29: debates carry numbers with labels", TopicsMod.TOPICS.every(t => t.numbers.length >= 2 && t.numbers.every(n => n.v && n.label)));
   check("v29: no em dash in topics", !readFileSync("js/topics.js", "utf8").includes("\u2014"));
-  check("v29: config defaults keep counter+donate hidden", Cfg.goatCode === "" && Cfg.donateUrl === "" && typeof SupportMod.init === "function");
+  {
+    /* The owner may legitimately have filled these in. What must hold is that
+       an EMPTY value hides the feature and never invents a number. */
+    const supportSrc = readFileSync("js/support.js", "utf8");
+    const hidesWhenEmpty = supportSrc.includes('if (!code)') && supportSrc.includes('if (!url)');
+    const noFakeNumber = !/count\s*[:=]\s*\d{2,}/.test(supportSrc);
+    check("v29: counter and donate stay hidden until configured", hidesWhenEmpty && noFakeNumber && typeof SupportMod.init === "function" && typeof Cfg.goatCode === "string" && typeof Cfg.donateUrl === "string");
+    check("v30: counter degrades instead of throwing without fetch", supportSrc.includes('typeof fetch !== "function"'));
+  }
   check("v29: welcome exposes show()", readFileSync("js/welcome.js", "utf8").includes("show: show"));
   check("v29: CSP allows goatcounter only", (() => { const h = readFileSync("index.html", "utf8"); return h.includes("https://gc.zgo.at") && h.includes("https://*.goatcounter.com"); })());
   check("v29: kimi k3 now open-weights", DB.models.some(m => m.id === "kimi-k3" && m.tags.includes("open-weights")));
   check("v29: gemini 3.5 pro rumor is info-only + estimated", DB.models.some(m => m.id === "gemini-3-5-pro" && m.status === "rumored" && m.score.est && m.tags.includes("info-only")));
   check("v29: support/topics ids in html", ["foot-support", "visit-counter", "welcome-visits", "about-support", "support-btn", "topics-view", "topics-wrap", "nav-topics"].every(id => readFileSync("index.html", "utf8").includes('id="' + id + '"')));
+}
+
+/* ---------- 9f. v0.30: serverless API, automation, layout, key safety ---------- */
+{
+  const html = readFileSync("index.html", "utf8");
+  const css = readFileSync("styles.css", "utf8");
+  const app = readFileSync("js/app.js", "utf8");
+  const apiClient = readFileSync("js/api.js", "utf8");
+  const sw = readFileSync("sw.js", "utf8");
+
+  // --- the backend actually exists and is read-only ---
+  const endpoints = ["health", "models", "benchmarks", "recommend", "stats"];
+  check("v30: every API endpoint file exists", endpoints.every(e => existsSync("api/" + e + ".js")) && existsSync("api/_lib.js"));
+  check("v30: every endpoint exports a handler", endpoints.every(e => typeof require("../api/" + e + ".js") === "function"));
+  const lib = readFileSync("api/_lib.js", "utf8");
+  check("v30: API refuses anything but GET/HEAD/OPTIONS", lib.includes('req.method !== "GET" && req.method !== "HEAD"') && lib.includes("405"));
+  check("v30: API sets cache and cors headers", lib.includes("s-maxage") && lib.includes("Access-Control-Allow-Origin"));
+  check("v30: API reuses the browser data modules (one source of truth)", lib.includes('require("../js/models-db.js")') && lib.includes('require("../js/benchmarks.js")'));
+  check("v30: no secret or env token is read by the API", !/process\.env\.[A-Z_]*(KEY|TOKEN|SECRET)/.test(lib + readFileSync("api/models.js", "utf8")));
+
+  // --- the frontend uses it without depending on it ---
+  check("v30: index loads api.js before app.js", html.indexOf("js/api.js") > 0 && html.indexOf("js/api.js") < html.indexOf("js/app.js"));
+  check("v30: api client has a timeout and aborts", apiClient.includes("AbortController") && /TIMEOUT_MS\s*=\s*\d+/.test(apiClient));
+  check("v30: api client falls back to null, never throws", apiClient.includes("return null") && apiClient.includes(".catch("));
+  check("v30: api client sends no credentials and no user data", apiClient.includes('credentials: "omit"') && !/localStorage|sessionStorage|Key\b/.test(apiClient));
+  check("v30: guide paints the API status", app.includes("WhichAIApi.renderStatus"));
+  check("v30: service worker never caches /api/", sw.includes('url.pathname.indexOf("/api/") === 0') && sw.includes('"js/api.js"'));
+
+  // --- automation ---
+  check("v30: CI workflow runs all three suites", (() => {
+    const y = readFileSync(".github/workflows/ci.yml", "utf8");
+    return y.includes("run-tests.mjs") && y.includes("smoke-dom.mjs") && y.includes("api-tests.mjs");
+  })());
+  check("v30: scheduled data refresh exists and is cron driven", (() => {
+    const y = readFileSync(".github/workflows/data-refresh.yml", "utf8");
+    return /cron:\s*"0 6 \* \* 1"/.test(y) && y.includes("refresh-data.mjs") && y.includes("create-pull-request");
+  })());
+  const refresh = readFileSync("tools/refresh-data.mjs", "utf8");
+  check("v30: refresh checks the shipped free routes", refresh.includes("DEFAULT_OR_MODELS") && refresh.includes("deadFreeRoutes"));
+  check("v30: refresh never rewrites scores by itself", !/score\s*\.\s*aa\s*=/.test(refresh) && refresh.includes("never updated automatically"));
+  check("v30: refresh writes a report a human can read", refresh.includes("refresh-report.md") && refresh.includes("Needs a human"));
+
+  // --- production build ---
+  check("v30: build script and vercel config exist", existsSync("tools/build.mjs") && existsSync("vercel.json") && existsSync("package.json"));
+  check("v30: vercel builds from tools/build.mjs into dist", (() => {
+    const v = JSON.parse(readFileSync("vercel.json", "utf8"));
+    return v.buildCommand === "node tools/build.mjs" && v.outputDirectory === "dist";
+  })());
+  check("v30: security headers configured", (() => {
+    const v = JSON.parse(readFileSync("vercel.json", "utf8"));
+    const flat = JSON.stringify(v.headers);
+    return ["X-Content-Type-Options", "Referrer-Policy", "Strict-Transport-Security", "Permissions-Policy"].every(h => flat.includes(h));
+  })());
+  const build = readFileSync("tools/build.mjs", "utf8");
+  check("v30: build recomputes the CSP hash instead of trusting it", build.includes("refreshCspHash") && build.includes("createHash"));
+  check("v30: build keeps non-ascii intact (11 languages)", build.includes('charset: "utf8"'));
+  check("v30: build never ships api/ or the drift report", !build.includes('"api"') && build.includes("EXCLUDE_DATA"));
+
+  // --- layout: one measure, even cards ---
+  check("v30: single content measure token", css.includes("--measure:") && css.includes("max-width: var(--layout-measure, var(--measure-wide))") && css.includes("--layout-measure: var(--measure)"));
+  check("v30: guide cards stretch and pin their action", css.includes(".guide-grid { align-items: stretch; }") && css.includes(".guide-card .guide-cta,"));
+  check("v30: catalog folds its tail", app.includes("catalog-extra") && app.includes("catalog-more") && css.includes(".catalog-open .catalog-list .catalog-extra"));
+
+  // --- key safety ---
+  check("v30: key risk model is spelled out", html.includes('id="key-risk-title"') && html.includes("If a key leaks"));
+  check("v30: warning shown only in device mode", html.includes('id="keymode-warn"') && app.includes("paintWarn"));
+  check("v30: every key field has a reveal toggle", (html.match(/class="key-reveal"/g) || []).length === 3 && app.includes("initKeyReveal"));
+
+  // --- positioning and honesty ---
+  check("v30: says how it differs from leaderboards", html.includes('id="about-different"') && html.includes("LMArena") && html.includes("Hugging Face"));
+  check("v30: does not claim to run its own benchmarks", html.includes("does not run its own benchmarks"));
+  check("v30: documents the API publicly", html.includes('id="about-api"') && html.includes("/api/recommend"));
+  check("v30: explains how data stays current", html.includes('id="about-freshness"') && html.includes("never rewritten by a script"));
+
+  // --- honesty: the claim had to change when the API arrived ---
+  check("v30: no stale 'no server' claim in the UI", !/no server|nessun server|aucun serveur|sin servidor|kein Server|sem servidor/i.test(html) && !I18n.LANGS.some(l => /no server|nessun server|aucun serveur|sin servidor|kein Server|sem servidor/i.test(JSON.stringify(I18n.STRINGS[l.code]))));
+  check("v30: privacy promise names what actually stays local", I18n.STRINGS.en.privacyTip.includes("read-only") && I18n.STRINGS.it.privacyTip.includes("sola lettura"));
+
+  // --- i18n for the new chrome ---
+  const newKeys = ["keyShow", "keyHide", "keymodeWarn", "keyRiskTitle", "apiLive", "apiLocal", "catalogShowAll", "catalogShowLess"];
+  check("v30: new UI keys exist in all 11 languages", I18n.LANGS.every(l => newKeys.every(k => typeof I18n.STRINGS[l.code][k] === "string" && I18n.STRINGS[l.code][k].length > 0)));
+  check("v30: no em dash in the new modules", ![apiClient, refresh, build, lib].some(f => f.includes("—")));
 }
 
 /* ---------- 10. HTML ↔ JS id cross-check ---------- */
@@ -270,10 +360,10 @@ const Brands = require("../js/brands.js");
   const html = readFileSync("index.html", "utf8");
   const app = readFileSync("js/app.js", "utf8");
   const sw = readFileSync("sw.js", "utf8");
-  check("version: badge v0.29", html.includes(">v0.29 · Growth<"));
-  check("version: footer v0.29", html.includes("WhichAI v0.29"));
-  check("version: APP_VERSION v0.29", app.includes('APP_VERSION = "v0.29"'));
-  check("version: SW cache v0.29", sw.includes('"whichai-v0.29.0"'));
+  check("version: badge v0.30", html.includes(">v0.30 · Growth<"));
+  check("version: footer v0.30", html.includes("WhichAI v0.30"));
+  check("version: APP_VERSION v0.30", app.includes('APP_VERSION = "v0.30"'));
+  check("version: SW cache v0.30", sw.includes('"whichai-v0.30.0"'));
   const welcomeJs = readFileSync("js/welcome.js", "utf8");
   check("v0.27: morph reaches target before opacity fade", welcomeJs.includes("offset: 0.76") && welcomeJs.includes("opacity: 0") && welcomeJs.includes("1050"));
   check("v0.27: dark wordmarks use a light treatment", /\[data-theme="dark"\] \.ai-brand-wordmark\s*\{[^}]*invert\(1\)/s.test(readFileSync("styles.css", "utf8")));

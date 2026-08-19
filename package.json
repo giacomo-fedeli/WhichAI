@@ -1,0 +1,23 @@
+{
+  "name": "whichai",
+  "version": "0.30.0",
+  "private": true,
+  "description": "WhichAI - which AI should do this, and what prompt should it get. Static frontend, serverless read-only API, zero tracking.",
+  "homepage": "https://whichai.wiki",
+  "license": "SEE LICENSE IN LICENSE.md",
+  "author": "Giacomo Fedeli",
+  "scripts": {
+    "build": "node tools/build.mjs",
+    "seo": "node tools/build-seo.mjs",
+    "refresh": "node tools/refresh-data.mjs",
+    "api": "node tools/api-dev.mjs 8787",
+    "test": "node tests/run-tests.mjs && node tests/smoke-dom.mjs && node tests/api-tests.mjs"
+  },
+  "devDependencies": {
+    "esbuild": "^0.25.0",
+    "jsdom": "^26.0.0"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

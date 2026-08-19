@@ -30,7 +30,9 @@
       document.body.appendChild(s);
     }
 
-    // 2) show the real public total
+    // 2) show the real public total (only where fetch exists: an old webview
+    //    or a test harness must degrade to "no counter", never to a crash)
+    if (typeof fetch !== "function") return;
     fetch("https://" + code + ".goatcounter.com/counter/TOTAL.json")
       .then(function (r) { return r.ok ? r.json() : null; })
       .then(function (d) {

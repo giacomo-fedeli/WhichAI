@@ -2816,3 +2816,239 @@ body.app-reveal .view:not([hidden]) > :nth-child(3n) { animation-delay: 0.24s; }
   .topic-sides { grid-template-columns: 1fr; }
   .topic-q { display: block; width: 100%; }
 }
+
+/* ================= v0.30: one measure, even cards, API + key safety ======= */
+
+/* Every content block used to cap itself at a different width (640, 720, 780,
+   840, 860, 920) and align left, so the right edge of the page changed on
+   every scroll. One shared measure, centred, fixes the ragged navigation. */
+:root {
+  --measure: 900px;
+  --measure-wide: 1120px;
+}
+
+/* The container decides the width; everything inside fills it. That way the
+   page heading, the cards and the tables of a view share one left and one
+   right edge, instead of each block choosing its own. */
+#settings-view,
+#about-view,
+#glossary-view,
+#doctor-view,
+#stack-view,
+#arena-view,
+#topics-view,
+#chains-view,
+#merge-view,
+#radar-view,
+#compare-view {
+  --layout-measure: var(--measure);
+}
+
+.layout-guide { max-width: var(--layout-measure, var(--measure-wide)); }
+
+.settings-card,
+.about-card,
+.chain-step,
+.finder-card,
+.glossary-list,
+.mc-chart-card,
+.mc-table-card,
+#db-detail,
+.doctor-card,
+.stack-card,
+.arena-card,
+.topics-card {
+  max-width: 100%;
+}
+
+/* Inputs inside a wider card should not stretch into unreadable lines. */
+.settings-card .field input[type="text"],
+.settings-card .field input[type="password"] { max-width: 520px; }
+.settings-card .field-grid .field input[type="text"] { max-width: 100%; }
+
+/* --- Even cards: same height in a row, action pinned to the bottom ------- */
+
+.guide-grid { align-items: stretch; }
+
+.guide-card {
+  display: flex;
+  flex-direction: column;
+}
+
+.guide-card .router-summary {
+  /* keeps a long summary from doubling a card's height on its own */
+  display: -webkit-box;
+  -webkit-line-clamp: 6;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.guide-card > details { margin-top: auto; }
+.guide-card .guide-cta,
+.guide-card .catalog-more { margin-top: auto; padding-top: 10px; }
+
+/* --- Catalog: fold the tail so the columns end up level ------------------ */
+
+.catalog-list .catalog-extra { display: none; }
+.catalog-open .catalog-list .catalog-extra { display: list-item; }
+
+.catalog-more {
+  align-self: flex-start;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.catalog-open .catalog-more { color: var(--muted); }
+
+/* --- API status pill ----------------------------------------------------- */
+
+.api-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  margin: 6px 0 0;
+  padding: 3px 10px 3px 8px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--surface);
+  font-size: 12px;
+  color: var(--muted);
+  width: max-content;
+  max-width: 100%;
+}
+
+.api-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 999px;
+  flex: 0 0 auto;
+  background: var(--border-strong);
+}
+
+.api-dot.live {
+  background: #16a34a;
+  box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.15);
+}
+
+.api-dot.local { background: var(--border-strong); }
+
+.api-list code {
+  font-family: var(--mono);
+  font-size: 12.5px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 1px 5px;
+}
+
+/* --- API key safety ------------------------------------------------------ */
+
+.key-input-row {
+  display: flex;
+  align-items: stretch;
+  gap: 8px;
+  max-width: 520px;
+}
+
+.key-input-row input { flex: 1 1 auto; }
+
+.key-reveal {
+  flex: 0 0 auto;
+  min-width: 68px;
+  padding: 0 12px;
+  font: inherit;
+  font-size: 13px;
+  color: var(--muted);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-ctl, 10px);
+  cursor: pointer;
+}
+
+.key-reveal:hover { border-color: var(--border-strong); color: var(--text); }
+.key-reveal[aria-pressed="true"] { color: var(--text); border-color: var(--border-strong); }
+
+.key-warn {
+  margin: 8px 0 0;
+  padding: 9px 12px;
+  border: 1px solid var(--border-strong);
+  border-inline-start: 3px solid #d97706;
+  border-radius: var(--r-ctl, 10px);
+  background: rgba(217, 119, 6, 0.06);
+  font-size: 13px;
+  color: var(--text);
+}
+
+.key-risk { margin-top: 12px; }
+.key-risk code {
+  font-family: var(--mono);
+  font-size: 12px;
+  word-break: break-all;
+}
+
+/* --- Comparison table (About: how WhichAI differs) ----------------------- */
+
+.cmp-table-wrap {
+  margin: 14px 0 10px;
+  overflow-x: auto;
+  border: 1px solid var(--border);
+  border-radius: var(--r-card, 14px);
+}
+
+.cmp-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+  min-width: 620px;
+}
+
+.cmp-table th,
+.cmp-table td {
+  text-align: start;
+  vertical-align: top;
+  padding: 11px 14px;
+  border-bottom: 1px solid var(--border);
+}
+
+.cmp-table thead th {
+  font-size: 11.5px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--muted);
+  background: var(--bg);
+}
+
+.cmp-table tbody th {
+  font-weight: 600;
+  white-space: nowrap;
+  color: var(--muted);
+}
+
+.cmp-table tbody tr:last-child th,
+.cmp-table tbody tr:last-child td { border-bottom: 0; }
+
+.cmp-table tbody td:last-child {
+  font-weight: 500;
+  color: var(--text);
+  background: rgba(37, 99, 235, 0.04);
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+@media (max-width: 680px) {
+  .key-input-row { max-width: 100%; }
+  .settings-card .field input[type="text"],
+  .settings-card .field input[type="password"] { max-width: 100%; }
+  .guide-card .router-summary { -webkit-line-clamp: 12; }
+}

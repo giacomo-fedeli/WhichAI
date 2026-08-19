@@ -3029,6 +3029,191 @@
   S.ar.supportBtn = "تبرّع ♥";
   S.ar.visitsLabel = "زيارة";
 
+
+  /* ---------------- v0.30: API status, key safety, catalog density ---------------- */
+
+  S.en.keyShow = "Show";
+  S.en.keyHide = "Hide";
+  S.en.keymodeWarn = "Your keys are being written to this browser's storage. On a shared or work computer, prefer session only.";
+  S.en.keyRiskTitle = "What a key can do, and what happens here";
+  S.en.apiLive = "API live";
+  S.en.apiLocal = "Offline · using the built-in catalog";
+  S.en.catalogShowAll = "Show all";
+  S.en.catalogShowLess = "Show less";
+
+  S.it.keyShow = "Mostra";
+  S.it.keyHide = "Nascondi";
+  S.it.keymodeWarn = "Le chiavi vengono scritte nella memoria di questo browser. Su un computer condiviso o di lavoro, meglio solo per la sessione.";
+  S.it.keyRiskTitle = "Cosa può fare una chiave, e cosa succede qui";
+  S.it.apiLive = "API attiva";
+  S.it.apiLocal = "Offline · catalogo integrato";
+  S.it.catalogShowAll = "Mostra tutti";
+  S.it.catalogShowLess = "Mostra meno";
+
+  S.fr.keyShow = "Afficher";
+  S.fr.keyHide = "Masquer";
+  S.fr.keymodeWarn = "Vos clés sont écrites dans le stockage de ce navigateur. Sur un ordinateur partagé ou professionnel, préférez la session seule.";
+  S.fr.keyRiskTitle = "Ce qu'une clé permet, et ce qui se passe ici";
+  S.fr.apiLive = "API active";
+  S.fr.apiLocal = "Hors ligne · catalogue intégré";
+  S.fr.catalogShowAll = "Tout afficher";
+  S.fr.catalogShowLess = "Afficher moins";
+
+  S.es.keyShow = "Mostrar";
+  S.es.keyHide = "Ocultar";
+  S.es.keymodeWarn = "Tus claves se están guardando en el almacenamiento de este navegador. En un ordenador compartido o de trabajo, mejor solo la sesión.";
+  S.es.keyRiskTitle = "Qué puede hacer una clave, y qué ocurre aquí";
+  S.es.apiLive = "API activa";
+  S.es.apiLocal = "Sin conexión · catálogo integrado";
+  S.es.catalogShowAll = "Ver todos";
+  S.es.catalogShowLess = "Ver menos";
+
+  S.de.keyShow = "Anzeigen";
+  S.de.keyHide = "Verbergen";
+  S.de.keymodeWarn = "Deine Schlüssel werden im Speicher dieses Browsers abgelegt. Auf einem geteilten oder dienstlichen Rechner besser nur für die Sitzung.";
+  S.de.keyRiskTitle = "Was ein Schlüssel kann, und was hier passiert";
+  S.de.apiLive = "API aktiv";
+  S.de.apiLocal = "Offline · eingebauter Katalog";
+  S.de.catalogShowAll = "Alle anzeigen";
+  S.de.catalogShowLess = "Weniger anzeigen";
+
+  S.pt.keyShow = "Mostrar";
+  S.pt.keyHide = "Ocultar";
+  S.pt.keymodeWarn = "As suas chaves estão a ser gravadas no armazenamento deste navegador. Num computador partilhado ou de trabalho, prefira apenas a sessão.";
+  S.pt.keyRiskTitle = "O que uma chave permite, e o que acontece aqui";
+  S.pt.apiLive = "API ativa";
+  S.pt.apiLocal = "Offline · catálogo integrado";
+  S.pt.catalogShowAll = "Ver todos";
+  S.pt.catalogShowLess = "Ver menos";
+
+  S.zh.keyShow = "显示";
+  S.zh.keyHide = "隐藏";
+  S.zh.keymodeWarn = "密钥正在写入此浏览器的存储。在共用或办公电脑上，建议只保留本次会话。";
+  S.zh.keyRiskTitle = "密钥能做什么，以及这里会发生什么";
+  S.zh.apiLive = "API 在线";
+  S.zh.apiLocal = "离线 · 使用内置目录";
+  S.zh.catalogShowAll = "显示全部";
+  S.zh.catalogShowLess = "收起";
+
+  S.hi.keyShow = "दिखाएँ";
+  S.hi.keyHide = "छिपाएँ";
+  S.hi.keymodeWarn = "आपकी कुंजियाँ इस ब्राउज़र के स्टोरेज में लिखी जा रही हैं। साझा या ऑफ़िस कंप्यूटर पर केवल सत्र वाला विकल्प बेहतर है।";
+  S.hi.keyRiskTitle = "एक कुंजी क्या कर सकती है, और यहाँ क्या होता है";
+  S.hi.apiLive = "API चालू";
+  S.hi.apiLocal = "ऑफ़लाइन · अंतर्निहित सूची";
+  S.hi.catalogShowAll = "सभी दिखाएँ";
+  S.hi.catalogShowLess = "कम दिखाएँ";
+
+  S.ru.keyShow = "Показать";
+  S.ru.keyHide = "Скрыть";
+  S.ru.keymodeWarn = "Ключи записываются в хранилище этого браузера. На общем или рабочем компьютере лучше выбрать только сессию.";
+  S.ru.keyRiskTitle = "Что может ключ и что происходит здесь";
+  S.ru.apiLive = "API работает";
+  S.ru.apiLocal = "Офлайн · встроенный каталог";
+  S.ru.catalogShowAll = "Показать все";
+  S.ru.catalogShowLess = "Показать меньше";
+
+  S.ja.keyShow = "表示";
+  S.ja.keyHide = "非表示";
+  S.ja.keymodeWarn = "キーがこのブラウザのストレージに保存されます。共有や職場のパソコンでは、セッション限定をおすすめします。";
+  S.ja.keyRiskTitle = "キーで何ができるか、ここで何が起きるか";
+  S.ja.apiLive = "API 稼働中";
+  S.ja.apiLocal = "オフライン · 内蔵カタログ";
+  S.ja.catalogShowAll = "すべて表示";
+  S.ja.catalogShowLess = "表示を減らす";
+
+  S.ar.keyShow = "إظهار";
+  S.ar.keyHide = "إخفاء";
+  S.ar.keymodeWarn = "يجري حفظ مفاتيحك في تخزين هذا المتصفح. على حاسوب مشترك أو حاسوب العمل، يُفضّل خيار الجلسة فقط.";
+  S.ar.keyRiskTitle = "ما الذي يستطيعه المفتاح، وماذا يحدث هنا";
+  S.ar.apiLive = "واجهة API تعمل";
+  S.ar.apiLocal = "دون اتصال · الفهرس المدمج";
+  S.ar.catalogShowAll = "عرض الكل";
+  S.ar.catalogShowLess = "عرض أقل";
+
+
+  /* v0.30: the read-only API means "no server" is no longer accurate.
+     These overrides restate the privacy promise precisely, in every language. */
+
+  S.en.footerText = "Runs in your browser: no account, no tracking. Your goals, prompts and keys never leave your device.";
+  S.en.privacyTip = "No account, no tracking. Goals, prompts and API keys stay in your browser. The WhichAI API is read-only and serves only the public model catalog.";
+  S.en.settingsSub = "API keys enable automatic execution in Compare. They stay in this browser and are sent only to the provider you call, never to WhichAI's own API, which is read-only and accepts no data.";
+  S.en.keymodeHint = "\"Session only\" keeps the key in memory and forgets it when the tab closes. \"Saved on this device\" writes it to browser storage, where it survives a restart and where any script on this page could read it. That is why it stays opt-in.";
+  S.en.supportText = "WhichAI is free, has no ads and no sponsors: the only costs are the domain and the hours that keep 100+ models honest and up to date. If it saved you time, a small donation keeps it independent.";
+
+  S.it.footerText = "Gira nel tuo browser: nessun account, nessun tracciamento. Obiettivi, prompt e chiavi non lasciano mai il tuo dispositivo.";
+  S.it.privacyTip = "Nessun account, nessun tracciamento. Obiettivi, prompt e chiavi API restano nel browser. L'API di WhichAI è di sola lettura e serve solo il catalogo pubblico dei modelli.";
+  S.it.settingsSub = "Le chiavi API abilitano l'esecuzione automatica in Compare. Restano in questo browser e vengono inviate solo al provider che chiami, mai all'API di WhichAI, che è di sola lettura e non accetta dati.";
+  S.it.keymodeHint = "\"Solo per questa sessione\" tiene la chiave in memoria e la dimentica alla chiusura della scheda. \"Salvata su questo dispositivo\" la scrive nella memoria del browser, dove sopravvive al riavvio e dove qualunque script di questa pagina potrebbe leggerla. Per questo resta una scelta esplicita.";
+  S.it.supportText = "WhichAI è gratuito, senza pubblicità e senza sponsor: gli unici costi sono il dominio e le ore che tengono 100+ modelli onesti e aggiornati. Se ti ha fatto risparmiare tempo, una piccola donazione lo mantiene indipendente.";
+
+  S.fr.footerText = "Fonctionne dans votre navigateur : aucun compte, aucun suivi. Vos objectifs, prompts et clés ne quittent jamais votre appareil.";
+  S.fr.privacyTip = "Aucun compte, aucun suivi. Objectifs, prompts et clés API restent dans le navigateur. L'API WhichAI est en lecture seule et ne sert que le catalogue public.";
+  S.fr.settingsSub = "Les clés API activent l'exécution automatique dans Compare. Elles restent dans ce navigateur et ne sont envoyées qu'au fournisseur appelé, jamais à l'API WhichAI, qui est en lecture seule et n'accepte aucune donnée.";
+  S.fr.keymodeHint = "« Session seule » garde la clé en mémoire et l'oublie à la fermeture de l'onglet. « Enregistrée sur cet appareil » l'écrit dans le stockage du navigateur, où elle survit à un redémarrage et où tout script de cette page pourrait la lire. D'où le choix explicite.";
+  S.fr.supportText = "WhichAI est gratuit, sans publicité ni sponsors : les seuls coûts sont le domaine et les heures qui gardent plus de 100 modèles honnêtes et à jour. S'il vous a fait gagner du temps, un petit don le garde indépendant.";
+
+  S.es.footerText = "Funciona en tu navegador: sin cuenta, sin rastreo. Tus objetivos, prompts y claves nunca salen de tu dispositivo.";
+  S.es.privacyTip = "Sin cuenta, sin rastreo. Objetivos, prompts y claves API se quedan en el navegador. La API de WhichAI es de solo lectura y sirve únicamente el catálogo público.";
+  S.es.settingsSub = "Las claves API permiten la ejecución automática en Compare. Se quedan en este navegador y solo se envían al proveedor que llamas, nunca a la API de WhichAI, que es de solo lectura y no acepta datos.";
+  S.es.keymodeHint = "«Solo esta sesión» guarda la clave en memoria y la olvida al cerrar la pestaña. «Guardada en este dispositivo» la escribe en el almacenamiento del navegador, donde sobrevive a un reinicio y donde cualquier script de esta página podría leerla. Por eso es opcional.";
+  S.es.supportText = "WhichAI es gratis, sin anuncios ni patrocinadores: los únicos costes son el dominio y las horas que mantienen más de 100 modelos honestos y actualizados. Si te ahorró tiempo, una pequeña donación lo mantiene independiente.";
+
+  S.de.footerText = "Läuft in deinem Browser: kein Konto, kein Tracking. Ziele, Prompts und Schlüssel verlassen dein Gerät nie.";
+  S.de.privacyTip = "Kein Konto, kein Tracking. Ziele, Prompts und API-Schlüssel bleiben im Browser. Die WhichAI-API ist schreibgeschützt und liefert nur den öffentlichen Katalog.";
+  S.de.settingsSub = "API-Schlüssel ermöglichen die automatische Ausführung in Compare. Sie bleiben in diesem Browser und gehen nur an den Anbieter, den du aufrufst, nie an die WhichAI-API, die schreibgeschützt ist und keine Daten annimmt.";
+  S.de.keymodeHint = "\"Nur diese Sitzung\" hält den Schlüssel im Speicher und vergisst ihn beim Schließen des Tabs. \"Auf diesem Gerät gespeichert\" schreibt ihn in den Browser-Speicher, wo er einen Neustart überlebt und wo jedes Skript dieser Seite ihn lesen könnte. Darum bleibt es freiwillig.";
+  S.de.supportText = "WhichAI ist kostenlos, ohne Werbung und ohne Sponsoren: die einzigen Kosten sind die Domain und die Stunden, die 100+ Modelle ehrlich und aktuell halten. Wenn es dir Zeit gespart hat, hält eine kleine Spende es unabhängig.";
+
+  S.pt.footerText = "Funciona no seu navegador: sem conta, sem rastreio. Os seus objetivos, prompts e chaves nunca saem do dispositivo.";
+  S.pt.privacyTip = "Sem conta, sem rastreio. Objetivos, prompts e chaves API ficam no navegador. A API do WhichAI é só de leitura e serve apenas o catálogo público.";
+  S.pt.settingsSub = "As chaves API permitem a execução automática no Compare. Ficam neste navegador e são enviadas apenas ao fornecedor que chama, nunca à API do WhichAI, que é só de leitura e não aceita dados.";
+  S.pt.keymodeHint = "\"Apenas esta sessão\" mantém a chave em memória e esquece-a ao fechar o separador. \"Guardada neste dispositivo\" escreve-a no armazenamento do navegador, onde sobrevive a um reinício e onde qualquer script desta página a poderia ler. Por isso continua opcional.";
+  S.pt.supportText = "O WhichAI é gratuito, sem anúncios e sem patrocinadores: os únicos custos são o domínio e as horas que mantêm mais de 100 modelos honestos e atualizados. Se lhe poupou tempo, um pequeno donativo mantém-no independente.";
+
+  S.zh.footerText = "在你的浏览器中运行：无需账户，不做追踪。你的目标、提示词和密钥从不离开设备。";
+  S.zh.privacyTip = "无需账户，不做追踪。目标、提示词和 API 密钥都留在浏览器里。WhichAI 的 API 只读，仅提供公开的模型目录。";
+  S.zh.settingsSub = "API 密钥用于在 Compare 中自动执行。密钥留在此浏览器，只发送给你调用的服务商，绝不会发给 WhichAI 自己的 API，它只读且不接收任何数据。";
+  S.zh.keymodeHint = "“仅本次会话”把密钥保存在内存中，关闭标签页即遗忘。“保存在此设备”会写入浏览器存储，重启后仍在，且本页面上的任何脚本都可能读取。因此需要你主动选择。";
+  S.zh.supportText = "WhichAI 免费、无广告、无赞助：唯一的成本是域名，以及让 100 多个模型保持诚实和最新所花的时间。如果它帮你省了时间，一点小额捐助能让它保持独立。";
+
+  S.hi.footerText = "आपके ब्राउज़र में चलता है: कोई खाता नहीं, कोई ट्रैकिंग नहीं। आपके लक्ष्य, प्रॉम्प्ट और कुंजियाँ कभी डिवाइस नहीं छोड़ते।";
+  S.hi.privacyTip = "कोई खाता नहीं, कोई ट्रैकिंग नहीं। लक्ष्य, प्रॉम्प्ट और API कुंजियाँ ब्राउज़र में ही रहती हैं। WhichAI का API केवल-पढ़ने वाला है और सिर्फ़ सार्वजनिक मॉडल सूची देता है।";
+  S.hi.settingsSub = "API कुंजियाँ Compare में स्वचालित निष्पादन चालू करती हैं। वे इसी ब्राउज़र में रहती हैं और केवल उस प्रदाता को जाती हैं जिसे आप बुलाते हैं, कभी WhichAI के अपने API को नहीं, जो केवल-पढ़ने वाला है और कोई डेटा नहीं लेता।";
+  S.hi.keymodeHint = "\"केवल इस सत्र\" कुंजी को मेमोरी में रखता है और टैब बंद होते ही भूल जाता है। \"इस डिवाइस पर सहेजा\" उसे ब्राउज़र स्टोरेज में लिखता है, जहाँ वह रीस्टार्ट के बाद भी रहती है और जहाँ इस पेज की कोई भी स्क्रिप्ट उसे पढ़ सकती है। इसीलिए यह वैकल्पिक है।";
+  S.hi.supportText = "WhichAI मुफ़्त है, न विज्ञापन न प्रायोजक: एकमात्र खर्च डोमेन और वे घंटे हैं जो 100+ मॉडलों को ईमानदार और अद्यतन रखते हैं। अगर इसने आपका समय बचाया, तो छोटा दान इसे स्वतंत्र रखता है।";
+
+  S.ru.footerText = "Работает в вашем браузере: без аккаунта, без отслеживания. Ваши цели, промпты и ключи никогда не покидают устройство.";
+  S.ru.privacyTip = "Без аккаунта, без отслеживания. Цели, промпты и ключи API остаются в браузере. API WhichAI работает только на чтение и отдаёт лишь публичный каталог моделей.";
+  S.ru.settingsSub = "Ключи API включают автозапуск в Compare. Они остаются в этом браузере и уходят только тому провайдеру, которого вы вызываете, но никогда в собственный API WhichAI: он только на чтение и не принимает данных.";
+  S.ru.keymodeHint = "«Только эта сессия» держит ключ в памяти и забывает его при закрытии вкладки. «Сохранён на этом устройстве» записывает его в хранилище браузера, где он переживёт перезапуск и где любой скрипт этой страницы сможет его прочитать. Поэтому это осознанный выбор.";
+  S.ru.supportText = "WhichAI бесплатен, без рекламы и спонсоров: единственные расходы это домен и часы, которые держат 100+ моделей честными и актуальными. Если он сэкономил вам время, небольшое пожертвование сохранит его независимость.";
+
+  S.ja.footerText = "ブラウザ内で動作します。アカウント不要、追跡なし。目標もプロンプトもキーも端末から出ません。";
+  S.ja.privacyTip = "アカウント不要、追跡なし。目標・プロンプト・API キーはブラウザに留まります。WhichAI の API は読み取り専用で、公開モデルカタログのみを返します。";
+  S.ja.settingsSub = "API キーは Compare の自動実行に使います。キーはこのブラウザに留まり、呼び出したプロバイダーだけに送られます。読み取り専用でデータを受け取らない WhichAI の API に送られることはありません。";
+  S.ja.keymodeHint = "「このセッションのみ」はキーをメモリに保持し、タブを閉じると忘れます。「この端末に保存」はブラウザのストレージに書き込むため再起動後も残り、このページ上のどのスクリプトからも読める可能性があります。だから任意設定のままにしています。";
+  S.ja.supportText = "WhichAI は無料で、広告もスポンサーもありません。かかるのはドメイン代と、100 以上のモデルを正確かつ最新に保つ時間だけです。時間の節約になったなら、少額の寄付が独立性を守ります。";
+
+  S.ar.footerText = "يعمل داخل متصفحك: بلا حساب وبلا تتبّع. أهدافك ومطالباتك ومفاتيحك لا تغادر جهازك أبدًا.";
+  S.ar.privacyTip = "بلا حساب وبلا تتبّع. الأهداف والمطالبات ومفاتيح API تبقى في المتصفح. واجهة WhichAI للقراءة فقط ولا تقدّم سوى فهرس النماذج العام.";
+  S.ar.settingsSub = "مفاتيح API تتيح التشغيل التلقائي في Compare. تبقى في هذا المتصفح وتُرسل فقط إلى المزوّد الذي تستدعيه، ولا تُرسل أبدًا إلى واجهة WhichAI نفسها، فهي للقراءة فقط ولا تقبل أي بيانات.";
+  S.ar.keymodeHint = "\"هذه الجلسة فقط\" يبقي المفتاح في الذاكرة وينساه عند إغلاق التبويب. \"محفوظ على هذا الجهاز\" يكتبه في تخزين المتصفح، حيث يبقى بعد إعادة التشغيل ويمكن لأي سكربت في هذه الصفحة قراءته. لذلك يظل اختيارًا صريحًا.";
+  S.ar.supportText = "WhichAI مجاني، بلا إعلانات ولا رعاة: التكلفة الوحيدة هي النطاق والساعات التي تُبقي أكثر من 100 نموذج صادقة ومحدثة. إن وفّر عليك وقتًا، فتبرّع صغير يبقيه مستقلًا.";
+
+
+  S.en.trustLine = "No account · No tracking · Nothing you write leaves your browser";
+  S.it.trustLine = "Nessun account · Nessun tracciamento · Nulla di ciò che scrivi esce dal browser";
+  S.fr.trustLine = "Aucun compte · Aucun suivi · Rien de ce que vous écrivez ne quitte le navigateur";
+  S.es.trustLine = "Sin cuenta · Sin rastreo · Nada de lo que escribes sale del navegador";
+  S.de.trustLine = "Kein Konto · Kein Tracking · Nichts, was du schreibst, verlässt den Browser";
+  S.pt.trustLine = "Sem conta · Sem rastreio · Nada do que escreve sai do navegador";
+  S.zh.trustLine = "无需账户 · 不做追踪 · 你写的内容不会离开浏览器";
+  S.hi.trustLine = "कोई खाता नहीं · कोई ट्रैकिंग नहीं · आपका लिखा ब्राउज़र से बाहर नहीं जाता";
+  S.ru.trustLine = "Без аккаунта · Без отслеживания · Ничего написанного не покидает браузер";
+  S.ja.trustLine = "アカウント不要 · 追跡なし · 書いた内容はブラウザから出ません";
+  S.ar.trustLine = "بلا حساب · بلا تتبّع · لا شيء مما تكتبه يغادر متصفحك";
+
   var I18n = {
     LANGS: LANGS,
     STRINGS: S,

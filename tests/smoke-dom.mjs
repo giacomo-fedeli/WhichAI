@@ -24,7 +24,7 @@ w.confirm = () => true;
 w.URL.createObjectURL = w.URL.createObjectURL || (() => "blob:test");
 w.URL.revokeObjectURL = w.URL.revokeObjectURL || (() => {});
 
-const scripts = ["js/engine.js", "js/benchmarks.js", "js/chains.js", "js/i18n.js", "js/models-db.js", "js/merge.js", "js/charts.js", "js/glossary.js", "js/finder.js", "js/modelcompare.js", "js/stack.js", "js/doctor.js", "js/changes.js", "js/radar.js", "js/sharecard.js", "js/brands.js", "js/welcome.js", "js/config.js", "js/support.js", "js/topics.js", "js/arena.js", "js/app.js"];
+const scripts = ["js/engine.js", "js/benchmarks.js", "js/chains.js", "js/i18n.js", "js/models-db.js", "js/merge.js", "js/charts.js", "js/glossary.js", "js/finder.js", "js/modelcompare.js", "js/stack.js", "js/doctor.js", "js/changes.js", "js/radar.js", "js/sharecard.js", "js/brands.js", "js/welcome.js", "js/config.js", "js/api.js", "js/support.js", "js/topics.js", "js/arena.js", "js/app.js"];
 let bootError = null;
 for (const s of scripts) {
   try { w.eval(readFileSync(s, "utf8")); }
@@ -234,6 +234,65 @@ const t0 = d.documentElement.getAttribute("data-theme");
 themeBtn.click();
 const t1 = d.documentElement.getAttribute("data-theme");
 check("theme: toggle cycles (" + t0 + "→" + t1 + ")", t0 !== t1);
+
+
+/* --- v0.30: API client degradation, key safety, catalog density --- */
+{
+  /* jsdom has no fetch. The whole point of the API client is that the app is
+     identical when the backend cannot be reached, so this is the real test. */
+  check("v30: api client loaded and inert without fetch", typeof w.WhichAIApi === "object" && typeof w.WhichAIApi.get === "function");
+  const pill = d.getElementById("api-status");
+  check("v30: api status element exists", !!pill);
+  let threw = false;
+  try { w.WhichAIApi.renderStatus(pill); } catch (e) { threw = true; }
+  check("v30: renderStatus never throws when offline", !threw);
+
+  w.location.hash = "#guide";
+  await new Promise(r => setTimeout(r, 260));
+  const cards = [...d.querySelectorAll("#catalog-grid .guide-card")];
+  check("v30: catalog rendered", cards.length >= 4);
+  const folded = cards.find(c => c.querySelector(".catalog-more"));
+  check("v30: long categories are folded", !!folded && folded.querySelectorAll(".catalog-extra").length > 0);
+  if (folded) {
+    const btn = folded.querySelector(".catalog-more");
+    const before = btn.textContent;
+    btn.click();
+    check("v30: show all expands the category", folded.className.includes("catalog-open") && btn.getAttribute("aria-expanded") === "true" && btn.textContent !== before);
+    btn.click();
+    check("v30: clicking again folds it back", !folded.className.includes("catalog-open"));
+  }
+
+  w.location.hash = "#settings";
+  await new Promise(r => setTimeout(r, 220));
+  const reveal = d.querySelector('.key-reveal[data-key-target="gemini-key"]');
+  const keyInput = d.getElementById("gemini-key");
+  check("v30: key reveal button wired", !!reveal && keyInput.type === "password");
+  if (reveal) {
+    reveal.click();
+    check("v30: reveal shows the key", keyInput.type === "text" && reveal.getAttribute("aria-pressed") === "true");
+    reveal.click();
+    check("v30: reveal hides it again", keyInput.type === "password");
+  }
+  /* An earlier block left the app in device mode on purpose, so start from a
+     known state rather than assuming one. */
+  const warn = d.getElementById("keymode-warn");
+  const localRadio = d.getElementById("keymode-local");
+  const sessionRadio = d.getElementById("keymode-session");
+  sessionRadio.checked = true;
+  sessionRadio.dispatchEvent(new w.Event("change"));
+  check("v30: storage warning hidden in session mode", !!warn && warn.hidden === true);
+  localRadio.checked = true;
+  localRadio.dispatchEvent(new w.Event("change"));
+  check("v30: storage warning appears in device mode", warn.hidden === false);
+  sessionRadio.checked = true;
+  sessionRadio.dispatchEvent(new w.Event("change"));
+  check("v30: warning disappears again in session mode", warn.hidden === true);
+
+  w.location.hash = "#about-different";
+  await new Promise(r => setTimeout(r, 220));
+  check("v30: positioning section reachable and populated", !d.getElementById("about-view").hidden && d.querySelectorAll("#about-different .cmp-table tbody tr").length >= 4);
+  check("v30: API documented in About", d.querySelectorAll("#about-api .api-list li").length >= 5);
+}
 
 console.log("\n" + pass + " passed, " + fail + " failed" + (fail ? "\n\nFAILURES:\n" + failures.join("\n") : " — SMOKE ALL GREEN"));
 process.exit(fail ? 1 : 0);

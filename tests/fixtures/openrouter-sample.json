@@ -1,0 +1,54 @@
+{
+ "data": [
+  {
+   "id": "nvidia/nemotron-3-ultra-550b-a55b:free",
+   "name": "NVIDIA: Nemotron 3 Ultra (free)",
+   "created": 1750000000,
+   "context_length": 131072,
+   "pricing": {
+    "prompt": "0",
+    "completion": "0"
+   }
+  },
+  {
+   "id": "qwen/qwen3-coder:free",
+   "name": "Qwen: Qwen3 Coder (free)",
+   "created": 1750000000,
+   "context_length": 262144,
+   "pricing": {
+    "prompt": "0",
+    "completion": "0"
+   }
+  },
+  {
+   "id": "z-ai/glm-5.3",
+   "name": "Z.ai: GLM 5.3",
+   "created": 1786838400,
+   "context_length": 1048576,
+   "pricing": {
+    "prompt": "0.0000014",
+    "completion": "0.0000044"
+   }
+  },
+  {
+   "id": "anthropic/claude-opus-5",
+   "name": "Anthropic: Claude Opus 5",
+   "created": 1753300000,
+   "context_length": 1000000,
+   "pricing": {
+    "prompt": "0.000005",
+    "completion": "0.000025"
+   }
+  },
+  {
+   "id": "moonshotai/kimi-k3",
+   "name": "MoonshotAI: Kimi K3",
+   "created": 1752600000,
+   "context_length": 1000000,
+   "pricing": {
+    "prompt": "0.000003",
+    "completion": "0.000015"
+   }
+  }
+ ]
+}

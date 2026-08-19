@@ -1,0 +1,84 @@
+# Scheduled data check: every Monday at 06:00 UTC the workflow asks the
+# public OpenRouter API whether the free routes WhichAI ships still exist,
+# whether prices and context windows drifted, and which models appeared
+# since the last catalog snapshot. Findings that need editorial judgement
+# (scores above all) are never applied silently: the workflow opens a pull
+# request and, when a shipped free route is dead, an issue.
+name: Data refresh
+
+on:
+  schedule:
+    - cron: "0 6 * * 1"
+  workflow_dispatch:
+    inputs:
+      strict:
+        description: "Fail the run when a shipped :free route is gone"
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+
+jobs:
+  check:
+    name: Check public sources
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    outputs:
+      changes: ${{ steps.check.outputs.changes }}
+      dead_routes: ${{ steps.check.outputs.dead_routes }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Query public sources and diff against the catalog
+        id: check
+        run: node tools/refresh-data.mjs
+
+      - name: Regenerate the static wiki and sitemap
+        run: node tools/build-seo.mjs
+
+      - name: Run the test suite over the regenerated files
+        run: |
+          npm install --no-audit --no-fund
+          node tests/run-tests.mjs
+          node tests/api-tests.mjs
+
+      - name: Open a pull request when something moved
+        if: steps.check.outputs.changes != '0'
+        uses: peter-evans/create-pull-request@v6
+        with:
+          branch: automated/data-refresh
+          title: "Data refresh: ${{ steps.check.outputs.changes }} item(s) to review"
+          commit-message: "chore(data): scheduled refresh - regenerated wiki and drift report"
+          body-path: data/refresh-report.md
+          labels: data, automated
+          delete-branch: true
+
+      - name: Raise an issue when a shipped free route died
+        if: steps.check.outputs.dead_routes != '0'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const report = JSON.parse(fs.readFileSync('data/refresh-report.json', 'utf8'));
+            await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: `Broken free route: ${report.deadFreeRoutes.join(', ')}`,
+              labels: ['bug', 'data', 'automated'],
+              body: [
+                'The scheduled data check found that a `:free` OpenRouter route WhichAI ships as a default no longer exists.',
+                '',
+                '**Dead routes:** ' + report.deadFreeRoutes.map(r => '`' + r + '`').join(', '),
+                '',
+                'Auto-run in Compare, Chains and Arena fails for every user on the default settings until `DEFAULT_OR_MODELS` in `js/app.js` points at a live route.',
+                '',
+                'Full report in `data/refresh-report.md` of the latest run.'
+              ].join('\n')
+            });

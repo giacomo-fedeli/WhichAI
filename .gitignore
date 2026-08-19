@@ -1,1 +1,7 @@
 .vercel
+node_modules
+dist
+data/refresh-report.json
+data/refresh-report.md
+_to_delete
+*.zip

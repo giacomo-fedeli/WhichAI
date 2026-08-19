@@ -41,8 +41,8 @@
           <path class="brand-needle" d="M15.5 8.5l-2.2 5-5 2.2 2.2-5z" fill="currentColor" stroke="none"></path>
         </svg>
         <span class="brand-name">WhichAI</span>
-        <span class="badge">v0.29 · Growth</span>
-        <span class="badge badge-privacy" title="Runs entirely in your browser. No account, no server, no tracking. API keys stay on your device."><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><rect x="4" y="10" width="16" height="10" rx="2"></rect><path d="M8 10V7a4 4 0 0 1 8 0v3"></path></svg><span id="privacy-text">Private by design</span></span>
+        <span class="badge">v0.30 · Growth</span>
+        <span class="badge badge-privacy" title="No account, no tracking. Goals, prompts and API keys stay in your browser. The WhichAI API is read-only and serves only the public model catalog."><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><rect x="4" y="10" width="16" height="10" rx="2"></rect><path d="M8 10V7a4 4 0 0 1 8 0v3"></path></svg><span id="privacy-text">Private by design</span></span>
       </div>
       <nav class="site-nav" aria-label="Views">
         <a href="#" id="nav-generator" class="active">Generator</a>
@@ -226,7 +226,7 @@
           <li><span class="step-n">2</span> Copy the prompt tailored to each AI</li>
           <li><span class="step-n">3</span> Compare the answers and iterate</li>
         </ol>
-        <p class="trust-line">No account · No server · Nothing leaves your browser</p>
+        <p class="trust-line">No account · No tracking · Nothing you write leaves your browser</p>
       </div>
 
       <div id="results-wrap" hidden>
@@ -247,6 +247,7 @@
       <h1>Model guide</h1>
       <p>Which AI app fits each kind of task - public benchmarks translated into plain language.</p>
       <p class="guide-updated" id="guide-updated"></p>
+      <p class="api-status" id="api-status" hidden></p>
     </div>
 
     <div class="db-hero" id="modeldb-wrap">
@@ -400,7 +401,7 @@
   <main class="layout-guide view" id="settings-view" hidden>
     <div class="guide-head">
       <h1>Settings</h1>
-      <p>API keys enable automatic execution in Compare. Keys are stored only in this browser and are sent only to the provider you call - never to any WhichAI server (there is none).</p>
+      <p>API keys enable automatic execution in Compare. They stay in this browser and are sent only to the provider you call, never to WhichAI's own API, which is read-only and accepts no data.</p>
     </div>
 
     <div class="card settings-card">
@@ -420,14 +421,26 @@
           <label class="model-check"><input type="radio" name="keymode" id="keymode-session" value="session" /> <span id="keymode-session-lbl">This session only (safer)</span></label>
           <label class="model-check"><input type="radio" name="keymode" id="keymode-local" value="local" /> <span id="keymode-local-lbl">Saved on this device</span></label>
         </div>
-        <p class="field-hint" id="keymode-hint">Keys never reach any WhichAI server (there is none). "Session only" forgets them when the browser closes. Saving on this device uses browser storage, which any script on this page could read, so it stays opt-in.</p>
-        <div class="test-row"><button id="keys-clear" class="btn-copy" type="button">Clear all API keys</button><span class="run-status" id="keys-clear-status" hidden></span></div>
+        <p class="field-hint" id="keymode-hint">"Session only" keeps the key in memory and forgets it when the tab closes. "Saved on this device" writes it to browser storage, where it survives a restart - and where any script running on this page could read it. That is why it stays opt-in.</p>
+        <p class="key-warn" id="keymode-warn" hidden>Your keys are being written to this browser's storage. On a shared or work computer, prefer session only.</p>
+        <div class="test-row"><button id="keys-clear" class="btn-copy danger" type="button">Clear all API keys</button><span class="run-status" id="keys-clear-status" hidden></span></div>
+
+        <details class="faq key-risk">
+          <summary id="key-risk-title">What a key can do, and what happens here</summary>
+          <ul class="catalog-list">
+            <li><span class="router-app">What the key can do</span><span class="router-free">Anyone holding it can spend your quota with that provider, under your account. On free tiers that means rate limits and a suspended key; on a paid account it means a bill. It cannot read your provider account, your other keys, or anything on this device.</span></li>
+            <li><span class="router-app">Where it goes from here</span><span class="router-free">Straight from this browser to <code>generativelanguage.googleapis.com</code>, <code>api.groq.com</code> or <code>openrouter.ai</code> - the only three destinations this page's Content-Security-Policy allows. WhichAI's own API is never in that path: it is read-only, takes no request body and would have nothing to leak.</span></li>
+            <li><span class="router-app">Why not route it through a backend</span><span class="router-free">A proxy would mean your key sitting on someone else's machine and every prompt passing through it. Keeping the call in your browser is the more private design, not the lazier one - the trade-off is that browser storage is only as safe as the browser.</span></li>
+            <li><span class="router-app">If a key leaks</span><span class="router-free">Revoke it and issue a new one - it takes a minute and costs nothing: <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener">Google AI Studio</a> · <a href="https://console.groq.com/keys" target="_blank" rel="noopener">Groq</a> · <a href="https://openrouter.ai/keys" target="_blank" rel="noopener">OpenRouter</a>. Never reuse a key you also use in a deployed app.</span></li>
+            <li><span class="router-app">Good habits</span><span class="router-free">Use free-tier keys only, one per tool, and set a spend limit where the provider offers one. WhichAI works fully without any key: copy and paste covers every model.</span></li>
+          </ul>
+        </details>
       </div>
 
       <h2 class="card-title">Google AI Studio - runs Gemini</h2>
       <div class="field">
         <label for="gemini-key">API key</label>
-        <input type="password" id="gemini-key" placeholder="AIza..." autocomplete="off" />
+        <span class="key-input-row"><input type="password" id="gemini-key" placeholder="AIza..." autocomplete="off" /><button type="button" class="key-reveal" data-key-target="gemini-key" aria-pressed="false" aria-label="Show or hide the Gemini key">Show</button></span>
       </div>
       <div class="field">
         <label for="gemini-model">Model</label>
@@ -439,7 +452,7 @@
       <h2 class="card-title">Groq - runs Llama</h2>
       <div class="field">
         <label for="groq-key">API key</label>
-        <input type="password" id="groq-key" placeholder="gsk_..." autocomplete="off" />
+        <span class="key-input-row"><input type="password" id="groq-key" placeholder="gsk_..." autocomplete="off" /><button type="button" class="key-reveal" data-key-target="groq-key" aria-pressed="false" aria-label="Show or hide the Groq key">Show</button></span>
       </div>
       <div class="field">
         <label for="groq-model">Model</label>
@@ -451,7 +464,7 @@
       <h2 class="card-title">OpenRouter - runs open models (Nemotron, Qwen, GLM, Kimi, DeepSeek)</h2>
       <div class="field">
         <label for="openrouter-key">API key</label>
-        <input type="password" id="openrouter-key" placeholder="sk-or-..." autocomplete="off" />
+        <span class="key-input-row"><input type="password" id="openrouter-key" placeholder="sk-or-..." autocomplete="off" /><button type="button" class="key-reveal" data-key-target="openrouter-key" aria-pressed="false" aria-label="Show or hide the OpenRouter key">Show</button></span>
         <p class="field-hint">One free key unlocks auto-run for several open models. Model IDs ending in ":free" cost nothing (about 20 requests/min, 200/day). Get a key at openrouter.ai - no credit card needed.</p>
       </div>
       <div class="field-grid">
@@ -510,16 +523,61 @@
       <p>An open, free, sincere project with one goal: reduce the uncertainty of using AI - which model, which prompt, with evidence.</p>
     </div>
 
+    <div class="card about-card" id="about-different">
+      <h2 class="card-title">How WhichAI is different from a leaderboard</h2>
+      <p class="about-text">Leaderboards measure models. WhichAI decides what to do with them. It does not run its own benchmarks and does not pretend to: it stands on published evaluations, cites them with a date, and adds the layer none of them cover - going from a goal written in plain language to a model choice <em>and</em> a prompt that model responds well to.</p>
+      <div class="cmp-table-wrap">
+        <table class="cmp-table">
+          <caption class="visually-hidden">Comparison between WhichAI and other AI model resources</caption>
+          <thead>
+            <tr><th scope="col">&nbsp;</th><th scope="col">LMArena · Artificial Analysis</th><th scope="col">Hugging Face</th><th scope="col">WhichAI</th></tr>
+          </thead>
+          <tbody>
+            <tr><th scope="row">Question it answers</th><td>Which model scores higher?</td><td>Where do I get and run a model?</td><td>Which AI should do <em>this</em> job, and what do I send it?</td></tr>
+            <tr><th scope="row">What you leave with</th><td>A ranking</td><td>Weights, datasets, spaces</td><td>A model pick, the reason, and a prompt written for it</td></tr>
+            <tr><th scope="row">Made for</th><td>Researchers tracking the frontier</td><td>ML engineers and builders</td><td>Anyone with a task and twelve open tabs</td></tr>
+            <tr><th scope="row">Where numbers come from</th><td>Their own evaluations</td><td>Community uploads</td><td>Their published snapshots, cited and dated</td></tr>
+            <tr><th scope="row">Needs an account</th><td>No</td><td>For most things, yes</td><td>No, and nothing here stores one</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="router-meta">If all you need is a ranking, use Artificial Analysis or LMArena directly - they are linked on every model page here. WhichAI is the layer on top, not a replacement.</p>
+    </div>
+
+    <div class="card about-card" id="about-api">
+      <h2 class="card-title">The WhichAI API</h2>
+      <p class="about-text">The catalog is not locked inside the page. Every endpoint is read-only, needs no key, sends CORS headers and is cached at the edge, so anyone can build on the dataset under CC BY 4.0.</p>
+      <ul class="catalog-list api-list">
+        <li><span class="router-app"><code>GET /api/health</code></span><span class="router-free">Status, data volume, snapshot dates and the list of endpoints.</span></li>
+        <li><span class="router-app"><code>GET /api/models</code></span><span class="router-free">The full catalog with search, tag and vendor filters, sorting and pagination. Add <code>?id=claude-opus-5</code> for one model.</span></li>
+        <li><span class="router-app"><code>GET /api/benchmarks</code></span><span class="router-free">The curated task rankings with sources. Add <code>?task=coding</code> to run the router server-side.</span></li>
+        <li><span class="router-app"><code>GET /api/recommend</code></span><span class="router-free">Send <code>?goal=</code> a plain-language goal: the server detects the task type and answers with a recommended AI plus a free alternative.</span></li>
+        <li><span class="router-app"><code>GET /api/stats</code></span><span class="router-free">Aggregates computed on the server: totals, score distribution, tallies by vendor and tag, leaderboard.</span></li>
+      </ul>
+      <p class="router-meta">Read-only by design: the API accepts GET and nothing else, takes no request body and stores nothing. Your goals, prompts and keys never reach it.</p>
+    </div>
+
+    <div class="card about-card" id="about-freshness">
+      <h2 class="card-title">How the data stays current</h2>
+      <p class="about-text">Not by hand, and not by pretending a machine can judge a benchmark. The split is deliberate:</p>
+      <ul class="catalog-list">
+        <li><span class="router-app">Automatic, every week</span> - a scheduled job queries public sources, verifies that every free model route the app ships still exists, flags price and context-window drift beyond a threshold, and lists models released since the last snapshot. It then regenerates the static pages and the sitemap and runs the full test suite.</li>
+        <li><span class="router-app">Automatic, on every change</span> - continuous integration runs the static checks, a DOM smoke test that boots the real app, and the API tests. A change that breaks any of them never reaches the site.</li>
+        <li><span class="router-app">Human, on purpose</span> - intelligence scores are never rewritten by a script. A drifting number opens a pull request with the evidence; a person confirms it against a dated public snapshot and cites it. The whole site is judged on those numbers being honest, so a robot does not get to change them quietly.</li>
+      </ul>
+      <p class="router-meta">Every page shows the snapshot date it was built from. When the API is reachable, the Model guide reports the live figures the backend is serving.</p>
+    </div>
+
     <div class="card about-card" id="about-faq">
       <h2 class="card-title">FAQ</h2>
       <details class="faq"><summary>Is WhichAI really free?</summary><p>Yes, completely. No account, no subscription, no ads, no tracking. It runs on free hosting and the optional auto-run features use your own free API keys (Google AI Studio, Groq). There is nothing to sell you.</p></details>
-      <details class="faq"><summary>Where do my data and API keys go?</summary><p>Nowhere. Everything (goals, prompts, comparisons, chains, keys) lives only in your browser. By default API keys are kept for the current session only; saving them on the device is an explicit opt-in in Settings. There is no WhichAI server. API keys are sent only to the provider you call (Google, Groq or OpenRouter), directly from your browser.</p></details>
+      <details class="faq"><summary>Where do my data and API keys go?</summary><p>Nowhere. Everything (goals, prompts, comparisons, chains, keys) lives only in your browser. By default API keys are kept for the current session only; saving them on the device is an explicit opt-in in Settings. WhichAI runs a read-only API that serves the public model catalog and nothing else: it accepts no request body, stores nothing and never sees what you type. API keys are sent only to the provider you call (Google, Groq or OpenRouter), directly from your browser.</p></details>
       <details class="faq"><summary>Why are generated prompts in English?</summary><p>Every major model performs measurably best with English instructions. Each generated prompt includes a rule telling the AI to answer in the language of your task - so you can write your goal in any language and get the answer in your language, with English-optimized instructions doing the heavy lifting.</p></details>
       <details class="faq"><summary>How reliable are the benchmark numbers?</summary><p>Where public leaderboards publish a score (LMArena, SWE-bench, Artificial Analysis) we use it and link the source. Where they don't - private, preview, rumored or niche models - we show a clearly marked estimate ("~", "est."). Data is refreshed roughly monthly; the snapshot date is always shown.</p></details>
       <details class="faq"><summary>What do the category scores and labels mean?</summary><p>Each model in the database gets one overall score (Artificial Analysis Intelligence Index where published) plus four category ratings - Coding, Reasoning, Writing, Agents &amp; tools - on a 0–100 scale. Category ratings are WhichAI blends of public category leaderboards and editorial judgment: use them to compare models at a glance, not as official measurements. Labels (like "free", "open weights", "in Generator") are filters: "in Generator" means you can generate optimized prompts for that model family right here.</p></details>
       <details class="faq"><summary>Do I need API keys to use this?</summary><p>No. Copy &amp; paste works with every model. Keys only add convenience: with free Google AI Studio, Groq or OpenRouter keys, Compare and Chains can run Gemini, Llama and several open models (Nemotron, Qwen Coder…) automatically.</p></details>
       <details class="faq"><summary>How does the model recommendation work?</summary><p>A curated dataset translates public benchmarks into per-task rankings with a confidence level and linked sources. It is guidance, not gospel - near-ties are declared as ties, and the router never hides its reasoning.</p></details>
-      <details class="faq"><summary>Can I contribute?</summary><p>Please do - see below. Ideas, corrections, new models for the database, translations: everything helps.</p></details>
+      <details class="faq"><summary>Can I contribute?</summary><p>Yes, in two ways. The dataset is open under CC BY 4.0 (<code>/api/models</code>, <code>data/models.json</code>) so you can build on it or check the numbers. And corrections are the most valuable thing you can send: a wrong score, a missing model, a bad translation, a screen that confused you. Contact details are below.</p></details>
     </div>
 
     <div class="card about-card" id="about-similar">
@@ -544,14 +602,14 @@
         <li><span class="router-app">Task router</span> - per-task rankings built from the benchmarks above, with a confidence level (high / medium / low) and linked sources. Near-ties are declared as ties.</li>
         <li><span class="router-app">Prices, context, speed</span> - vendor pages and public pricing mirrors, with the retrieval date stored in the database. Unpublished values show "n/a" and never enter charts.</li>
         <li><span class="router-app">Status labels</span> - public, preview, private, legacy, rumored. Rumored and private models are info-only: they never appear in rankings or recommendations.</li>
-        <li><span class="router-app">Independence</span> - no sponsored placements, no affiliate rankings, no accounts, no tracking. Mistakes are fixed via GitHub issues.</li>
+        <li><span class="router-app">Independence</span> - no sponsored placements, no affiliate rankings, no accounts, no tracking. Corrections are welcome and get fixed in the next data refresh: the contact details are in Contribute below.</li>
       </ul>
       <p class="router-meta">Limits: benchmarks are partial proxies of real work; snapshots age between refreshes; category blends involve judgment. When in doubt, run your own comparison in Compare.</p>
     </div>
 
     <div class="card about-card" id="about-support" hidden>
       <h2 class="card-title" id="support-title">Support WhichAI</h2>
-      <p class="about-text" id="support-text">WhichAI is free, has no ads, no sponsors and no server: the only costs are the domain and the hours that go into keeping 100+ models honest and up to date. If it saved you time, a small donation keeps it independent.</p>
+      <p class="about-text" id="support-text">WhichAI is free, has no ads and no sponsors: the only costs are the domain and the hours that go into keeping 100+ models honest and up to date. If it saved you time, a small donation keeps it independent.</p>
       <div class="compare-actions">
         <a id="support-btn" class="btn-primary btn-inline btn-official" href="#" target="_blank" rel="noopener">Donate ♥</a>
       </div>
@@ -560,9 +618,9 @@
 
     <div class="card about-card" id="about-contribute">
       <h2 class="card-title">Contribute &amp; contact</h2>
-      <p class="about-text">WhichAI is open source and built in public. Suggest features, report wrong data, add models to the database, improve translations - or just say what confused you:</p>
+      <p class="about-text">The dataset is open (CC BY 4.0) and reachable through the API; the application source is not public. Wrong data, missing models, bad translations and confusing screens are the most useful things you can send:</p>
       <ul class="catalog-list about-links">
-        <li><span class="router-app">GitHub</span> - <a href="https://github.com/Jackfdl/promptcompass-" target="_blank" rel="noopener">github.com/Jackfdl/promptcompass-</a><span class="router-free">Open an issue with ideas, corrections or bugs; pull requests welcome.</span></li>
+        <li><span class="router-app">Open dataset</span> - <a href="/api/models" target="_blank" rel="noopener">/api/models</a> and <a href="/data/models.json" target="_blank" rel="noopener">data/models.json</a><span class="router-free">109+ models with scores, prices and sources under CC BY 4.0. Attribution: WhichAI, whichai.wiki.</span></li>
         <li><span class="router-app">Contact</span> - Giacomo Fedeli · <a href="https://www.linkedin.com/in/giacomo-fedeli-277765239/" target="_blank" rel="noopener">LinkedIn</a><span class="router-free">For anything else: feedback, collaborations, hello.</span></li>
       </ul>
     </div>
@@ -612,7 +670,7 @@
       <a href="#glossary" id="foot-glossary">Glossary</a>
       <a href="#" id="foot-support" class="foot-support" target="_blank" rel="noopener" hidden>Support ♥</a>
     </nav>
-    <p>WhichAI v0.29 · Growth · Runs entirely in your browser: no account, no server, your keys and data never leave your device.</p>
+    <p>WhichAI v0.30 · Growth · Runs in your browser: no account, no tracking. Your goals, prompts and keys never leave your device.</p>
     <p id="visit-counter" class="visit-counter" hidden></p>
   </footer>
 
@@ -634,6 +692,7 @@
   <script src="js/radar.js"></script>
   <script src="js/sharecard.js"></script>
   <script src="js/config.js"></script>
+  <script src="js/api.js"></script>
   <script src="js/support.js"></script>
   <script src="js/topics.js"></script>
   <script src="js/arena.js"></script>
