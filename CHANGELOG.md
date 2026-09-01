@@ -2,6 +2,33 @@
 
 (Older release-by-release history lives in `STATUS.md`, the project's working memory.)
 
+## v0.31.0 (2026-08-31)
+
+The August data refresh, and the test suite that stopped breaking every time the data moves.
+
+### Data refresh (two mirrors, both cited)
+Scores come from the **BenchLM mirror of August 30** for the top ten and the **ModelCap mirror of August 27** for ranks 11 to 30, retrieved August 31. Twenty scores updated, five models added, catalog now 114.
+
+- **New top ten**: Claude Opus 5 63.0, Claude Fable 5 62.1, Grok 4.6 60.9, Kimi K3 59.7, GLM-5.3 59.5, GPT-5.6 Sol 58.9, Qwen3.8 Max 58.1, GLM-5.3-Flash 57.5, Claude Opus 4.8 57.3, Muse Spark 1.2 56.8. The ten now fit inside 6.3 points, and two Chinese labs sit in the top five.
+- **Stated plainly in the scale note**: the August index sits 1.5 to 2.5 points above July across the whole table. That is a shift in the index, not every model improving at once, and comparing the two months directly would mislead.
+- **Grok 4.6** (Aug 12), **GLM-5.3** (Aug 14), **Gemini 3.7 Flash** (Aug 13), **GLM-5.3-Flash** (Aug 26), **Muse Spark 1.2** (Aug 6) added with release dates, prices and sources.
+- **GLM-5.3 is not tagged open-weights**: it is the first GLM flagship to ship with weights held back behind a staged safety review. GLM-5.3-Flash is the open one (MIT, 320B-A18B, 1M multimodal context, $0.15/$0.50).
+- **Gemini 3.7 Flash is not claimed free**: its free tier is unconfirmed, so auto-run keeps defaulting to gemini-3.6-flash, whose free tier is confirmed. A broken default would break auto-run for every user on stock settings.
+- **Claude Sonnet 5**: the $2/$10 introductory API price expired on August 31; the entry now carries $3/$15.
+- **Qwen3.8 Max** moves from a declared estimate to a measured score (58.1).
+- Model Radar gains seven dated, sourced entries; the wiki regenerates to 174 pages and a 175-URL sitemap.
+
+### Changed
+- **Tests assert invariants, not frozen numbers.** Seven checks pinned July's exact values (`kimi-k3 === 57.1`, `/July 30, 2026/`), so every data refresh broke the suite and taught us to ignore it. They now assert what actually matters: the model exists and is measured within a plausible band, the snapshot date is real and not in the future, and the database and benchmark dates agree. One test was rewritten in its intent rather than its letter: "Qwen3.8 preview must be an estimate" became false the moment a real score was published, so it now asserts the rule the site is judged on, that no rumored model is ever presented as measured.
+- **A dead upstream source no longer fails the scheduled run.** `tools/refresh-data.mjs` reports "the upstream source did not answer", leaves the catalog untouched and exits clean, instead of ending a Monday morning with a stack trace. `--strict` still fails on purpose.
+- Repository references updated to `giacomo-fedeli/WhichAI`.
+
+### Verified in production
+All five API endpoints answer 200, the served `js/app.js` is minified (79 KB against a 126 KB source, so the build runs on Vercel), every security header is present, `POST /api/models` returns 405, and ETags are issued.
+
+### Tests
+181 static + 82 DOM smoke + 42 API = **305 passing**.
+
 ## v0.30.0 (2026-08-19)
 
 Answering an external technical review: a real backend, data that maintains itself, an even layout, and a privacy promise restated to stay true.

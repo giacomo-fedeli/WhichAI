@@ -27,7 +27,7 @@ Progetto attivo e avanzato (v0.25+, ~25 sessioni). NON ricominciare da capo: la 
 
 ## Contatti/link
 
-GitHub github.com/Jackfdl/promptcompass- · Vercel project "promptcompass" (team jackfdls-projects) · Sito live https://whichai.wiki (alias https://promptcompass.vercel.app) · Autore: Giacomo Fedeli, linkedin.com/in/giacomo-fedeli-277765239.
+GitHub github.com/giacomo-fedeli/WhichAI · Vercel project "promptcompass" (team jackfdls-projects) · Sito live https://whichai.wiki (alias https://promptcompass.vercel.app) · Autore: Giacomo Fedeli, linkedin.com/in/giacomo-fedeli-277765239.
 
 ## Imported Claude Cowork project instructions
 
@@ -50,4 +50,4 @@ REGOLE FISSE:
 - Separa sempre: "cosa faccio io (Claude)" vs "cosa devi fare tu (Jack)", con passi semplici.
 - Spiegazioni a Jack in italiano, semplici e dirette.
 
-CONTATTI/LINK: GitHub github.com/Jackfdl/promptcompass- · Vercel project "promptcompass" (team jackfdls-projects) · Autore: Giacomo Fedeli, linkedin.com/in/giacomo-fedeli-277765239.
+CONTATTI/LINK: GitHub github.com/giacomo-fedeli/WhichAI · Vercel project "promptcompass" (team jackfdls-projects) · Autore: Giacomo Fedeli, linkedin.com/in/giacomo-fedeli-277765239.

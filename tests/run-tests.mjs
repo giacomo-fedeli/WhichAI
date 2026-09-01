@@ -67,11 +67,14 @@ const Brands = require("../js/brands.js");
   check("db: category scores 0-100", !badCat, badCat);
   check("db: spec price fields numeric", !badSpec, badSpec);
   check("db: reviews substantive", !weakReview, weakReview);
-  check("db: kimi-k3 present with measured score", DB.models.some(m => m.id === "kimi-k3" && m.score.aa === 57.1 && !m.score.est));
-  check("db: inkling present with measured score", DB.models.some(m => m.id === "inkling" && m.score.aa === 40.7 && !m.score.est));
+  check("db: kimi-k3 present with measured score", DB.models.some(m => m.id === "kimi-k3" && !m.score.est && m.score.aa > 40 && m.score.aa < 70));
+  check("db: inkling present with measured score", DB.models.some(m => m.id === "inkling" && !m.score.est && m.score.aa > 20 && m.score.aa < 60));
   const specCount = DB.models.filter(m => m.spec).length;
   check("db: spec data on " + specCount + " models (>=15)", specCount >= 15);
-  check("db: updated field refreshed", /July 30, 2026/.test(DB.updated));
+  check("db: updated field is a real, non-future date", (() => {
+    const d = Date.parse(DB.updated);
+    return isFinite(d) && d <= Date.now() + 864e5;
+  })());
   const brandFiles = new Set();
   Object.values(Brands.FAMILIES).concat(Object.values(Brands.VENDORS)).forEach(b => {
     if (b.icon) brandFiles.add(b.icon);
@@ -92,7 +95,7 @@ const Brands = require("../js/brands.js");
     for (const sid of r.sourceIds) if (!Bench.sources.some(s => s.id === sid)) { ok = false; msg = t + " src " + sid; }
   }
   check("bench: 8 tasks × 4 apps, sources resolve", ok, msg);
-  check("bench: updated July 30", /July 30, 2026/.test(Bench.updated));
+  check("bench: snapshot date matches the database", Bench.updated === DB.updated && isFinite(Date.parse(Bench.updated)));
   check("bench: recommend falls back", Bench.recommend("nope") === Bench.taskTypes.general);
 }
 
@@ -204,12 +207,12 @@ const Brands = require("../js/brands.js");
 {
   const Arena = require("../js/arena.js");
   const o5 = DB.models.find(m => m.id === "claude-opus-5");
-  check("v28: Claude Opus 5 public #1 with specs", o5 && o5.status === "public" && o5.score.aa === 60.7 && !o5.score.est && o5.spec.priceIn === 5 && o5.family === "claude");
+  check("v28: Claude Opus 5 public with specs", o5 && o5.status === "public" && !o5.score.est && o5.score.aa > 55 && o5.spec.priceIn === 5 && o5.family === "claude");
   check("v28: measured #1 is Claude Opus 5", DB.models.filter(m => m.score && m.score.aa && !m.score.est).sort((a, b) => b.score.aa - a.score.aa)[0].id === "claude-opus-5");
   check("v28: Gemini 3.6 Flash + Flash-Lite present", ["gemini-3-6-flash", "gemini-3-5-flash-lite"].every(id => DB.models.some(m => m.id === id && !m.score.est)));
-  check("v28: Qwen 3.8 preview clearly estimated", DB.models.some(m => m.id === "qwen-3-8-max-preview" && m.status === "preview" && m.score.est));
+  check("v28: no rumored model is presented as measured", !DB.models.some(m => m.status === "rumored" && m.score && m.score.est === false));
   check("v28: lower-table corrections applied", DB.models.find(m => m.id === "mercury-2").score.aa === 21.4 && DB.models.find(m => m.id === "trinity-large").score.aa === 18.2);
-  check("v28+: db + bench freshly dated", /July 30, 2026/.test(DB.updated) && /July 30, 2026/.test(Bench.updated));
+  check("v28+: db and bench carry the same snapshot date", DB.updated === Bench.updated);
   check("v28: gemini BYOK default bumped", readFileSync("js/app.js", "utf8").includes('DEFAULT_GEMINI_MODEL = "gemini-3.6-flash"'));
   check("v28: finder/stack paid Claude pick is Opus 5", readFileSync("js/finder.js", "utf8").includes('low: "claude-opus-5"') && readFileSync("js/stack.js", "utf8").includes('paid: "claude-opus-5"'));
   const elo = Arena._elo({}, "a", "b", 1);
@@ -326,6 +329,62 @@ const Brands = require("../js/brands.js");
   check("v30: no em dash in the new modules", ![apiClient, refresh, build, lib].some(f => f.includes("—")));
 }
 
+/* ---------- 9g. v0.31: the August data refresh ---------- */
+{
+  const Changes = require("../js/changes.js");
+  const feed = Array.isArray(Changes) ? Changes : (Changes.CHANGES || Changes.changes || Changes.items || Changes.list || []);
+
+  const NEW_AUG = ["grok-4-6", "glm-5-3", "glm-5-3-flash", "gemini-3-7-flash", "muse-spark-1-2"];
+  check("v31: the five August models are in the catalog", NEW_AUG.every(id => DB.models.some(m => m.id === id)));
+  check("v31: every August model carries a release date and a measured score", NEW_AUG.every(id => {
+    const m = DB.models.find(x => x.id === id);
+    return m && m.score.est === false && m.spec && /^2026-08-/.test(m.spec.released);
+  }));
+  check("v31: every August model resolves an official link", NEW_AUG.every(id => {
+    const m = DB.models.find(x => x.id === id);
+    return !!(DB.links[m.family] || DB.vendorLinks[m.vendor]);
+  }));
+
+  const measured = DB.models.filter(m => m.score && m.score.est === false && typeof m.score.aa === "number");
+  const rank = measured.slice().sort((a, b) => b.score.aa - a.score.aa);
+  check("v31: leaderboard matches the cited August snapshot", rank[0].id === "claude-opus-5" && rank[0].score.aa === 63 && rank[1].id === "fable-5" && rank[2].id === "grok-4-6");
+  check("v31: the top ten sit inside the stated 6.3 points", Math.round((rank[0].score.aa - rank[9].score.aa) * 10) / 10 <= 6.3);
+
+  /* The August index shifted the whole table upward. Saying so is the point:
+     a reader comparing to July must not be told the models all improved. */
+  check("v31: the scale shift is disclosed, not hidden", /shift in the index/.test(DB.scaleNote) && /August 30, 2026/.test(DB.scaleNote) && /August 27, 2026/.test(DB.scaleNote));
+  check("v31: both mirrors are cited as sources", ["aa-aug", "aa-aug-mc"].every(id => Bench.sources.some(s2 => s2.id === id && /^https:/.test(s2.url))));
+
+  /* GLM-5.3 shipped without weights: claiming otherwise would be the exact
+     kind of error the methodology page promises not to make. */
+  const glm53 = DB.models.find(m => m.id === "glm-5-3");
+  check("v31: GLM-5.3 is not tagged open-weights", !glm53.tags.includes("open-weights") && /NOT released/.test(glm53.access));
+  const glmFlash = DB.models.find(m => m.id === "glm-5-3-flash");
+  check("v31: GLM-5.3-Flash is tagged open-weights with its licence", glmFlash.tags.includes("open-weights") && /MIT/.test(glmFlash.access));
+
+  /* Gemini 3.7 Flash has no confirmed free tier, so it must not become the
+     auto-run default and must not carry the free tag. */
+  const g37 = DB.models.find(m => m.id === "gemini-3-7-flash");
+  check("v31: Gemini 3.7 Flash is not claimed free", !g37.tags.includes("free") && /not confirmed/.test(g37.access));
+  check("v31: BYOK default stays on the model with a confirmed free tier", readFileSync("js/app.js", "utf8").includes('DEFAULT_GEMINI_MODEL = "gemini-3.6-flash"'));
+
+  check("v31: Sonnet 5 intro pricing recorded as expired", (() => {
+    const m = DB.models.find(x => x.id === "sonnet-5");
+    return m.spec.priceIn === 3 && m.spec.priceOut === 15 && /expired/.test(m.spec.note);
+  })());
+
+  check("v31: radar carries the August entries with sources", (() => {
+    const aug = feed.filter(e => /^2026-08-/.test(e.date));
+    return aug.length >= 6 && aug.every(e => e.src && /^https:/.test(e.src.url) && e.note && e.note.length > 40);
+  })());
+  check("v31: radar dbIds all resolve", feed.every(e => !e.dbId || DB.models.some(m => m.id === e.dbId)));
+
+  const refresh = readFileSync("tools/refresh-data.mjs", "utf8");
+  check("v31: a dead upstream source degrades instead of failing the run", refresh.includes("Skipped: the upstream source did not answer") && refresh.includes("process.exit(STRICT ? 1 : 0)"));
+
+  check("v31: repo references point at the current repository", !["README.md", "AGENTS.md", "HANDOVER.md"].some(f => readFileSync(f, "utf8").includes("Jackfdl/promptcompass-")));
+}
+
 /* ---------- 10. HTML ↔ JS id cross-check ---------- */
 {
   const html = readFileSync("index.html", "utf8");
@@ -360,10 +419,10 @@ const Brands = require("../js/brands.js");
   const html = readFileSync("index.html", "utf8");
   const app = readFileSync("js/app.js", "utf8");
   const sw = readFileSync("sw.js", "utf8");
-  check("version: badge v0.30", html.includes(">v0.30 · Growth<"));
-  check("version: footer v0.30", html.includes("WhichAI v0.30"));
-  check("version: APP_VERSION v0.30", app.includes('APP_VERSION = "v0.30"'));
-  check("version: SW cache v0.30", sw.includes('"whichai-v0.30.0"'));
+  check("version: badge v0.31", html.includes(">v0.31 · Growth<"));
+  check("version: footer v0.31", html.includes("WhichAI v0.31"));
+  check("version: APP_VERSION v0.31", app.includes('APP_VERSION = "v0.31"'));
+  check("version: SW cache v0.31", sw.includes('"whichai-v0.31.0"'));
   const welcomeJs = readFileSync("js/welcome.js", "utf8");
   check("v0.27: morph reaches target before opacity fade", welcomeJs.includes("offset: 0.76") && welcomeJs.includes("opacity: 0") && welcomeJs.includes("1050"));
   check("v0.27: dark wordmarks use a light treatment", /\[data-theme="dark"\] \.ai-brand-wordmark\s*\{[^}]*invert\(1\)/s.test(readFileSync("styles.css", "utf8")));

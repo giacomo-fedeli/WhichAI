@@ -213,7 +213,35 @@ function markdown(r) {
   return L.join("\n");
 }
 
-const upstream = await fetchUpstream();
+/* A public source being down is not a reason to page anyone at 06:00 on a
+   Monday. Report it as a skipped check and exit clean, unless --strict. */
+let upstream = null;
+let sourceError = null;
+try {
+  upstream = await fetchUpstream();
+} catch (err) {
+  sourceError = err && err.message ? err.message : String(err);
+}
+
+if (!upstream) {
+  const md = [
+    "## WhichAI scheduled data check",
+    "",
+    "**Skipped: the upstream source did not answer.**",
+    "",
+    "- Source: `" + OR_ENDPOINT + "`",
+    "- Reason: " + sourceError,
+    "- Catalog left untouched (snapshot " + DB.updated + ", " + DB.models.length + " models).",
+    "",
+    "Nothing is wrong with the catalog: the check simply could not run. The next scheduled run will retry.",
+    ""
+  ].join("\n");
+  console.log(md);
+  if (process.env.GITHUB_STEP_SUMMARY) writeFileSync(process.env.GITHUB_STEP_SUMMARY, md + "\n", { flag: "a" });
+  if (process.env.GITHUB_OUTPUT) writeFileSync(process.env.GITHUB_OUTPUT, "changes=0\ndead_routes=0\nsource_error=1\n", { flag: "a" });
+  process.exit(STRICT ? 1 : 0);
+}
+
 const report = main(upstream);
 writeFileSync(new URL("../data/refresh-report.json", import.meta.url), JSON.stringify(report, null, 1) + "\n");
 const md = markdown(report);

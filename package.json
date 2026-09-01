@@ -1,6 +1,6 @@
 {
   "name": "whichai",
-  "version": "0.30.0",
+  "version": "0.31.0",
   "private": true,
   "description": "WhichAI - which AI should do this, and what prompt should it get. Static frontend, serverless read-only API, zero tracking.",
   "homepage": "https://whichai.wiki",

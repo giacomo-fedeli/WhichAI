@@ -9,7 +9,7 @@
   "use strict";
 
   var Bench = {
-    updated: "July 30, 2026",
+    updated: "August 31, 2026",
 
     disclaimer:
       "Snapshot curated from public leaderboards and comparisons. Rankings shift fast - treat this as guidance, not gospel.",
@@ -51,6 +51,16 @@
       { id: "lmarena", label: "LMArena leaderboard (community head-to-head votes)", url: "https://arena.ai/leaderboard" },
       { id: "swebench", label: "SWE-bench Verified / Pro (real-world coding tasks)", url: "https://llm-stats.com/benchmarks/swe-bench-verified" },
       { id: "aa", label: "Artificial Analysis Intelligence Index", url: "https://artificialanalysis.ai" },
+    {
+      id: "aa-aug",
+      label: "AA Intelligence Index snapshot, August 30, 2026 (BenchLM mirror)",
+      url: "https://benchlm.ai/benchmarks/artificialanalysis"
+    },
+    {
+      id: "aa-aug-mc",
+      label: "AA Intelligence Index snapshot, August 27, 2026 (ModelCap mirror)",
+      url: "https://modelcap.ai/benchmarks/artificial-analysis-intelligence-index"
+    },
       { id: "tiers", label: "Plans and free-tier comparison (June 2026)", url: "https://www.morphllm.com/comparisons/chatgpt-vs-claude-vs-gemini" },
       { id: "cw", label: "Creative-writing model guide (July 2026)", url: "https://www.buildmvpfast.com/articles/best-llms-2026-guide/creative-writing-ai" },
       { id: "pplx", label: "Perplexity plans, features and Sonar (2026)", url: "https://suprmind.ai/hub/perplexity/pricing/" },
@@ -157,7 +167,7 @@
       general: {
         confidence: "high",
         summary:
-          "The top tier has never been closer - the top ten sit within about 28 Elo points on LMArena (July 16 update). Claude holds #1 overall, GPT-5.6 is right behind, and the July surprise Kimi K3 joined the leaders; Perplexity is the specialist you add for anything that needs sources.",
+          "The top ten now sit within 6.3 points of each other on the August 30 index. Anthropic still holds the first two places (Opus 5 at 63.0, Fable 5 at 62.1), but August was the month the field closed in: Grok 4.6 took third at 60.9, and Kimi K3 and GLM-5.3 put two Chinese labs in the top five. Perplexity remains the specialist you add for anything that needs sources.",
         ranking: [
           { app: "claude", note: "The new Opus 5 (July 24) tops the AA snapshot at 60.7 with Fable 5 right behind (59.9): Anthropic holds the top two spots. GPT-5.6 Sol follows (58.9) and stays the value pick for agentic work; Moonshot's Kimi K3 (57.1) remains the closest outside challenger." },
           { app: "chatgpt", note: "A hair behind on aggregate scores, and the most complete all-round app." },

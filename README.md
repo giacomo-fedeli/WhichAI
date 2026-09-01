@@ -27,7 +27,7 @@ Turn a plain-language goal into prompts optimized for each AI model - and know w
 
 **11 languages & three themes.** Interface in English, Italiano, Français, Español, Deutsch, Português, 中文, हिन्दी, Русский, 日本語 and العربية - full right-to-left layout for Arabic - plus light, dark and a warm sepia reading theme, with a soft cross-fade on switch.
 
-**About & FAQ.** What the project is (open, free, sincere), an 8-question FAQ, a fair list of similar tools and what each does better, and how to contribute on [GitHub](https://github.com/Jackfdl/promptcompass-) or reach the author on [LinkedIn](https://www.linkedin.com/in/giacomo-fedeli-277765239/). FAQ, Similar tools, Contribute and Glossary are one tap away in the footer of every view.
+**About & FAQ.** What the project is (open, free, sincere), an 8-question FAQ, a fair list of similar tools and what each does better, and how to contribute on [GitHub](https://github.com/giacomo-fedeli/WhichAI) or reach the author on [LinkedIn](https://www.linkedin.com/in/giacomo-fedeli-277765239/). FAQ, Similar tools, Contribute and Glossary are one tap away in the footer of every view.
 
 **Installable (PWA).** Add WhichAI to your phone's home screen: standalone window, compass icon, offline fallback via a network-first service worker that never serves stale versions.
 

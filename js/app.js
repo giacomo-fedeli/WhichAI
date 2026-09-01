@@ -112,7 +112,7 @@
   var THEME_KEY = "pc_theme";
   var DEFAULT_GEMINI_MODEL = "gemini-3.6-flash";
   var DEFAULT_GROQ_MODEL = "llama-3.3-70b-versatile";
-  var APP_VERSION = "v0.30";
+  var APP_VERSION = "v0.31";
   var BRAND = "WhichAI";
   var TASK_ICONS = {
     writing: '<svg class="guide-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M4 20l1-4L16.5 4.5a2.1 2.1 0 013 3L8 19l-4 1z"/><path d="M13.5 7.5l3 3"/></svg>',

@@ -11,11 +11,11 @@ Questo file serve a riprendere il progetto su un altro computer con Claude Cowor
 ## A. Checklist per Jack (l'umano) — trasferimento
 
 1. **Metodo consigliato: GitHub (è già il tuo backup!)**
-   - Su QUESTO pc: pubblica v0.20 (upload di tutta la cartella su github.com/Jackfdl/promptcompass- → Commit). Così il repo contiene l'ultima versione e Vercel va live.
+   - Su QUESTO pc: pubblica v0.20 (upload di tutta la cartella su github.com/giacomo-fedeli/WhichAI → Commit). Così il repo contiene l'ultima versione e Vercel va live.
    - Sul NUOVO pc: vai sul repo → Code → Download ZIP → estrai in `C:\dev\PromptCompassFolder`. Fine.
 2. **Metodo alternativo: Drive** — carica l'intera cartella `C:\dev\PromptCompassFolder` su Drive (tasto destro → comprimi in .zip prima, così non perdi nulla), scaricala sul nuovo pc ed estraila in `C:\dev\PromptCompassFolder`.
 3. Sul nuovo pc, in Claude Cowork: crea un progetto (es. "PromptCompass"), incolla le **Project instructions** (sezione B), avvia una chat, collega la cartella `C:\dev\PromptCompassFolder` quando Claude la chiede (o scrivi il percorso nel primo messaggio), e incolla il **Primo prompt** (sezione C).
-4. Account che devi avere a portata: GitHub (Jackfdl), Vercel (jackfdl / promptcompass), Google AI Studio + Groq + OpenRouter (le chiavi API restano nei browser dove le hai inserite — NON sono nella cartella, per design).
+4. Account che devi avere a portata: GitHub (giacomo-fedeli), Vercel (jackfdl / promptcompass), Google AI Studio + Groq + OpenRouter (le chiavi API restano nei browser dove le hai inserite — NON sono nella cartella, per design).
 5. Se PowerShell blocca `npx`: `Set-ExecutionPolicy RemoteSigned -Scope CurrentUser` da amministratore, conferma con S.
 
 ## B. Project instructions per Cowork (copia-incolla)
@@ -40,7 +40,7 @@ REGOLE FISSE:
 - Separa sempre: "cosa faccio io (Claude)" vs "cosa devi fare tu (Jack)", con passi semplici.
 - Spiegazioni a Jack in italiano, semplici e dirette.
 
-CONTATTI/LINK: GitHub github.com/Jackfdl/promptcompass- · Vercel project "promptcompass" (team jackfdls-projects) · Autore: Giacomo Fedeli, linkedin.com/in/giacomo-fedeli-277765239.
+CONTATTI/LINK: GitHub github.com/giacomo-fedeli/WhichAI · Vercel project "promptcompass" (team jackfdls-projects) · Autore: Giacomo Fedeli, linkedin.com/in/giacomo-fedeli-277765239.
 ```
 
 ## C. Primo prompt per la prima chat sul nuovo pc (copia-incolla)

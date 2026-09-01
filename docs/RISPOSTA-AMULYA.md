@@ -1,8 +1,17 @@
 # Bozza di risposta ad Amulya Galmarini
 
-**Da inviare DOPO il deploy di v0.30**, così ogni cosa che scrivi è verificabile
-aprendo il sito. Se vuoi rispondere prima, cambia i verbi al futuro nei punti 2,
-5 e 6.
+**Stato al 31 agosto 2026: v0.30 è live e verificata**, quindi i punti 1, 2, 3,
+4 e 6 sono già veri e controllabili aprendo il sito.
+
+**Una cosa da sistemare prima di inviare:** il punto 5 dice "il repo diventa
+privato", ma `github.com/giacomo-fedeli/WhichAI` risulta ancora **pubblico**.
+Delle tre misure che aveva senso prendere, due sono fatte (build minificata in
+produzione, logica dietro `/api`, più `LICENSE.md`) e una no. Scegli:
+
+- se lo rendi privato prima di inviare, la frase va bene com'è;
+- se decidi di lasciarlo pubblico, sostituisci quel paragrafo con la versione
+  alternativa in fondo a questo file: è altrettanto solida e non ti fa dire
+  una cosa che lui può smentire in dieci secondi.
 
 Oggetto: `Re: (la sua email)` · A: `a.galmarini3003@gmail.com`
 
@@ -76,7 +85,7 @@ schedulato che ogni lunedì interroga le fonti pubbliche e verifica che ogni rou
 gratuita che l'app spedisce di default esista ancora (la legge direttamente dal
 codice, così il controllo non può divergere da quello che ricevono gli utenti),
 segnala drift di prezzo e context window, elenca i modelli usciti dopo l'ultimo
-snapshot, rigenera le 169 pagine statiche e la sitemap e fa girare tutti i test.
+snapshot, rigenera le 174 pagine statiche e la sitemap e fa girare tutti i test.
 Poi apre una pull request con l'evidenza, e una issue se una route gratuita è
 morta. L'unica cosa che resta volutamente umana sono i punteggi di intelligenza:
 quelli non li riscrive uno script, perché tutto il sito si gioca la credibilità
@@ -89,3 +98,20 @@ addolcire: questa email è la prova che le critiche dirette le uso.
 Grazie ancora, davvero.
 
 Giacomo
+
+
+---
+
+## Versione alternativa del punto 5 (se il repo resta pubblico)
+
+> **"È esposto troppo quello che c'è dietro dei file .js"**
+> Vero, e la cosa onesta da dire è che la minificazione offusca ma non protegge:
+> quello che il browser esegue, il browser lo può mostrare. Ho quindi scelto
+> deliberatamente di non fingere: la produzione passa da una build minificata
+> (esbuild, 170 KB in meno, con l'hash della CSP ricalcolato e verificato dal
+> build stesso), la logica che vale sta dietro `/api`, e un `LICENSE.md` separa
+> le due cose - dataset aperto CC BY 4.0, codice applicativo all rights
+> reserved. Il repo resta pubblico perché su un progetto che si vende sulla
+> trasparenza dei dati e della metodologia, nascondere il codice avrebbe
+> guadagnato poco e tolto molto. La protezione è legale e architetturale, non
+> cosmetica: è l'unica che regge davvero.

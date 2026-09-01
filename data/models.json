@@ -2,11 +2,11 @@
  "project": "WhichAI",
  "site": "https://whichai.wiki",
  "license": "CC BY 4.0 (attribution: WhichAI, whichai.wiki)",
- "generated": "2026-08-19",
- "snapshot": "July 30, 2026",
- "scaleNote": "Artificial Analysis Intelligence Index, 2026 rebased scale (top models ≈ 55–60). Snapshot: July 24, 2026 (BenchLM mirror), retrieved July 26, 2026; sources re-verified July 30, 2026.",
- "specNote": "Context, price and release data come from vendor pages and public pricing mirrors (retrieved July 19, 2026). Missing values are not published or not yet verified - shown as -.",
- "count": 109,
+ "generated": "2026-08-31",
+ "snapshot": "August 31, 2026",
+ "scaleNote": "Artificial Analysis Intelligence Index, 2026 rebased scale (top models ~ 55-63). Snapshots: August 30, 2026 (BenchLM mirror) for the top ten, August 27, 2026 (ModelCap mirror) for the rest; retrieved August 31, 2026. August scores sit roughly 1.5 to 2.5 points above July across the whole table, so treat month-to-month differences as a shift in the index, not as every model improving at once.",
+ "specNote": "Context, price and release data come from vendor pages and public pricing mirrors (retrieved August 31, 2026). Missing values are not published or not yet verified - shown as -.",
+ "count": 114,
  "models": [
   {
    "id": "gpt-6",
@@ -93,7 +93,7 @@
     "value"
    ],
    "score": {
-    "aa": 55,
+    "aa": 56.6,
     "est": false,
     "cat": {
      "coding": 86,
@@ -126,7 +126,7 @@
     "value"
    ],
    "score": {
-    "aa": 51.2,
+    "aa": 52.3,
     "est": false,
     "cat": {
      "coding": 78,
@@ -159,7 +159,7 @@
     "writing"
    ],
    "score": {
-    "aa": 54.8,
+    "aa": 56.3,
     "est": false,
     "cat": {
      "coding": 88,
@@ -214,7 +214,7 @@
     "reasoning"
    ],
    "score": {
-    "aa": 51.4,
+    "aa": 53.1,
     "est": false,
     "cat": {
      "coding": 82,
@@ -578,7 +578,7 @@
     "note": "cache hits $0.50/M; Batch -50%; 128K output"
    },
    "score": {
-    "aa": 60.7,
+    "aa": 63,
     "est": false,
     "cat": {
      "coding": 93,
@@ -641,7 +641,7 @@
     "agents"
    ],
    "score": {
-    "aa": 59.9,
+    "aa": 62.1,
     "est": false,
     "cat": {
      "coding": 89,
@@ -675,7 +675,7 @@
     "reasoning"
    ],
    "score": {
-    "aa": 55.7,
+    "aa": 57.3,
     "est": false,
     "cat": {
      "coding": 92,
@@ -704,7 +704,7 @@
     "reasoning"
    ],
    "score": {
-    "aa": 53.5,
+    "aa": 55,
     "est": false,
     "cat": {
      "coding": 86,
@@ -723,9 +723,9 @@
    "status": "public",
    "spec": {
     "ctx": "1M",
-    "priceIn": 2,
-    "priceOut": 10,
-    "note": "intro API price to Aug 31, 2026 - then $3/$15"
+    "priceIn": 3,
+    "priceOut": 15,
+    "note": "the $2/$10 introductory API price expired Aug 31, 2026"
    },
    "access": "FREE tier of claude.ai · API",
    "tags": [
@@ -739,7 +739,7 @@
     "value"
    ],
    "score": {
-    "aa": 53.4,
+    "aa": 55.3,
     "est": false,
     "cat": {
      "coding": 84,
@@ -964,7 +964,7 @@
     "vision"
    ],
    "score": {
-    "aa": 46.5,
+    "aa": 47.7,
     "est": false,
     "cat": {
      "coding": 84,
@@ -1003,6 +1003,43 @@
    "review": "The widely expected Pro refresh of the Gemini line. Third-party release trackers treated it as imminent in late July; until Google speaks, everything here (including the name) is rumor and the score is a placeholder estimate."
   },
   {
+   "id": "gemini-3-7-flash",
+   "name": "Gemini 3.7 Flash",
+   "vendor": "Google",
+   "family": "gemini",
+   "status": "public",
+   "spec": {
+    "released": "2026-08-13",
+    "ctx": "1M",
+    "priceIn": 0.75,
+    "priceOut": 3.75,
+    "note": "introductory price to Dec 31, 2026 - then $1.50/$7.50 · 64K max output"
+   },
+   "access": "Released August 13, 2026 · API $0.75/$3.75 per 1M tokens (introductory, doubles Jan 1, 2027) · model id gemini-3.7-flash · free-tier availability not confirmed",
+   "tags": [
+    "paid",
+    "api",
+    "prompt-target"
+   ],
+   "labels": [
+    "coding",
+    "agents",
+    "speed",
+    "value"
+   ],
+   "score": {
+    "aa": 56,
+    "est": false,
+    "cat": {
+     "coding": 84,
+     "reasoning": 82,
+     "writing": 74,
+     "agents": 84
+    }
+   },
+   "review": "Google's August workhorse, aimed squarely at coding and agents: 85.8% on Terminal-bench 2.1, 97.0% on long-context recall at 128K, and half the price of 3.6 Flash until the end of the year. WhichAI still defaults auto-run to gemini-3.6-flash because that model's free tier is confirmed and this one's is not - switch it in Settings if Google has enabled yours."
+  },
+  {
    "id": "gemini-3-6-flash",
    "name": "Gemini 3.6 Flash",
    "vendor": "Google",
@@ -1027,7 +1064,7 @@
     "priceOut": 7.5
    },
    "score": {
-    "aa": 50.1,
+    "aa": 51.6,
     "est": false,
     "cat": {
      "coding": 76,
@@ -1095,7 +1132,7 @@
     "vision"
    ],
    "score": {
-    "aa": 50.2,
+    "aa": 52,
     "est": false,
     "cat": {
      "coding": 80,
@@ -1353,6 +1390,43 @@
    "review": "xAI's long-promised next flagship. Timelines have slipped more than once; any spec you read is speculation."
   },
   {
+   "id": "grok-4-6",
+   "name": "Grok 4.6",
+   "vendor": "xAI",
+   "family": "grok",
+   "status": "public",
+   "spec": {
+    "released": "2026-08-12",
+    "ctx": "500K",
+    "priceIn": 2,
+    "priceOut": 6,
+    "speed": "~58 tok/s (below the ~86 tok/s field median)",
+    "note": "$0.50 per 1M cached input · reasoning effort: low / medium / high / xhigh"
+   },
+   "access": "Released August 12, 2026 · API $2/$6 per 1M tokens ($0.50 cached) · in Grok Build and Cursor · SuperGrok subscription",
+   "tags": [
+    "paid",
+    "api",
+    "prompt-target"
+   ],
+   "labels": [
+    "coding",
+    "agents",
+    "reasoning"
+   ],
+   "score": {
+    "aa": 60.9,
+    "est": false,
+    "cat": {
+     "coding": 90,
+     "reasoning": 92,
+     "writing": 78,
+     "agents": 93
+    }
+   },
+   "review": "xAI's August flagship and its first entry in the AA top three (60.9): 70.8% on CursorBench 3.2, 87.0% on VulcanBench v3, and selectable reasoning effort from low to xhigh. Two honest caveats: the 500K context is half what the Claude, GPT and Kimi flagships offer, and measured throughput (~58 tok/s) sits below the field median."
+  },
+  {
    "id": "grok-4-5",
    "name": "Grok 4.5",
    "vendor": "xAI",
@@ -1376,7 +1450,7 @@
     "value"
    ],
    "score": {
-    "aa": 53.8,
+    "aa": 55.8,
     "est": false,
     "cat": {
      "coding": 89,
@@ -1551,6 +1625,38 @@
    "review": "Persistent rumors, zero official signal: no Meta announcement and no Hugging Face weights. Any 'Llama 5 review' online is premature or invented. Meta's proprietary Muse line now gets the frontier attention."
   },
   {
+   "id": "muse-spark-1-2",
+   "name": "Muse Spark 1.2",
+   "vendor": "Meta",
+   "family": "meta",
+   "status": "public",
+   "spec": {
+    "released": "2026-08-06"
+   },
+   "access": "API via Meta Superintelligence Labs (August 6, 2026 refresh of the 1.1 line)",
+   "tags": [
+    "paid",
+    "api",
+    "prompt-target"
+   ],
+   "labels": [
+    "agents",
+    "vision",
+    "reasoning"
+   ],
+   "score": {
+    "aa": 56.8,
+    "est": false,
+    "cat": {
+     "coding": 80,
+     "reasoning": 82,
+     "writing": 70,
+     "agents": 85
+    }
+   },
+   "review": "Meta's August refresh puts the Muse line back in the top ten (56.8, up 3.6 from 1.1): the strongest showing yet for Meta's proprietary track, and a reminder that the Llama brand is no longer where Meta's frontier work happens."
+  },
+  {
    "id": "muse-spark-1-1",
    "name": "Muse Spark 1.1",
    "vendor": "Meta",
@@ -1571,7 +1677,7 @@
     "reasoning"
    ],
    "score": {
-    "aa": 50.6,
+    "aa": 53.2,
     "est": false,
     "cat": {
      "coding": 74,
@@ -1950,8 +2056,8 @@
     "released": "2026-07-19"
    },
    "score": {
-    "aa": 48,
-    "est": true,
+    "aa": 58.1,
+    "est": false,
     "cat": {
      "coding": 80,
      "reasoning": 82,
@@ -1980,7 +2086,7 @@
     "reasoning"
    ],
    "score": {
-    "aa": 46,
+    "aa": 46.7,
     "est": false,
     "cat": {
      "coding": 82,
@@ -2168,7 +2274,7 @@
     "priceOut": 15
    },
    "score": {
-    "aa": 57.1,
+    "aa": 59.7,
     "est": false,
     "cat": {
      "coding": 90,
@@ -2198,7 +2304,7 @@
     "long-context"
    ],
    "score": {
-    "aa": 44.2,
+    "aa": 45.1,
     "est": false,
     "cat": {
      "coding": 88,
@@ -2266,6 +2372,79 @@
    "review": "The previous Kimi - still a solid open all-rounder with excellent long-context behavior."
   },
   {
+   "id": "glm-5-3",
+   "name": "GLM-5.3",
+   "vendor": "Z.ai",
+   "family": "glm",
+   "status": "public",
+   "spec": {
+    "released": "2026-08-14",
+    "note": "743B post-trained base · weights held back pending a staged safety review · price not published"
+   },
+   "access": "Released August 14, 2026 · staged access · open weights NOT released at launch (unlike every previous GLM) · API price not published",
+   "tags": [
+    "api",
+    "prompt-target"
+   ],
+   "labels": [
+    "coding",
+    "reasoning",
+    "agents"
+   ],
+   "score": {
+    "aa": 59.5,
+    "est": false,
+    "cat": {
+     "coding": 91,
+     "reasoning": 88,
+     "writing": 72,
+     "agents": 88
+    }
+   },
+   "review": "Z.ai's 743B flagship: AA 59.5, the highest a Chinese lab has scored, with 84.5% on CyberGym and 54.4% on ExploitBench. The break with tradition matters more than the score: weights are held back behind a staged safety review, so for now GLM-5.3 is not the open model its version number suggests. The Flash sibling is."
+  },
+  {
+   "id": "glm-5-3-flash",
+   "name": "GLM-5.3-Flash",
+   "vendor": "Z.ai",
+   "family": "glm",
+   "status": "public",
+   "spec": {
+    "released": "2026-08-26",
+    "ctx": "1M",
+    "modal": "Text + vision",
+    "priceIn": 0.15,
+    "priceOut": 0.5,
+    "note": "320B-A18B MoE, MIT licence"
+   },
+   "access": "Released August 26, 2026 · open weights under MIT · API $0.15/$0.50 per 1M tokens · free chat at chat.z.ai",
+   "tags": [
+    "free",
+    "paid",
+    "api",
+    "open-weights",
+    "prompt-target"
+   ],
+   "labels": [
+    "coding",
+    "agents",
+    "value",
+    "vision",
+    "long-context"
+   ],
+   "score": {
+    "aa": 57.5,
+    "est": false,
+    "cat": {
+     "coding": 89,
+     "reasoning": 84,
+     "writing": 70,
+     "agents": 86
+    }
+   },
+   "review": "The most capable freely downloadable model on this table: 320B-A18B, MIT licence, 1M multimodal context, and $0.15/$0.50 hosted - roughly a thirtieth of what the frontier charges for a score within six points of it. If one entry explains why the open-weight gap stopped mattering in 2026, it is this one."
+  },
+  {
    "id": "glm-5-2",
    "name": "GLM-5.2",
    "vendor": "Z.ai",
@@ -2284,7 +2463,7 @@
     "value"
    ],
    "score": {
-    "aa": 51.1,
+    "aa": 52.6,
     "est": false,
     "cat": {
      "coding": 90,
@@ -2598,7 +2777,7 @@
     "modal": "Text, image, audio"
    },
    "score": {
-    "aa": 40.7,
+    "aa": 42.3,
     "est": false,
     "cat": {
      "coding": 62,

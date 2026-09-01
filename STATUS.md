@@ -1,10 +1,34 @@
 # WhichAI (ex PromptCompass) — STATUS
 
-Ultimo aggiornamento: 2026-08-19 (sessione 31 - Claude)
-Versione app: v0.30.0 (in cartella; live v0.29 fino al prossimo push di Jack)
+Ultimo aggiornamento: 2026-08-31 (sessione 32 - Claude)
+Versione app: v0.31.0 (in cartella; live v0.30 verificata funzionante, API inclusa)
 Sito live: https://whichai.wiki · https://promptcompass.vercel.app resta come alias
 
 ## Fase corrente: Growth - fase 2 (backend reale, automazione dati, risposta alla review esterna)
+
+## Fatto (sessione 32, 2026-08-31 - Claude): check completo + refresh dati agosto
+
+Sessione di verifica dopo il deploy di v0.30 e di aggiornamento dati (32 giorni scoperti: ultimo snapshot 30 luglio).
+
+- **VERIFICA LIVE v0.30: tutto ok.** Controllati in produzione dal browser di Jack: i 5 endpoint API rispondono 200 (`/api/health` serve 109 modelli, region iad1), le pagine wiki statiche, sitemap, `data/models.json` e `docs/API.md` rispondono 200, `js/app.js` servito e' **minificato** (78.940 byte contro 126.067 del sorgente: la build esbuild gira davvero su Vercel), badge v0.30, `js/api.js` caricato. Header di sicurezza tutti presenti (HSTS, nosniff, Referrer-Policy, Permissions-Policy, X-Frame-Options). `POST /api/models` -> 405. ETag emesso. Nota: Vercel consuma `s-maxage`/`stale-while-revalidate` e non li rigira al browser (comportamento normale, la cache edge funziona).
+- **WORKFLOW FALLITO: non e' il YAML.** Letto il run su GitHub Actions: *"The job was not started because your account is locked due to a billing issue."* Blocco a livello di account GitHub, il workflow non e' mai partito. Il repo e' pubblico (Actions illimitate sui repo pubblici), quindi il blocco viene da altro sull'account. Da risolvere in Settings > Billing. Nessuna modifica al workflow necessaria.
+- **REPO SPOSTATO**: ora e' `giacomo-fedeli/WhichAI` (era `Jackfdl/promptcompass-`). Aggiornati i riferimenti in README, AGENTS, HANDOVER. **ATTENZIONE: il repo risulta ancora PUBBLICO**, mentre la decisione di sessione 31 era renderlo privato e la bozza email ad Amulya lo dice.
+- **REFRESH DATI 31/8 (il piu' grosso da mesi)**: due mirror incrociati, entrambi citati come fonti: **BenchLM 30/8** per i primi dieci, **ModelCap 27/8** per le posizioni 11-30. **20 punteggi aggiornati + 5 modelli nuovi -> 114 modelli.**
+  - Nuova top 10: Opus 5 63.0, Fable 5 62.1, **Grok 4.6 60.9**, Kimi K3 59.7, **GLM-5.3 59.5**, GPT-5.6 Sol 58.9, Qwen3.8 Max 58.1, **GLM-5.3-Flash 57.5**, Opus 4.8 57.3, **Muse Spark 1.2 56.8**.
+  - **Nota di onesta' scritta nello scaleNote**: l'indice di agosto sta 1.5-2.5 punti sopra luglio su TUTTA la tabella. Non e' che tutti i modelli siano migliorati: e' uno spostamento dell'indice. Detto esplicitamente perche' altrimenti il confronto mese su mese e' fuorviante.
+  - **Grok 4.6** (12/8): 500K contesto (meta' dei rivali) e ~58 tok/s (sotto la mediana) scritti nella scheda, non nascosti.
+  - **GLM-5.3** (14/8): primo GLM flagship **senza pesi aperti** (staged safety review). NON taggato open-weights: c'e' un test che lo impedisce.
+  - **GLM-5.3-Flash** (26/8): 320B-A18B, licenza MIT, 1M contesto multimodale, $0.15/$0.50. Il modello scaricabile piu' capace in circolazione.
+  - **Gemini 3.7 Flash** (13/8): AA 56.0, $0.75/$3.75 introduttivi fino al 31/12/2026. **Il default BYOK resta gemini-3.6-flash**: il free tier di 3.7 non e' confermato e un default rotto romperebbe l'auto-run per tutti. Scritto nella scheda e testato.
+  - **Sonnet 5**: il prezzo introduttivo $2/$10 e' scaduto il 31/8 -> spec aggiornata a $3/$15.
+  - **Qwen3.8 Max**: da stima dichiarata a punteggio misurato (58.1).
+  - Radar: +7 voci datate con fonte; la voce "in arrivo" del 31/8 e' diventata un fatto e ne e' stata creata una nuova per l'1/9.
+  - Wiki rigenerata: **174 pagine, sitemap 175 URL**.
+- **TEST RESI RESISTENTI AL REFRESH (debito tecnico ripagato)**: sette test bloccavano i valori esatti di luglio (`kimi-k3 === 57.1`, `/July 30, 2026/`, ...), quindi OGNI aggiornamento dati li rompeva. Convertiti in invarianti: il modello esiste ed e' misurato dentro una banda plausibile; la data e' reale e non futura; DB e benchmark hanno la stessa data. Un test in particolare e' stato riscritto nel suo intento: "Qwen3.8 preview deve essere una stima" era falso appena AA ha pubblicato il numero, quindi ora verifica la regola vera: **nessun modello rumored viene mai presentato come misurato**.
+- **WORKFLOW PIU' RESILIENTE**: se la fonte pubblica non risponde, `tools/refresh-data.mjs` non fa piu' esplodere il job con uno stack trace: scrive "Skipped: the upstream source did not answer", lascia il catalogo intatto ed esce 0 (esce 1 solo con `--strict`).
+- **Versioni**: v0.31 ovunque (badge, footer, APP_VERSION, api/_lib.js, package.json, cache `whichai-v0.31.0`).
+- **TEST**: 181 statici + 82 smoke + 42 API = **305/305 PASSATI** (+16 nuovi sul refresh di agosto: modelli presenti e datati, leaderboard coerente con lo snapshot citato, scale shift dichiarato, GLM-5.3 non taggato open-weights, Gemini 3.7 non dichiarato gratis, default BYOK invariato, radar con fonti).
+- [ ] **Jack**: (1) **sblocca il billing GitHub** (Settings > Billing) o le Actions non partiranno mai; (2) decidi sul repo pubblico/privato - se resta pubblico, correggi quella riga nell'email ad Amulya; (3) push di v0.31; (4) dopo il deploy rilancia "Data refresh" a mano; (5) Search Console: sitemap ora 175 URL; (6) donateUrl e' ancora vuoto in js/config.js.
 
 ## Fatto (sessione 31, 2026-08-19 - Claude): review esterna di Amulya Galmarini
 
