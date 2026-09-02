@@ -97,6 +97,39 @@
     return c.type === filter;
   }
 
+  /* The automated data check, shown where the data lives. It runs on the
+     server (Vercel Cron hits /api/refresh daily) so the answer is fresh
+     without anyone opening a dashboard. If the endpoint is unreachable the
+     line simply stays hidden: the feed below is local and complete either way. */
+  function paintCheck(node) {
+    if (!node || !window.WhichAIApi) return;
+    window.WhichAIApi.get("/refresh").then(function (r) {
+      if (!r) return;
+      node.textContent = "";
+      var dot = el("span", "api-dot", null);
+      var when = r.generated ? new Date(r.generated) : null;
+      var stamp = when && !isNaN(when) ? when.toISOString().slice(0, 10) : "";
+      var label;
+      if (r.skipped || r.severity === "unknown") {
+        dot.className = "api-dot local";
+        label = deps.T("radarCheckSkipped");
+      } else if (r.severity === "broken") {
+        dot.className = "api-dot broken";
+        label = deps.T("radarCheckBroken");
+      } else if (r.actionable > 0) {
+        dot.className = "api-dot review";
+        label = r.actionable + " " + deps.T("radarCheckReview");
+      } else {
+        dot.className = "api-dot live";
+        label = deps.T("radarCheckClean");
+      }
+      node.appendChild(dot);
+      node.appendChild(document.createTextNode(label + (stamp ? " \u00b7 " + stamp : "")));
+      node.title = (r.needsHuman || []).join(" \u00b7 ");
+      node.hidden = false;
+    });
+  }
+
   function render() {
     if (!root) return;
     var ch = CH();
@@ -113,7 +146,11 @@
       pill.appendChild(document.createTextNode(" " + deps.T("radarSince")));
       head.appendChild(pill);
     }
+    var checkLine = el("p", "radar-check");
+    checkLine.hidden = true;
+    head.appendChild(checkLine);
     root.appendChild(head);
+    paintCheck(checkLine);
 
     // filters
     var fRow = el("div", "db-filters radar-filters");

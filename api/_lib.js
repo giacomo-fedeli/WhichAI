@@ -11,7 +11,7 @@ var Bench = require("../js/benchmarks.js");
 var Engine = require("../js/engine.js");
 
 var API_VERSION = "1.0.0";
-var APP_VERSION = "v0.31";
+var APP_VERSION = "v0.32";
 
 function meta() {
   return {

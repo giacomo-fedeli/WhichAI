@@ -106,6 +106,21 @@ const get = async (p, opts) => {
   check("stats: vendor tally is sorted desc", json.byVendor[0].count >= json.byVendor[1].count);
 }
 
+
+/* ---------- 5b. refresh: the data check, running on the host that serves the site ---------- */
+{
+  const { res, json } = await get("/api/refresh");
+  check("refresh: answers 200 even when the upstream source is unreachable", res.status === 200 && !!json);
+  check("refresh: always reports what the catalog currently holds", json.catalogModels > 100 && !!json.catalogUpdated);
+  check("refresh: carries a severity the page can render", ["clean", "review", "broken", "unknown"].includes(json.severity));
+  check("refresh: a skipped run says so instead of pretending it passed", json.skipped ? (json.severity === "unknown" && !!json.reason) : typeof json.actionable === "number");
+  check("refresh: always tells a human what is left to do", Array.isArray(json.needsHuman) && json.needsHuman.length > 0);
+  check("refresh: never returns catalog edits, only findings", !("models" in json) && !("patch" in json));
+  check("refresh: cached, not recomputed on every hit", /s-maxage=\d+/.test(res.headers.get("cache-control") || ""));
+  const post = await fetch(base + "/api/refresh", { method: "POST" });
+  check("refresh: read-only like the rest of the API", post.status === 405);
+}
+
 /* ---------- 6. caching, methods, safety ---------- */
 {
   const first = await get("/api/models?limit=1");

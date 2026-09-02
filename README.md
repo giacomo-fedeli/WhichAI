@@ -3,7 +3,7 @@
 
 Turn a plain-language goal into prompts optimized for each AI model - and know which model to use for the job.
 
-**Live:** https://whichai.wiki · **Status:** Growth · v0.30.0 · zero-cost architecture (free tiers only) · static frontend + read-only serverless API · responsive, installable (PWA) and offline-capable
+**Live:** https://whichai.wiki · **Status:** Growth · v0.32.0 · zero-cost architecture (free tiers only) · static frontend + read-only serverless API · responsive, installable (PWA) and offline-capable
 
 **Two ways in.** Describe a goal and get optimized prompts - or take the **guided finder**: a few quick questions (task, budget, must-haves) and WhichAI recommends the right AI with reasons, honest limitations and pricing. No prompt needed.
 
@@ -11,9 +11,9 @@ Turn a plain-language goal into prompts optimized for each AI model - and know w
 
 **Private by design.** No account, no tracking: the interface runs client-side and your goals, prompts and API keys never leave the browser. The `/api` endpoints are read-only, serve the public model catalog and accept no request body.
 
-**A real API, and an open dataset.** The catalog is not locked inside the page. Five read-only serverless endpoints serve it with filters, pagination, edge caching and CORS: `/api/health`, `/api/models`, `/api/benchmarks`, `/api/recommend` (send a plain-language goal, get the detected task, the recommended AI and a free alternative) and `/api/stats`. No key, no account, no request body, nothing stored. Documented in [docs/API.md](docs/API.md); dataset under CC BY 4.0.
+**A real API, and an open dataset.** The catalog is not locked inside the page. Six read-only serverless endpoints serve it with filters, pagination, edge caching and CORS: `/api/health`, `/api/models`, `/api/benchmarks`, `/api/recommend` (send a plain-language goal, get the detected task, the recommended AI and a free alternative), `/api/stats` and `/api/refresh` (the live data check). No key, no account, no request body, nothing stored. Documented in [docs/API.md](docs/API.md); dataset under CC BY 4.0.
 
-**The data maintains itself, up to the point where judgement starts.** A scheduled workflow queries public sources every week: it verifies that every free model route the app ships still exists, flags price and context drift, lists models released since the last snapshot, regenerates the static wiki and sitemap, and runs the full suite. Anything that needs editorial judgement - intelligence scores above all - opens a pull request with the evidence instead of being rewritten silently. Continuous integration runs 165 static checks, 82 DOM smoke checks and 42 API checks on every push.
+**The data maintains itself, up to the point where judgement starts.** The check runs in two places on purpose: a **Vercel Cron** hits `/api/refresh` daily on the host that already serves the site, and a **GitHub Action** runs the identical code weekly to open a pull request. Both import the same `api/_refresh-core.js`, so they cannot disagree, and neither depends on the other staying available. The check queries public sources: it verifies that every free model route the app ships still exists, flags price and context drift, lists models released since the last snapshot, regenerates the static wiki and sitemap, and runs the full suite. Anything that needs editorial judgement - intelligence scores above all - opens a pull request with the evidence instead of being rewritten silently. The result is shown on the Model Radar page, so it is visible where the data lives rather than in a dashboard nobody opens. Continuous integration runs 195 static checks, 85 DOM smoke checks and 50 API checks on every push.
 
 **Auto-run with your own free keys (BYOK).** Compare and Chains can execute prompts directly from the browser with free keys: Google AI Studio (Gemini), Groq (Llama) and OpenRouter (Nemotron 3 Ultra and Qwen3 Coder on genuinely free ":free" routes - ~20 requests/min, 200/day). Keys never leave the browser.
 

@@ -31,7 +31,8 @@ module.exports = function handler(req, res) {
       { path: "/api/benchmarks", what: "curated task rankings and sources" },
       { path: "/api/benchmarks?task=coding", what: "router answer for one task" },
       { path: "/api/recommend?goal=...", what: "task detection plus recommended AI" },
-      { path: "/api/stats", what: "server-side aggregates and leaderboard" }
+      { path: "/api/stats", what: "server-side aggregates and leaderboard" },
+      { path: "/api/refresh", what: "the automated data check against public sources" }
     ],
     docs: "https://whichai.wiki/docs/API.md",
     license: "CC BY 4.0 (attribution: WhichAI, whichai.wiki)",

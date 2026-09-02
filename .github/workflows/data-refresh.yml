@@ -1,3 +1,11 @@
+# SECONDARY path for the data check. The PRIMARY one is a Vercel Cron hitting
+# /api/refresh daily: it runs the identical code from api/_refresh-core.js on
+# the host that already serves the site, so the automation keeps working even
+# when GitHub Actions cannot run (an account lock, a policy, a quota).
+#
+# What this workflow adds on top is the part only GitHub can do: opening a
+# pull request with the evidence, and an issue when a shipped free route dies.
+#
 # Scheduled data check: every Monday at 06:00 UTC the workflow asks the
 # public OpenRouter API whether the free routes WhichAI ships still exist,
 # whether prices and context windows drifted, and which models appeared

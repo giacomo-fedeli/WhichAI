@@ -3214,6 +3214,64 @@
   S.ja.trustLine = "アカウント不要 · 追跡なし · 書いた内容はブラウザから出ません";
   S.ar.trustLine = "بلا حساب · بلا تتبّع · لا شيء مما تكتبه يغادر متصفحك";
 
+
+  /* v0.32: the live data check shown on the Model Radar */
+
+  S.en.radarCheckClean = "Data check: everything matches the public sources";
+  S.en.radarCheckReview = "item(s) from the data check need review";
+  S.en.radarCheckBroken = "Data check: a shipped free route is broken";
+  S.en.radarCheckSkipped = "Data check could not run today";
+
+  S.it.radarCheckClean = "Controllo dati: tutto coincide con le fonti pubbliche";
+  S.it.radarCheckReview = "voce/i dal controllo dati da rivedere";
+  S.it.radarCheckBroken = "Controllo dati: una route gratuita spedita non funziona";
+  S.it.radarCheckSkipped = "Il controllo dati oggi non e' riuscito";
+
+  S.fr.radarCheckClean = "Verification des donnees : tout correspond aux sources publiques";
+  S.fr.radarCheckReview = "element(s) a revoir apres la verification";
+  S.fr.radarCheckBroken = "Verification : une route gratuite livree est cassee";
+  S.fr.radarCheckSkipped = "La verification n'a pas pu etre faite aujourd'hui";
+
+  S.es.radarCheckClean = "Comprobacion de datos: todo coincide con las fuentes publicas";
+  S.es.radarCheckReview = "elemento(s) que revisar tras la comprobacion";
+  S.es.radarCheckBroken = "Comprobacion: una ruta gratuita incluida esta rota";
+  S.es.radarCheckSkipped = "Hoy no se pudo hacer la comprobacion";
+
+  S.de.radarCheckClean = "Datencheck: alles stimmt mit den offentlichen Quellen uberein";
+  S.de.radarCheckReview = "Punkt(e) aus dem Datencheck zu prufen";
+  S.de.radarCheckBroken = "Datencheck: eine ausgelieferte Gratis-Route ist kaputt";
+  S.de.radarCheckSkipped = "Der Datencheck war heute nicht moglich";
+
+  S.pt.radarCheckClean = "Verificacao de dados: tudo corresponde as fontes publicas";
+  S.pt.radarCheckReview = "item(ns) da verificacao a rever";
+  S.pt.radarCheckBroken = "Verificacao: uma rota gratuita incluida esta partida";
+  S.pt.radarCheckSkipped = "Hoje nao foi possivel fazer a verificacao";
+
+  S.zh.radarCheckClean = "数据核对：与公开来源完全一致";
+  S.zh.radarCheckReview = "项需要复核";
+  S.zh.radarCheckBroken = "数据核对：内置的免费线路已失效";
+  S.zh.radarCheckSkipped = "今天无法完成数据核对";
+
+  S.hi.radarCheckClean = "डेटा जाँच: सब कुछ सार्वजनिक स्रोतों से मेल खाता है";
+  S.hi.radarCheckReview = "मद जिनकी समीक्षा ज़रूरी है";
+  S.hi.radarCheckBroken = "डेटा जाँच: भेजा गया मुफ़्त रूट काम नहीं कर रहा";
+  S.hi.radarCheckSkipped = "आज डेटा जाँच नहीं हो सकी";
+
+  S.ru.radarCheckClean = "Проверка данных: всё совпадает с публичными источниками";
+  S.ru.radarCheckReview = "пункт(ов) требуют проверки";
+  S.ru.radarCheckBroken = "Проверка данных: встроенный бесплатный маршрут не работает";
+  S.ru.radarCheckSkipped = "Сегодня проверку выполнить не удалось";
+
+  S.ja.radarCheckClean = "データ照合：公開ソースとすべて一致";
+  S.ja.radarCheckReview = "件の確認が必要です";
+  S.ja.radarCheckBroken = "データ照合：同梱の無料ルートが機能していません";
+  S.ja.radarCheckSkipped = "本日はデータ照合を実行できませんでした";
+
+  S.ar.radarCheckClean = "فحص البيانات: كل شيء يطابق المصادر العامة";
+  S.ar.radarCheckReview = "عنصر/عناصر تحتاج مراجعة";
+  S.ar.radarCheckBroken = "فحص البيانات: مسار مجاني مضمّن لا يعمل";
+  S.ar.radarCheckSkipped = "تعذّر إجراء فحص البيانات اليوم";
+
   var I18n = {
     LANGS: LANGS,
     STRINGS: S,

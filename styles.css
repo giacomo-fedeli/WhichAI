@@ -3052,3 +3052,30 @@ body.app-reveal .view:not([hidden]) > :nth-child(3n) { animation-delay: 0.24s; }
   .settings-card .field input[type="password"] { max-width: 100%; }
   .guide-card .router-summary { -webkit-line-clamp: 12; }
 }
+
+/* ---- v0.32: the live data check, shown on the Model Radar ---- */
+
+.radar-check {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  margin: 8px 0 0;
+  padding: 3px 11px 3px 9px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--surface);
+  font-size: 12px;
+  color: var(--muted);
+  width: max-content;
+  max-width: 100%;
+}
+
+.api-dot.review {
+  background: #d97706;
+  box-shadow: 0 0 0 3px rgba(217, 119, 6, 0.15);
+}
+
+.api-dot.broken {
+  background: var(--error);
+  box-shadow: 0 0 0 3px rgba(185, 28, 28, 0.15);
+}

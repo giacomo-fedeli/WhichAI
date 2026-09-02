@@ -1,10 +1,25 @@
 # WhichAI (ex PromptCompass) — STATUS
 
-Ultimo aggiornamento: 2026-08-31 (sessione 32 - Claude)
-Versione app: v0.31.0 (in cartella; live v0.30 verificata funzionante, API inclusa)
+Ultimo aggiornamento: 2026-09-02 (sessione 33 - Claude)
+Versione app: v0.32.0 (in cartella; live v0.30 verificata. NOTA: GitHub Actions bloccate da un problema di autorizzazione carta sull'account, NON da costi: vedi sessione 33)
 Sito live: https://whichai.wiki · https://promptcompass.vercel.app resta come alias
 
 ## Fase corrente: Growth - fase 2 (backend reale, automazione dati, risposta alla review esterna)
+
+## Fatto (sessione 33, 2026-09-02 - Claude): automazione che non dipende da GitHub
+
+Jack ha segnalato che i workflow falliscono e che NON vuole pagare nulla. Diagnosi letta direttamente su GitHub Actions e sulla sua pagina Billing.
+
+- **CAUSA CERTA, e non e' un costo**: banner GitHub *"Your payment authorization has failed - Please contact your bank to resolve the issue"*. Tutto il resto della pagina dice **$0**: metered usage $0, next payment due vuoto, GitHub Free $0.00, Copilot Free $0.00, "No usage found". Jack non deve niente a nessuno. GitHub tiene una carta agganciata all'account e la sua verifica periodica (autorizzazione da pochi centesimi, poi rilasciata) e' fallita; GitHub reagisce **bloccando l'account**, e con l'account bloccato le Actions non partono nemmeno - anche su un repo pubblico dove sarebbero illimitate e gratuite. Nessuna modifica al YAML avrebbe risolto: i due workflow non sono mai partiti.
+- **DECISIONE ARCHITETTURALE**: un'automazione che funziona solo se un terzo e' contento non e' un'automazione. Il controllo dati ora gira **su Vercel**, cioe' sulla stessa macchina che gia' serve il sito, senza account aggiuntivi, senza token e senza costi.
+  - **`api/_refresh-core.js`**: l'analisi (route `:free` vive, drift prezzi >15%, drift context >25%, modelli nuovi non a catalogo) estratta in un modulo unico. Una seconda copia avrebbe ricreato esattamente il problema che il controllo esiste per prevenire.
+  - **`api/refresh.js`**: endpoint che esegue quel core. Risponde 200 anche se OpenRouter e' irraggiungibile (`skipped: true` + `reason`): una fonte pubblica giu' non e' un errore di WhichAI. Aggiunge `severity` (clean / review / broken / unknown) e `actionable`, cosi' la pagina puo' renderizzare l'esito senza interpretare il report.
+  - **`vercel.json`**: `crons: [{ path: "/api/refresh", schedule: "10 6 * * *" }]` - giornaliero, compatibile col piano Hobby gratuito. Piu' `functions["api/refresh.js"].includeFiles: "js/app.js"`, perche' il core legge `DEFAULT_OR_MODELS` dal sorgente e quella lettura e' dinamica: senza `includeFiles` il bundler di Vercel non includerebbe il file.
+  - **`tools/refresh-data.mjs`** riscritto come wrapper CLI sottile sopra lo stesso core. GitHub Actions resta come percorso **secondario** (documentato nel workflow): l'unica cosa che aggiunge e' l'apertura della pull request e della issue, che solo GitHub puo' fare.
+- **L'ESITO E' VISIBILE DOVE STANNO I DATI**: nel Model Radar compare una pill con pallino colorato: verde "tutto coincide con le fonti pubbliche", arancione "N voci da rivedere", rosso "una route gratuita spedita non funziona", grigio "controllo non riuscito oggi". Se l'API non risponde la riga resta semplicemente nascosta e il feed sotto e' completo lo stesso (test smoke che lo verifica). 4 chiavi i18n x11 (=319).
+- **Versioni**: v0.32 ovunque (badge, footer, APP_VERSION, api/_lib.js, package.json, cache `whichai-v0.32.0`). `/api/health` ora dichiara 6 endpoint.
+- **TEST**: 195 statici + 85 smoke + 50 API = **330/330 PASSATI**. I nuovi verificano che l'implementazione sia una sola (nessuno dei due chiamanti reimplementa `analyse`), che il cron sia al massimo giornaliero, che `includeFiles` ci sia, che l'endpoint non modifichi mai il catalogo e che il radar degradi in silenzio.
+- [ ] **Jack**: (1) push di v0.32 - da quel momento l'aggiornamento automatico funziona **senza toccare GitHub**; (2) per sbloccare comunque le Actions: GitHub > Settings > Billing and licensing > **Payment information** > rimuovi la carta (entrambi i piani sono Free, non serve), poi "Retry authorization" sul banner; se il blocco resta, aprire un ticket su support.github.com - solo loro possono togliere il flag; (3) Budgets and alerts: limite di spesa a $0 per sicurezza; (4) opzionale: `vercel crons ls` per vedere il cron registrato dopo il deploy.
 
 ## Fatto (sessione 32, 2026-08-31 - Claude): check completo + refresh dati agosto
 

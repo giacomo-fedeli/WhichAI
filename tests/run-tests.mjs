@@ -282,10 +282,11 @@ const Brands = require("../js/brands.js");
     const y = readFileSync(".github/workflows/data-refresh.yml", "utf8");
     return /cron:\s*"0 6 \* \* 1"/.test(y) && y.includes("refresh-data.mjs") && y.includes("create-pull-request");
   })());
-  const refresh = readFileSync("tools/refresh-data.mjs", "utf8");
-  check("v30: refresh checks the shipped free routes", refresh.includes("DEFAULT_OR_MODELS") && refresh.includes("deadFreeRoutes"));
-  check("v30: refresh never rewrites scores by itself", !/score\s*\.\s*aa\s*=/.test(refresh) && refresh.includes("never updated automatically"));
-  check("v30: refresh writes a report a human can read", refresh.includes("refresh-report.md") && refresh.includes("Needs a human"));
+  const refreshCli = readFileSync("tools/refresh-data.mjs", "utf8");
+  const refreshCore = readFileSync("api/_refresh-core.js", "utf8");
+  check("v30: refresh checks the shipped free routes", refreshCore.includes("DEFAULT_OR_MODELS") && refreshCore.includes("deadFreeRoutes"));
+  check("v30: refresh never rewrites scores by itself", !/score\s*\.\s*aa\s*=/.test(refreshCore + refreshCli) && refreshCore.includes("never updated automatically"));
+  check("v30: refresh writes a report a human can read", refreshCli.includes("refresh-report.md") && refreshCore.includes("Needs a human"));
 
   // --- production build ---
   check("v30: build script and vercel config exist", existsSync("tools/build.mjs") && existsSync("vercel.json") && existsSync("package.json"));
@@ -326,7 +327,7 @@ const Brands = require("../js/brands.js");
   // --- i18n for the new chrome ---
   const newKeys = ["keyShow", "keyHide", "keymodeWarn", "keyRiskTitle", "apiLive", "apiLocal", "catalogShowAll", "catalogShowLess"];
   check("v30: new UI keys exist in all 11 languages", I18n.LANGS.every(l => newKeys.every(k => typeof I18n.STRINGS[l.code][k] === "string" && I18n.STRINGS[l.code][k].length > 0)));
-  check("v30: no em dash in the new modules", ![apiClient, refresh, build, lib].some(f => f.includes("—")));
+  check("v30: no em dash in the new modules", ![apiClient, refreshCli, refreshCore, build, lib].some(f => f.includes("—")));
 }
 
 /* ---------- 9g. v0.31: the August data refresh ---------- */
@@ -379,10 +380,44 @@ const Brands = require("../js/brands.js");
   })());
   check("v31: radar dbIds all resolve", feed.every(e => !e.dbId || DB.models.some(m => m.id === e.dbId)));
 
-  const refresh = readFileSync("tools/refresh-data.mjs", "utf8");
-  check("v31: a dead upstream source degrades instead of failing the run", refresh.includes("Skipped: the upstream source did not answer") && refresh.includes("process.exit(STRICT ? 1 : 0)"));
+  const refresh31 = readFileSync("tools/refresh-data.mjs", "utf8");
+  check("v31: a dead upstream source degrades instead of failing the run", refresh31.includes("Skipped: the upstream source did not answer") && refresh31.includes("process.exit(STRICT ? 1 : 0)"));
 
   check("v31: repo references point at the current repository", !["README.md", "AGENTS.md", "HANDOVER.md"].some(f => readFileSync(f, "utf8").includes("Jackfdl/promptcompass-")));
+}
+
+/* ---------- 9h. v0.32: automation that does not depend on GitHub ---------- */
+{
+  const html = readFileSync("index.html", "utf8");
+  const css = readFileSync("styles.css", "utf8");
+  const core = readFileSync("api/_refresh-core.js", "utf8");
+  const cli = readFileSync("tools/refresh-data.mjs", "utf8");
+  const endpoint = readFileSync("api/refresh.js", "utf8");
+  const radar = readFileSync("js/radar.js", "utf8");
+  const vercel = JSON.parse(readFileSync("vercel.json", "utf8"));
+
+  /* One implementation. A second copy of the check would recreate exactly
+     the drift the check exists to catch. */
+  check("v32: the check has a single shared implementation", existsSync("api/_refresh-core.js") && cli.includes('require("../api/_refresh-core.js")') && endpoint.includes('require("./_refresh-core.js")'));
+  check("v32: neither caller reimplements the analysis", !/function analyse\(/.test(cli) && !/function analyse\(/.test(endpoint) && /function analyse\(/.test(core));
+  check("v32: the endpoint is registered for the dev runner and tests", readFileSync("tools/api-dev.mjs", "utf8").includes('"refresh"'));
+
+  /* The whole point: the automation runs on the host that already serves the
+     site, so a blocked CI account cannot switch it off. */
+  check("v32: a Vercel cron drives the check", Array.isArray(vercel.crons) && vercel.crons.some(c => c.path === "/api/refresh" && /^\S+ \S+ \S+ \S+ \S+$/.test(c.schedule)));
+  check("v32: the cron runs at most daily (free plan)", vercel.crons.every(c => !/^\*/.test(c.schedule.split(" ")[1])));
+  check("v32: js/app.js is bundled so the free-route check can run", vercel.functions && vercel.functions["api/refresh.js"] && /app\.js/.test(vercel.functions["api/refresh.js"].includeFiles));
+  check("v32: the endpoint degrades instead of failing", endpoint.includes("skippedReport") && !/throw /.test(endpoint));
+  check("v32: the endpoint never edits the catalog", !/\.push\(|models\s*=/.test(endpoint.replace(/needsHuman[^;]*;/g, "")));
+  check("v32: health advertises the check", readFileSync("api/health.js", "utf8").includes("/api/refresh"));
+
+  /* Visible where the data lives, not only in a dashboard nobody opens. */
+  check("v32: the radar shows the check result", radar.includes("paintCheck") && radar.includes('WhichAIApi.get("/refresh")'));
+  check("v32: the radar degrades silently when the API is unreachable", /if \(!r\) return;/.test(radar));
+  check("v32: severity has a style for every state", ["api-dot.review", "api-dot.broken", "radar-check"].every(c => css.includes(c)));
+  const radarKeys = ["radarCheckClean", "radarCheckReview", "radarCheckBroken", "radarCheckSkipped"];
+  check("v32: check labels exist in all 11 languages", I18n.LANGS.every(l => radarKeys.every(k => typeof I18n.STRINGS[l.code][k] === "string" && I18n.STRINGS[l.code][k].length > 0)));
+  check("v32: no em dash in the new modules", ![core, endpoint].some(f => f.includes("—")));
 }
 
 /* ---------- 10. HTML ↔ JS id cross-check ---------- */
@@ -419,10 +454,10 @@ const Brands = require("../js/brands.js");
   const html = readFileSync("index.html", "utf8");
   const app = readFileSync("js/app.js", "utf8");
   const sw = readFileSync("sw.js", "utf8");
-  check("version: badge v0.31", html.includes(">v0.31 · Growth<"));
-  check("version: footer v0.31", html.includes("WhichAI v0.31"));
-  check("version: APP_VERSION v0.31", app.includes('APP_VERSION = "v0.31"'));
-  check("version: SW cache v0.31", sw.includes('"whichai-v0.31.0"'));
+  check("version: badge v0.32", html.includes(">v0.32 · Growth<"));
+  check("version: footer v0.32", html.includes("WhichAI v0.32"));
+  check("version: APP_VERSION v0.32", app.includes('APP_VERSION = "v0.32"'));
+  check("version: SW cache v0.32", sw.includes('"whichai-v0.32.0"'));
   const welcomeJs = readFileSync("js/welcome.js", "utf8");
   check("v0.27: morph reaches target before opacity fade", welcomeJs.includes("offset: 0.76") && welcomeJs.includes("opacity: 0") && welcomeJs.includes("1050"));
   check("v0.27: dark wordmarks use a light treatment", /\[data-theme="dark"\] \.ai-brand-wordmark\s*\{[^}]*invert\(1\)/s.test(readFileSync("styles.css", "utf8")));

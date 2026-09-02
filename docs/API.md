@@ -127,6 +127,48 @@ median / p75 / max), tallies by vendor, tag and label, and a leaderboard.
 
 ---
 
+## `GET /api/refresh`
+
+The automated data check, running on the same host that serves the site. A
+Vercel Cron calls it daily; the Model Radar page reads it so the answer is
+visible where the data lives.
+
+It asks the public OpenRouter model list four questions:
+
+1. does every `:free` route WhichAI ships as a default still exist?
+2. did any price drift more than 15% from the catalog?
+3. did any context window drift more than 25%?
+4. which models exist upstream and are missing from the catalog?
+
+```bash
+curl https://whichai.wiki/api/refresh
+```
+
+```json
+{
+  "severity": "clean",
+  "actionable": 0,
+  "catalogModels": 114,
+  "catalogUpdated": "August 31, 2026",
+  "liveFreeRoutes": ["nvidia/nemotron-3-ultra-550b-a55b:free", "qwen/qwen3-coder:free"],
+  "deadFreeRoutes": [],
+  "priceDrift": [],
+  "missingFromCatalog": [],
+  "needsHuman": ["Artificial Analysis scores are never updated automatically: re-check the snapshot and cite it."]
+}
+```
+
+`severity` is one of `clean`, `review`, `broken` or `unknown`. It answers 200
+even when the upstream source is unreachable, returning `skipped: true` with a
+`reason`, because a third party being down is not an error in WhichAI.
+
+The analysis lives in `api/_refresh-core.js` and is shared with
+`tools/refresh-data.mjs`, so the command line, CI and the endpoint can never
+mean different things. It is read-only: it reports findings and never edits
+the catalog. Intelligence scores in particular are never touched by a machine.
+
+---
+
 ## Errors
 
 ```json
@@ -148,7 +190,7 @@ median / p75 / max), tallies by vendor, tag and label, and a leaderboard.
 ```bash
 npm install
 node tools/api-dev.mjs 8787     # http://localhost:8787/api/health
-node tests/api-tests.mjs        # 42 checks against the real handlers
+node tests/api-tests.mjs        # 50 checks against the real handlers
 ```
 
 `tools/api-dev.mjs` mounts the same handler files Vercel runs, so a local pass

@@ -294,5 +294,16 @@ check("theme: toggle cycles (" + t0 + "→" + t1 + ")", t0 !== t1);
   check("v30: API documented in About", d.querySelectorAll("#about-api .api-list li").length >= 5);
 }
 
+
+/* --- v0.32: the radar's live data check must never break the page --- */
+{
+  w.location.hash = "#radar";
+  await new Promise(r => setTimeout(r, 280));
+  check("v32: radar still renders with no API reachable", d.querySelectorAll("#radar-wrap .radar-item, #radar-wrap .card").length > 5);
+  const line = d.querySelector("#radar-wrap .radar-check");
+  check("v32: the check line exists and stays hidden when unreachable", !!line && line.hidden === true);
+  check("v32: the feed is complete without the API", !d.getElementById("radar-view").hidden && d.querySelector("#radar-wrap .guide-head h1"));
+}
+
 console.log("\n" + pass + " passed, " + fail + " failed" + (fail ? "\n\nFAILURES:\n" + failures.join("\n") : " — SMOKE ALL GREEN"));
 process.exit(fail ? 1 : 0);

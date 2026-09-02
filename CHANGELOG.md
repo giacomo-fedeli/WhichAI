@@ -2,6 +2,27 @@
 
 (Older release-by-release history lives in `STATUS.md`, the project's working memory.)
 
+## v0.32.0 (2026-09-02)
+
+Automation that does not depend on anyone else's billing being in order.
+
+### Added
+- **The data check now runs on Vercel** (`api/refresh.js` + a daily Vercel Cron), on the same host that already serves the site: no extra account, no token, no cost. It asks the public OpenRouter list whether every shipped `:free` route still exists, whether prices drifted past 15% or context windows past 25%, and which models appeared since the last snapshot.
+- **One implementation, two callers** (`api/_refresh-core.js`). The command line, CI and the endpoint all import it, so the check cannot mean different things depending on where it runs. A second copy would have recreated exactly the drift the check exists to catch.
+- **The result is visible where the data lives.** The Model Radar shows a status pill: green when everything matches the public sources, amber with a count when items need review, red when a shipped free route is broken, grey when the check could not run. If the API is unreachable the line stays hidden and the local feed is complete regardless.
+- `GET /api/refresh` is documented in `docs/API.md` and covered by eight new API tests.
+
+### Changed
+- **GitHub Actions is now the secondary path, by design.** It runs the identical code and still does the part only GitHub can do (open a pull request with the evidence, open an issue when a free route dies), but the automation no longer stops when Actions cannot run.
+- `tools/refresh-data.mjs` is a thin CLI wrapper over the shared core.
+- `/api/health` advertises six endpoints.
+
+### Notes
+The endpoint answers `200` with `skipped: true` and a `reason` when the upstream source is unreachable: a third party being down is not an error in WhichAI, and a red alert that cannot be explained trains people to ignore alerts. Intelligence scores are still never touched by a machine.
+
+### Tests
+195 static + 85 DOM smoke + 50 API = **330 passing**.
+
 ## v0.31.0 (2026-08-31)
 
 The August data refresh, and the test suite that stopped breaking every time the data moves.
