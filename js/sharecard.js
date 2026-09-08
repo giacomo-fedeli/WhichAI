@@ -117,7 +117,11 @@
       if (file && navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
         navigator.share({ files: [file], title: "WhichAI", text: (data.title || "") + " · whichai.wiki" })
           .then(function () { if (doneCb) doneCb("shared"); })
-          .catch(function () { download(blob, doneCb); });
+          .catch(function (err) {
+            // Closing the native share sheet is a choice, not a failed export.
+            if (err && err.name === "AbortError") return;
+            download(blob, doneCb);
+          });
       } else {
         download(blob, doneCb);
       }

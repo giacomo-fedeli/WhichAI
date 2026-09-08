@@ -8,6 +8,12 @@
 (function () {
   "use strict";
 
+  /* Never hardcode the snapshot date: it rots at every data refresh. */
+  function snapshotDate() {
+    var db = window.PromptCompassModelsDB;
+    return (db && db.updated) || "the current";
+  }
+
   var deps = null; // { T, openModel(id), useModel(family, task), switchToGoal() }
   var root = null;
   var state = null;
@@ -172,7 +178,7 @@
     if (state.mode === "dev") {
       if (state.task === "coding") {
         if (state.budget === "free") offers.splice(1, 0, modelOffer("qwen3-coder", ["Runnable for free via OpenRouter - auto-run works right here in Compare/Chains."]));
-        else offers.splice(1, 0, modelOffer("kimi-k3", ["#3 on the July 16 AA index (57.1) at $3/$15 per 1M tokens - a fraction of US frontier prices.", "Best published BrowseComp score and #1 Frontend Code Arena at launch."]));
+        else offers.splice(1, 0, modelOffer("kimi-k3", ["A top-five score on the current index at $3/$15 per 1M tokens - a fraction of US frontier prices.", "Best published BrowseComp score and #1 Frontend Code Arena at launch."]));
       } else if (state.budget === "free") {
         offers.splice(2, 0, modelOffer("nemotron-3-ultra", ["Free on OpenRouter and extremely fast (400+ tok/s on some hosts) - auto-run works right here."]));
       }
@@ -289,7 +295,7 @@
     }
     c.appendChild(head);
     if (isTop && offer.score && offer.score.aa) {
-      c.appendChild(el("p", "router-meta", "AA index: " + (offer.score.est ? "~" : "") + offer.score.aa + (offer.score.est ? " (WhichAI estimate)" : " (July 16 snapshot)")));
+      c.appendChild(el("p", "router-meta", "AA index: " + (offer.score.est ? "~" : "") + offer.score.aa + (offer.score.est ? " (WhichAI estimate)" : " (" + snapshotDate() + " snapshot)")));
     }
     if (offer.why && offer.why.length) {
       var whyTitle = el("p", "finder-block-title", deps.T("finderWhy"));
@@ -343,7 +349,7 @@
     if (state.needs.indexOf("privacy") !== -1) {
       card.appendChild(el("p", "router-meta", "Note: WhichAI itself runs entirely in your browser - no account, no server. For maximum privacy, open-weight models can run fully on your own hardware."));
     }
-    card.appendChild(el("p", "router-meta", "Guidance from public benchmarks and vendor pages (snapshot July 16, 2026) plus transparent rules - not gospel. Sources are linked in the Model guide."));
+    card.appendChild(el("p", "router-meta", "Guidance from public benchmarks and vendor pages (snapshot " + snapshotDate() + ") plus transparent rules - not gospel. Sources are linked in the Model guide."));
     var nav = el("div", "finder-nav");
     var again = el("button", "btn-link", deps.T("finderRestart"));
     again.type = "button";
@@ -359,7 +365,7 @@
       shareB.addEventListener("click", function () {
         var rows = [{ label: deps.T("finderTop"), value: res.top.name }];
         res.alts.forEach(function (o, i) { rows.push({ label: "Alt " + (i + 1), value: o.name }); });
-        if (res.top.score && res.top.score.aa) rows.push({ label: "AA index", value: String((res.top.score.est ? "~" : "") + res.top.score.aa) + " (July 16 snapshot)" });
+        if (res.top.score && res.top.score.aa) rows.push({ label: "AA index", value: String((res.top.score.est ? "~" : "") + res.top.score.aa) + " (" + snapshotDate() + " snapshot)" });
         window.WhichAIShare.share({
           title: "My AI pick: " + res.top.name.split(" - ")[0],
           subtitle: "Task: " + deps.T("task_" + state.task),

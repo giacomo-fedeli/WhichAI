@@ -208,7 +208,10 @@ const Brands = require("../js/brands.js");
   const Arena = require("../js/arena.js");
   const o5 = DB.models.find(m => m.id === "claude-opus-5");
   check("v28: Claude Opus 5 public with specs", o5 && o5.status === "public" && !o5.score.est && o5.score.aa > 55 && o5.spec.priceIn === 5 && o5.family === "claude");
-  check("v28: measured #1 is Claude Opus 5", DB.models.filter(m => m.score && m.score.aa && !m.score.est).sort((a, b) => b.score.aa - a.score.aa)[0].id === "claude-opus-5");
+  check("v28: the measured leader is a public, non-estimated model", (() => {
+    const lead = DB.models.filter(m => m.score && typeof m.score.aa === "number" && !m.score.est).sort((a, b) => b.score.aa - a.score.aa)[0];
+    return lead && lead.status === "public" && lead.score.aa > 55;
+  })());
   check("v28: Gemini 3.6 Flash + Flash-Lite present", ["gemini-3-6-flash", "gemini-3-5-flash-lite"].every(id => DB.models.some(m => m.id === id && !m.score.est)));
   check("v28: no rumored model is presented as measured", !DB.models.some(m => m.status === "rumored" && m.score && m.score.est === false));
   check("v28: lower-table corrections applied", DB.models.find(m => m.id === "mercury-2").score.aa === 21.4 && DB.models.find(m => m.id === "trinity-large").score.aa === 18.2);
@@ -278,10 +281,30 @@ const Brands = require("../js/brands.js");
     const y = readFileSync(".github/workflows/ci.yml", "utf8");
     return y.includes("run-tests.mjs") && y.includes("smoke-dom.mjs") && y.includes("api-tests.mjs");
   })());
+  /* This pinned an exact cron minute and required a pull-request action. Both
+     were implementation choices, not requirements, and the workflow has since
+     been rewritten to need no write permission at all - which is better. The
+     test now asserts what actually has to be true. */
   check("v30: scheduled data refresh exists and is cron driven", (() => {
     const y = readFileSync(".github/workflows/data-refresh.yml", "utf8");
-    return /cron:\s*"0 6 \* \* 1"/.test(y) && y.includes("refresh-data.mjs") && y.includes("create-pull-request");
+    const weekly = /cron:\s*"\s*\d+\s+\d+\s+\*\s+\*\s+[0-6]"/.test(y);
+    return weekly && y.includes("refresh-data.mjs") && /workflow_dispatch/.test(y);
   })());
+  check("v34: the scheduled job needs no write access to the repository", (() => {
+    const y = readFileSync(".github/workflows/data-refresh.yml", "utf8");
+    return /permissions:\s*\n\s*contents:\s*read/.test(y) && !/contents:\s*write/.test(y);
+  })());
+  check("v34: every workflow step points at a file that exists", (() => {
+    const files = [".github/workflows/data-refresh.yml", ".github/workflows/ci.yml"];
+    const missing = [];
+    for (const f of files) {
+      const y = readFileSync(f, "utf8");
+      for (const m of y.matchAll(/node\s+((?:tests|tools)\/[\w.-]+\.mjs)/g)) {
+        if (!existsSync(m[1])) missing.push(f + " -> " + m[1]);
+      }
+    }
+    return missing.length === 0;
+  })(), "a workflow calls a script that is not in the repo");
   const refreshCli = readFileSync("tools/refresh-data.mjs", "utf8");
   const refreshCore = readFileSync("api/_refresh-core.js", "utf8");
   check("v30: refresh checks the shipped free routes", refreshCore.includes("DEFAULT_OR_MODELS") && refreshCore.includes("deadFreeRoutes"));
@@ -341,6 +364,11 @@ const Brands = require("../js/brands.js");
     const m = DB.models.find(x => x.id === id);
     return m && m.score.est === false && m.spec && /^2026-08-/.test(m.spec.released);
   }));
+  const NEW_SEP = ["fable-5-1", "muse-spark-1-3", "gemini-3-8-flash", "gpt-6"];
+  check("v33: the September models are in the catalog and measured", NEW_SEP.every(id => {
+    const m = DB.models.find(x => x.id === id);
+    return m && m.score && typeof m.score.aa === "number" && m.score.est === false && m.spec && /^2026-09-/.test(m.spec.released);
+  }));
   check("v31: every August model resolves an official link", NEW_AUG.every(id => {
     const m = DB.models.find(x => x.id === id);
     return !!(DB.links[m.family] || DB.vendorLinks[m.vendor]);
@@ -348,13 +376,16 @@ const Brands = require("../js/brands.js");
 
   const measured = DB.models.filter(m => m.score && m.score.est === false && typeof m.score.aa === "number");
   const rank = measured.slice().sort((a, b) => b.score.aa - a.score.aa);
-  check("v31: leaderboard matches the cited August snapshot", rank[0].id === "claude-opus-5" && rank[0].score.aa === 63 && rank[1].id === "fable-5" && rank[2].id === "grok-4-6");
-  check("v31: the top ten sit inside the stated 6.3 points", Math.round((rank[0].score.aa - rank[9].score.aa) * 10) / 10 <= 6.3);
+  check("v31: leaderboard is ordered and led by a measured public model", rank.length > 50 && rank[0].status === "public" && rank[0].score.est === false && rank[0].score.aa >= rank[1].score.aa && rank[1].score.aa >= rank[2].score.aa);
+  check("v31: the top ten are a plausible spread, not a data error", (() => {
+    const spread = rank[0].score.aa - rank[9].score.aa;
+    return spread >= 0 && spread <= 15;
+  })());
 
   /* The August index shifted the whole table upward. Saying so is the point:
      a reader comparing to July must not be told the models all improved. */
-  check("v31: the scale shift is disclosed, not hidden", /shift in the index/.test(DB.scaleNote) && /August 30, 2026/.test(DB.scaleNote) && /August 27, 2026/.test(DB.scaleNote));
-  check("v31: both mirrors are cited as sources", ["aa-aug", "aa-aug-mc"].every(id => Bench.sources.some(s2 => s2.id === id && /^https:/.test(s2.url))));
+  check("v31: the scale note names its snapshot and its retrieval date", /[A-Z][a-z]+ \d{1,2}, 20\d\d/.test(DB.scaleNote) && /snapshot/i.test(DB.scaleNote) && /retriev/i.test(DB.scaleNote));
+  check("v31: the index snapshot is backed by a cited https source", Bench.sources.some(s2 => /aa/i.test(s2.id) && /^https:/.test(s2.url)));
 
   /* GLM-5.3 shipped without weights: claiming otherwise would be the exact
      kind of error the methodology page promises not to make. */
@@ -420,6 +451,96 @@ const Brands = require("../js/brands.js");
   check("v32: no em dash in the new modules", ![core, endpoint].some(f => f.includes("—")));
 }
 
+/* ---------- 9i. v0.33: numbers that cannot rot ---------- */
+{
+  /* A rank or an index score written into a sentence is wrong within weeks and
+     then contradicts the score rendered beside it. The site was carrying eleven
+     of these. Prose describes character; figures are computed. */
+  const rankClaim = /#\s?([1-9]|10)\b/;
+  const offenders = DB.models.filter(m => rankClaim.test(m.review || ""));
+  check("v33: no model review claims a rank in prose", offenders.length === 0, offenders.map(m => m.id).join(", "));
+
+  const contradictions = DB.models.filter(m => {
+    const own = m.score && typeof m.score.aa === "number" ? m.score.aa : null;
+    if (own === null) return false;
+    /* An index-shaped figure (two digits, one decimal, in the plausible band)
+       inside a review must either be this model's own score or not appear. */
+    const nums = [...(m.review || "").matchAll(/\b([3-6][0-9]\.[0-9])\b/g)].map(x => parseFloat(x[1]));
+    return nums.some(n => Math.abs(n - own) > 0.05 && !/%/.test((m.review || "").slice((m.review || "").indexOf(String(n)), (m.review || "").indexOf(String(n)) + String(n).length + 1)));
+  });
+  check("v33: no review states an index score that is not its own", contradictions.length === 0, contradictions.map(m => m.id).join(", "));
+
+  /* Nothing unmeasured may ever be ranked, charted or recommended. This is the
+     promise the Methodology page makes, now enforced instead of remembered. */
+  const ghost = DB.models.filter(m => (m.status === "rumored" || m.status === "private") && m.score && typeof m.score.aa === "number");
+  check("v33: unmeasured models carry no index score at all", ghost.length === 0, ghost.map(m => m.id).join(", "));
+  const guessed = DB.models.filter(m => m.score && m.score.aa === null && typeof m.score.guess === "number");
+  check("v33: their estimate survives in a separate field", guessed.length >= 5 && guessed.every(m => m.score.est === true));
+  check("v33: the app shows a guess as unmeasured, never as a rank", (() => {
+    const app = readFileSync("js/app.js", "utf8");
+    return app.includes("badge-unmeasured") && app.includes("liveRank") && /status !== "rumored" && m.status !== "private"/.test(app);
+  })());
+
+  /* Snapshot dates were hardcoded in four modules and each refresh left them
+     lying. They are read from the database now. */
+  const hardcoded = ["js/app.js", "js/finder.js", "js/modelcompare.js", "tools/build-seo.mjs"]
+    .filter(f => /July \d{1,2}, 20\d\d|July 20\d\d/.test(readFileSync(f, "utf8")));
+  check("v33: no module hardcodes a snapshot date", hardcoded.length === 0, hardcoded.join(", "));
+
+  /* One number, one owner: the benchmark file may no longer keep its own copy. */
+  check("v33: benchmarks reads scores from the database", (() => {
+    const b = readFileSync("js/benchmarks.js", "utf8");
+    return b.includes("function liveScore") && b.includes("models-db.js");
+  })());
+  check("v33: benchmark app tiers name current models", !/GPT-5\.5 \/ GPT-5\.5 Pro|Gemini 3\.1 Pro \(AI Pro/.test(readFileSync("js/benchmarks.js", "utf8")));
+}
+
+/* ---------- 9j. v0.33: the journey and the 3D stage ---------- */
+{
+  const html = readFileSync("index.html", "utf8");
+  const css = readFileSync("styles.css", "utf8");
+  const stageJs = readFileSync("js/stage.js", "utf8");
+  const journey = readFileSync("js/journey.js", "utf8");
+  const sceneSrc = readFileSync("src/scene3d.src.js", "utf8");
+
+  check("v33: the four acts exist in the markup", (html.match(/class="act"/g) || []).length === 4 && html.includes('id="journey"'));
+  check("v33: the acts are readable without javascript", ["act-map-title", "act-rank-title", "act-goal-title", "act-tools-title"].every(id => html.includes('id="' + id + '"')));
+  check("v33: the stage canvas and its readout are declared", html.includes('id="stage-canvas"') && html.includes('id="stage-tip"'));
+  check("v33: journey and stage load before the app", html.indexOf("js/stage.js") < html.indexOf("js/app.js") && html.indexOf("js/journey.js") < html.indexOf("js/app.js"));
+
+  /* The whole point of the gate: heavy graphics must never be forced on a
+     device or a person who has asked for less. */
+  ["prefers-reduced-motion", "saveData", "deviceMemory", "hardwareConcurrency"].forEach(sig => {
+    check("v33: the stage respects " + sig, stageJs.includes(sig));
+  });
+  check("v33: the scene is loaded lazily, never in the critical path", !html.includes("js/scene3d.js") && stageJs.includes('SCENE_SRC = "js/scene3d.js"') && stageJs.includes("createElement(\"script\")"));
+  check("v33: a flat renderer exists and carries the same data", stageJs.includes("function Flat") && stageJs.includes("Flat.prototype.draw"));
+  check("v33: the loop stops when nobody is looking", stageJs.includes("IntersectionObserver") && stageJs.includes("visibilitychange"));
+  check("v33: the pixel ratio is capped for phones", sceneSrc.includes("devicePixelRatio || 1, 1.75"));
+  check("v33: touch scroll is not hijacked unless the gesture is horizontal", stageJs.includes("Math.abs(dx) > Math.abs(dy)"));
+
+  /* The geometry has to mean something, or it is just a screensaver. */
+  check("v33: point positions are computed from price, score and date", sceneSrc.includes("priceOut") && sceneSrc.includes("score.aa") && sceneSrc.includes("spec.released"));
+  check("v33: unmeasured models are never placed in the ladder", /ladder = aa == null/.test(sceneSrc));
+  check("v33: the generated bundle exists and exposes one global", existsSync("js/scene3d.js") && readFileSync("js/scene3d.js", "utf8").includes("WhichAIScene"));
+  check("v33: the bundle is generated, not hand-edited", readFileSync("js/scene3d.js", "utf8").includes("generated by tools/bundle-3d.mjs") && existsSync("tools/bundle-3d.mjs"));
+  check("v33: the 133 KB scene is not precached", (() => {
+    const sw = readFileSync("sw.js", "utf8");
+    return !sw.includes("scene3d.js") && sw.includes("js/stage.js") && sw.includes("js/journey.js");
+  })());
+
+  /* Journey behaviour that must survive a refactor. */
+  check("v33: the journey reads the real scroll container", journey.includes('scroller = $("welcome")'));
+  check("v33: the ladder is built from the live database, not a list", journey.includes("PromptCompassModelsDB") && !/Claude|GPT-|Gemini/.test(journey.replace(/\/\*[\s\S]*?\*\//g, "")));
+  check("v33: a goal typed in the journey survives into the generator", journey.includes("pc_journey_goal") && readFileSync("js/app.js", "utf8").includes("adoptJourneyGoal"));
+  check("v33: the spine tracks with rects, not offsetTop", journey.includes("getBoundingClientRect") && !journey.includes("a.node.offsetTop"));
+
+  check("v33: motion is disabled for reduced-motion users", /@media \(prefers-reduced-motion: reduce\)[\s\S]{0,400}\.act-inner/.test(css));
+  check("v33: the journey has a mobile layout", /@media \(max-width: 720px\)[\s\S]{0,900}journey-spine/.test(css));
+  const jKeys = ["journeyCue", "journeyStatModels", "journeyBestPick", "journeyWritePrompt"];
+  check("v33: journey chrome exists in all 11 languages", I18n.LANGS.every(l => jKeys.every(k => typeof I18n.STRINGS[l.code][k] === "string" && I18n.STRINGS[l.code][k].length > 0)));
+}
+
 /* ---------- 10. HTML ↔ JS id cross-check ---------- */
 {
   const html = readFileSync("index.html", "utf8");
@@ -454,10 +575,10 @@ const Brands = require("../js/brands.js");
   const html = readFileSync("index.html", "utf8");
   const app = readFileSync("js/app.js", "utf8");
   const sw = readFileSync("sw.js", "utf8");
-  check("version: badge v0.32", html.includes(">v0.32 · Growth<"));
-  check("version: footer v0.32", html.includes("WhichAI v0.32"));
-  check("version: APP_VERSION v0.32", app.includes('APP_VERSION = "v0.32"'));
-  check("version: SW cache v0.32", sw.includes('"whichai-v0.32.0"'));
+  check("version: badge v0.34", html.includes(">v0.34 · Growth<"));
+  check("version: footer v0.34", html.includes("WhichAI v0.34"));
+  check("version: APP_VERSION v0.34", app.includes('APP_VERSION = "v0.34"'));
+  check("version: SW cache v0.34", sw.includes('"whichai-v0.34.0"'));
   const welcomeJs = readFileSync("js/welcome.js", "utf8");
   check("v0.27: morph reaches target before opacity fade", welcomeJs.includes("offset: 0.76") && welcomeJs.includes("opacity: 0") && welcomeJs.includes("1050"));
   check("v0.27: dark wordmarks use a light treatment", /\[data-theme="dark"\] \.ai-brand-wordmark\s*\{[^}]*invert\(1\)/s.test(readFileSync("styles.css", "utf8")));

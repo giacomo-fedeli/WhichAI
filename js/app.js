@@ -112,7 +112,7 @@
   var THEME_KEY = "pc_theme";
   var DEFAULT_GEMINI_MODEL = "gemini-3.6-flash";
   var DEFAULT_GROQ_MODEL = "llama-3.3-70b-versatile";
-  var APP_VERSION = "v0.32";
+  var APP_VERSION = "v0.34";
   var BRAND = "WhichAI";
   var TASK_ICONS = {
     writing: '<svg class="guide-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M4 20l1-4L16.5 4.5a2.1 2.1 0 013 3L8 19l-4 1z"/><path d="M13.5 7.5l3 3"/></svg>',
@@ -338,6 +338,7 @@
     setText("#keymode-hint", "keymodeHint");
     setText("#keys-clear", "keysClear");
     setText("#keymode-warn", "keymodeWarn");
+    setText("#journey-cue-label", "journeyCue");
     setText("#key-risk-title", "keyRiskTitle");
     setText("#data-title", "dataTitle");
     setText("#data-hint", "dataHint");
@@ -916,6 +917,8 @@
     if (doctorView) doctorView.hidden = name !== "doctor";
     var radarView = document.getElementById("radar-view");
     if (radarView) radarView.hidden = name !== "radar";
+    var liveView = document.getElementById("live-view");
+    if (liveView) liveView.hidden = name !== "live";
     var arenaView = document.getElementById("arena-view");
     if (arenaView) arenaView.hidden = name !== "arena";
     var topicsView = document.getElementById("topics-view");
@@ -940,7 +943,7 @@
     var navTopics = document.getElementById("nav-topics");
     if (navTopics) navTopics.classList.toggle("active", name === "topics");
     var moreBtn = document.getElementById("nav-more");
-    if (moreBtn) moreBtn.classList.toggle("active", ["chains", "stack", "doctor", "glossary", "about", "settings", "radar", "arena", "topics"].indexOf(name) !== -1);
+    if (moreBtn) moreBtn.classList.toggle("active", ["chains", "stack", "doctor", "glossary", "about", "settings", "radar", "arena", "topics", "live"].indexOf(name) !== -1);
     closeMorePanel();
     if (name === "guide" && !guideBuilt) buildGuide();
     if (name === "compare") renderCompare();
@@ -966,6 +969,11 @@
         },
         run: function (f, prompt) { return RUNNERS[f].call(settings, prompt); }
       });
+    }
+    /* The live feed is fetched only when someone opens the view: it is a
+       network call to a third party, and nobody asked for it on page load. */
+    if (name === "live" && window.WhichAILive) {
+      window.WhichAILive.render(document.getElementById("live-wrap"), { T: T });
     }
     if (name === "radar" && window.WhichAIRadar) {
       window.WhichAIRadar.init(document.getElementById("radar-wrap"), {
@@ -1012,10 +1020,11 @@
     var isStack = h.indexOf("#stack") === 0;
     var isDoctor = h.indexOf("#doctor") === 0;
     var isRadar = h.indexOf("#radar") === 0;
+    var isLive = h.indexOf("#live") === 0;
     var isArena = h.indexOf("#arena") === 0;
     var isTopics = h.indexOf("#topics") === 0;
     if (isModel) { openModelById(decodeURIComponent(h.slice(7))); return; }
-    setView(h === "#guide" ? "guide" : isCompare ? "compare" : isChains ? "chains" : isMerge ? "merge" : isAbout ? "about" : isGlossary ? "glossary" : isStack ? "stack" : isDoctor ? "doctor" : isRadar ? "radar" : isArena ? "arena" : isTopics ? "topics" : h === "#settings" ? "settings" : "generator");
+    setView(h === "#guide" ? "guide" : isCompare ? "compare" : isChains ? "chains" : isMerge ? "merge" : isAbout ? "about" : isGlossary ? "glossary" : isStack ? "stack" : isDoctor ? "doctor" : isRadar ? "radar" : isLive ? "live" : isArena ? "arena" : isTopics ? "topics" : h === "#settings" ? "settings" : "generator");
     if (isChains) importChainFromHash();
     if (isCompare) {
       // Model comparison is the default; outputs win only when explicitly asked
@@ -1349,7 +1358,7 @@
         aria: "Price versus performance scatter plot"
       });
       var ppNote = document.getElementById("chart-pp-note");
-      if (ppNote) ppNote.textContent = "Top-left = more intelligence per dollar. Prices from vendor pages (July 2026); index from the July 16 snapshot. Only models with published price AND measured score are plotted.";
+      if (ppNote) ppNote.textContent = "Top-left = more intelligence per dollar. Prices and index both from the " + ((window.PromptCompassModelsDB || {}).updated || "current") + " snapshot. Only models with published price AND measured score are plotted.";
     }
   }
 
@@ -1641,6 +1650,38 @@
     $routerCard.hidden = false;
   }
 
+
+  /* The rank a model holds is computed on the spot, never written into prose.
+     A sentence saying "#3" is wrong within weeks; this is right by definition. */
+  var _rankCache = null;
+  function liveRank(id) {
+    var DBx = window.PromptCompassModelsDB || null;
+    if (!DBx || !DBx.models) return null;
+    if (!_rankCache) {
+      var measured = DBx.models.filter(function (m) {
+        return m.score && typeof m.score.aa === "number" && m.status !== "rumored" && m.status !== "private";
+      }).sort(function (a, b) { return b.score.aa - a.score.aa; });
+      _rankCache = {};
+      measured.forEach(function (m, i) { _rankCache[m.id] = { rank: i + 1, total: measured.length }; });
+    }
+    return _rankCache[id] || null;
+  }
+
+
+  /* A goal typed during the journey is the user's first real input. Losing it
+     at the door would make the whole descent feel decorative. */
+  function adoptJourneyGoal() {
+    try {
+      var g = sessionStorage.getItem("pc_journey_goal");
+      if (!g) return;
+      sessionStorage.removeItem("pc_journey_goal");
+      if ($goal && !$goal.value) {
+        $goal.value = g;
+        if ($goal.dispatchEvent) $goal.dispatchEvent(new Event("input"));
+      }
+    } catch (e) { /* private mode */ }
+  }
+
   /* ---------- Model guide view ---------- */
 
   function buildGuide() {
@@ -1832,10 +1873,30 @@
       head.appendChild(name);
       var score = document.createElement("span");
       score.className = "badge";
-      score.textContent = m.score && m.score.aa
-        ? "AA " + (m.score.est ? "~" : "") + m.score.aa + (m.score.est ? " est." : "")
-        : "AA n/a";
-      head.appendChild(score);
+      if (m.score && typeof m.score.aa === "number") {
+        score.textContent = "AA " + m.score.aa;
+        var pos = liveRank(m.id);
+        if (pos) {
+          var rankEl = document.createElement("span");
+          rankEl.className = "badge badge-rank";
+          rankEl.textContent = "#" + pos.rank + " of " + pos.total;
+          rankEl.title = "Live position among measured models, " + ((window.PromptCompassModelsDB || {}).updated || "current") + " snapshot. Computed now, never written into the text.";
+          head.appendChild(score);
+          head.appendChild(rankEl);
+        } else {
+          head.appendChild(score);
+        }
+      } else if (m.score && typeof m.score.guess === "number") {
+        /* Nobody has measured this model. Show the estimate as context, never
+           as a rank: unmeasured entries carry no index score at all. */
+        score.className = "badge badge-unmeasured";
+        score.textContent = "unmeasured · guess ~" + m.score.guess;
+        score.title = "No public index score exists for this model yet. The figure is a WhichAI estimate shown for context only: it is excluded from every ranking, chart and recommendation.";
+        head.appendChild(score);
+      } else {
+        score.textContent = "AA n/a";
+        head.appendChild(score);
+      }
       card.appendChild(head);
 
       var chips = document.createElement("div");
@@ -3165,6 +3226,8 @@
   applyPrefs();
   initChains();
   initLangTheme();
+  adoptJourneyGoal();
+  if (window.WhichAIJourney) window.WhichAIJourney.init({ T: T });
   syncViewToHash();
   viewInitDone = true;
 })();

@@ -49,8 +49,54 @@
     ]
   };
 
+  // Keep completed text for inspection, but never reuse it as current after
+  // an upstream edit. Run all will recompute marked steps in dependency order.
+  function invalidateFrom(chain, index) {
+    if (!chain || !Array.isArray(chain.steps)) return;
+    chain.revision = (chain.revision || 0) + 1;
+    chain.steps.slice(Math.max(0, index)).forEach(function (step) {
+      if ((step.output || "").trim()) step.stale = true;
+    });
+  }
+
+  function toShare(chain) {
+    return { v: 2, g: chain.goal, c: chain.context || "", t: chain.taskType,
+      s: chain.steps.map(function (step) {
+        return { id: step.tplId, n: step.name, d: step.description || "", i: step.instruction,
+          m: step.model, custom: !!step.custom };
+      }) };
+  }
+
+  function fromShare(payload, engine, defaultModel) {
+    if (!payload || typeof payload.g !== "string" || !payload.g.trim() || payload.g.length > 12000) return null;
+    if (payload.c != null && typeof payload.c !== "string") return null;
+    if ((payload.c || "").length > 20000) return null;
+    var task = engine.TASK_ORDER.indexOf(payload.t) !== -1 ? payload.t : engine.detectTaskType(payload.g);
+    var model = function (id) { return engine.MODEL_ORDER.indexOf(id) !== -1 ? id : defaultModel; };
+    var steps;
+    if (payload.v === 2) {
+      if (!Array.isArray(payload.s) || !payload.s.length || payload.s.length > 12) return null;
+      if (!payload.s.every(function (s) { return s && typeof s.i === "string" && s.i.trim() && s.i.length <= 12000 && typeof s.n === "string" && s.n.length <= 200; })) return null;
+      steps = payload.s.map(function (s, i) {
+        return { tplId: typeof s.id === "string" ? s.id.slice(0, 120) : "shared-" + i,
+          name: s.n, description: typeof s.d === "string" ? s.d.slice(0, 1000) : "",
+          instruction: s.i, model: model(s.m), custom: !!s.custom, output: "", stale: false };
+      });
+    } else {
+      steps = Chains.get(task).map(function (s, i) {
+        return { tplId: s.id, name: s.name, description: s.description, instruction: s.instruction,
+          model: model(Array.isArray(payload.m) && payload.m[i]), output: "", stale: false };
+      });
+    }
+    return { id: "ch" + Date.now(), createdAt: Date.now(), revision: 0,
+      goal: payload.g.trim(), context: payload.c || "", taskType: task, steps: steps };
+  }
+
   var Chains = {
     TEMPLATES: TEMPLATES,
+    invalidateFrom: invalidateFrom,
+    toShare: toShare,
+    fromShare: fromShare,
     /** get(taskType) -> fresh copy of the step templates (falls back to "general"). */
     get: function (taskType) {
       var tpl = TEMPLATES[taskType] || TEMPLATES.general;

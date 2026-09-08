@@ -37,12 +37,20 @@ async function fetchUpstream(timeoutMs) {
     signal: AbortSignal.timeout(timeoutMs || 20000)
   });
   if (!res.ok) throw new Error("OpenRouter responded " + res.status);
-  return res.json();
+  const payload = await res.json();
+  validateUpstream(payload);
+  return payload;
+}
+
+function validateUpstream(payload) {
+  if (!payload || !Array.isArray(payload.data) || !payload.data.length || payload.data.some((m) => !m || typeof m.id !== "string" || typeof m.name !== "string")) {
+    throw new Error("Invalid OpenRouter catalog schema; no checks applied");
+  }
 }
 
 const perMillion = (v) => {
   const n = parseFloat(v);
-  return isFinite(n) && n > 0 ? Math.round(n * 1e6 * 1000) / 1000 : null;
+  return isFinite(n) && n >= 0 ? Math.round(n * 1e6 * 1000) / 1000 : null;
 };
 
 function parsePrice(spec) {
@@ -67,14 +75,11 @@ function upstreamKey(up) {
 
 function sameModel(a, b) {
   if (!a || !b) return false;
-  if (a === b) return true;
-  if (a.length < 6 || b.length < 6) return false;
-  const long = a.length >= b.length ? a : b;
-  const short = a.length >= b.length ? b : a;
-  return long.startsWith(short) && long.length - short.length <= 1;
+  return a === b;
 }
 
 function analyse(upstream, DB, appSrc) {
+  validateUpstream(upstream);
   const all = Array.isArray(upstream && upstream.data) ? upstream.data : [];
   const byId = new Map(all.map((m) => [m.id, m]));
   const report = {
@@ -99,7 +104,8 @@ function analyse(upstream, DB, appSrc) {
   const catalogNames = DB.models.map((m) => ({ m, key: normName(m.name) }));
   const findUpstream = (model) => {
     const key = normName(model.name);
-    for (const up of all) if (sameModel(key, upstreamKey(up))) return up;
+    const Live = require("./_live-core.js");
+    for (const up of all) if (!/:/.test(up.id) && sameModel(key, upstreamKey(up)) && Live.catalogMatch(up, { models: [model] }) === model.id) return up;
     return null;
   };
 
@@ -144,7 +150,7 @@ function analyse(upstream, DB, appSrc) {
   report.needsHuman.push("Artificial Analysis scores are never updated automatically: re-check the snapshot and cite it.");
 
   /* One number the site can show without anyone reading the report. */
-  report.actionable = report.deadFreeRoutes.length + report.priceDrift.length + report.missingFromCatalog.length;
+  report.actionable = report.deadFreeRoutes.length + report.priceDrift.length + report.contextDrift.length + report.missingFromCatalog.length;
   report.severity = report.deadFreeRoutes.length ? "broken" : (report.actionable ? "review" : "clean");
   return report;
 }
@@ -165,7 +171,7 @@ function markdown(r) {
   if (r.missingFromCatalog.length) {
     L.push("### Candidates to add");
     L.push("");
-    L.push("| Released | Model | Context | $/1M in | $/1M out | Free route |");
+    L.push("| Added to OpenRouter | Model | Context | $/1M in | $/1M out | Free route |");
     L.push("| --- | --- | --- | --- | --- | --- |");
     for (const m of r.missingFromCatalog.slice(0, 25)) {
       L.push("| " + (m.released || "n/a") + " | `" + m.id + "` | " + (m.contextTokens ? Math.round(m.contextTokens / 1000) + "K" : "n/a") + " | " + (m.pricePerMillion.in == null ? "n/a" : m.pricePerMillion.in) + " | " + (m.pricePerMillion.out == null ? "n/a" : m.pricePerMillion.out) + " | " + (m.free ? "yes" : "no") + " |");
@@ -212,4 +218,4 @@ function skippedReport(reason, DB) {
   };
 }
 
-module.exports = { OR_ENDPOINT, analyse, markdown, fetchUpstream, shippedFreeRoutes, skippedReport, sameModel, normName, upstreamKey };
+module.exports = { OR_ENDPOINT, analyse, markdown, fetchUpstream, shippedFreeRoutes, skippedReport, sameModel, normName, upstreamKey, validateUpstream, perMillion };

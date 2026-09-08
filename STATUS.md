@@ -1,10 +1,88 @@
 # WhichAI (ex PromptCompass) — STATUS
 
-Ultimo aggiornamento: 2026-09-02 (sessione 33 - Claude)
-Versione app: v0.32.0 (in cartella; live v0.30 verificata. NOTA: GitHub Actions bloccate da un problema di autorizzazione carta sull'account, NON da costi: vedi sessione 33)
+Ultimo aggiornamento: 2026-09-08 (sessione 35 - Claude)
+Versione app: v0.34.0 (in cartella; live v0.30 verificata. NOTA: GitHub Actions bloccate da un problema di autorizzazione carta sull'account, NON da costi: vedi sessione 33)
 Sito live: https://whichai.wiki · https://promptcompass.vercel.app resta come alias
 
 ## Fase corrente: Growth - fase 2 (backend reale, automazione dati, risposta alla review esterna)
+
+## Fatto (sessione 35, 2026-09-08 - Claude): integrato il lavoro di Jack su /api/live, e una correzione che devo a lui
+
+Sessione di convergenza. Jack (o una sessione parallela) aveva costruito `/api/live` mentre io lavoravo alla v0.33 su un clone con una storia git diversa. Prima regola di AI-SYNC applicata: **ho verificato i danni prima di scrivere**.
+
+### 0. CORREZIONE IMPORTANTE alla sessione 34
+Nella sessione precedente ho scritto a Jack che **l'aggiornamento automatico dei punteggi non era implementabile** perche' nessuna fonte pubblica li espone in modo leggibile da una macchina. **Era sbagliato.** L'API pubblica di OpenRouter espone `benchmarks.artificial_analysis` (`intelligence_index`, `coding_index`, `agentic_index`) su circa 18 modelli, gratis e senza chiave. Jack lo aveva gia' trovato e ci aveva costruito sopra.
+
+**Ma c'e' il dettaglio che salva il sito, e Jack lo aveva gia' capito**: il numero relayato da OpenRouter e' su una **scala diversa** da quella del catalogo editoriale. OpenRouter dice Claude Opus 5 = **50.7**; il mirror citato da cui viene il nostro snapshot dice **63.0**. Sono entrambi "l'indice AA", nessuno dei due e' sbagliato, e **copiare il primo dentro `score.aa` corromperebbe silenziosamente l'unico numero su cui il sito si gioca la credibilita'**. Il commento che Jack ha scritto in `_live-core.js` dice esattamente questo: *"nothing in this module rewrites the editorial catalog or its score scale"*. E' la scelta giusta.
+
+### 1. VERIFICA PRIMA DI SCRIVERE (nessun danno)
+Le due storie git erano divergenti (mio `b04107d` vs suo `bd2f39b`). Controllato file per file: il mio zip v0.33 conteneva **solo** i file del mio diff, quindi `api/live.js`, `api/_live-core.js`, `js/live-data.js` e i suoi due workflow riscritti sono **intatti**. L'unica sovrapposizione era la costante `APP_VERSION` in `api/_lib.js`. Importati nel container i suoi file e tenute **le sue versioni** di `_refresh-core.js` e `refresh.js`, che sono migliori delle mie: matching piu' stretto via `Live.catalogMatch`, validazione dello schema upstream, `contextDrift` conteggiato in `actionable`.
+
+### 2. IL BUG CHE FACEVA FALLIRE ENTRAMBI I WORKFLOW
+`ci.yml` e `data-refresh.yml` chiamano `node tests/live-data-tests.mjs`. **Quel file non esisteva.** Entrambi i workflow sarebbero falliti a quello step anche con il billing sbloccato. Scritto: **53 test**, tutti offline (fetcher iniettato, niente dipendenza da OpenRouter). Coprono parsing valori, rifiuto di schemi invalidi, matching stretto col catalogo, deduplica delle classifiche (una rotta `:free` e la sua paid non occupano due posizioni), cache/stale/backoff del service, e soprattutto **l'invariante di separazione delle scale**: che il numero relayato e quello editoriale restino due cose diverse e che nessun modulo live scriva nel catalogo.
+
+Aggiunto anche un test che **impedisce il ripetersi del problema**: ogni `node tests/*.mjs` o `node tools/*.mjs` citato in un workflow deve puntare a un file che esiste.
+
+### 3. LA VISTA LIVE ERA FINITA MA NON AGGANCIATA
+`js/live-data.js` (13 KB, completo, con i18n interna) non era referenziato **da nessuna parte**: ne in `index.html`, ne in `sw.js`. Era codice funzionante e invisibile. Montato: voce "Live market" nel menu More, vista `#live`, routing, precache. **Il fetch parte solo quando qualcuno apre la vista** - e' una chiamata di rete a un terzo, nessuno l'ha chiesta al caricamento della pagina.
+
+### 4. ALTRI TEST TROPPO RIGIDI, CORRETTI
+- `v30: scheduled data refresh` bloccava il minuto esatto del cron e pretendeva l'action `create-pull-request`. Erano scelte implementative, non requisiti, e Jack ha riscritto il workflow **senza permessi di scrittura** - che e' meglio. Ora verifica: c'e' un cron settimanale, chiama il tool, ha `workflow_dispatch`, e **non chiede `contents: write`**.
+- `v24: More panel opens with 9 items` si rompeva ogni volta che si aggiunge uno strumento. Ora verifica che ogni voce del menu punti a una vista che esiste davvero.
+
+### Test e versione
+- **435 test verdi**: 231 statici + 101 smoke DOM + 50 API + **53 live data (nuovi)**. v0.34 ovunque. Wiki 178 pagine.
+- [ ] **Jack**: (1) push di v0.34: da questo momento i tuoi workflow non falliscono piu' per il file mancante; (2) apri `#live` dal menu More e guarda la vista che avevi scritto; (3) resta aperto `docs/AUDIT-2026-09.md` con il lavoro delle prossime sessioni.
+
+### Nota di consegna (git sul PC di Jack)
+I file sono stati copiati nella cartella e i **435 test girano verdi sul suo PC**, ma **il commit locale non ho potuto farlo io**: git ha bisogno di cancellare il proprio `.git/index.lock` a fine operazione e questa sessione non ha il permesso di cancellare file sul PC. Anche `git status` lascia un lock orfano. Ho spostato tutti i lock rimasti in `_to_delete/` (dentro la cartella del progetto), quindi **il git di Jack funziona normalmente**.
+
+Da fare a mano, una volta sola:
+1. Cancellare la cartella `_to_delete/` (contiene i lock orfani e lo zip gia' estratto).
+2. `git add -A && git commit -m "v0.34: costellazione 3D, /api/live, correttezza dei numeri"` e push.
+
+**Per la prossima sessione**: se serve committare dal PC, chiedere a Jack il permesso di cancellazione all'inizio (`device_request_delete_permission` sulla cartella del progetto) invece di scoprirlo alla fine.
+
+## Fatto (sessione 34, 2026-09-08 - Claude): restauro visivo 3D + audit contenuti + correttezza dei numeri
+
+Sessione grossa. Jack ha chiesto: rifacimento grafico con 3D interattivo, un filo narrativo che colleghi le pagine, check e approfondimento di ogni contenuto, e automazione totale. Decisioni sue a inizio sessione: Three.js completo (non WebGL custom), auto-apply totale sui dati, tutte e quattro le priorita'.
+
+### 1. CORRETTEZZA (scoperta da un audit contenuti, e piu' grave del previsto)
+Un subagent ha fatto l'audit completo di ogni feature. Il report integrale e' in `docs/AUDIT-2026-09.md`. Cose gravi trovate e **corrette**:
+- **GPT-6 era in catalogo come "rumored", con un punteggio INVENTATO (65) che lo metteva al PRIMO POSTO di ogni classifica del sito**, mentre la pagina Methodology promette che i modelli rumored "never appear in rankings or recommendations". Nel frattempo GPT-6 Astra e' uscito davvero (4 settembre). Ora e' un modello reale e misurato (61.2).
+- **Fix strutturale, non a mano**: i modelli rumored/private non hanno piu' `score.aa` (e' `null`); la stima vive in `score.guess`. Cosi' ordinare per `aa` li esclude **per costruzione**, invece di dipendere dal fatto che ogni consumer si ricordi di filtrarli. Sei modelli spostati. Test che lo impedisce di tornare.
+- **11 review contenevano claim di rank ("#3 on the AA index (57.1)") che marciscono in settimane** e contraddicevano il punteggio mostrato due centimetri piu' in la'. Tutti riscritti: la prosa descrive il carattere del modello, il rank e' calcolato al volo e mostrato in un badge `#N of M`. Due test lo impongono.
+- **4 date di snapshot erano hardcodate** in app.js, finder.js, modelcompare.js e build-seo.mjs ("July 16 snapshot") mentre il DB diceva agosto. Ora leggono da `DB.updated`. Test.
+- **benchmarks.js teneva una copia propria di 6 punteggi**, gia' divergenti dal DB, e i suoi `topModel` erano due generazioni indietro (raccomandava "GPT-5.5" e "Gemini 3.1 Pro"). Ora c'e' `liveScore()` che legge dal DB; i tier aggiornati.
+- **Refresh dati 8 settembre**: +4 modelli (Claude Fable 5.1 65.7 il 1/9, Muse Spark 1.3 62.1 il 2/9, Gemini 3.8 Flash 58.7 il 2/9, GPT-6 Astra 61.2 il 4/9) e Claude Mythos 5.1 come non misurato. **118 modelli.** Prezzi, context, modalita' e date presi dall'API pubblica OpenRouter, che e' automatizzabile.
+
+### 2. IL 3D (scelta di Jack: Three.js completo)
+- `src/scene3d.src.js` + `tools/bundle-3d.mjs` -> `js/scene3d.js`. Three.js vero, ma **tree-shaked da esbuild importando solo cio' che serve**: 522 KB, **133 KB gzip**. Il compromesso che rende compatibile "Three.js completo" con "perfetto su mobile".
+- **La scena e' il dataset, non un salvaschermo**: x = prezzo per 1M token in output (log), y = punteggio misurato, z = quanto e' recente. I 118 punti si trasformano tra quattro formazioni guidate dallo scroll (nuvola -> piano prezzo/prestazioni -> classifica -> fuoco). I modelli non misurati sono spenti, in fondo, e non entrano mai nella classifica: la stessa regola del resto del sito, espressa in geometria. Una linea collega i primi 12 e appare solo quando si forma la classifica.
+- **`js/stage.js` decide se caricarlo**: rifiuta con `prefers-reduced-motion`, Save-Data, 2g, `deviceMemory < 4`, `hardwareConcurrency <= 2`, assenza di WebGL. Ferma il loop quando il canvas esce dal viewport o la tab va in background. Override `?stage=3d` / `?stage=flat` per demo e screenshot.
+- **Fallback 2D** che non e' una scusa: stessi modelli, stessi colori, stesse formazioni, in canvas 2D.
+- **Touch**: un dito orbita, ma solo se il gesto e' chiaramente orizzontale, altrimenti la pagina scorre normalmente.
+
+### 3. IL PERCORSO NARRATIVO
+- La welcome smette di essere una schermata bloccata: diventa un contenitore che scorre. Quattro atti, con la costellazione fissa dietro che cambia forma insieme allo scroll. **L'animazione non illustra l'argomento, e' l'argomento.**
+- Atto 1 la mappa (contatori live dal DB), atto 2 la classifica (top 5 live, cliccabile), atto 3 il tuo obiettivo (input -> raccomandazione calcolata sul momento dal router locale), atto 4 gli strumenti.
+- **Spine laterale** che si riempie mentre scendi, con un punto per atto, etichetta al passaggio, click per saltare. Su mobile diventa una barra orizzontale in alto.
+- Un obiettivo scritto nell'atto 3 **sopravvive** nel Generator (`pc_journey_goal`).
+- **La welcome e' scura in tutti i temi**: una costellazione di punti luminosi su bianco e' coriandoli, non un cielo. L'app conserva il tema scelto.
+
+### 4. BUG REALI TROVATI DAI TEST
+- `getContext("2d")` puo' tornare `null` (jsdom, modalita' privacy che bloccano il canvas): faceva esplodere l'intero boot. Blindato: senza superficie di disegno la pagina resta completa, il canvas resta vuoto.
+- `liveRank` e la nota prezzi usavano `DBx`, che e' una variabile **locale** di altre funzioni: ReferenceError alla prima apertura di una scheda modello. Trovato dallo smoke test.
+- La journey ascoltava `#welcome-scroll` invece di `#welcome`: il contenitore che scorre e' l'overlay, quindi lo scrollTop era sempre 0 e nulla si muoveva.
+- Lo spine usava `offsetTop` contro `scrollTop`: sistemi di riferimento diversi, marcatore sempre un atto avanti. Ora usa i rect.
+
+### 5. DA SAPERE (limite reale, non aggirabile a chiacchiere)
+**L'auto-apply totale sui punteggi NON e' implementabile oggi.** Ho verificato: artificialanalysis.ai non ha API pubblica senza chiave (404 su v1, CORS su v2), llm-stats.com non espone JSON (ne `__NEXT_DATA__`, ne endpoint), i mirror pubblicano solo HTML. **Prezzi, context, modalita', date e route gratuite sono automatizzabili al 100% via OpenRouter** e lo sono gia'. I punteggi no: senza fonte leggibile da una macchina, "automatico" significherebbe scraping HTML fragile che si rompe al primo restyle e pubblica numeri sbagliati sull'unica cosa su cui il sito si gioca la credibilita'.
+
+### Test e versione
+- **376 test verdi**: 229 statici + 97 smoke DOM + 50 API. Wiki rigenerata: 178 pagine, sitemap 179 URL.
+- v0.33 ovunque; `sw.js` precacha stage e journey ma **non** i 133 KB della scena, che si carica su richiesta.
+- [ ] **Jack**: (1) push di v0.33; (2) apri il sito e prova a scorrere invece di cliccare; `?stage=3d` forza la scena anche dove il gate la rifiuta; (3) leggi `docs/AUDIT-2026-09.md`: contiene il lavoro delle prossime sessioni gia' scritto e ordinato per impatto.
 
 ## Fatto (sessione 33, 2026-09-02 - Claude): automazione che non dipende da GitHub
 

@@ -1,92 +1,62 @@
-# SECONDARY path for the data check. The PRIMARY one is a Vercel Cron hitting
-# /api/refresh daily: it runs the identical code from api/_refresh-core.js on
-# the host that already serves the site, so the automation keeps working even
-# when GitHub Actions cannot run (an account lock, a policy, a quota).
-#
-# What this workflow adds on top is the part only GitHub can do: opening a
-# pull request with the evidence, and an issue when a shipped free route dies.
-#
-# Scheduled data check: every Monday at 06:00 UTC the workflow asks the
-# public OpenRouter API whether the free routes WhichAI ships still exist,
-# whether prices and context windows drifted, and which models appeared
-# since the last catalog snapshot. Findings that need editorial judgement
-# (scores above all) are never applied silently: the workflow opens a pull
-# request and, when a shipped free route is dead, an issue.
+# The public site updates through /api/live, independently of this workflow.
+# This scheduled job retains diagnostics as an artifact; it needs no PR/write
+# permission and never blocks fresh data on a human merge or account policy.
 name: Data refresh
 
 on:
   schedule:
-    - cron: "0 6 * * 1"
+    - cron: "17 6 * * 1"
   workflow_dispatch:
     inputs:
       strict:
-        description: "Fail the run when a shipped :free route is gone"
+        description: "Fail after saving diagnostics if upstream is unavailable or a shipped free route is gone"
         type: boolean
         default: false
 
 permissions:
-  contents: write
-  pull-requests: write
-  issues: write
+  contents: read
+
+concurrency:
+  group: data-refresh
+  cancel-in-progress: false
 
 jobs:
   check:
     name: Check public sources
     runs-on: ubuntu-latest
     timeout-minutes: 10
-    outputs:
-      changes: ${{ steps.check.outputs.changes }}
-      dead_routes: ${{ steps.check.outputs.dead_routes }}
     steps:
       - uses: actions/checkout@v4
-
+        with:
+          persist-credentials: false
       - uses: actions/setup-node@v4
         with:
-          node-version: 22
-
-      - name: Query public sources and diff against the catalog
+          node-version: 24
+          cache: npm
+      - name: Install locked dependencies
+        run: npm ci --no-audit --no-fund
+      - name: Query public sources and save evidence
         id: check
         run: node tools/refresh-data.mjs
-
-      - name: Regenerate the static wiki and sitemap
-        run: node tools/build-seo.mjs
-
-      - name: Run the test suite over the regenerated files
+      - name: Validate data and the complete app
         run: |
-          npm install --no-audit --no-fund
           node tests/run-tests.mjs
+          node tests/smoke-dom.mjs
           node tests/api-tests.mjs
-
-      - name: Open a pull request when something moved
-        if: steps.check.outputs.changes != '0'
-        uses: peter-evans/create-pull-request@v6
+          node tests/live-data-tests.mjs
+      - name: Retain diagnostic reports
+        if: always()
+        uses: actions/upload-artifact@v4
         with:
-          branch: automated/data-refresh
-          title: "Data refresh: ${{ steps.check.outputs.changes }} item(s) to review"
-          commit-message: "chore(data): scheduled refresh - regenerated wiki and drift report"
-          body-path: data/refresh-report.md
-          labels: data, automated
-          delete-branch: true
-
-      - name: Raise an issue when a shipped free route died
-        if: steps.check.outputs.dead_routes != '0'
-        uses: actions/github-script@v7
-        with:
-          script: |
-            const fs = require('fs');
-            const report = JSON.parse(fs.readFileSync('data/refresh-report.json', 'utf8'));
-            await github.rest.issues.create({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              title: `Broken free route: ${report.deadFreeRoutes.join(', ')}`,
-              labels: ['bug', 'data', 'automated'],
-              body: [
-                'The scheduled data check found that a `:free` OpenRouter route WhichAI ships as a default no longer exists.',
-                '',
-                '**Dead routes:** ' + report.deadFreeRoutes.map(r => '`' + r + '`').join(', '),
-                '',
-                'Auto-run in Compare, Chains and Arena fails for every user on the default settings until `DEFAULT_OR_MODELS` in `js/app.js` points at a live route.',
-                '',
-                'Full report in `data/refresh-report.md` of the latest run.'
-              ].join('\n')
-            });
+          name: data-refresh-${{ github.run_id }}
+          path: |
+            data/refresh-report.json
+            data/refresh-report.md
+          retention-days: 14
+          if-no-files-found: warn
+      - name: Enforce optional strict diagnostics
+        if: inputs.strict == true
+        env:
+          SOURCE_ERROR: ${{ steps.check.outputs.source_error }}
+          DEAD_ROUTES: ${{ steps.check.outputs.dead_routes }}
+        run: node -e "if (process.env.SOURCE_ERROR === '1' || Number(process.env.DEAD_ROUTES) > 0) process.exit(1)"

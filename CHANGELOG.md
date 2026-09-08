@@ -2,6 +2,52 @@
 
 (Older release-by-release history lives in `STATUS.md`, the project's working memory.)
 
+## v0.34.0 (2026-09-08)
+
+The live market feed, finished and mounted, plus the test file two workflows were already calling.
+
+### Added
+- **Live market view** (`#live`, in the More menu). `js/live-data.js` was complete, translated and wired to nothing: not referenced by `index.html` or the service worker. It now has a view, and the feed is fetched only when someone opens it, because it is a network call to a third party that nobody asked for at page load.
+- **`tests/live-data-tests.mjs`** - 53 checks, entirely offline through an injected fetcher. Both workflows had been calling this file for a release; it did not exist, so both would have failed at that step regardless of anything else.
+- A guard that stops it happening again: every `node tests/*.mjs` or `node tools/*.mjs` referenced by a workflow must point at a file that is actually in the repository.
+
+### Corrected
+- **Automatic score updates are possible after all.** The previous release said no public source exposes intelligence scores to a machine. OpenRouter does, on roughly 18 models, free and keyless, under `benchmarks.artificial_analysis`.
+- **And they still must not be copied into the catalog.** The relayed index sits on a different scale from the cited editorial snapshot: OpenRouter reports Claude Opus 5 near 50, the mirror the catalog is built from says 63. Both are "the AA index". Writing one into the other would corrupt the single number this site is judged on, silently. The live feed therefore keeps relayed benchmarks in their own namespace, states the scale difference in its own payload, and never touches `score.aa` - now enforced by test rather than by intent.
+
+### Changed
+- Two tests stopped pinning implementation details. The scheduled-refresh check required an exact cron minute and a pull-request action; the workflow has since been rewritten to need no write permission at all, which is better, so the test now asserts that instead. The More-menu check counted nine items and broke whenever a tool was added; it now verifies every entry routes to a view that exists.
+
+### Tests
+231 static + 101 DOM smoke + 50 API + 53 live data = **435 passing**.
+
+## v0.33.0 (2026-09-08)
+
+A 3D constellation you can scroll through, and the numbers behind it made incapable of rotting.
+
+### Added
+- **The model constellation.** 118 real models as points in space: horizontal is price per million output tokens on a log scale, vertical is the measured index, depth is how recently it shipped. Scrolling morphs them between four formations - cloud, price/performance plane, ranked ladder, focus - so the shape on screen is the sentence being read. Built on three.js, tree-shaken to 133 KB gzipped, loaded lazily and never in the critical path.
+- **A gate that says no.** The scene is declined outright for `prefers-reduced-motion`, Save-Data, 2g, under 4 GB of device memory, two cores or fewer, and no WebGL, and it stops rendering whenever the canvas leaves the viewport or the tab is hidden. The 2D fallback carries the same models, colours and formations. `?stage=3d` and `?stage=flat` override the decision.
+- **The journey.** The welcome is no longer a dead end: scrolling is now a third answer alongside the four buttons. Four acts - the map, the ranking, your job, the tools - with a spine that fills as you descend, a dot per act, and a goal field in act three that answers live from the local router and carries your text into the Generator.
+- **A computed rank badge** on every model card (`#4 of 108`), replacing rank claims that used to be typed into prose.
+
+### Changed
+- **Nothing unmeasured can be ranked any more.** Rumoured and private models no longer carry `score.aa` at all; their estimate lives in `score.guess`. GPT-6 had been sitting at the top of every sorted list on the site with an invented 65 while telling readers OpenAI had announced nothing. Sorting now excludes them by construction rather than by every consumer remembering to.
+- **Eleven reviews stopped claiming a rank.** "#3 on the AA index (57.1)" is wrong within weeks and contradicts the score rendered beside it. Reviews now describe what a model is like to work with; positions are computed.
+- **Four modules stopped hardcoding the snapshot date**, and `benchmarks.js` stopped keeping its own copy of six scores that had already drifted from the database.
+- **The landing is dark in every theme.** A constellation of faint points on near-white is confetti. The app keeps the reader's chosen theme.
+
+### Data refresh (September 8, verified against the OpenRouter public model list)
+Claude Fable 5.1 (65.7, Sept 1, cache reads 75% cheaper), GPT-6 Astra (61.2, Sept 4 - the rumour entry became the real model), Muse Spark 1.3 (62.1, Sept 2), Gemini 3.8 Flash (58.7, Sept 2), Claude Mythos 5.1 (unmeasured). 118 models.
+
+### Fixed
+- `getContext("2d")` can return null in jsdom and in privacy modes that block canvas; it took the whole page down with it.
+- `liveRank` and the price-chart note referenced `DBx`, a local of two other functions: a ReferenceError on opening any model card.
+- The journey listened to the wrong scroll container, and tracked its position with `offsetTop` against a `scrollTop` from a different coordinate system.
+
+### Tests
+229 static + 97 DOM smoke + 50 API = **376 passing**.
+
 ## v0.32.0 (2026-09-02)
 
 Automation that does not depend on anyone else's billing being in order.

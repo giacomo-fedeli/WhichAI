@@ -18,7 +18,18 @@
   // round: { a, b, order: [x, y] (display order), out: {famId: text}, err: {famId: msg}, done: bool, voted: bool, winner: null|famId|"tie" }
 
   function loadElo() {
-    try { return JSON.parse(localStorage.getItem(ELO_KEY)) || {}; } catch (e) { return {}; }
+    try {
+      var parsed = JSON.parse(localStorage.getItem(ELO_KEY));
+      var valid = Object.create(null);
+      if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) return valid;
+      Object.keys(parsed).forEach(function (id) {
+        var x = parsed[id];
+        if (x && Number.isFinite(x.r) && Number.isInteger(x.g) && x.g >= 0) {
+          valid[id] = { r: x.r, g: x.g, label: typeof x.label === "string" ? x.label : "" };
+        }
+      });
+      return valid;
+    } catch (e) { return Object.create(null); }
   }
   function saveElo(elo) {
     try { localStorage.setItem(ELO_KEY, JSON.stringify(elo)); } catch (e) { /* ignore */ }
@@ -26,6 +37,7 @@
 
   /** Pure Elo update; exposed for tests. result: 1 = a wins, 0 = b wins, 0.5 = tie */
   function eloUpdate(elo, a, b, result) {
+    if (a === b || [0, 0.5, 1].indexOf(result) === -1) return elo;
     var ea = elo[a] || { r: START, g: 0 };
     var eb = elo[b] || { r: START, g: 0 };
     var expA = 1 / (1 + Math.pow(10, (eb.r - ea.r) / 400));
@@ -53,20 +65,23 @@
   }
 
   function startRound() {
+    if (state.round && !state.round.done) return;
     var av = deps.families().filter(function (f) { return f.available; });
     if (av.length < 2) return;
     var pair = pickTwo(av);
-    state.round = { a: pair[0], b: pair[1], order: pair.slice(), out: {}, err: {}, done: false, voted: false, winner: null };
+    var round = { a: pair[0], b: pair[1], prompt: state.prompt, order: pair.slice(), out: {}, err: {}, done: false, voted: false, winner: null };
+    state.round = round;
     render();
     ["a", "b"].forEach(function (side) {
-      var fam = state.round[side];
-      deps.run(fam.id, state.prompt).then(function (text) {
-        if (!state.round || state.round[side] !== fam) return;
-        state.round.out[fam.id] = text;
+      var fam = round[side];
+      Promise.resolve().then(function () { return deps.run(fam.id, round.prompt); }).then(function (text) {
+        if (state.round !== round) return;
+        if (!String(text || "").trim()) throw new Error(deps.T("arenaRoundErr"));
+        round.out[fam.id] = String(text);
         checkDone();
       }).catch(function (err) {
-        if (!state.round || state.round[side] !== fam) return;
-        state.round.err[fam.id] = (err && err.message) ? err.message : "request failed";
+        if (state.round !== round) return;
+        round.err[fam.id] = (err && err.message) ? err.message : "request failed";
         checkDone();
       });
     });
@@ -84,7 +99,12 @@
     var r = state.round;
     if (!r || r.voted || !r.done) return;
     var dispA = r.order[0], dispB = r.order[1];
-    var elo = eloUpdate(loadElo(), dispA.id, dispB.id, result);
+    if (r.err[dispA.id] || r.err[dispB.id] || !r.out[dispA.id] || !r.out[dispB.id]) return;
+    var idA = dispA.ratingId || dispA.id, idB = dispB.ratingId || dispB.id;
+    if (idA === idB) return;
+    var elo = eloUpdate(loadElo(), idA, idB, result);
+    elo[idA].label = dispA.label;
+    elo[idB].label = dispB.label;
     saveElo(elo);
     r.voted = true;
     r.winner = result === 0.5 ? "tie" : (result === 1 ? dispA.id : dispB.id);
@@ -120,6 +140,8 @@
 
     var ta = document.createElement("textarea");
     ta.id = "arena-input";
+    ta.setAttribute("aria-label", deps.T("arenaPh"));
+    ta.disabled = !!(state.round && !state.round.done);
     ta.rows = 3;
     ta.placeholder = deps.T("arenaPh");
     ta.value = state.prompt;
@@ -129,6 +151,7 @@
     var row = el("div", "compare-actions");
     var go2 = el("button", "btn-primary btn-inline", state.round ? deps.T("arenaNext") : deps.T("arenaGo"));
     go2.type = "button";
+    go2.disabled = !!(state.round && !state.round.done);
     go2.addEventListener("click", function () {
       if (!ta.value.trim()) { ta.focus(); return; }
       state.prompt = ta.value.trim();
@@ -204,7 +227,7 @@
     var fams = deps.families();
     var rows = Object.keys(elo).map(function (id) {
       var f = fams.filter(function (x) { return x.id === id; })[0];
-      return { id: id, label: f ? f.label : id, r: elo[id].r, g: elo[id].g };
+      return { id: id, label: elo[id].label || (f ? f.label + " (legacy family)" : id), r: elo[id].r, g: elo[id].g };
     }).filter(function (x) { return x.g > 0; }).sort(function (a, b) { return b.r - a.r; });
     if (!rows.length) return;
 

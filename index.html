@@ -41,7 +41,7 @@
           <path class="brand-needle" d="M15.5 8.5l-2.2 5-5 2.2 2.2-5z" fill="currentColor" stroke="none"></path>
         </svg>
         <span class="brand-name">WhichAI</span>
-        <span class="badge">v0.32 · Growth</span>
+        <span class="badge">v0.34 · Growth</span>
         <span class="badge badge-privacy" title="No account, no tracking. Goals, prompts and API keys stay in your browser. The WhichAI API is read-only and serves only the public model catalog."><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><rect x="4" y="10" width="16" height="10" rx="2"></rect><path d="M8 10V7a4 4 0 0 1 8 0v3"></path></svg><span id="privacy-text">Private by design</span></span>
       </div>
       <nav class="site-nav" aria-label="Views">
@@ -52,6 +52,7 @@
           <button id="nav-more" class="nav-more" type="button" aria-haspopup="true" aria-expanded="false">More ▾</button>
           <div id="nav-more-panel" class="nav-more-panel" hidden>
             <a href="#radar" id="nav-radar" class="more-item"><strong>Model Radar</strong><span class="more-sub" id="nav-radar-sub">What changed: new models, prices, free tiers</span></a>
+            <a href="#live" id="nav-live" class="more-item"><strong>Live market</strong><span class="more-sub" id="nav-live-sub">Routes, prices and source benchmarks, straight from the feed</span></a>
             <a href="#topics" id="nav-topics" class="more-item"><strong>AI Debates</strong><span class="more-sub" id="nav-topics-sub">Energy, jobs, the bubble: both sides, with sources</span></a>
             <a href="#chains" id="nav-chains" class="more-item"><strong>Chains</strong><span class="more-sub" id="nav-chains-sub">Multi-step workflows, one model per step</span></a>
             <a href="#stack" id="nav-stack" class="more-item"><strong>Stack Optimizer</strong><span class="more-sub" id="nav-stack-sub">Which subscriptions to keep, what to use free</span></a>
@@ -70,8 +71,12 @@
 
   <!-- ============ Minimal welcome + shared-element entrance ============ -->
   <section id="welcome" class="welcome" aria-labelledby="welcome-title">
+    <canvas id="stage-canvas" class="stage-canvas" aria-hidden="true"></canvas>
     <div class="welcome-orb welcome-orb-a" aria-hidden="true"></div>
     <div class="welcome-orb welcome-orb-b" aria-hidden="true"></div>
+    <div id="stage-tip" class="stage-tip" role="status" aria-live="polite" hidden></div>
+    <div class="welcome-scroll" id="welcome-scroll">
+    <div class="welcome-panel">
     <div class="welcome-stage">
       <div id="welcome-brand" class="welcome-brand" aria-label="WhichAI">
         <svg class="welcome-logo" viewBox="0 0 64 64" fill="none" stroke="currentColor" aria-hidden="true">
@@ -97,6 +102,57 @@
         </button>
       </nav>
       <p id="welcome-visits" class="visit-counter" hidden></p>
+      <button type="button" class="journey-cue" id="journey-cue">
+        <span id="journey-cue-label">or keep scrolling</span>
+        <span class="journey-cue-arrow" aria-hidden="true"></span>
+      </button>
+    </div>
+    </div>
+
+    <!-- The journey: the same 118 models, read three ways, ending on your goal. -->
+    <div id="journey" class="journey">
+      <nav class="journey-spine" id="journey-spine" aria-label="Where you are"></nav>
+
+      <section class="act" id="act-map" data-act="1" data-progress="0.16">
+        <div class="act-inner">
+          <p class="act-eyebrow" id="act-map-eyebrow">Act one · the map</p>
+          <h2 class="act-title" id="act-map-title">Every model, placed by what it costs and what it can do</h2>
+          <p class="act-body" id="act-map-body">This is not an illustration. Each point is a real model from the catalog: left is cheap, right is expensive, higher is a stronger measured score, and the newest arrivals sit closest to you. Move the cursor to look around, or drag with a finger.</p>
+          <div class="act-stats" id="act-map-stats"></div>
+        </div>
+      </section>
+
+      <section class="act" id="act-rank" data-act="2" data-progress="0.5">
+        <div class="act-inner">
+          <p class="act-eyebrow" id="act-rank-eyebrow">Act two · the ranking</p>
+          <h2 class="act-title" id="act-rank-title">A ranking is where most tools stop</h2>
+          <p class="act-body" id="act-rank-body">The same points, sorted by the public index everyone quotes. It takes four seconds to read, it is genuinely useful, and it still has not told you what to do with the thing you actually have to write this morning.</p>
+          <ol class="act-ladder" id="act-ladder"></ol>
+        </div>
+      </section>
+
+      <section class="act" id="act-goal" data-act="3" data-progress="0.84">
+        <div class="act-inner">
+          <p class="act-eyebrow" id="act-goal-eyebrow">Act three · your job</p>
+          <h2 class="act-title" id="act-goal-title">So start from the job, not from the leaderboard</h2>
+          <p class="act-body" id="act-goal-body">Describe what you need to get done, in any language. The whole catalog collapses onto the models that fit it.</p>
+          <form class="act-goal-form" id="act-goal-form" autocomplete="off">
+            <input type="text" id="act-goal-input" class="act-goal-input" placeholder="Summarise a 40 page report for my manager" aria-label="What do you need to get done?" />
+            <button type="submit" class="btn-primary act-goal-go" id="act-goal-go">See the pick</button>
+          </form>
+          <div class="act-answer" id="act-answer" hidden></div>
+        </div>
+      </section>
+
+      <section class="act" id="act-tools" data-act="4" data-progress="1">
+        <div class="act-inner">
+          <p class="act-eyebrow" id="act-tools-eyebrow">Act four · the rest of it</p>
+          <h2 class="act-title" id="act-tools-title">Everything else is built on the same two answers</h2>
+          <p class="act-body" id="act-tools-body">Which model, and what to send it. Every tool below is one of those two questions asked in a different shape.</p>
+          <div class="act-tools" id="act-tools-grid"></div>
+        </div>
+      </section>
+    </div>
     </div>
   </section>
 
@@ -631,6 +687,11 @@
     <div id="radar-wrap"></div>
   </main>
 
+  <!-- ============ Live market view ============ -->
+  <main class="layout-guide view" id="live-view" hidden>
+    <div id="live-wrap"></div>
+  </main>
+
   <!-- ============ AI Debates view ============ -->
   <main class="layout-guide view" id="topics-view" hidden>
     <div id="topics-wrap"></div>
@@ -670,7 +731,7 @@
       <a href="#glossary" id="foot-glossary">Glossary</a>
       <a href="#" id="foot-support" class="foot-support" target="_blank" rel="noopener" hidden>Support ♥</a>
     </nav>
-    <p>WhichAI v0.32 · Growth · Runs in your browser: no account, no tracking. Your goals, prompts and keys never leave your device.</p>
+    <p>WhichAI v0.34 · Growth · Runs in your browser: no account, no tracking. Your goals, prompts and keys never leave your device.</p>
     <p id="visit-counter" class="visit-counter" hidden></p>
   </footer>
 
@@ -690,9 +751,12 @@
   <script src="js/doctor.js"></script>
   <script src="js/changes.js"></script>
   <script src="js/radar.js"></script>
+  <script src="js/live-data.js"></script>
   <script src="js/sharecard.js"></script>
   <script src="js/config.js"></script>
   <script src="js/api.js"></script>
+  <script src="js/stage.js"></script>
+  <script src="js/journey.js"></script>
   <script src="js/support.js"></script>
   <script src="js/topics.js"></script>
   <script src="js/arena.js"></script>

@@ -24,7 +24,7 @@ w.confirm = () => true;
 w.URL.createObjectURL = w.URL.createObjectURL || (() => "blob:test");
 w.URL.revokeObjectURL = w.URL.revokeObjectURL || (() => {});
 
-const scripts = ["js/engine.js", "js/benchmarks.js", "js/chains.js", "js/i18n.js", "js/models-db.js", "js/merge.js", "js/charts.js", "js/glossary.js", "js/finder.js", "js/modelcompare.js", "js/stack.js", "js/doctor.js", "js/changes.js", "js/radar.js", "js/sharecard.js", "js/brands.js", "js/welcome.js", "js/config.js", "js/api.js", "js/support.js", "js/topics.js", "js/arena.js", "js/app.js"];
+const scripts = ["js/engine.js", "js/benchmarks.js", "js/chains.js", "js/i18n.js", "js/models-db.js", "js/merge.js", "js/charts.js", "js/glossary.js", "js/finder.js", "js/modelcompare.js", "js/stack.js", "js/doctor.js", "js/changes.js", "js/radar.js", "js/live-data.js", "js/sharecard.js", "js/brands.js", "js/welcome.js", "js/config.js", "js/api.js", "js/stage.js", "js/journey.js", "js/support.js", "js/topics.js", "js/arena.js", "js/app.js"];
 let bootError = null;
 for (const s of scripts) {
   try { w.eval(readFileSync(s, "utf8")); }
@@ -198,7 +198,11 @@ await new Promise(r => setTimeout(r, 30));
 check("v24: demo card rendered with actions", !d.getElementById("demo-card").hidden && d.querySelectorAll("#demo-card button").length === 2);
 const moreBtn = d.getElementById("nav-more");
 moreBtn.click();
-check("v24: More panel opens with 9 items", !d.getElementById("nav-more-panel").hidden && d.querySelectorAll("#nav-more-panel .more-item").length === 9);
+check("v24: More panel opens with every tool listed", (() => {
+  const items = [...d.querySelectorAll("#nav-more-panel .more-item")];
+  return !d.getElementById("nav-more-panel").hidden && items.length >= 9 &&
+    items.every(a => /^#[a-z-]+$/.test(a.getAttribute("href")) && d.getElementById(a.getAttribute("href").slice(1) + "-view"));
+})());
 w.location.hash = "#stack";
 await new Promise(r => setTimeout(r, 30));
 check("v24: stack view opens, panel closed", !d.getElementById("stack-view").hidden && d.getElementById("nav-more-panel").hidden);
@@ -303,6 +307,66 @@ check("theme: toggle cycles (" + t0 + "→" + t1 + ")", t0 !== t1);
   const line = d.querySelector("#radar-wrap .radar-check");
   check("v32: the check line exists and stays hidden when unreachable", !!line && line.hidden === true);
   check("v32: the feed is complete without the API", !d.getElementById("radar-view").hidden && d.querySelector("#radar-wrap .guide-head h1"));
+}
+
+
+/* --- v0.33: the journey must exist and must not need WebGL --- */
+{
+  check("v33: journey module loaded and inert without a GPU", typeof w.WhichAIJourney === "object" && typeof w.WhichAIStage === "object");
+  check("v33: the stage declines gracefully in jsdom", (() => {
+    const v = w.WhichAIStage.verdict();
+    return typeof v.use3d === "boolean" && typeof v.reason === "string";
+  })());
+  check("v33: four acts rendered", d.querySelectorAll("#journey .act").length === 4);
+  check("v33: the spine has one dot per act", d.querySelectorAll(".spine-dot").length === 4);
+  check("v33: act one shows live counts, not written numbers", (() => {
+    const stats = [...d.querySelectorAll(".act-stat strong")].map(n => Number(n.textContent));
+    return stats.length === 4 && stats[0] === w.PromptCompassModelsDB.models.length && stats.every(n => n > 0);
+  })());
+  check("v33: act two ladder matches the live top five", (() => {
+    const rows = [...d.querySelectorAll("#act-ladder .act-rank-row")];
+    if (rows.length !== 5) return false;
+    const top = w.PromptCompassModelsDB.models
+      .filter(m => m.score && typeof m.score.aa === "number" && m.status !== "rumored" && m.status !== "private")
+      .sort((a, b) => b.score.aa - a.score.aa)[0];
+    return rows[0].textContent.includes(top.name);
+  })());
+  check("v33: act four lists every tool", d.querySelectorAll(".act-tool").length === 8);
+
+  /* The act that has to work: a goal in, a real recommendation out. */
+  const input = d.getElementById("act-goal-input");
+  input.value = "write a python script that parses a csv";
+  d.getElementById("act-goal-form").dispatchEvent(new w.Event("submit", { cancelable: true, bubbles: true }));
+  const answer = d.getElementById("act-answer");
+  check("v33: a typed goal produces an answer", !answer.hidden && answer.textContent.length > 60);
+  check("v33: the answer names a task, a pick and a free alternative",
+    /coding/.test(answer.textContent) && !!answer.querySelector(".act-answer-pick strong") && !!answer.querySelector(".act-answer-free"));
+  check("v33: the answer offers a way into the app", !!answer.querySelector(".act-answer-go"));
+
+  /* The rank badge is computed, never read from prose. */
+  w.WhichAIApp.openModel("claude-opus-5");
+  const badge = d.querySelector("#db-detail .badge-rank");
+  check("v33: the model card shows a computed rank", !!badge && /^#\d+ of \d+$/.test(badge.textContent));
+  w.WhichAIApp.openModel("gpt-5-5");
+  check("v33: an unmeasured model shows a guess, never a rank", (() => {
+    const un = d.querySelector("#db-detail .badge-unmeasured");
+    const rk = d.querySelector("#db-detail .badge-rank");
+    return !un || !rk;
+  })());
+}
+
+
+/* --- v0.34: the live market view --- */
+{
+  w.location.hash = "#live";
+  await new Promise(r => setTimeout(r, 220));
+  check("v34: the live view opens from the More menu", !d.getElementById("live-view").hidden && !!d.getElementById("nav-live"));
+  check("v34: the live module rendered something without a network", d.getElementById("live-wrap").children.length > 0);
+  /* jsdom has no reachable feed, so this is the unreachable-source path: the
+     view must explain itself rather than sit blank or throw. */
+  const txt = d.getElementById("live-wrap").textContent;
+  check("v34: with no feed it says so instead of showing nothing", txt.length > 20);
+  check("v34: the editorial catalog is untouched by the live view", w.PromptCompassModelsDB.models.every(m => !("liveScore" in m) && !("openrouter" in m)));
 }
 
 console.log("\n" + pass + " passed, " + fail + " failed" + (fail ? "\n\nFAILURES:\n" + failures.join("\n") : " — SMOKE ALL GREEN"));

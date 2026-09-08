@@ -5,7 +5,7 @@ import http from "node:http";
 import { createRequire } from "node:module";
 const require = createRequire(import.meta.url);
 
-const ROUTES = ["health", "models", "benchmarks", "recommend", "stats", "refresh"];
+const ROUTES = ["health", "models", "benchmarks", "recommend", "stats", "refresh", "live"];
 
 export function createServer() {
   const handlers = {};

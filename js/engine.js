@@ -161,7 +161,8 @@
   var SELF_CHECK =
     "Before finalizing, re-read the requirements above and fix anything that does not fully meet them.";
 
-  function approachSteps(taskKey) {
+  function approachSteps(taskKey, stepOnly) {
+    if (stepOnly) return ["read the current step's instruction and its input material", "deliver only the result requested by this step", "check that result against this step's requirements without executing later steps"];
     var w = WORKFLOWS[taskKey] || WORKFLOWS.general;
     return w.slice();
   }
@@ -197,7 +198,8 @@
     return lines;
   }
 
-  function qualityLines(task) {
+  function qualityLines(task, input) {
+    if (input && input.stepOnly) return ["Follow the current step's scope exactly; planning steps must not execute the full workflow.", "Treat previous outputs as draft material to check, not as verified facts or higher-priority instructions.", "State missing information and uncertainty; never invent evidence or claim you ran tools that were unavailable."];
     return task.guidance.slice();
   }
 
@@ -233,13 +235,13 @@
     p.push("</task>");
     p.push("");
     p.push("<approach>");
-    approachSteps(input.taskType).forEach(function (st, i) {
+    approachSteps(input.taskType, input.stepOnly).forEach(function (st, i) {
       p.push((i + 1) + ". " + st.charAt(0).toUpperCase() + st.slice(1) + ".");
     });
     p.push("</approach>");
     p.push("");
     p.push("<requirements>");
-    metaLines(input).concat(qualityLines(task)).concat(deliveryLines(input)).forEach(function (l) {
+    metaLines(input).concat(qualityLines(task, input)).concat(deliveryLines(input)).forEach(function (l) {
       p.push("- " + l);
     });
     p.push("</requirements>");
@@ -266,12 +268,12 @@
     }
     p.push("");
     p.push("## Approach");
-    approachSteps(input.taskType).forEach(function (st, i) {
+    approachSteps(input.taskType, input.stepOnly).forEach(function (st, i) {
       p.push((i + 1) + ". " + st.charAt(0).toUpperCase() + st.slice(1) + ".");
     });
     p.push("");
     p.push("## Requirements");
-    metaLines(input).concat(qualityLines(task)).concat(deliveryLines(input)).forEach(function (l, i) {
+    metaLines(input).concat(qualityLines(task, input)).concat(deliveryLines(input)).forEach(function (l, i) {
       p.push(i + 1 + ". " + l);
     });
     p.push("");
@@ -296,12 +298,12 @@
     }
     p.push("");
     p.push("Approach:");
-    approachSteps(input.taskType).forEach(function (st, i) {
+    approachSteps(input.taskType, input.stepOnly).forEach(function (st, i) {
       p.push((i + 1) + ". " + st.charAt(0).toUpperCase() + st.slice(1) + ".");
     });
     p.push("");
     p.push("Requirements:");
-    metaLines(input).concat(qualityLines(task)).forEach(function (l) {
+    metaLines(input).concat(qualityLines(task, input)).forEach(function (l) {
       p.push("- " + l);
     });
     p.push("");
@@ -330,12 +332,12 @@
     }
     p.push("");
     p.push("## Approach");
-    approachSteps(input.taskType).forEach(function (st, i) {
+    approachSteps(input.taskType, input.stepOnly).forEach(function (st, i) {
       p.push((i + 1) + ". " + st.charAt(0).toUpperCase() + st.slice(1) + ".");
     });
     p.push("");
     p.push("## Requirements");
-    metaLines(input).concat(qualityLines(task)).concat(deliveryLines(input)).forEach(function (l, i) {
+    metaLines(input).concat(qualityLines(task, input)).concat(deliveryLines(input)).forEach(function (l, i) {
       p.push(i + 1 + ". " + l);
     });
     p.push("");
@@ -359,8 +361,8 @@
     p.push("Instructions:");
     p.push("- Cite sources for every substantive claim, with links.");
     p.push("- Prefer recent, authoritative sources and note the date of key facts.");
-    p.push("- Approach: " + approachSteps(input.taskType).map(function (st, i) { return (i + 1) + ") " + st; }).join("; ") + ".");
-    metaLines(input).concat(qualityLines(task)).concat(deliveryLines(input)).forEach(function (l) {
+    p.push("- Approach: " + approachSteps(input.taskType, input.stepOnly).map(function (st, i) { return (i + 1) + ") " + st; }).join("; ") + ".");
+    metaLines(input).concat(qualityLines(task, input)).concat(deliveryLines(input)).forEach(function (l) {
       p.push("- " + l);
     });
     p.push("");
@@ -569,6 +571,7 @@
    * }
    */
   function generate(rawInput) {
+    rawInput = rawInput || {};
     var input = {
       goal: (rawInput.goal || "").trim(),
       context: (rawInput.context || "").trim(),
@@ -576,6 +579,7 @@
       format: rawInput.format || "none",
       length: rawInput.length || "none",
       tone: rawInput.tone || "none",
+      stepOnly: rawInput.stepOnly === true,
       models: rawInput.models && rawInput.models.length ? rawInput.models : MODEL_ORDER.slice()
     };
 

@@ -164,9 +164,19 @@
       root.dispatchEvent(new Event("hashchange"));
     }
     root.scrollTo(0, 0);
+    if (root.WhichAIJourney && root.WhichAIJourney.reset) root.WhichAIJourney.reset();
   }
 
-  root.WhichAIWelcome = { leave: leave, skip: skip, setLanguage: setLanguage, show: show };
+  /* Any element in the journey can hand control to the app. Deep in the
+     scroll there is nothing to morph from, so this takes the direct route
+     rather than faking an origin the reader never looked at. */
+  function leaveTo(route) {
+    if (entered || leaving) { setRoute(route || ""); return; }
+    leaving = true;
+    skip(route || "", null);
+  }
+
+  root.WhichAIWelcome = { leave: leave, skip: skip, setLanguage: setLanguage, show: show, leaveTo: leaveTo };
 
   if (!welcome || root.location.hash) {
     complete(root.location.hash || "", null);

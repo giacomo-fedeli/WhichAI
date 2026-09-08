@@ -1,15 +1,13 @@
 /*
  * GET /api/refresh - the data check, running on Vercel instead of GitHub.
  *
- * Why this exists alongside the GitHub Action: the Action can be blocked by
- * something that has nothing to do with the code (an account lock, a policy,
- * a quota), and an automation that only works when a third party is happy is
- * not really automation. This endpoint runs the identical check from
- * api/_refresh-core.js, on the same host that already serves the site, with
- * no account, no token and no cost.
+ * This endpoint runs the diagnostic check from api/_refresh-core.js.
+ * The report is not persisted and does not update the browser catalog.
+ * /api/live supplies the automatically refreshed data the browser consumes.
  *
  * A Vercel Cron calls it daily (see "crons" in vercel.json), and the Model
- * Radar page reads it so the answer is visible where the data lives.
+ * Radar page reads it so the answer is visible where the data lives. A cron
+ * only invokes the check; without durable storage it is not a change log.
  *
  * Read-only: it inspects a public source and reports. It never edits the
  * catalog - a machine does not get to change the numbers the site is judged on.

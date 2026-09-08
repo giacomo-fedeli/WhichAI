@@ -9,7 +9,7 @@
   "use strict";
 
   var Bench = {
-    updated: "August 31, 2026",
+    updated: "September 8, 2026",
 
     disclaimer:
       "Snapshot curated from public leaderboards and comparisons. Rankings shift fast - treat this as guidance, not gospel.",
@@ -24,25 +24,25 @@
       claude: {
         label: "Claude",
         vendor: "Anthropic",
-        topModel: "Claude Opus 5 / Fable 5 (Pro, $20/mo)",
+        topModel: "Claude Fable 5.1 / Opus 5 (Pro, $20/mo)",
         freeModel: "Claude Sonnet 5 (usage limits vary by demand)"
       },
       chatgpt: {
         label: "ChatGPT",
         vendor: "OpenAI",
-        topModel: "GPT-5.5 / GPT-5.5 Pro (Plus $20/mo, Pro $200/mo)",
+        topModel: "GPT-6 Astra / GPT-5.6 Sol (Plus $20/mo, Pro $200/mo)",
         freeModel: "GPT-5.5 (limited messages, then a smaller model)"
       },
       gemini: {
         label: "Gemini",
         vendor: "Google",
-        topModel: "Gemini 3.1 Pro (AI Pro, $19.99/mo)",
+        topModel: "Gemini 3.8 Flash / 3.7 Flash (AI Pro, $19.99/mo)",
         freeModel: "Gemini 3.6 Flash (most generous free tier, includes a monthly Deep Research allowance)"
       },
       perplexity: {
         label: "Perplexity",
         vendor: "Perplexity AI",
-        topModel: "Sonar Pro + Deep Research, with GPT-5.4 / Opus / Gemini 3.1 Pro inside (Pro, $20/mo)",
+        topModel: "Sonar Pro + Deep Research, with the current OpenAI, Anthropic and Google flagships inside (Pro, $20/mo)",
         freeModel: "Sonar (unlimited basic cited searches + 5 Pro searches/day)"
       }
     },
@@ -167,7 +167,7 @@
       general: {
         confidence: "high",
         summary:
-          "The top ten now sit within 6.3 points of each other on the August 30 index. Anthropic still holds the first two places (Opus 5 at 63.0, Fable 5 at 62.1), but August was the month the field closed in: Grok 4.6 took third at 60.9, and Kimi K3 and GLM-5.3 put two Chinese labs in the top five. Perplexity remains the specialist you add for anything that needs sources.",
+          "September reopened a gap August had closed: Claude Fable 5.1 leads by more than two points, the widest lead since spring. Behind it the field is still packed - Opus 5, Muse Spark 1.3, GPT-6 Astra and Grok 4.6 all sit within two points of each other, and two Chinese labs remain in the top eight. Perplexity remains the specialist you add for anything that needs sources.",
         ranking: [
           { app: "claude", note: "The new Opus 5 (July 24) tops the AA snapshot at 60.7 with Fable 5 right behind (59.9): Anthropic holds the top two spots. GPT-5.6 Sol follows (58.9) and stays the value pick for agentic work; Moonshot's Kimi K3 (57.1) remains the closest outside challenger." },
           { app: "chatgpt", note: "A hair behind on aggregate scores, and the most complete all-round app." },
@@ -248,6 +248,36 @@
       return this.taskTypes[taskType] || this.taskTypes.general;
     }
   };
+
+
+  /* The catalog used to carry its own copy of each score, and those copies
+     drifted from js/models-db.js within a single refresh - two different
+     numbers for the same model, visible on the same screen. Now the notes are
+     written without figures and any score shown next to a catalog entry is
+     read from the database at render time. One number, one owner. */
+  function dbModel(name) {
+    var db = (typeof window !== "undefined" ? window.PromptCompassModelsDB : null) ||
+             (typeof module !== "undefined" && module.exports ? tryRequireDb() : null);
+    if (!db || !db.models) return null;
+    var want = String(name || "").toLowerCase().replace(/[^a-z0-9]/g, "");
+    for (var i = 0; i < db.models.length; i++) {
+      var k = db.models[i].name.toLowerCase().replace(/[^a-z0-9]/g, "");
+      if (k === want) return db.models[i];
+    }
+    return null;
+  }
+
+  function tryRequireDb() {
+    try { return require("./models-db.js"); } catch (e) { return null; }
+  }
+
+  function liveScore(name) {
+    var m = dbModel(name);
+    return m && m.score && typeof m.score.aa === "number" ? m.score.aa : null;
+  }
+
+  Bench.liveScore = liveScore;
+  Bench.dbModel = dbModel;
 
   var root = typeof window !== "undefined" ? window : globalThis;
   root.PromptCompassBenchmarks = Bench;

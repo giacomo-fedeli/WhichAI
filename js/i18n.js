@@ -3272,6 +3272,152 @@
   S.ar.radarCheckBroken = "فحص البيانات: مسار مجاني مضمّن لا يعمل";
   S.ar.radarCheckSkipped = "تعذّر إجراء فحص البيانات اليوم";
 
+
+  /* v0.33: the journey chrome (the act copy itself stays English) */
+
+  S.en.journeyCue = "or keep scrolling";
+  S.en.journeyStatModels = "models tracked";
+  S.en.journeyStatMeasured = "with a measured score";
+  S.en.journeyStatFree = "usable for free";
+  S.en.journeyStatOpen = "you can download";
+  S.en.journeySnapshot = "Snapshot";
+  S.en.journeyDetected = "Detected";
+  S.en.journeyConfidence = "confidence";
+  S.en.journeyBestPick = "Best pick";
+  S.en.journeyFreeAlt = "Free alternative";
+  S.en.journeyWritePrompt = "Write the prompt for it";
+  S.en.journeySeeEvidence = "See the evidence";
+
+  S.it.journeyCue = "oppure continua a scorrere";
+  S.it.journeyStatModels = "modelli tracciati";
+  S.it.journeyStatMeasured = "con un punteggio misurato";
+  S.it.journeyStatFree = "utilizzabili gratis";
+  S.it.journeyStatOpen = "che puoi scaricare";
+  S.it.journeySnapshot = "Snapshot";
+  S.it.journeyDetected = "Rilevato";
+  S.it.journeyConfidence = "affidabilita";
+  S.it.journeyBestPick = "Scelta migliore";
+  S.it.journeyFreeAlt = "Alternativa gratuita";
+  S.it.journeyWritePrompt = "Scrivi il prompt per questo";
+  S.it.journeySeeEvidence = "Vedi le prove";
+
+  S.fr.journeyCue = "ou continuez a faire defiler";
+  S.fr.journeyStatModels = "modeles suivis";
+  S.fr.journeyStatMeasured = "avec un score mesure";
+  S.fr.journeyStatFree = "utilisables gratuitement";
+  S.fr.journeyStatOpen = "que vous pouvez telecharger";
+  S.fr.journeySnapshot = "Instantane";
+  S.fr.journeyDetected = "Detecte";
+  S.fr.journeyConfidence = "confiance";
+  S.fr.journeyBestPick = "Meilleur choix";
+  S.fr.journeyFreeAlt = "Alternative gratuite";
+  S.fr.journeyWritePrompt = "Ecrire le prompt pour lui";
+  S.fr.journeySeeEvidence = "Voir les preuves";
+
+  S.es.journeyCue = "o sigue bajando";
+  S.es.journeyStatModels = "modelos seguidos";
+  S.es.journeyStatMeasured = "con puntuacion medida";
+  S.es.journeyStatFree = "utilizables gratis";
+  S.es.journeyStatOpen = "que puedes descargar";
+  S.es.journeySnapshot = "Instantanea";
+  S.es.journeyDetected = "Detectado";
+  S.es.journeyConfidence = "confianza";
+  S.es.journeyBestPick = "Mejor opcion";
+  S.es.journeyFreeAlt = "Alternativa gratuita";
+  S.es.journeyWritePrompt = "Escribe el prompt para el";
+  S.es.journeySeeEvidence = "Ver las pruebas";
+
+  S.de.journeyCue = "oder weiter scrollen";
+  S.de.journeyStatModels = "erfasste Modelle";
+  S.de.journeyStatMeasured = "mit gemessenem Wert";
+  S.de.journeyStatFree = "kostenlos nutzbar";
+  S.de.journeyStatOpen = "zum Herunterladen";
+  S.de.journeySnapshot = "Stand";
+  S.de.journeyDetected = "Erkannt";
+  S.de.journeyConfidence = "Konfidenz";
+  S.de.journeyBestPick = "Beste Wahl";
+  S.de.journeyFreeAlt = "Kostenlose Alternative";
+  S.de.journeyWritePrompt = "Prompt dafuer schreiben";
+  S.de.journeySeeEvidence = "Belege ansehen";
+
+  S.pt.journeyCue = "ou continue a deslizar";
+  S.pt.journeyStatModels = "modelos seguidos";
+  S.pt.journeyStatMeasured = "com pontuacao medida";
+  S.pt.journeyStatFree = "utilizaveis gratis";
+  S.pt.journeyStatOpen = "que pode descarregar";
+  S.pt.journeySnapshot = "Instantaneo";
+  S.pt.journeyDetected = "Detetado";
+  S.pt.journeyConfidence = "confianca";
+  S.pt.journeyBestPick = "Melhor escolha";
+  S.pt.journeyFreeAlt = "Alternativa gratuita";
+  S.pt.journeyWritePrompt = "Escrever o prompt para ele";
+  S.pt.journeySeeEvidence = "Ver as provas";
+
+  S.zh.journeyCue = "或继续向下滚动";
+  S.zh.journeyStatModels = "已收录模型";
+  S.zh.journeyStatMeasured = "有实测分数";
+  S.zh.journeyStatFree = "可免费使用";
+  S.zh.journeyStatOpen = "可下载权重";
+  S.zh.journeySnapshot = "数据快照";
+  S.zh.journeyDetected = "识别为";
+  S.zh.journeyConfidence = "置信度";
+  S.zh.journeyBestPick = "最佳选择";
+  S.zh.journeyFreeAlt = "免费替代";
+  S.zh.journeyWritePrompt = "为它写提示词";
+  S.zh.journeySeeEvidence = "查看依据";
+
+  S.hi.journeyCue = "या स्क्रॉल करते रहें";
+  S.hi.journeyStatModels = "ट्रैक किए गए मॉडल";
+  S.hi.journeyStatMeasured = "मापे गए स्कोर के साथ";
+  S.hi.journeyStatFree = "मुफ़्त में उपयोग योग्य";
+  S.hi.journeyStatOpen = "जिन्हें डाउनलोड कर सकते हैं";
+  S.hi.journeySnapshot = "स्नैपशॉट";
+  S.hi.journeyDetected = "पहचाना गया";
+  S.hi.journeyConfidence = "विश्वास";
+  S.hi.journeyBestPick = "सर्वोत्तम विकल्प";
+  S.hi.journeyFreeAlt = "मुफ़्त विकल्प";
+  S.hi.journeyWritePrompt = "इसके लिए प्रॉम्प्ट लिखें";
+  S.hi.journeySeeEvidence = "प्रमाण देखें";
+
+  S.ru.journeyCue = "или продолжайте прокручивать";
+  S.ru.journeyStatModels = "моделей отслеживается";
+  S.ru.journeyStatMeasured = "с измеренной оценкой";
+  S.ru.journeyStatFree = "доступны бесплатно";
+  S.ru.journeyStatOpen = "можно скачать";
+  S.ru.journeySnapshot = "Срез данных";
+  S.ru.journeyDetected = "Определено";
+  S.ru.journeyConfidence = "уверенность";
+  S.ru.journeyBestPick = "Лучший выбор";
+  S.ru.journeyFreeAlt = "Бесплатная альтернатива";
+  S.ru.journeyWritePrompt = "Написать промпт для неё";
+  S.ru.journeySeeEvidence = "Посмотреть доказательства";
+
+  S.ja.journeyCue = "またはスクロールを続ける";
+  S.ja.journeyStatModels = "収録モデル";
+  S.ja.journeyStatMeasured = "実測スコアあり";
+  S.ja.journeyStatFree = "無料で使える";
+  S.ja.journeyStatOpen = "ダウンロードできる";
+  S.ja.journeySnapshot = "スナップショット";
+  S.ja.journeyDetected = "判定";
+  S.ja.journeyConfidence = "確度";
+  S.ja.journeyBestPick = "最適な選択";
+  S.ja.journeyFreeAlt = "無料の代替";
+  S.ja.journeyWritePrompt = "これ用のプロンプトを書く";
+  S.ja.journeySeeEvidence = "根拠を見る";
+
+  S.ar.journeyCue = "أو تابع التمرير";
+  S.ar.journeyStatModels = "نماذج مُتابَعة";
+  S.ar.journeyStatMeasured = "بدرجة مُقاسة";
+  S.ar.journeyStatFree = "يمكن استخدامها مجانًا";
+  S.ar.journeyStatOpen = "يمكنك تنزيلها";
+  S.ar.journeySnapshot = "لقطة البيانات";
+  S.ar.journeyDetected = "تم التعرف";
+  S.ar.journeyConfidence = "الثقة";
+  S.ar.journeyBestPick = "الخيار الأفضل";
+  S.ar.journeyFreeAlt = "بديل مجاني";
+  S.ar.journeyWritePrompt = "اكتب المطالبة المناسبة له";
+  S.ar.journeySeeEvidence = "اطّلع على الأدلة";
+
   var I18n = {
     LANGS: LANGS,
     STRINGS: S,

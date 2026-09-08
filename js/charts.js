@@ -30,18 +30,22 @@
     var W = 560;
     var barW = W - labelW - valueW - 12;
     var H = items.length * rowH + 6;
-    var max = opts.max || items.reduce(function (m, it) { return Math.max(m, it.value); }, 0) || 1;
+    var dataMax = items.reduce(function (m, it) { return Number.isFinite(it.value) ? Math.max(m, it.value) : m; }, 0);
+    var max = Math.max(1, Number.isFinite(opts.max) ? opts.max : 0, dataMax);
     var out = '<svg class="wc-chart wc-bars" viewBox="0 0 ' + W + " " + H + '" role="img" aria-label="' + esc(opts.aria || "Bar chart") + '" preserveAspectRatio="xMinYMin meet">';
+    out += "<desc>" + items.map(function (it) { return esc(it.label) + ": " + (Number.isFinite(it.value) ? fmt(it.value) : "not available") + (it.est ? " (estimate)" : ""); }).join("; ") + "</desc>";
     items.forEach(function (it, i) {
       var y = i * rowH + 4;
-      var w = Math.max(2, (it.value / max) * barW);
+      var valid = Number.isFinite(it.value) && it.value >= 0;
+      var valueText = valid ? fmt(it.value) : "n/a";
+      var w = valid ? (it.value / max) * barW : 0;
       var name = esc(it.label) + (it.est ? " ~" : "");
       out += '<g class="wc-row">';
-      out += '<title>' + name + ": " + fmt(it.value) + (opts.unit ? " " + esc(opts.unit) : "") + (it.est ? " (WhichAI estimate)" : "") + "</title>";
+      out += '<title>' + name + ": " + valueText + (opts.unit ? " " + esc(opts.unit) : "") + (it.est ? " (WhichAI estimate)" : "") + "</title>";
       out += '<text x="' + (labelW - 8) + '" y="' + (y + rowH / 2 + 1) + '" text-anchor="end" dominant-baseline="middle" class="wc-label">' + name + "</text>";
       out += '<rect x="' + labelW + '" y="' + (y + 5) + '" width="' + barW + '" height="' + (rowH - 14) + '" rx="6" class="wc-track"></rect>';
-      out += '<rect x="' + labelW + '" y="' + (y + 5) + '" width="' + fmt(w) + '" height="' + (rowH - 14) + '" rx="6" class="wc-fill' + (it.est ? " wc-est" : "") + '" style="--wc-w:' + fmt(w) + 'px"></rect>';
-      out += '<text x="' + (labelW + barW + 8) + '" y="' + (y + rowH / 2 + 1) + '" dominant-baseline="middle" class="wc-value">' + fmt(it.value) + "</text>";
+      if (w > 0) out += '<rect x="' + labelW + '" y="' + (y + 5) + '" width="' + fmt(w) + '" height="' + (rowH - 14) + '" rx="6" class="wc-fill' + (it.est ? " wc-est" : "") + '" style="--wc-w:' + fmt(w) + 'px"></rect>';
+      out += '<text x="' + (labelW + barW + 8) + '" y="' + (y + rowH / 2 + 1) + '" dominant-baseline="middle" class="wc-value">' + valueText + "</text>";
       out += "</g>";
     });
     out += "</svg>";
@@ -54,14 +58,15 @@
    */
   function scatter(points, opts) {
     opts = opts || {};
+    points = points.filter(function (p) { return p && Number.isFinite(p.x) && Number.isFinite(p.y) && p.x >= 0 && p.y >= 0; });
     var W = 560, H = 330;
     var padL = 46, padR = 16, padT = 16, padB = 40;
     var xs = points.map(function (p) { return p.x; });
     var ys = points.map(function (p) { return p.y; });
-    var xMax = Math.max.apply(null, xs) * 1.15;
+    var xMax = Math.max(1, Math.max.apply(null, xs) * 1.15);
     var xMin = 0;
-    var yMax = Math.max.apply(null, ys) + 3;
-    var yMin = Math.max(0, Math.min.apply(null, ys) - 4);
+    var yMax = points.length ? Math.max.apply(null, ys) + 3 : 100;
+    var yMin = points.length ? Math.max(0, Math.min.apply(null, ys) - 4) : 0;
     function X(v) { return padL + ((v - xMin) / (xMax - xMin)) * (W - padL - padR); }
     function Y(v) { return H - padB - ((v - yMin) / (yMax - yMin)) * (H - padT - padB); }
     var out = '<svg class="wc-chart wc-scatter" viewBox="0 0 ' + W + " " + H + '" role="img" aria-label="' + esc(opts.aria || "Scatter chart") + '" preserveAspectRatio="xMinYMin meet">';
@@ -102,7 +107,7 @@
     var labelW = 118, valueW = 8;
     var W = 560;
     var groupH = series.length * (barH + gap) + groupPad;
-    var legendH = 24;
+    var legendH = Math.max(24, series.length * 22);
     var H = cats.length * groupH + legendH + 4;
     var barW = W - labelW - valueW - 40;
     var max = opts.max || 100;
@@ -110,17 +115,16 @@
     // legend
     var lx = labelW;
     series.forEach(function (s, si) {
-      out += '<rect x="' + lx + '" y="6" width="10" height="10" rx="3" class="wc-s' + (si + 1) + '"></rect>';
-      out += '<text x="' + (lx + 15) + '" y="15" class="wc-label">' + esc(s.name) + "</text>";
-      lx += 15 + s.name.length * 6.6 + 22;
+      out += '<rect x="' + lx + '" y="' + (6 + si * 22) + '" width="10" height="10" rx="3" class="wc-s' + (si + 1) + '"></rect>';
+      out += '<text x="' + (lx + 15) + '" y="' + (15 + si * 22) + '" class="wc-label">' + esc(s.name) + "</text>";
     });
     cats.forEach(function (cat, ci) {
       var gy = legendH + ci * groupH + 4;
       out += '<text x="' + (labelW - 8) + '" y="' + (gy + (series.length * (barH + gap)) / 2 + 1) + '" text-anchor="end" dominant-baseline="middle" class="wc-label">' + esc(cat) + "</text>";
       series.forEach(function (s, si) {
-        var v = s.values[ci];
+        var v = s.values && Number.isFinite(s.values[ci]) && s.values[ci] >= 0 ? s.values[ci] : null;
         var y = gy + si * (barH + gap);
-        var w = v == null ? 0 : Math.max(2, (v / max) * barW);
+        var w = v == null ? 0 : Math.min(1, v / max) * barW;
         out += "<g><title>" + esc(s.name) + " - " + esc(cat) + ": " + (v == null ? "not available" : v) + "</title>";
         out += '<rect x="' + labelW + '" y="' + y + '" width="' + barW + '" height="' + barH + '" rx="5" class="wc-track"></rect>';
         if (v != null) {

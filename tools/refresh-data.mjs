@@ -35,7 +35,9 @@ let upstream = null;
 let sourceError = null;
 try {
   upstream = FIXTURE ? JSON.parse(readFileSync(FIXTURE, "utf8")) : await Core.fetchUpstream(30000);
+  Core.validateUpstream(upstream);
 } catch (err) {
+  upstream = null;
   sourceError = err && err.message ? err.message : String(err);
 }
 

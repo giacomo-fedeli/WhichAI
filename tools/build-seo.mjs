@@ -94,7 +94,7 @@ function specRows(m) {
   const rows = [
     ["Provider", m.vendor],
     ["Status", m.status],
-    ["AA Intelligence Index", m.score && m.score.aa ? (m.score.est ? "~" + m.score.aa + " (WhichAI estimate)" : m.score.aa + " (July 16, 2026 snapshot)") : "n/a"],
+    ["AA Intelligence Index", m.score && m.score.aa ? (m.score.est ? "~" + m.score.aa + " (WhichAI estimate)" : m.score.aa + " (" + DB.updated + " snapshot)") : "n/a"],
     ["Released", s.released || "n/a"],
     ["Context window", s.ctx || "n/a"],
     ["Modalities", s.modal || "n/a"],
@@ -272,7 +272,7 @@ for (const pr of COMPARE_PAIRS) {
     ["Access", a.access, b.access]
   ];
   const winner = (a.score && b.score && a.score.aa && b.score.aa && !a.score.est && !b.score.est)
-    ? (a.score.aa === b.score.aa ? "They tie on the index" : (a.score.aa > b.score.aa ? a.name : b.name) + " scores higher on the July 16 index")
+    ? (a.score.aa === b.score.aa ? "They tie on the index" : (a.score.aa > b.score.aa ? a.name : b.name) + " scores higher on the " + DB.updated + " index")
     : "Scores are not directly comparable";
   const body = `    <div class="guide-head">
       <h1 class="brand-comparison">${brand(a, a.name, { providerWordmark: true })}<span>vs</span>${brand(b, b.name, { providerWordmark: true })}</h1>

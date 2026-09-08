@@ -1,6 +1,6 @@
 {
   "name": "whichai",
-  "version": "0.32.0",
+  "version": "0.34.0",
   "private": true,
   "description": "WhichAI - which AI should do this, and what prompt should it get. Static frontend, serverless read-only API, zero tracking.",
   "homepage": "https://whichai.wiki",
@@ -19,5 +19,8 @@
   },
   "engines": {
     "node": ">=20"
+  },
+  "dependencies": {
+    "three": "^0.185.1"
   }
 }

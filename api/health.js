@@ -33,6 +33,7 @@ module.exports = function handler(req, res) {
       { path: "/api/recommend?goal=...", what: "task detection plus recommended AI" },
       { path: "/api/stats", what: "server-side aggregates and leaderboard" },
       { path: "/api/refresh", what: "the automated data check against public sources" }
+      ,{ path: "/api/live", what: "automatically refreshed OpenRouter routes, pricing and attributed benchmarks" }
     ],
     docs: "https://whichai.wiki/docs/API.md",
     license: "CC BY 4.0 (attribution: WhichAI, whichai.wiki)",

@@ -138,7 +138,7 @@
       var chartBox = el("div", "mc-chart");
       chartBox.innerHTML = C.barChart(items, { max: 70, rowH: 34, aria: "AA Intelligence Index comparison" });
       scoreCard.appendChild(chartBox);
-      scoreCard.appendChild(el("p", "router-meta", "Artificial Analysis Intelligence Index, July 16, 2026 snapshot (2026 rebased scale)." + (anyEst ? " Values marked ~ are WhichAI estimates from adjacent benchmarks - never compare them 1:1 with measured scores." : "")));
+      scoreCard.appendChild(el("p", "router-meta", "Artificial Analysis Intelligence Index, " + ((window.PromptCompassModelsDB || {}).updated || "current") + " snapshot (2026 rebased scale)." + (anyEst ? " Values marked ~ are WhichAI estimates from adjacent benchmarks - never compare them 1:1 with measured scores." : "")));
       root.appendChild(scoreCard);
 
       // Category profile

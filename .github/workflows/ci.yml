@@ -3,6 +3,9 @@
 # passing first.
 name: CI
 
+permissions:
+  contents: read
+
 on:
   push:
     branches: [main]
@@ -19,10 +22,10 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: 22
+          node-version: 24
 
       - name: Install test-only dependencies
-        run: npm ci --no-audit --no-fund || npm install --no-audit --no-fund
+        run: npm ci --no-audit --no-fund
 
       - name: Static checks (syntax, data integrity, i18n, versions)
         run: node tests/run-tests.mjs
@@ -32,6 +35,9 @@ jobs:
 
       - name: API tests (serverless endpoints)
         run: node tests/api-tests.mjs
+
+      - name: Live data normalization, caching and fallback
+        run: node tests/live-data-tests.mjs
 
       - name: Static wiki regenerates cleanly
         run: |
