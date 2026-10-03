@@ -14,12 +14,12 @@
 
 var L = require("./_lib.js");
 
-function freeAlternative(taskKey) {
+function freeAlternative(DBx, taskKey) {
   var labelMap = { coding: "coding", writing: "writing", analysis: "reasoning", research: "research", brainstorming: "writing", education: "writing", business: "writing", general: "reasoning" };
   var want = labelMap[taskKey] || "reasoning";
-  var pool = L.DB.models.filter(function (m) {
+  var pool = DBx.models.filter(function (m) {
     return m.status === "public" && (m.tags || []).indexOf("free") >= 0 &&
-      (m.tags || []).indexOf("info-only") < 0 && m.score && typeof m.score.aa === "number";
+      (m.tags || []).indexOf("info-only") < 0 && m.score && typeof m.score.aa === "number" && m.score.est === false;
   });
   pool.sort(function (a, b) {
     var ac = (a.score.cat && a.score.cat[want]) || 0;
@@ -31,7 +31,7 @@ function freeAlternative(taskKey) {
   return { id: m.id, name: m.name, vendor: m.vendor, access: m.access, score: m.score.aa, estimated: !!m.score.est, page: "https://whichai.wiki/models/" + m.id + ".html" };
 }
 
-module.exports = function handler(req, res) {
+module.exports = async function handler(req, res) {
   if (!L.guard(req, res)) return;
   var q = L.query(req);
   var goal = String(q.goal || "").trim();
@@ -42,13 +42,14 @@ module.exports = function handler(req, res) {
     return L.fail(req, res, 413, "Goal too long", "Keep the goal under 600 characters.");
   }
 
+  var DBx = await L.currentDB();
   var detected = L.Engine.detectTaskType(goal) || "general";
-  var rec = L.Bench.recommend(detected);
+  var rec = L.Bench.recommend(detected, DBx);
   var top = rec.ranking && rec.ranking[0];
   var second = rec.ranking && rec.ranking[1];
 
   L.send(req, res, 200, {
-    meta: L.meta(),
+    meta: L.meta(DBx),
     goal: goal,
     detectedTask: detected,
     confidence: rec.confidence,
@@ -59,7 +60,7 @@ module.exports = function handler(req, res) {
       freeTier: (L.Bench.apps[top.app] || {}).freeModel || null
     } : null,
     runnerUp: second ? { app: second.app, label: (L.Bench.apps[second.app] || {}).label || second.app, why: second.note || null } : null,
-    freeAlternative: freeAlternative(detected),
+    freeAlternative: freeAlternative(DBx, detected),
     summary: rec.summary,
     promptBuilder: "https://whichai.wiki/#goal=" + encodeURIComponent(goal.slice(0, 200)),
     disclaimer: L.Bench.disclaimer,

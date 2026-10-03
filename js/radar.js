@@ -50,6 +50,7 @@
     var tm = TYPE_META[c.type] || TYPE_META.score;
     left.appendChild(el("span", "chip radar-type " + tm.cls, deps.T(tm.key)));
     if (isNew) left.appendChild(el("span", "chip radar-newchip", deps.T("radarNew")));
+    if (c.auto) left.appendChild(el("span", "chip chip-auto", deps.T("liveAutoChip")));
     head.appendChild(left);
     if (c.dbId) {
       var star = el("button", "btn-link radar-star" + (deps.isWatched(c.dbId) ? " on" : ""));
@@ -187,7 +188,14 @@
     }
     root.appendChild(list);
 
-    root.appendChild(el("p", "router-meta radar-foot", "Curated with every data refresh; each entry links its source. Follow a model (★) to filter this feed."));
+    root.appendChild(el("p", "router-meta radar-foot", "Two sources: curated entries with their links, and arrivals read automatically from OpenRouter and Artificial Analysis (marked auto). Follow a model (★) to filter this feed."));
+  }
+
+  /* New data landed while the Radar is open: redraw in place. */
+  if (typeof window !== "undefined" && window.addEventListener) {
+    window.addEventListener("whichai:data", function () {
+      if (root && deps && root.offsetParent !== null) render();
+    });
   }
 
   var Radar = {

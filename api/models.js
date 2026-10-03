@@ -1,5 +1,7 @@
 /*
- * GET /api/models - the WhichAI open model catalog (109+ models).
+ * GET /api/models - the WhichAI open model catalog, live (v0.35): the editorial
+ * catalog merged with the current public data (official Artificial Analysis
+ * scores, OpenRouter prices, models measured since the last deploy).
  * Read-only, public, CORS-open: CC BY 4.0, so anyone can build on it.
  *
  * Query parameters (all optional, all combinable):
@@ -32,18 +34,19 @@ function pick(model, fields) {
   return out;
 }
 
-module.exports = function handler(req, res) {
+module.exports = async function handler(req, res) {
   if (!L.guard(req, res)) return;
   var q = L.query(req);
-  var models = L.DB.models.slice();
+  var DBx = await L.currentDB();
+  var models = DBx.models.slice();
 
   if (q.id) {
     var one = models.filter(function (m) { return m.id === String(q.id); })[0];
     if (!one) return L.fail(req, res, 404, "Model not found", "Try /api/models?q=" + encodeURIComponent(String(q.id)));
     return L.send(req, res, 200, {
-      meta: L.meta(),
+      meta: L.meta(DBx),
       model: one,
-      links: { official: L.DB.links[one.family] || L.DB.vendorLinks[one.vendor] || null, page: "https://whichai.wiki/models/" + one.id + ".html" }
+      links: { official: DBx.links[one.family] || DBx.vendorLinks[one.vendor] || null, page: "https://whichai.wiki/models/" + one.id + ".html" }
     });
   }
 
@@ -102,7 +105,7 @@ module.exports = function handler(req, res) {
   var page = models.slice(offset, offset + limit).map(function (m) { return pick(m, fields); });
 
   L.send(req, res, 200, {
-    meta: L.meta(),
+    meta: L.meta(DBx),
     total: total,
     count: page.length,
     offset: offset,

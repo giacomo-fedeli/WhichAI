@@ -11,9 +11,10 @@
 
 var L = require("./_lib.js");
 
-module.exports = function handler(req, res) {
+module.exports = async function handler(req, res) {
   if (!L.guard(req, res)) return;
   var q = L.query(req);
+  var DBx = await L.currentDB();
   var tasks = Object.keys(L.Bench.taskTypes);
 
   if (q.task) {
@@ -21,10 +22,10 @@ module.exports = function handler(req, res) {
     if (tasks.indexOf(key) < 0) {
       return L.fail(req, res, 400, "Unknown task type", "Valid values: " + tasks.join(", "));
     }
-    var rec = L.Bench.recommend(key);
+    var rec = L.Bench.recommend(key, DBx);
     var top = rec.ranking && rec.ranking[0];
     return L.send(req, res, 200, {
-      meta: L.meta(),
+      meta: L.meta(DBx),
       task: key,
       bestPick: top ? { app: top.app, label: (L.Bench.apps[top.app] || {}).label || top.app, why: top.note || null } : null,
       confidence: rec.confidence,
@@ -35,13 +36,15 @@ module.exports = function handler(req, res) {
     });
   }
 
+  var live = {};
+  tasks.forEach(function (t) { live[t] = L.Bench.recommend(t, DBx); });
   var body = {
-    meta: L.meta(),
+    meta: L.meta(DBx),
     updated: L.Bench.updated,
     disclaimer: L.Bench.disclaimer,
     taskTypes: tasks,
     confidenceNotes: L.Bench.CONFIDENCE_NOTES,
-    rankings: L.Bench.taskTypes,
+    rankings: live,
     sources: L.Bench.sources
   };
   if (q.apps === "1" || q.apps === "true") body.apps = L.Bench.apps;

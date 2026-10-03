@@ -1,5 +1,8 @@
-/* Public, read-only market feed. Values remain attributed to their source;
-   nothing in this module rewrites the editorial catalog or its score scale. */
+/* Public, read-only market feed (OpenRouter's model list).
+   This module only READS and NORMALIZES the upstream list: every value stays
+   attributed to its source. Merging it into the WhichAI catalog is the job of
+   api/_catalog-core.js, which applies the official Artificial Analysis indices
+   relayed here (same scale as artificialanalysis.ai since v0.35). */
 "use strict";
 
 const SOURCE = "https://openrouter.ai/api/v1/models";
@@ -7,6 +10,14 @@ const TTL_MS = 60 * 60 * 1000;
 const MAX_STALE_MS = 7 * 24 * TTL_MS;
 const norm = (value) => String(value || "").toLowerCase().replace(/[^a-z0-9]/g, "");
 const text = (value, max = 240) => typeof value === "string" ? value.trim().slice(0, max) : "";
+/* First sentence of a vendor description, for an auto-added model's card.
+   Short on purpose: it is quoted with attribution, never republished whole. */
+function firstSentence(value) {
+  const t = text(value, 600).replace(/\s+/g, " ");
+  if (!t) return "";
+  const m = t.match(/^(.{20,220}?[.!?])(\s|$)/);
+  return (m ? m[1] : t.slice(0, 200).replace(/\s+\S*$/, "") + "...").trim();
+}
 
 function number(value) {
   if (value == null || value === "" || typeof value === "boolean") return null;
@@ -54,6 +65,9 @@ function normalize(payload, catalog, now = Date.now()) {
       inputModalities: ((m.architecture || {}).input_modalities || []).filter((v) => typeof v === "string").slice(0, 12),
       outputModalities: ((m.architecture || {}).output_modalities || []).filter((v) => typeof v === "string").slice(0, 12),
       expirationDate: /^\d{4}-\d{2}-\d{2}$/.test(m.expiration_date || "") ? m.expiration_date : null,
+      openWeights: typeof m.hugging_face_id === "string" && m.hugging_face_id.trim().length > 0,
+      reasoningDefault: !!(m.reasoning && m.reasoning.default_enabled === true),
+      description: firstSentence(m.description),
       url: "https://openrouter.ai/" + m.id,
       benchmarks: {
         artificialAnalysis: aa && typeof aa === "object" ? {
@@ -75,7 +89,7 @@ function normalize(payload, catalog, now = Date.now()) {
     notes: {
       prices: "USD per 1M input/output tokens on OpenRouter, under default conditions. Route/provider rates and extra charges can differ. Zero token price is not unlimited access.",
       availability: "Listed by OpenRouter at retrieval time; not a guarantee of provider uptime or access. Added date is OpenRouter listing date, not model release date.",
-      benchmarks: "Benchmarks relayed by OpenRouter. Each metric has its own scale. Source methodology version and measurement date are not supplied; retrieval time is not measurement time. These scores never overwrite the editorial snapshot."
+      benchmarks: "Benchmarks relayed by OpenRouter from their publishers: Artificial Analysis (Intelligence, Coding and Agentic indices, the same official scale shown on artificialanalysis.ai) and Design Arena (Elo). Each metric has its own scale and they are never mixed. Measurement dates are not supplied, so retrieval time is not measurement time. WhichAI's catalog uses the Artificial Analysis Intelligence Index from this feed as its main score."
     }
   };
 }
@@ -136,4 +150,4 @@ function createService(options = {}) {
   return { get };
 }
 
-module.exports = { SOURCE, TTL_MS, MAX_STALE_MS, number, perMillion, validId, catalogMatch, normalize, leaderboards, createService };
+module.exports = { SOURCE, TTL_MS, MAX_STALE_MS, number, perMillion, validId, catalogMatch, normalize, leaderboards, createService, firstSentence, vendorKey };

@@ -53,7 +53,7 @@
     var wrap = $("act-map-stats");
     var db = DB();
     if (!wrap || !db) return;
-    var measured = db.models.filter(function (m) { return m.score && typeof m.score.aa === "number"; });
+    var measured = db.models.filter(function (m) { return m.score && typeof m.score.aa === "number" && !m.score.est; });
     var free = db.models.filter(function (m) { return (m.tags || []).indexOf("free") >= 0; });
     var open = db.models.filter(function (m) { return (m.tags || []).indexOf("open-weights") >= 0; });
     var rows = [
@@ -69,7 +69,10 @@
       s.appendChild(el("span", null, r[1]));
       wrap.appendChild(s);
     });
-    var note = el("p", "act-stat-note", T("journeySnapshot", "Snapshot") + ": " + (db.updated || "n/a"));
+    /* With live data the note says how fresh it is, in the reader's language. */
+    var LC = window.WhichAILiveCatalog;
+    var ago = db.live && db.live.at && LC ? LC.ago(deps && deps.lang ? deps.lang() : (document.documentElement.lang || "en")) : null;
+    var note = el("p", "act-stat-note", ago ? T("livePill", "Live data") + " \u00b7 " + ago : T("journeySnapshot", "Snapshot") + ": " + (db.updated || "n/a"));
     wrap.appendChild(note);
   }
 
@@ -80,7 +83,7 @@
     var db = DB();
     if (!list || !db) return;
     var top = db.models
-      .filter(function (m) { return m.score && typeof m.score.aa === "number" && m.status !== "rumored" && m.status !== "private"; })
+      .filter(function (m) { return m.score && typeof m.score.aa === "number" && !m.score.est && m.status !== "rumored" && m.status !== "private"; })
       .sort(function (a, b) { return b.score.aa - a.score.aa; })
       .slice(0, 5);
     list.innerHTML = "";
@@ -130,7 +133,7 @@
 
     var freePool = db.models.filter(function (m) {
       return m.status === "public" && (m.tags || []).indexOf("free") >= 0 &&
-        (m.tags || []).indexOf("info-only") < 0 && m.score && typeof m.score.aa === "number";
+        (m.tags || []).indexOf("info-only") < 0 && m.score && typeof m.score.aa === "number" && !m.score.est;
     }).sort(function (a, b2) { return b2.score.aa - a.score.aa; });
     var free = freePool[0];
 
@@ -376,6 +379,14 @@
       if (!built) return;
       buildStats();
       buildTools();
+    },
+
+    /* Fresh catalog data landed (js/live-catalog.js): the numbers on the
+       welcome are recomputed, never left at the values of the first paint. */
+    refresh: function () {
+      if (!built) return;
+      buildStats();
+      buildLadder();
     },
 
     progress: function () { return progress; },

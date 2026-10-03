@@ -24,7 +24,12 @@ w.confirm = () => true;
 w.URL.createObjectURL = w.URL.createObjectURL || (() => "blob:test");
 w.URL.revokeObjectURL = w.URL.revokeObjectURL || (() => {});
 
-const scripts = ["js/engine.js", "js/benchmarks.js", "js/chains.js", "js/i18n.js", "js/models-db.js", "js/merge.js", "js/charts.js", "js/glossary.js", "js/finder.js", "js/modelcompare.js", "js/stack.js", "js/doctor.js", "js/changes.js", "js/radar.js", "js/live-data.js", "js/sharecard.js", "js/brands.js", "js/welcome.js", "js/config.js", "js/api.js", "js/stage.js", "js/journey.js", "js/support.js", "js/topics.js", "js/arena.js", "js/app.js"];
+/* A user who saved settings while qwen3-coder:free was the shipped default.
+   OpenRouter has since retired that route: the v0.35 section below checks
+   that the app heals it by itself. */
+w.sessionStorage.setItem("pc_settings_v1", JSON.stringify({ orModels: { qwen: "qwen/qwen3-coder:free", nemotron: "nvidia/nemotron-3-ultra-550b-a55b:free", glm: "my/own-model:free" } }));
+
+const scripts = ["js/engine.js", "js/benchmarks.js", "js/chains.js", "js/i18n.js", "js/models-db.js", "js/live-seed.js", "js/live-catalog.js", "js/merge.js", "js/charts.js", "js/glossary.js", "js/finder.js", "js/modelcompare.js", "js/stack.js", "js/doctor.js", "js/changes.js", "js/radar.js", "js/live-data.js", "js/sharecard.js", "js/brands.js", "js/welcome.js", "js/config.js", "js/api.js", "js/stage.js", "js/journey.js", "js/support.js", "js/topics.js", "js/arena.js", "js/app.js"];
 let bootError = null;
 for (const s of scripts) {
   try { w.eval(readFileSync(s, "utf8")); }
@@ -367,6 +372,51 @@ check("theme: toggle cycles (" + t0 + "→" + t1 + ")", t0 !== t1);
   const txt = d.getElementById("live-wrap").textContent;
   check("v34: with no feed it says so instead of showing nothing", txt.length > 20);
   check("v34: the editorial catalog is untouched by the live view", w.PromptCompassModelsDB.models.every(m => !("liveScore" in m) && !("openrouter" in m)));
+}
+
+/* --- v0.35: fresh data lands while the app is open --- */
+{
+  const Live = require("../api/_live-core.js");
+  const Core = require("../api/_catalog-core.js");
+  globalThis.window = globalThis.window || globalThis;
+  const DBnode = require("../js/models-db.js");
+  const fixture = JSON.parse(readFileSync("tests/fixtures/openrouter-2026-10-03.json", "utf8"));
+  const delta = Core.computeDelta(DBnode, Live.normalize(fixture, DBnode, Date.now()), { now: Date.now() });
+
+  check("v35: before any live data the pill stays hidden", d.getElementById("live-pill").hidden);
+  const n0 = w.PromptCompassModelsDB.models.length;
+  w.fetch = async (url) => ({ ok: String(url) === "/api/catalog", status: 200, json: async () => JSON.parse(JSON.stringify(delta)) });
+  const r = await w.WhichAILiveCatalog.refresh();
+  check("v35: GET /api/catalog is applied in the page", r && r.ok && w.PromptCompassModelsDB.models.length === n0 + delta.added.length);
+  check("v35: the live pill appears and says how fresh the data is", !d.getElementById("live-pill").hidden && /Live data/.test(d.getElementById("live-pill").textContent));
+  check("v35: the copy is saved for the next visit", !!w.localStorage.getItem("whichai_live_catalog_v1"));
+
+  const qwen = d.getElementById("or-model-qwen");
+  check("v35: a retired shipped free route heals itself", qwen.value === "qwen/qwen3.8-27b:free" && !d.getElementById("or-heal-note").hidden);
+  const saved = JSON.parse(w.sessionStorage.getItem("pc_settings_v1") || w.localStorage.getItem("pc_settings_v1") || "{}");
+  check("v35: the healed route is saved, the user's own route is untouched", saved.orModels.qwen === "qwen/qwen3.8-27b:free" && saved.orModels.glm === "my/own-model:free");
+
+  w.location.hash = "#guide";
+  await new Promise(r2 => setTimeout(r2, 40));
+  check("v35: the guide says the data is live", /Live data/.test(d.getElementById("guide-updated").textContent));
+  const frontier = [...d.querySelectorAll("#catalog-grid .guide-card")][0];
+  check("v35: the frontier card is computed from the live index", !!frontier && /Claude Opus 5\.5/.test(frontier.textContent) && /AA 57\.6/.test(frontier.textContent));
+  const search = d.getElementById("db-search");
+  search.value = "Opus 5.5";
+  search.dispatchEvent(new w.Event("input"));
+  const hit = d.querySelector('#db-results .db-hit[data-mid="claude-opus-5-5"]');
+  check("v35: a model measured after the last deploy is searchable", !!hit && /auto/.test(hit.textContent));
+  w.WhichAIApp.openModel("claude-opus-5-5");
+  const det = d.getElementById("db-detail");
+  check("v35: its card shows the official score, a rank and the auto chip", /AA 57\.6/.test(det.textContent) && !!det.querySelector(".badge-rank") && !!det.querySelector(".chip-auto"));
+  w.WhichAIApp.openModel("muse-spark-1-3");
+  check("v35: a converted score shows ~ and no rank", /AA ~/.test(det.textContent) && !det.querySelector(".badge-rank"));
+
+  check("v35: the welcome ladder follows the live leader", /Claude Opus 5\.5/.test((d.querySelector("#act-ladder .act-rank-row") || {}).textContent || ""));
+  const rec = w.PromptCompassBenchmarks.recommend("general");
+  check("v35: the general summary is computed, not typed", /Right now Claude Opus 5\.5/.test(rec.summary));
+  const feed = w.WhichAIChanges.past();
+  check("v35: the Radar lists automatic arrivals among curated entries", feed.some(e => e.auto && /Claude Opus 5\.5/.test(e.title)) && feed.some(e => !e.auto));
 }
 
 console.log("\n" + pass + " passed, " + fail + " failed" + (fail ? "\n\nFAILURES:\n" + failures.join("\n") : " — SMOKE ALL GREEN"));

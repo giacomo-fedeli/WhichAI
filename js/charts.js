@@ -83,6 +83,21 @@
     }
     out += '<text x="' + ((padL + W - padR) / 2) + '" y="' + (H - 6) + '" text-anchor="middle" class="wc-axis">' + esc(opts.xLabel || "") + "</text>";
     out += '<text x="12" y="' + ((padT + H - padB) / 2) + '" text-anchor="middle" class="wc-axis" transform="rotate(-90 12 ' + ((padT + H - padB) / 2) + ')">' + esc(opts.yLabel || "") + "</text>";
+    /* Greedy label placement: try a few vertical offsets and keep the first
+       that does not overlap a label already placed. Cheap, and enough for the
+       dozen labels a readable scatter carries. */
+    var placed = [];
+    function freeSpot(x, y, w, anchor) {
+      var offs = [0, 13, -13, 26, -26, 39];
+      for (var k = 0; k < offs.length; k++) {
+        var yy = y + offs[k];
+        var x0 = anchor === "end" ? x - w : x, x1 = x0 + w;
+        var hit = placed.some(function (b) { return x0 < b[2] && x1 > b[0] && yy - 10 < b[3] && yy + 2 > b[1]; });
+        if (!hit) { placed.push([x0, yy - 10, x1, yy + 2]); return yy; }
+      }
+      placed.push([anchor === "end" ? x - w : x, y - 10, anchor === "end" ? x : x + w, y + 2]);
+      return y;
+    }
     points.forEach(function (p) {
       var cx = X(p.x), cy = Y(p.y);
       var name = esc(p.label) + (p.est ? " ~" : "");
@@ -90,8 +105,10 @@
       out += '<circle cx="' + fmt(cx) + '" cy="' + fmt(cy) + '" r="5.5" class="wc-dot' + (p.est ? " wc-est" : "") + '"></circle>';
       var anchor = cx > W - 120 ? "end" : "start";
       var tx = anchor === "end" ? cx - 9 : cx + 9;
-      var ty = cy + (p.labelDy || 0) - 6;
-      out += '<text x="' + fmt(tx) + '" y="' + fmt(ty) + '" text-anchor="' + anchor + '" class="wc-ptlabel">' + name + "</text></g>";
+      var ty = p.quiet ? cy - 6 : freeSpot(tx, cy - 6, String(p.label || "").length * 6.4 + (p.est ? 12 : 0), anchor);
+      /* A quiet point keeps its dot and its tooltip but no label: with a
+         hundred models, labelling every one makes the chart unreadable. */
+      out += (p.quiet ? "" : '<text x="' + fmt(tx) + '" y="' + fmt(ty) + '" text-anchor="' + anchor + '" class="wc-ptlabel">' + name + "</text>") + "</g>";
     });
     out += "</svg>";
     return out;

@@ -14,8 +14,11 @@
  *   3. did any context window drift more than 25%?
  *   4. which models exist upstream and are missing from the catalog?
  *
- * It never rewrites Artificial Analysis scores. Those need a human and a
- * cited snapshot, and the whole site is judged on them being honest.
+ * Since v0.35 it is a diagnostic only: the fixes it used to ask a human for
+ * happen by themselves. Official Artificial Analysis scores, prices and newly
+ * measured models are applied automatically by /api/catalog (see
+ * api/_catalog-core.js), and a retired free default is healed in the browser.
+ * This report says what the automation did and what is left to look at.
  */
 "use strict";
 
@@ -144,14 +147,32 @@ function analyse(upstream, DB, appSrc) {
   }
   report.missingFromCatalog.sort((a, b) => String(b.released).localeCompare(String(a.released)));
 
-  if (report.deadFreeRoutes.length) report.needsHuman.push("A shipped :free route no longer exists - auto-run is broken for those users until a default is changed.");
-  if (report.missingFromCatalog.length) report.needsHuman.push(report.missingFromCatalog.length + " model(s) exist upstream and are not in the catalog - decide which deserve an entry.");
-  if (report.priceDrift.length) report.needsHuman.push(report.priceDrift.length + " price(s) drifted more than 15% - confirm against the vendor page before editing.");
-  report.needsHuman.push("Artificial Analysis scores are never updated automatically: re-check the snapshot and cite it.");
+  /* What the live layer already does on its own, so nobody acts on it twice. */
+  const freeAlive = all.filter((m) => /:free$/.test(m.id)).map((m) => m.id);
+  report.healedFreeRoutes = report.deadFreeRoutes.map((route) => {
+    const prefix = route.split("/")[0] + "/";
+    return { route, replacement: freeAlive.find((id) => id.indexOf(prefix) === 0) || null };
+  });
+  report.automated = {
+    scores: "official Artificial Analysis indices applied automatically by /api/catalog",
+    prices: report.priceDrift.length ? report.priceDrift.length + " price change(s) applied automatically (OpenRouter price, labelled as such)" : "no drift",
+    newModels: report.missingFromCatalog.length + " upstream model(s) newer than the editorial snapshot: measured ones are added automatically, unmeasured ones appear in the Radar",
+    freeRoutes: report.deadFreeRoutes.length ? "retired default(s) healed in the browser with a live route of the same family where one exists" : "all shipped defaults alive"
+  };
+  /* The automation depends on OpenRouter relaying the official indices. If
+     that ever stops, scores freeze at their last values: say so loudly. */
+  report.relayedScores = all.filter((m) => m.benchmarks && m.benchmarks.artificial_analysis && typeof m.benchmarks.artificial_analysis.intelligence_index === "number").length;
+  if (report.relayedScores < 20) report.needsHuman.push("OpenRouter relays only " + report.relayedScores + " Artificial Analysis scores (usually 100+): automatic score updates are effectively paused and the catalog keeps its last known values.");
+  const unhealed = report.healedFreeRoutes.filter((h) => !h.replacement);
+  if (unhealed.length) report.needsHuman.push("No live free route left for: " + unhealed.map((h) => h.route).join(", ") + " - auto-run for that family falls back to copy & paste until one returns.");
+  else if (report.deadFreeRoutes.length) report.needsHuman.push("A shipped :free default was retired upstream; users are healed automatically. Update DEFAULT_OR_MODELS in js/app.js at the next code change.");
+  if (report.contextDrift.length) report.needsHuman.push(report.contextDrift.length + " context window(s) differ from the route: check whether the catalog figure describes the model or the route.");
 
   /* One number the site can show without anyone reading the report. */
-  report.actionable = report.deadFreeRoutes.length + report.priceDrift.length + report.contextDrift.length + report.missingFromCatalog.length;
-  report.severity = report.deadFreeRoutes.length ? "broken" : (report.actionable ? "review" : "clean");
+  /* Context drift is information (a hosted route often caps the window), not
+     a fault: it no longer turns the light yellow on its own. */
+  report.actionable = unhealed.length + report.deadFreeRoutes.length;
+  report.severity = unhealed.length ? "broken" : (report.deadFreeRoutes.length || report.relayedScores < 20 ? "review" : "clean");
   return report;
 }
 
@@ -200,7 +221,7 @@ function markdown(r) {
   L.push("");
   for (const n of r.needsHuman) L.push("- " + n);
   L.push("");
-  L.push("_Automated by the WhichAI data check. Scores are never changed without a cited snapshot._");
+  L.push("_Automated by the WhichAI data check. Scores, prices and new measured models are applied automatically by /api/catalog; this report is the audit trail._");
   return L.join("\n");
 }
 

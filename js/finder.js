@@ -98,6 +98,47 @@
     "deepseek-v4-pro": { bestFor: "capable free chat app, open weights", limit: "Free chat runs on DeepSeek's servers - check its data policy; no free OpenRouter route." }
   };
 
+  /* ---------- v0.35: picks that follow the live catalog ----------
+     The strongest model of a maker, the best value, the best free route and
+     the best open-weights model are looked up in the current catalog (kept
+     fresh by js/live-catalog.js) instead of being typed here, where they went
+     stale within weeks. Static ids remain only as the offline fallback. */
+
+  var APP_VENDOR = { claude: "Anthropic", chatgpt: "OpenAI", gemini: "Google" };
+  function appOf(vendor) { for (var a in APP_VENDOR) { if (APP_VENDOR[a] === vendor) return a; } return null; }
+  function official(m) { return m && m.status === "public" && m.score && typeof m.score.aa === "number" && !m.score.est; }
+  function blended(m) { var s = m.spec || {}; return s.priceIn != null && s.priceOut != null ? (3 * s.priceIn + s.priceOut) / 4 : null; }
+  function liveBest(db, filter, key) {
+    var best = null;
+    (db ? db.models : []).forEach(function (m) {
+      if (!official(m) || !filter(m)) return;
+      var v = key ? key(m) : m.score.aa;
+      if (typeof v !== "number") return;
+      if (!best || v > best.v) best = { m: m, v: v };
+    });
+    return best ? best.m : null;
+  }
+  function vendorBest(db, vendor) { return liveBest(db, function (m) { return m.vendor === vendor; }); }
+  function vendorValue(db, vendor) {
+    var top = vendorBest(db, vendor);
+    if (!top) return null;
+    return liveBest(db, function (m) { return m.vendor === vendor && m.score.aa >= top.score.aa * 0.8 && blended(m) > 0; },
+      function (m) { return m.score.aa / blended(m); });
+  }
+  function routeModel(db, routeId) {
+    var base = String(routeId || "").replace(/:free$/, "");
+    return (db ? db.models : []).filter(function (m) { return (m.or || []).indexOf(base) !== -1; })[0] || null;
+  }
+  function bestFreeRoute(db, family) {
+    var routes = db && db.live && db.live.freeRoutes ? db.live.freeRoutes : [];
+    for (var i = 0; i < routes.length; i++) {
+      if (family && routes[i].family !== family) continue;
+      var m = routeModel(db, routes[i].id);
+      if (m) return { route: routes[i], model: m };
+    }
+    return null;
+  }
+
   function recommend() {
     var bench = Bench();
     var db = DB();
@@ -110,7 +151,7 @@
       rec.ranking.forEach(function (r, i) {
         if (scores[r.app] == null) return;
         scores[r.app] += pts[i] || 0;
-        if (i === 0) why[r.app].push("Ranked #1 for this task in our benchmark router (snapshot " + bench.updated + ").");
+        if (i === 0) why[r.app].push(r.live ? "Ranked #1 for this task: its best model, " + r.live.name + ", leads the makers on the live " + r.live.label + " index (" + r.live.value + ")." : "Ranked #1 for this task in our benchmark router.");
         if (i === 1) why[r.app].push("Ranked #2 for this task in our benchmark router.");
       });
     }
@@ -120,7 +161,7 @@
       boost("gemini", 2, "Most generous free tier of the big assistants.");
       boost("perplexity", 1, "Free tier includes unlimited basic cited searches.");
       boost("chatgpt", 1, "Solid free tier (message caps apply).");
-      boost("claude", 0.5, "Free tier runs Claude Sonnet 5 - strong free quality.");
+      boost("claude", 0.5, "Claude's free tier runs a Sonnet model - strong free quality.");
     }
     if (state.needs.indexOf("web") !== -1) {
       boost("perplexity", 4, "Purpose-built for cited, current answers.");
@@ -135,13 +176,20 @@
       boost("gemini", 1, "1M-token context on every current tier.");
     }
     if (state.needs.indexOf("speed") !== -1) {
-      boost("gemini", 1.5, "Gemini 3.5 Flash is near-instant and free.");
+      boost("gemini", 1.5, "Gemini's Flash models are near-instant and free.");
     }
-    if (state.extra === "creative") boost("claude", 2, "Claude Fable 5 tops creative-writing boards for voice and subtext.");
+    if (state.extra === "creative") boost("claude", 2, "Anthropic's Fable line is built for creative writing: voice and subtext.");
     if (state.extra === "pro") boost("chatgpt", 1, "Strong at variants and turning notes into polished drafts.");
-    if (state.extra === "agent") boost("chatgpt", 1.5, "GPT-5.6 Sol leads the Coding Agent Index (80).");
-    if (state.extra === "help") boost("claude", 1, "Leads the toughest real-repo coding benchmarks.");
-    if (state.extra === "deep") { boost("perplexity", 1, "Pro adds 20 Deep Research runs/day."); boost("gemini", 1, "Deep Research is bundled, with a free monthly allowance."); }
+    if (state.extra === "agent") {
+      var ag = liveBest(db, function (m) { return !!appOf(m.vendor); }, function (m) { return m.score.agentic; });
+      if (ag) boost(appOf(ag.vendor), 1.5, "Best live Agentic Index among the big three right now: " + ag.name + " (" + ag.score.agentic + ").");
+    }
+    if (state.extra === "help") {
+      var cd = liveBest(db, function (m) { return !!appOf(m.vendor); }, function (m) { return m.score.coding; });
+      if (cd) boost(appOf(cd.vendor), 1, "Best live Coding Index among the big three right now: " + cd.name + " (" + cd.score.coding + ").");
+      else boost("claude", 1, "Leads the toughest real-repo coding benchmarks.");
+    }
+    if (state.extra === "deep") { boost("perplexity", 1, "Pro adds daily Deep Research runs."); boost("gemini", 1, "Deep Research is bundled, with a free monthly allowance."); }
 
     var ranked = Object.keys(scores).sort(function (a, b) { return scores[b] - scores[a]; });
 
@@ -154,6 +202,13 @@
       }
       if (app === "claude" && state.extra === "creative" && state.budget !== "free") mkey = "creative";
       var dbId = meta.models[mkey] || meta.models.any;
+      /* "Whatever is best" and the developer tiers follow the live index;
+         free tiers and the creative pick are product facts, kept editorial. */
+      var vendor = APP_VENDOR[app];
+      var liveM = null;
+      if (vendor && (mkey === "any" || mkey === "devAny")) liveM = vendorBest(db, vendor);
+      else if (vendor && mkey === "devLow") liveM = vendorValue(db, vendor);
+      if (liveM) dbId = liveM.id;
       var m = db ? db.models.filter(function (x) { return x.id === dbId; })[0] : null;
       return {
         kind: "app", app: app, name: meta.label + (m ? " - " + m.name : ""), dbId: dbId, family: app,
@@ -174,18 +229,30 @@
 
     ranked.forEach(function (app) { offers.push(appOffer(app)); });
 
-    // Developer mode: open/API alternatives with a free or cheap route
+    // Developer mode: open/API alternatives with a free or cheap route,
+    // chosen from the live catalog (static ids only when it is unavailable)
     if (state.mode === "dev") {
       if (state.task === "coding") {
-        if (state.budget === "free") offers.splice(1, 0, modelOffer("qwen3-coder", ["Runnable for free via OpenRouter - auto-run works right here in Compare/Chains."]));
-        else offers.splice(1, 0, modelOffer("kimi-k3", ["A top-five score on the current index at $3/$15 per 1M tokens - a fraction of US frontier prices.", "Best published BrowseComp score and #1 Frontend Code Arena at launch."]));
+        if (state.budget === "free") {
+          var fr = bestFreeRoute(db);
+          offers.splice(1, 0, fr ? modelOffer(fr.model.id, ["Free on OpenRouter right now (" + fr.route.id + ")" + (fr.route.aa != null ? ", AA " + fr.route.aa : "") + " - auto-run works right here in Compare/Chains."])
+            : modelOffer("qwen3-coder", ["Runnable for free via OpenRouter - auto-run works right here in Compare/Chains."]));
+        } else {
+          var val = liveBest(db, function (m) { return !appOf(m.vendor) && blended(m) > 0; }, function (m) { return m.score.coding; });
+          offers.splice(1, 0, val ? modelOffer(val.id, ["Best live Coding Index outside Anthropic, OpenAI and Google (" + val.score.coding + "), at $" + val.spec.priceIn + "/$" + val.spec.priceOut + " per 1M tokens on OpenRouter."])
+            : modelOffer("kimi-k3", ["Frontier-level coding at a fraction of US prices."]));
+        }
       } else if (state.budget === "free") {
-        offers.splice(2, 0, modelOffer("nemotron-3-ultra", ["Free on OpenRouter and extremely fast (400+ tok/s on some hosts) - auto-run works right here."]));
+        var fr2 = bestFreeRoute(db, "nemotron") || bestFreeRoute(db);
+        offers.splice(2, 0, fr2 ? modelOffer(fr2.model.id, ["Free on OpenRouter right now (" + fr2.route.id + ") - auto-run works right here."])
+          : modelOffer("nemotron-3-ultra", ["Free on OpenRouter - auto-run works right here."]));
       }
     }
-    // Privacy: local/open alternative always surfaces
+    // Privacy: the strongest model you can download, from the live catalog
     if (state.needs.indexOf("privacy") !== -1) {
-      offers.splice(1, 0, modelOffer("inkling", ["Open weights under Apache 2.0 - you can run it entirely on your own hardware.", "Natively multimodal (text, image, audio) with a 1M context."]));
+      var ow = liveBest(db, function (m) { return (m.tags || []).indexOf("open-weights") !== -1; });
+      offers.splice(1, 0, ow ? modelOffer(ow.id, ["Open weights: you can run it entirely on your own hardware.", "The strongest downloadable model on the live index right now (AA " + ow.score.aa + ")."])
+        : modelOffer("inkling", ["Open weights under Apache 2.0 - you can run it entirely on your own hardware."]));
     }
 
     offers = offers.filter(Boolean);
@@ -295,7 +362,7 @@
     }
     c.appendChild(head);
     if (isTop && offer.score && offer.score.aa) {
-      c.appendChild(el("p", "router-meta", "AA index: " + (offer.score.est ? "~" : "") + offer.score.aa + (offer.score.est ? " (WhichAI estimate)" : " (" + snapshotDate() + " snapshot)")));
+      c.appendChild(el("p", "router-meta", "AA index: " + (offer.score.est ? "~" : "") + offer.score.aa + (offer.score.est ? " (estimate, not an official measurement)" : " (official, " + snapshotDate() + ")")));
     }
     if (offer.why && offer.why.length) {
       var whyTitle = el("p", "finder-block-title", deps.T("finderWhy"));
@@ -349,7 +416,7 @@
     if (state.needs.indexOf("privacy") !== -1) {
       card.appendChild(el("p", "router-meta", "Note: WhichAI itself runs entirely in your browser - no account, no server. For maximum privacy, open-weight models can run fully on your own hardware."));
     }
-    card.appendChild(el("p", "router-meta", "Guidance from public benchmarks and vendor pages (snapshot " + snapshotDate() + ") plus transparent rules - not gospel. Sources are linked in the Model guide."));
+    card.appendChild(el("p", "router-meta", "Guidance from public benchmarks (official indices read " + snapshotDate() + ", refreshed automatically) and vendor pages, plus transparent rules - not gospel. Sources are linked in the Model guide."));
     var nav = el("div", "finder-nav");
     var again = el("button", "btn-link", deps.T("finderRestart"));
     again.type = "button";
@@ -365,7 +432,7 @@
       shareB.addEventListener("click", function () {
         var rows = [{ label: deps.T("finderTop"), value: res.top.name }];
         res.alts.forEach(function (o, i) { rows.push({ label: "Alt " + (i + 1), value: o.name }); });
-        if (res.top.score && res.top.score.aa) rows.push({ label: "AA index", value: String((res.top.score.est ? "~" : "") + res.top.score.aa) + " (" + snapshotDate() + " snapshot)" });
+        if (res.top.score && res.top.score.aa) rows.push({ label: "AA index", value: String((res.top.score.est ? "~" : "") + res.top.score.aa) + " (" + (res.top.score.est ? "not an official measurement" : "official, " + snapshotDate()) + ")" });
         window.WhichAIShare.share({
           title: "My AI pick: " + res.top.name.split(" - ")[0],
           subtitle: "Task: " + deps.T("task_" + state.task),

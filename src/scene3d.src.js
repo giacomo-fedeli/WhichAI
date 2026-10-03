@@ -52,7 +52,9 @@ function hash01(str, salt) {
 }
 
 function buildPoints(models) {
-  const measured = models.filter((m) => m.score && typeof m.score.aa === "number");
+  /* Ranked = officially measured. A converted (~) or guessed value never
+     takes a rung on the ladder: it floats with the unmeasured below it. */
+  const measured = models.filter((m) => m.score && typeof m.score.aa === "number" && !m.score.est);
   const scores = measured.map((m) => m.score.aa);
   const minS = Math.min.apply(null, scores), maxS = Math.max.apply(null, scores);
   const prices = models
@@ -70,7 +72,7 @@ function buildPoints(models) {
   ranked.forEach((m, i) => { rankOf[m.id] = i; });
 
   return models.map((m, i) => {
-    const aa = m.score && typeof m.score.aa === "number" ? m.score.aa : null;
+    const aa = m.score && typeof m.score.aa === "number" && !m.score.est ? m.score.aa : null;
     const sNorm = aa == null ? 0 : (aa - minS) / Math.max(1e-6, maxS - minS);
     const priceOut = m.spec && typeof m.spec.priceOut === "number" ? m.spec.priceOut : null;
     const pNorm = priceOut == null || priceOut <= 0

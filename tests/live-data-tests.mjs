@@ -3,12 +3,9 @@
    the fetcher is injected, so nothing here depends on OpenRouter being up or
    on what it happens to be serving today.
 
-   The check that matters most is the last section. OpenRouter relays an
-   Artificial Analysis index on a DIFFERENT SCALE from the editorial snapshot
-   the rest of the site is built on - it reports Claude Opus 5 around 50 where
-   the cited mirror says 63. Both are "the AA index"; neither is wrong; mixing
-   them would silently corrupt the one number this site is judged on. These
-   tests exist to keep the two apart.
+   The check that matters most is the last section. Since v0.35 the catalog
+   and the relayed feed share ONE scale - the official Artificial Analysis
+   index - and section 8 proves it against a real OpenRouter response.
 
    Run: node tests/live-data-tests.mjs                                     */
 import { readFileSync } from "fs";
@@ -171,23 +168,36 @@ function model(over) {
   check("the browser module tells the reader each benchmark has its own scale", /own scale/i.test(src));
 }
 
-/* ---------- 8. the invariant that protects the whole site ---------- */
+/* ---------- 8. the invariant that protects the whole site (v0.35) ----------
+   Until v0.34 the relayed index and the catalog sat on two different scales
+   (Opus 5: 50.7 relayed, 63.0 on the BenchLM mirror), so this section kept
+   them apart. The relayed number turned out to be the OFFICIAL one (it matches
+   what Artificial Analysis publishes), and since v0.35 the catalog uses it.
+   The invariant is now the opposite and just as strict: ONE scale everywhere,
+   proven against a real October 3, 2026 OpenRouter response. */
 {
   const coreSrc = readFileSync("api/_live-core.js", "utf8");
   const liveSrc = readFileSync("api/live.js", "utf8");
   const refreshSrc = readFileSync("api/_refresh-core.js", "utf8");
+  const real = JSON.parse(readFileSync("tests/fixtures/openrouter-2026-10-03.json", "utf8"));
+  const byId = new Map(real.data.map((m) => [m.id, m]));
 
-  /* Two different numbers both called "the AA index". The editorial snapshot
-     is cited and dated; the relayed one is neither. They must never meet. */
-  const out = Live.normalize(upstream([model({ benchmarks: { artificial_analysis: { intelligence_index: 50.7 } } })]), DB, NOW);
+  const official = DB.models.filter((m) => m.score && m.score.src === "aa");
+  const mismatched = official.filter((m) => {
+    const route = (m.or || []).map((id) => byId.get(id)).find(Boolean);
+    const v = route && route.benchmarks && route.benchmarks.artificial_analysis ? route.benchmarks.artificial_analysis.intelligence_index : null;
+    return typeof v !== "number" || Math.abs(v - m.score.aa) > 0.05;
+  });
+  check("one scale: every official catalog score equals the relayed Artificial Analysis value", official.length >= 50 && mismatched.length === 0, mismatched.map((m) => m.id).join(", "));
   const opus = DB.models.find((m) => m.id === "claude-opus-5");
-  check("the relayed index and the editorial score are genuinely different numbers",
-    !opus || Math.abs(out.models[0].benchmarks.artificialAnalysis.intelligence - opus.score.aa) > 5,
-    opus ? "relayed 50.7 vs editorial " + opus.score.aa : "");
+  check("Claude Opus 5 reads the official 50.8, not the old mirror's 63.0", opus && opus.score.aa === 50.8 && opus.score.src === "aa");
+  check("converted values are marked, sourced and never official", DB.models.filter((m) => m.score && m.score.src === "converted").every((m) => m.score.est === true && typeof m.score.was === "number"));
+
+  const out = Live.normalize(upstream([model({ benchmarks: { artificial_analysis: { intelligence_index: 50.8 } } })]), DB, NOW);
   check("the live feed keeps relayed benchmarks in their own namespace", !!out.models[0].benchmarks.artificialAnalysis && !("aa" in out.models[0]) && !("score" in out.models[0]));
-  check("no live module writes into the editorial catalog", !/\.score\s*=|score\.aa\s*=|models\.push\(/.test(coreSrc + liveSrc));
-  check("the difference in scale is stated in the payload itself", /own scale/i.test(out.notes.benchmarks) && /never overwrite/i.test(out.notes.benchmarks));
-  check("the diagnostic check still refuses to touch scores", /never updated automatically/.test(refreshSrc));
+  check("the reader module never writes into the catalog (merging lives in _catalog-core)", !/\.score\s*=|score\.aa\s*=|models\.push\(/.test(coreSrc + liveSrc));
+  check("the payload names the publisher and the official scale", /Artificial Analysis/.test(out.notes.benchmarks) && /official/i.test(out.notes.benchmarks));
+  check("the diagnostic check reports the automation", /report\.automated/.test(refreshSrc) && !/never updated automatically/.test(refreshSrc));
 
   /* Reading the feed must not be able to change anything. */
   check("the endpoint is read-only", /L\.guard\(req, res\)/.test(liveSrc) && !/POST|PUT|DELETE|writeFile/.test(liveSrc));

@@ -2,10 +2,10 @@
  "project": "WhichAI",
  "site": "https://whichai.wiki",
  "license": "CC BY 4.0 (attribution: WhichAI, whichai.wiki)",
- "generated": "2026-09-08",
- "snapshot": "September 8, 2026",
- "scaleNote": "Artificial Analysis Intelligence Index, 2026 rebased scale (top models ~ 55-66). Snapshot: September 4, 2026 (BenchLM mirror), retrieved September 8, 2026. Specs and prices come from the OpenRouter public model list on the same date. Models nobody has measured carry no index score at all and never enter a ranking: where an estimate exists it is shown separately and labelled unmeasured.",
- "specNote": "Context, price, modality and release dates come from the public OpenRouter model list (retrieved September 8, 2026) and vendor pages. Missing values are not published or not yet verified - shown as -.",
+ "generated": "2026-10-03",
+ "snapshot": "October 3, 2026",
+ "scaleNote": "Artificial Analysis Intelligence Index, official scale (the number published on artificialanalysis.ai), relayed by OpenRouter. Static snapshot retrieved October 3, 2026; the live site refreshes it automatically every hour. A value marked ~ is converted from the older BenchLM-mirror scale because no current official measurement is published; models nobody has measured carry no index score and never enter a ranking.",
+ "specNote": "Context, price, modality and listing dates come from the public OpenRouter model list (refreshed automatically on the live site; static copy retrieved October 3, 2026) and vendor pages. Missing values are not published or not yet verified - shown as -.",
  "count": 118,
  "models": [
   {
@@ -14,6 +14,9 @@
    "vendor": "OpenAI",
    "family": "chatgpt",
    "status": "public",
+   "or": [
+    "openai/gpt-6-astra"
+   ],
    "spec": {
     "released": "2026-09-04",
     "ctx": "1.05M",
@@ -36,8 +39,12 @@
     "long-context"
    ],
    "score": {
-    "aa": 61.2,
+    "aa": 52.7,
     "est": false,
+    "src": "aa",
+    "coding": 76.9,
+    "agentic": 51,
+    "at": "2026-10-03",
     "cat": {
      "coding": 91,
      "reasoning": 93,
@@ -53,6 +60,9 @@
    "vendor": "OpenAI",
    "family": "chatgpt",
    "status": "public",
+   "or": [
+    "openai/gpt-5.6-sol"
+   ],
    "access": "Released July 9, 2026 (rolling out) · API $5/$30 per 1M tokens · up to 750 tok/s on Cerebras",
    "tags": [
     "paid",
@@ -72,8 +82,12 @@
     "speed": "up to 750 tok/s (Cerebras)"
    },
    "score": {
-    "aa": 58.9,
+    "aa": 47,
     "est": false,
+    "src": "aa",
+    "coding": 77.4,
+    "agentic": 50.2,
+    "at": "2026-10-03",
     "cat": {
      "coding": 91,
      "reasoning": 93,
@@ -89,6 +103,9 @@
    "vendor": "OpenAI",
    "family": "chatgpt",
    "status": "public",
+   "or": [
+    "openai/gpt-5.6-terra"
+   ],
    "spec": {
     "released": "2026-07-09",
     "priceIn": 2.5,
@@ -105,8 +122,12 @@
     "value"
    ],
    "score": {
-    "aa": 56.6,
+    "aa": 42.1,
     "est": false,
+    "src": "aa",
+    "coding": 76.7,
+    "agentic": 43.2,
+    "at": "2026-10-03",
     "cat": {
      "coding": 86,
      "reasoning": 88,
@@ -122,6 +143,9 @@
    "vendor": "OpenAI",
    "family": "chatgpt",
    "status": "public",
+   "or": [
+    "openai/gpt-5.6-luna"
+   ],
    "spec": {
     "released": "2026-07-09",
     "priceIn": 1,
@@ -138,8 +162,12 @@
     "value"
    ],
    "score": {
-    "aa": 52.3,
+    "aa": 37.3,
     "est": false,
+    "src": "aa",
+    "coding": 71.4,
+    "agentic": 42.1,
+    "at": "2026-10-03",
     "cat": {
      "coding": 78,
      "reasoning": 80,
@@ -155,6 +183,9 @@
    "vendor": "OpenAI",
    "family": "chatgpt",
    "status": "public",
+   "or": [
+    "openai/gpt-5.5"
+   ],
    "spec": {
     "released": "2026-04"
    },
@@ -171,8 +202,12 @@
     "writing"
    ],
    "score": {
-    "aa": 56.3,
+    "aa": 38.4,
     "est": false,
+    "src": "aa",
+    "coding": 74.9,
+    "agentic": 36.4,
+    "at": "2026-10-03",
     "cat": {
      "coding": 88,
      "reasoning": 86,
@@ -188,6 +223,9 @@
    "vendor": "OpenAI",
    "family": "chatgpt",
    "status": "public",
+   "or": [
+    "openai/gpt-5.5-pro"
+   ],
    "access": "ChatGPT Pro ($200/mo) · API",
    "tags": [
     "paid",
@@ -198,8 +236,10 @@
     "reasoning"
    ],
    "score": {
-    "aa": 58,
+    "aa": 41.8,
     "est": true,
+    "src": "converted",
+    "was": 58,
     "cat": {
      "coding": 90,
      "reasoning": 91,
@@ -215,6 +255,9 @@
    "vendor": "OpenAI",
    "family": "chatgpt",
    "status": "public",
+   "or": [
+    "openai/gpt-5.4"
+   ],
    "access": "ChatGPT Plus · API · inside Perplexity Pro",
    "tags": [
     "paid",
@@ -226,8 +269,10 @@
     "reasoning"
    ],
    "score": {
-    "aa": 53.1,
-    "est": false,
+    "aa": 35.4,
+    "est": true,
+    "src": "converted",
+    "was": 53.1,
     "cat": {
      "coding": 82,
      "reasoning": 80,
@@ -243,6 +288,9 @@
    "vendor": "OpenAI",
    "family": "chatgpt",
    "status": "public",
+   "or": [
+    "openai/gpt-5.4-mini"
+   ],
    "access": "API (cheap tier) · serves ChatGPT free-tier overflow",
    "tags": [
     "free",
@@ -255,8 +303,12 @@
     "value"
    ],
    "score": {
-    "aa": 40,
+    "aa": 24.1,
     "est": false,
+    "src": "aa",
+    "coding": 56.1,
+    "agentic": 17.9,
+    "at": "2026-10-03",
     "cat": {
      "coding": 66,
      "reasoning": 64,
@@ -272,6 +324,9 @@
    "vendor": "OpenAI",
    "family": "chatgpt",
    "status": "public",
+   "or": [
+    "openai/gpt-5.4-nano"
+   ],
    "access": "API (cheapest OpenAI tier)",
    "tags": [
     "paid",
@@ -282,8 +337,12 @@
     "value"
    ],
    "score": {
-    "aa": 38.2,
+    "aa": 20.7,
     "est": false,
+    "src": "aa",
+    "coding": 56.1,
+    "agentic": 16,
+    "at": "2026-10-03",
     "cat": {
      "coding": 60,
      "reasoning": 58,
@@ -299,6 +358,9 @@
    "vendor": "OpenAI",
    "family": "chatgpt",
    "status": "public",
+   "or": [
+    "openai/gpt-5.3-codex"
+   ],
    "access": "API · Codex tooling",
    "tags": [
     "paid",
@@ -310,8 +372,10 @@
     "agents"
    ],
    "score": {
-    "aa": 44.3,
-    "est": false,
+    "aa": 28.5,
+    "est": true,
+    "src": "converted",
+    "was": 44.3,
     "cat": {
      "coding": 85,
      "reasoning": 72,
@@ -327,6 +391,9 @@
    "vendor": "OpenAI",
    "family": "chatgpt",
    "status": "legacy",
+   "or": [
+    "openai/gpt-5.2"
+   ],
    "access": "Still serves some free-tier traffic",
    "tags": [
     "free",
@@ -337,8 +404,10 @@
     "value"
    ],
    "score": {
-    "aa": 42.2,
-    "est": false,
+    "aa": 25.6,
+    "est": true,
+    "src": "converted",
+    "was": 42.2,
     "cat": {
      "coding": 68,
      "reasoning": 66,
@@ -354,6 +423,9 @@
    "vendor": "OpenAI",
    "family": "chatgpt",
    "status": "legacy",
+   "or": [
+    "openai/gpt-5.1"
+   ],
    "access": "API (legacy)",
    "tags": [
     "paid",
@@ -362,8 +434,10 @@
    ],
    "labels": [],
    "score": {
-    "aa": 36.9,
-    "est": false,
+    "aa": 23,
+    "est": true,
+    "src": "converted",
+    "was": 36.9,
     "cat": {
      "coding": 62,
      "reasoning": 60,
@@ -379,6 +453,9 @@
    "vendor": "OpenAI",
    "family": "chatgpt",
    "status": "legacy",
+   "or": [
+    "openai/gpt-5"
+   ],
    "access": "API (legacy)",
    "tags": [
     "paid",
@@ -387,8 +464,10 @@
    ],
    "labels": [],
    "score": {
-    "aa": 34.7,
-    "est": false,
+    "aa": 19.8,
+    "est": true,
+    "src": "converted",
+    "was": 34.7,
     "cat": {
      "coding": 60,
      "reasoning": 58,
@@ -404,6 +483,9 @@
    "vendor": "OpenAI",
    "family": "chatgpt",
    "status": "legacy",
+   "or": [
+    "openai/o3-pro"
+   ],
    "access": "API (legacy reasoning line)",
    "tags": [
     "paid",
@@ -414,8 +496,10 @@
     "reasoning"
    ],
    "score": {
-    "aa": 32.5,
-    "est": false,
+    "aa": 17.6,
+    "est": true,
+    "src": "converted",
+    "was": 32.5,
     "cat": {
      "coding": 58,
      "reasoning": 66,
@@ -431,6 +515,9 @@
    "vendor": "OpenAI",
    "family": "chatgpt",
    "status": "legacy",
+   "or": [
+    "openai/o3"
+   ],
    "access": "API (legacy)",
    "tags": [
     "paid",
@@ -441,8 +528,10 @@
     "reasoning"
    ],
    "score": {
-    "aa": 30.4,
-    "est": false,
+    "aa": 16.3,
+    "est": true,
+    "src": "converted",
+    "was": 30.4,
     "cat": {
      "coding": 55,
      "reasoning": 62,
@@ -458,6 +547,9 @@
    "vendor": "OpenAI",
    "family": "chatgpt",
    "status": "legacy",
+   "or": [
+    "openai/gpt-4.1"
+   ],
    "access": "API (legacy)",
    "tags": [
     "paid",
@@ -468,8 +560,10 @@
     "long-context"
    ],
    "score": {
-    "aa": 19.4,
-    "est": false,
+    "aa": 11.2,
+    "est": true,
+    "src": "converted",
+    "was": 19.4,
     "cat": {
      "coding": 42,
      "reasoning": 35,
@@ -485,6 +579,9 @@
    "vendor": "OpenAI",
    "family": "chatgpt",
    "status": "legacy",
+   "or": [
+    "openai/gpt-4o"
+   ],
    "access": "API (legacy)",
    "tags": [
     "paid",
@@ -495,8 +592,10 @@
     "vision"
    ],
    "score": {
-    "aa": 11.2,
-    "est": false,
+    "aa": 6.1,
+    "est": true,
+    "src": "converted",
+    "was": 11.2,
     "cat": {
      "coding": 28,
      "reasoning": 22,
@@ -512,6 +611,9 @@
    "vendor": "OpenAI",
    "family": "llama",
    "status": "public",
+   "or": [
+    "openai/gpt-oss-120b"
+   ],
    "access": "Open weights · free/cheap API hosts",
    "tags": [
     "free",
@@ -524,8 +626,12 @@
     "value"
    ],
    "score": {
-    "aa": 23.8,
+    "aa": 11.6,
     "est": false,
+    "src": "aa",
+    "coding": 30.4,
+    "agentic": 3.7,
+    "at": "2026-10-03",
     "cat": {
      "coding": 45,
      "reasoning": 44,
@@ -541,6 +647,9 @@
    "vendor": "OpenAI",
    "family": "llama",
    "status": "public",
+   "or": [
+    "openai/gpt-oss-20b"
+   ],
    "access": "Open weights · runs on a laptop",
    "tags": [
     "free",
@@ -552,8 +661,12 @@
     "speed"
    ],
    "score": {
-    "aa": 14.9,
+    "aa": 9,
     "est": false,
+    "src": "aa",
+    "coding": 20.7,
+    "agentic": 1.2,
+    "at": "2026-10-03",
     "cat": {
      "coding": 32,
      "reasoning": 30,
@@ -569,6 +682,9 @@
    "vendor": "Anthropic",
    "family": "claude",
    "status": "public",
+   "or": [
+    "anthropic/claude-opus-5"
+   ],
    "access": "Released July 24, 2026 · Claude Pro / Max plans · API $5/$25 per 1M tokens (Fast mode $10/$50)",
    "tags": [
     "paid",
@@ -590,8 +706,12 @@
     "note": "cache hits $0.50/M; Batch -50%; 128K output"
    },
    "score": {
-    "aa": 63,
+    "aa": 50.8,
     "est": false,
+    "src": "aa",
+    "coding": 78,
+    "agentic": 56.5,
+    "at": "2026-10-03",
     "cat": {
      "coding": 93,
      "reasoning": 94,
@@ -622,8 +742,9 @@
    ],
    "score": {
     "aa": null,
-    "guess": 62,
+    "guess": 51,
     "est": true,
+    "src": "guess",
     "cat": {
      "coding": 90,
      "reasoning": 93,
@@ -650,8 +771,9 @@
    ],
    "score": {
     "aa": null,
-    "guess": 61,
+    "guess": 48,
     "est": true,
+    "src": "guess",
     "cat": {
      "coding": 90,
      "reasoning": 94,
@@ -667,6 +789,9 @@
    "vendor": "Anthropic",
    "family": "claude",
    "status": "public",
+   "or": [
+    "anthropic/claude-fable-5.1"
+   ],
    "spec": {
     "released": "2026-09-01",
     "ctx": "1M",
@@ -689,8 +814,12 @@
     "vision"
    ],
    "score": {
-    "aa": 65.7,
+    "aa": 53.4,
     "est": false,
+    "src": "aa",
+    "coding": 81.6,
+    "agentic": 57.9,
+    "at": "2026-10-03",
     "cat": {
      "coding": 92,
      "reasoning": 94,
@@ -706,6 +835,9 @@
    "vendor": "Anthropic",
    "family": "claude",
    "status": "public",
+   "or": [
+    "anthropic/claude-fable-5"
+   ],
    "access": "Claude Pro / Max plans (usage credits since July 7) · API $10/$50 per 1M tokens",
    "spec": {
     "ctx": "1M",
@@ -725,8 +857,12 @@
     "agents"
    ],
    "score": {
-    "aa": 62.1,
+    "aa": 49.6,
     "est": false,
+    "src": "aa",
+    "coding": 76.5,
+    "agentic": 50.7,
+    "at": "2026-10-03",
     "cat": {
      "coding": 89,
      "reasoning": 92,
@@ -742,6 +878,9 @@
    "vendor": "Anthropic",
    "family": "claude",
    "status": "public",
+   "or": [
+    "anthropic/claude-opus-4.8"
+   ],
    "spec": {
     "ctx": "1M",
     "priceIn": 5,
@@ -759,8 +898,12 @@
     "reasoning"
    ],
    "score": {
-    "aa": 57.3,
+    "aa": 41.8,
     "est": false,
+    "src": "aa",
+    "coding": 74.3,
+    "agentic": 41.9,
+    "at": "2026-10-03",
     "cat": {
      "coding": 92,
      "reasoning": 88,
@@ -776,6 +919,9 @@
    "vendor": "Anthropic",
    "family": "claude",
    "status": "legacy",
+   "or": [
+    "anthropic/claude-opus-4.7"
+   ],
    "access": "API (being phased down)",
    "tags": [
     "paid",
@@ -788,8 +934,10 @@
     "reasoning"
    ],
    "score": {
-    "aa": 55,
-    "est": false,
+    "aa": 37.8,
+    "est": true,
+    "src": "converted",
+    "was": 55,
     "cat": {
      "coding": 86,
      "reasoning": 84,
@@ -805,6 +953,9 @@
    "vendor": "Anthropic",
    "family": "claude",
    "status": "public",
+   "or": [
+    "anthropic/claude-sonnet-5"
+   ],
    "spec": {
     "ctx": "1M",
     "priceIn": 3,
@@ -823,8 +974,12 @@
     "value"
    ],
    "score": {
-    "aa": 55.3,
+    "aa": 38.2,
     "est": false,
+    "src": "aa",
+    "coding": 71.5,
+    "agentic": 43.6,
+    "at": "2026-10-03",
     "cat": {
      "coding": 84,
      "reasoning": 82,
@@ -840,6 +995,9 @@
    "vendor": "Anthropic",
    "family": "claude",
    "status": "public",
+   "or": [
+    "anthropic/claude-sonnet-4.6"
+   ],
    "access": "Claude Pro · API",
    "tags": [
     "paid",
@@ -851,8 +1009,12 @@
     "value"
    ],
    "score": {
-    "aa": 35.9,
+    "aa": 30.1,
     "est": false,
+    "src": "aa",
+    "coding": 63,
+    "agentic": 31.8,
+    "at": "2026-10-03",
     "cat": {
      "coding": 68,
      "reasoning": 62,
@@ -868,6 +1030,9 @@
    "vendor": "Anthropic",
    "family": "claude",
    "status": "public",
+   "or": [
+    "anthropic/claude-haiku-4.5"
+   ],
    "access": "All Claude tiers · cheapest Claude via API",
    "tags": [
     "free",
@@ -880,8 +1045,12 @@
     "value"
    ],
    "score": {
-    "aa": 27,
-    "est": true,
+    "aa": 16.9,
+    "est": false,
+    "src": "aa",
+    "coding": 43.9,
+    "agentic": 8,
+    "at": "2026-10-03",
     "cat": {
      "coding": 52,
      "reasoning": 45,
@@ -897,6 +1066,9 @@
    "vendor": "Anthropic",
    "family": "claude",
    "status": "legacy",
+   "or": [
+    "anthropic/claude-opus-4.6"
+   ],
    "access": "API (legacy)",
    "tags": [
     "paid",
@@ -907,8 +1079,10 @@
     "coding"
    ],
    "score": {
-    "aa": 43.7,
-    "est": false,
+    "aa": 27.7,
+    "est": true,
+    "src": "converted",
+    "was": 43.7,
     "cat": {
      "coding": 76,
      "reasoning": 74,
@@ -924,6 +1098,9 @@
    "vendor": "Anthropic",
    "family": "claude",
    "status": "legacy",
+   "or": [
+    "anthropic/claude-opus-4.5"
+   ],
    "access": "API (legacy)",
    "tags": [
     "paid",
@@ -934,8 +1111,10 @@
     "coding"
    ],
    "score": {
-    "aa": 40.8,
-    "est": false,
+    "aa": 25.4,
+    "est": true,
+    "src": "converted",
+    "was": 40.8,
     "cat": {
      "coding": 72,
      "reasoning": 70,
@@ -951,6 +1130,9 @@
    "vendor": "Anthropic",
    "family": "claude",
    "status": "legacy",
+   "or": [
+    "anthropic/claude-opus-4.1"
+   ],
    "access": "API (legacy)",
    "tags": [
     "paid",
@@ -959,8 +1141,10 @@
    ],
    "labels": [],
    "score": {
-    "aa": 33.7,
-    "est": false,
+    "aa": 18.4,
+    "est": true,
+    "src": "converted",
+    "was": 33.7,
     "cat": {
      "coding": 62,
      "reasoning": 60,
@@ -986,8 +1170,10 @@
     "writing"
    ],
    "score": {
-    "aa": 11.8,
-    "est": false,
+    "aa": 6.6,
+    "est": true,
+    "src": "converted",
+    "was": 11.8,
     "cat": {
      "coding": 25,
      "reasoning": 22,
@@ -1014,8 +1200,9 @@
    ],
    "score": {
     "aa": null,
-    "guess": 56,
+    "guess": 39,
     "est": true,
+    "src": "guess",
     "cat": {
      "coding": 86,
      "reasoning": 88,
@@ -1031,6 +1218,10 @@
    "vendor": "Google",
    "family": "gemini",
    "status": "public",
+   "or": [
+    "google/gemini-3.1-pro",
+    "google/gemini-3.1-pro-preview"
+   ],
    "spec": {
     "ctx": "1M",
     "priceIn": 2,
@@ -1049,8 +1240,12 @@
     "vision"
    ],
    "score": {
-    "aa": 47.7,
+    "aa": 29.7,
     "est": false,
+    "src": "aa",
+    "coding": 68.8,
+    "agentic": 8.2,
+    "at": "2026-10-03",
     "cat": {
      "coding": 84,
      "reasoning": 78,
@@ -1077,8 +1272,9 @@
    ],
    "score": {
     "aa": null,
-    "guess": 55,
+    "guess": 38,
     "est": true,
+    "src": "guess",
     "cat": {
      "coding": 88,
      "reasoning": 89,
@@ -1094,6 +1290,9 @@
    "vendor": "Google",
    "family": "gemini",
    "status": "public",
+   "or": [
+    "google/gemini-3.8-flash"
+   ],
    "spec": {
     "released": "2026-09-02",
     "ctx": "1.05M",
@@ -1116,8 +1315,12 @@
     "vision"
    ],
    "score": {
-    "aa": 58.7,
+    "aa": 40.9,
     "est": false,
+    "src": "aa",
+    "coding": 76.3,
+    "agentic": 40.2,
+    "at": "2026-10-03",
     "cat": {
      "coding": 86,
      "reasoning": 85,
@@ -1133,6 +1336,9 @@
    "vendor": "Google",
    "family": "gemini",
    "status": "public",
+   "or": [
+    "google/gemini-3.7-flash"
+   ],
    "spec": {
     "released": "2026-08-13",
     "ctx": "1M",
@@ -1153,8 +1359,12 @@
     "value"
    ],
    "score": {
-    "aa": 56,
+    "aa": 39.1,
     "est": false,
+    "src": "aa",
+    "coding": 76.1,
+    "agentic": 35.2,
+    "at": "2026-10-03",
     "cat": {
      "coding": 84,
      "reasoning": 82,
@@ -1170,6 +1380,9 @@
    "vendor": "Google",
    "family": "gemini",
    "status": "public",
+   "or": [
+    "google/gemini-3.6-flash"
+   ],
    "access": "Free tier in AI Studio and the Gemini app (rate-limited) · API $1.50/$7.50 per 1M tokens",
    "tags": [
     "free",
@@ -1189,8 +1402,12 @@
     "priceOut": 7.5
    },
    "score": {
-    "aa": 51.6,
+    "aa": 34,
     "est": false,
+    "src": "aa",
+    "coding": 69.2,
+    "agentic": 29,
+    "at": "2026-10-03",
     "cat": {
      "coding": 76,
      "reasoning": 78,
@@ -1206,6 +1423,9 @@
    "vendor": "Google",
    "family": "gemini",
    "status": "public",
+   "or": [
+    "google/gemini-3.5-flash-lite"
+   ],
    "access": "API $0.30/$2.50 per 1M tokens",
    "tags": [
     "paid",
@@ -1222,8 +1442,12 @@
     "priceOut": 2.5
    },
    "score": {
-    "aa": 36.5,
+    "aa": 22.2,
     "est": false,
+    "src": "aa",
+    "coding": 49.3,
+    "agentic": 14.3,
+    "at": "2026-10-03",
     "cat": {
      "coding": 58,
      "reasoning": 60,
@@ -1239,6 +1463,9 @@
    "vendor": "Google",
    "family": "gemini",
    "status": "public",
+   "or": [
+    "google/gemini-3.5-flash"
+   ],
    "spec": {
     "ctx": "1M",
     "priceIn": 1.5,
@@ -1257,8 +1484,12 @@
     "vision"
    ],
    "score": {
-    "aa": 52,
+    "aa": 32.6,
     "est": false,
+    "src": "aa",
+    "coding": 70.1,
+    "agentic": 26,
+    "at": "2026-10-03",
     "cat": {
      "coding": 80,
      "reasoning": 78,
@@ -1284,8 +1515,10 @@
     "vision"
    ],
    "score": {
-    "aa": 39.5,
-    "est": false,
+    "aa": 24.7,
+    "est": true,
+    "src": "converted",
+    "was": 39.5,
     "cat": {
      "coding": 70,
      "reasoning": 66,
@@ -1301,6 +1534,10 @@
    "vendor": "Google",
    "family": "gemini",
    "status": "public",
+   "or": [
+    "google/gemini-3-flash",
+    "google/gemini-3-flash-preview"
+   ],
    "access": "Free tier · cheap API",
    "tags": [
     "free",
@@ -1312,8 +1549,10 @@
     "value"
    ],
    "score": {
-    "aa": 27.4,
-    "est": false,
+    "aa": 14.3,
+    "est": true,
+    "src": "converted",
+    "was": 27.4,
     "cat": {
      "coding": 52,
      "reasoning": 48,
@@ -1329,6 +1568,10 @@
    "vendor": "Google",
    "family": "gemini",
    "status": "public",
+   "or": [
+    "google/gemini-3.1-flash-lite",
+    "google/gemini-3.1-flash-lite-preview"
+   ],
    "access": "Free API (highest free rate limits: 15 RPM, 1,000/day)",
    "tags": [
     "free",
@@ -1340,8 +1583,10 @@
     "value"
    ],
    "score": {
-    "aa": 25,
-    "est": false,
+    "aa": 12.5,
+    "est": true,
+    "src": "converted",
+    "was": 25,
     "cat": {
      "coding": 48,
      "reasoning": 44,
@@ -1357,6 +1602,9 @@
    "vendor": "Google",
    "family": "gemini",
    "status": "legacy",
+   "or": [
+    "google/gemini-2.5-pro"
+   ],
    "access": "API (legacy, paid-only since April 2026)",
    "tags": [
     "paid",
@@ -1367,8 +1615,12 @@
     "long-context"
    ],
    "score": {
-    "aa": 25.8,
+    "aa": 16.1,
     "est": false,
+    "src": "aa",
+    "coding": 33.3,
+    "agentic": 1.6,
+    "at": "2026-10-03",
     "cat": {
      "coding": 50,
      "reasoning": 48,
@@ -1384,6 +1636,9 @@
    "vendor": "Google",
    "family": "gemini",
    "status": "legacy",
+   "or": [
+    "google/gemini-2.5-flash"
+   ],
    "access": "API (legacy)",
    "tags": [
     "paid",
@@ -1394,8 +1649,10 @@
     "speed"
    ],
    "score": {
-    "aa": 14.1,
-    "est": false,
+    "aa": 8.4,
+    "est": true,
+    "src": "converted",
+    "was": 14.1,
     "cat": {
      "coding": 32,
      "reasoning": 28,
@@ -1411,6 +1668,9 @@
    "vendor": "Google",
    "family": "llama",
    "status": "public",
+   "or": [
+    "google/gemma-4-31b-it"
+   ],
    "access": "Open weights · runs on consumer hardware",
    "tags": [
     "free",
@@ -1422,8 +1682,12 @@
     "value"
    ],
    "score": {
-    "aa": 29.4,
+    "aa": 14.7,
     "est": false,
+    "src": "aa",
+    "coding": 43.4,
+    "agentic": 4.2,
+    "at": "2026-10-03",
     "cat": {
      "coding": 54,
      "reasoning": 52,
@@ -1450,8 +1714,10 @@
     "speed"
    ],
    "score": {
-    "aa": 21.8,
-    "est": false,
+    "aa": 11.5,
+    "est": true,
+    "src": "converted",
+    "was": 21.8,
     "cat": {
      "coding": 42,
      "reasoning": 40,
@@ -1467,6 +1733,9 @@
    "vendor": "Google",
    "family": "llama",
    "status": "legacy",
+   "or": [
+    "google/gemma-3-27b-it"
+   ],
    "access": "Open weights",
    "tags": [
     "free",
@@ -1477,8 +1746,12 @@
     "local"
    ],
    "score": {
-    "aa": 7.4,
+    "aa": 4.9,
     "est": false,
+    "src": "aa",
+    "coding": 10.1,
+    "agentic": 0.1,
+    "at": "2026-10-03",
     "cat": {
      "coding": 20,
      "reasoning": 16,
@@ -1504,8 +1777,9 @@
    ],
    "score": {
     "aa": null,
-    "guess": 58,
+    "guess": 42,
     "est": true,
+    "src": "guess",
     "cat": {
      "coding": 88,
      "reasoning": 90,
@@ -1521,6 +1795,9 @@
    "vendor": "xAI",
    "family": "grok",
    "status": "public",
+   "or": [
+    "x-ai/grok-4.6"
+   ],
    "spec": {
     "released": "2026-08-12",
     "ctx": "500K",
@@ -1541,8 +1818,12 @@
     "reasoning"
    ],
    "score": {
-    "aa": 60.9,
+    "aa": 44.3,
     "est": false,
+    "src": "aa",
+    "coding": 76.8,
+    "agentic": 53,
+    "at": "2026-10-03",
     "cat": {
      "coding": 90,
      "reasoning": 92,
@@ -1550,7 +1831,7 @@
      "agents": 93
     }
    },
-   "review": "xAI's August flagship and its first entry in the AA top three (60.9): 70.8% on CursorBench 3.2, 87.0% on VulcanBench v3, and selectable reasoning effort from low to xhigh. Two honest caveats: the 500K context is half what the Claude, GPT and Kimi flagships offer, and measured throughput (~58 tok/s) sits below the field median."
+   "review": "xAI's August flagship and its strongest entry on the AA index at launch: 70.8% on CursorBench 3.2, 87.0% on VulcanBench v3, and selectable reasoning effort from low to xhigh. Two honest caveats: the 500K context is half what the Claude, GPT and Kimi flagships offer, and measured throughput (~58 tok/s) sits below the field median."
   },
   {
    "id": "grok-4-5",
@@ -1558,6 +1839,9 @@
    "vendor": "xAI",
    "family": "grok",
    "status": "public",
+   "or": [
+    "x-ai/grok-4.5"
+   ],
    "spec": {
     "released": "2026-07-08",
     "priceIn": 2,
@@ -1576,8 +1860,12 @@
     "value"
    ],
    "score": {
-    "aa": 55.8,
+    "aa": 38.8,
     "est": false,
+    "src": "aa",
+    "coding": 72.4,
+    "agentic": 41.2,
+    "at": "2026-10-03",
     "cat": {
      "coding": 89,
      "reasoning": 84,
@@ -1605,8 +1893,10 @@
     "long-context"
    ],
    "score": {
-    "aa": 36,
+    "aa": 21.7,
     "est": true,
+    "src": "converted",
+    "was": 36,
     "cat": {
      "coding": 62,
      "reasoning": 66,
@@ -1622,6 +1912,9 @@
    "vendor": "xAI",
    "family": "grok",
    "status": "public",
+   "or": [
+    "x-ai/grok-4.3"
+   ],
    "access": "grok.com paid tiers · API",
    "tags": [
     "paid",
@@ -1632,8 +1925,12 @@
     "reasoning"
    ],
    "score": {
-    "aa": 37.6,
+    "aa": 24.9,
     "est": false,
+    "src": "aa",
+    "coding": 42.2,
+    "agentic": 15.5,
+    "at": "2026-10-03",
     "cat": {
      "coding": 66,
      "reasoning": 68,
@@ -1649,6 +1946,9 @@
    "vendor": "xAI",
    "family": "grok",
    "status": "public",
+   "or": [
+    "x-ai/grok-build-0.1"
+   ],
    "access": "Inside Grok Build (xAI's coding agent/CLI)",
    "tags": [
     "paid",
@@ -1659,8 +1959,10 @@
     "coding"
    ],
    "score": {
-    "aa": 39.8,
-    "est": false,
+    "aa": 24.9,
+    "est": true,
+    "src": "converted",
+    "was": 39.8,
     "cat": {
      "coding": 76,
      "reasoning": 62,
@@ -1688,8 +1990,10 @@
     "value"
    ],
    "score": {
-    "aa": 21.6,
-    "est": false,
+    "aa": 11.5,
+    "est": true,
+    "src": "converted",
+    "was": 21.6,
     "cat": {
      "coding": 55,
      "reasoning": 35,
@@ -1713,8 +2017,10 @@
    ],
    "labels": [],
    "score": {
-    "aa": 33.3,
-    "est": false,
+    "aa": 18.1,
+    "est": true,
+    "src": "converted",
+    "was": 33.3,
     "cat": {
      "coding": 58,
      "reasoning": 62,
@@ -1740,8 +2046,9 @@
    ],
    "score": {
     "aa": null,
-    "guess": 45,
+    "guess": 29,
     "est": true,
+    "src": "guess",
     "cat": {
      "coding": 74,
      "reasoning": 72,
@@ -1757,6 +2064,9 @@
    "vendor": "Meta",
    "family": "meta",
    "status": "public",
+   "or": [
+    "meta/muse-spark-1.3"
+   ],
    "spec": {
     "released": "2026-09-02",
     "ctx": "1.05M",
@@ -1779,8 +2089,10 @@
     "value"
    ],
    "score": {
-    "aa": 62.1,
-    "est": false,
+    "aa": 51,
+    "est": true,
+    "src": "converted",
+    "was": 62.1,
     "cat": {
      "coding": 86,
      "reasoning": 89,
@@ -1796,6 +2108,9 @@
    "vendor": "Meta",
    "family": "meta",
    "status": "public",
+   "or": [
+    "meta/muse-spark-1.2"
+   ],
    "spec": {
     "released": "2026-08-06"
    },
@@ -1811,8 +2126,12 @@
     "reasoning"
    ],
    "score": {
-    "aa": 56.8,
+    "aa": 39.6,
     "est": false,
+    "src": "aa",
+    "coding": 72.2,
+    "agentic": 43.2,
+    "at": "2026-10-03",
     "cat": {
      "coding": 80,
      "reasoning": 82,
@@ -1820,7 +2139,7 @@
      "agents": 85
     }
    },
-   "review": "Meta's August refresh puts the Muse line back in the top ten (56.8, up 3.6 from 1.1): the strongest showing yet for Meta's proprietary track, and a reminder that the Llama brand is no longer where Meta's frontier work happens."
+   "review": "Meta's August refresh, a clear step up from 1.1 on the AA index: the strongest showing yet for Meta's proprietary track, and a reminder that the Llama brand is no longer where Meta's frontier work happens."
   },
   {
    "id": "muse-spark-1-1",
@@ -1828,6 +2147,9 @@
    "vendor": "Meta",
    "family": "meta",
    "status": "public",
+   "or": [
+    "meta/muse-spark-1.1"
+   ],
    "spec": {
     "released": "2026-07-09"
    },
@@ -1843,8 +2165,12 @@
     "reasoning"
    ],
    "score": {
-    "aa": 53.2,
+    "aa": 33.7,
     "est": false,
+    "src": "aa",
+    "coding": 71.3,
+    "agentic": 25.8,
+    "at": "2026-10-03",
     "cat": {
      "coding": 74,
      "reasoning": 76,
@@ -1881,6 +2207,9 @@
    "vendor": "Meta",
    "family": "llama",
    "status": "public",
+   "or": [
+    "meta-llama/llama-4-maverick"
+   ],
    "access": "Open weights · FREE fast inference on Groq",
    "tags": [
     "free",
@@ -1895,8 +2224,10 @@
     "value"
    ],
    "score": {
-    "aa": 14.3,
-    "est": false,
+    "aa": 8.5,
+    "est": true,
+    "src": "converted",
+    "was": 14.3,
     "cat": {
      "coding": 34,
      "reasoning": 30,
@@ -1912,6 +2243,9 @@
    "vendor": "Meta",
    "family": "llama",
    "status": "public",
+   "or": [
+    "meta-llama/llama-4-scout"
+   ],
    "access": "Open weights · very long context",
    "tags": [
     "free",
@@ -1923,8 +2257,10 @@
     "long-context"
    ],
    "score": {
-    "aa": 10,
-    "est": false,
+    "aa": 5.7,
+    "est": true,
+    "src": "converted",
+    "was": 10,
     "cat": {
      "coding": 26,
      "reasoning": 22,
@@ -1940,6 +2276,9 @@
    "vendor": "Meta",
    "family": "llama",
    "status": "legacy",
+   "or": [
+    "meta-llama/llama-3.3-70b-instruct"
+   ],
    "access": "Open weights · FREE on Groq (WhichAI default runner)",
    "tags": [
     "free",
@@ -1954,8 +2293,10 @@
     "speed"
    ],
    "score": {
-    "aa": 7,
+    "aa": 4.6,
     "est": true,
+    "src": "converted",
+    "was": 7,
     "cat": {
      "coding": 20,
      "reasoning": 16,
@@ -1971,6 +2312,9 @@
    "vendor": "Meta",
    "family": "llama",
    "status": "legacy",
+   "or": [
+    "meta-llama/llama-3.1-405b-instruct"
+   ],
    "access": "Open weights",
    "tags": [
     "free",
@@ -1981,8 +2325,10 @@
     "local"
    ],
    "score": {
-    "aa": 8.5,
-    "est": false,
+    "aa": 5.2,
+    "est": true,
+    "src": "converted",
+    "was": 8.5,
     "cat": {
      "coding": 22,
      "reasoning": 20,
@@ -2020,6 +2366,9 @@
    "vendor": "Microsoft",
    "family": "llama",
    "status": "public",
+   "or": [
+    "microsoft/phi-4"
+   ],
    "access": "Open weights · laptop-friendly",
    "tags": [
     "free",
@@ -2031,8 +2380,10 @@
     "value"
    ],
    "score": {
-    "aa": 4.9,
-    "est": false,
+    "aa": 3.2,
+    "est": true,
+    "src": "converted",
+    "was": 4.9,
     "cat": {
      "coding": 15,
      "reasoning": 14,
@@ -2048,6 +2399,9 @@
    "vendor": "Perplexity AI",
    "family": "perplexity",
    "status": "public",
+   "or": [
+    "perplexity/sonar"
+   ],
    "access": "FREE: unlimited basic cited searches + 5 Pro searches/day",
    "tags": [
     "free",
@@ -2071,6 +2425,9 @@
    "vendor": "Perplexity AI",
    "family": "perplexity",
    "status": "public",
+   "or": [
+    "perplexity/sonar-pro"
+   ],
    "access": "Perplexity Pro $20/mo (includes GPT, Claude and Gemini flagships inside)",
    "tags": [
     "paid",
@@ -2094,6 +2451,9 @@
    "vendor": "DeepSeek",
    "family": "deepseek",
    "status": "public",
+   "or": [
+    "deepseek/deepseek-v4-pro"
+   ],
    "access": "Free chat app · open weights · very cheap API · 1M context default",
    "tags": [
     "free",
@@ -2107,8 +2467,12 @@
     "value"
    ],
    "score": {
-    "aa": 44.3,
+    "aa": 30.4,
     "est": false,
+    "src": "aa",
+    "coding": 59.4,
+    "agentic": 26.3,
+    "at": "2026-10-03",
     "cat": {
      "coding": 87,
      "reasoning": 82,
@@ -2124,6 +2488,9 @@
    "vendor": "DeepSeek",
    "family": "deepseek",
    "status": "public",
+   "or": [
+    "deepseek/deepseek-v4-flash"
+   ],
    "access": "Free chat app · open weights · cheapest DeepSeek API",
    "tags": [
     "free",
@@ -2136,8 +2503,12 @@
     "value"
    ],
    "score": {
-    "aa": 40.3,
+    "aa": 24.4,
     "est": false,
+    "src": "aa",
+    "coding": 52,
+    "agentic": 26.3,
+    "at": "2026-10-03",
     "cat": {
      "coding": 74,
      "reasoning": 70,
@@ -2153,6 +2524,9 @@
    "vendor": "DeepSeek",
    "family": "deepseek",
    "status": "legacy",
+   "or": [
+    "deepseek/deepseek-v3.2"
+   ],
    "access": "Open weights · cheap API",
    "tags": [
     "free",
@@ -2164,8 +2538,10 @@
     "value"
    ],
    "score": {
-    "aa": 24.7,
-    "est": false,
+    "aa": 12.3,
+    "est": true,
+    "src": "converted",
+    "was": 24.7,
     "cat": {
      "coding": 50,
      "reasoning": 46,
@@ -2181,6 +2557,9 @@
    "vendor": "DeepSeek",
    "family": "deepseek",
    "status": "legacy",
+   "or": [
+    "deepseek/deepseek-r1"
+   ],
    "access": "Open weights",
    "tags": [
     "free",
@@ -2191,8 +2570,12 @@
     "reasoning"
    ],
    "score": {
-    "aa": 20.1,
+    "aa": 11.4,
     "est": false,
+    "src": "aa",
+    "coding": 24.6,
+    "agentic": 1.1,
+    "at": "2026-10-03",
     "cat": {
      "coding": 42,
      "reasoning": 50,
@@ -2222,8 +2605,10 @@
     "released": "2026-07-19"
    },
    "score": {
-    "aa": 58.1,
-    "est": false,
+    "aa": 42,
+    "est": true,
+    "src": "converted",
+    "was": 58.1,
     "cat": {
      "coding": 80,
      "reasoning": 82,
@@ -2239,6 +2624,9 @@
    "vendor": "Alibaba",
    "family": "qwen",
    "status": "public",
+   "or": [
+    "qwen/qwen3.7-max"
+   ],
    "access": "Free chat app · API (closed weights for Max tier)",
    "tags": [
     "free",
@@ -2252,8 +2640,12 @@
     "reasoning"
    ],
    "score": {
-    "aa": 46.7,
+    "aa": 29.5,
     "est": false,
+    "src": "aa",
+    "coding": 66,
+    "agentic": 22.5,
+    "at": "2026-10-03",
     "cat": {
      "coding": 82,
      "reasoning": 78,
@@ -2269,6 +2661,9 @@
    "vendor": "Alibaba",
    "family": "qwen",
    "status": "public",
+   "or": [
+    "qwen/qwen3.7-plus"
+   ],
    "access": "Free chat app · cheap API",
    "tags": [
     "free",
@@ -2280,8 +2675,12 @@
     "value"
    ],
    "score": {
-    "aa": 39,
+    "aa": 25.2,
     "est": false,
+    "src": "aa",
+    "coding": 55.9,
+    "agentic": 17.5,
+    "at": "2026-10-03",
     "cat": {
      "coding": 70,
      "reasoning": 66,
@@ -2297,6 +2696,9 @@
    "vendor": "Alibaba",
    "family": "qwen",
    "status": "public",
+   "or": [
+    "qwen/qwen3.6-plus"
+   ],
    "access": "Free chat app · open-weight siblings · API",
    "tags": [
     "free",
@@ -2309,8 +2711,10 @@
     "coding"
    ],
    "score": {
-    "aa": 39.6,
-    "est": false,
+    "aa": 24.7,
+    "est": true,
+    "src": "converted",
+    "was": 39.6,
     "cat": {
      "coding": 72,
      "reasoning": 66,
@@ -2326,6 +2730,9 @@
    "vendor": "Alibaba",
    "family": "qwen",
    "status": "public",
+   "or": [
+    "qwen/qwen3.6-27b"
+   ],
    "access": "Open weights (Apache 2.0) · runs on a good desktop",
    "tags": [
     "free",
@@ -2338,8 +2745,12 @@
     "value"
    ],
    "score": {
-    "aa": 37,
+    "aa": 21.4,
     "est": false,
+    "src": "aa",
+    "coding": 53.7,
+    "agentic": 18.5,
+    "at": "2026-10-03",
     "cat": {
      "coding": 66,
      "reasoning": 62,
@@ -2355,6 +2766,9 @@
    "vendor": "Alibaba",
    "family": "qwen",
    "status": "public",
+   "or": [
+    "qwen/qwen3.5-397b-a17b"
+   ],
    "access": "Open weights (Apache 2.0)",
    "tags": [
     "free",
@@ -2366,8 +2780,12 @@
     "reasoning"
    ],
    "score": {
-    "aa": 33.7,
+    "aa": 18.4,
     "est": false,
+    "src": "aa",
+    "coding": 48.2,
+    "agentic": 8.3,
+    "at": "2026-10-03",
     "cat": {
      "coding": 64,
      "reasoning": 62,
@@ -2383,6 +2801,9 @@
    "vendor": "Alibaba",
    "family": "qwen",
    "status": "public",
+   "or": [
+    "qwen/qwen3-coder"
+   ],
    "spec": {
     "ctx": "1M"
    },
@@ -2400,8 +2821,10 @@
     "value"
    ],
    "score": {
-    "aa": 30,
+    "aa": 16,
     "est": true,
+    "src": "converted",
+    "was": 30,
     "cat": {
      "coding": 68,
      "reasoning": 52,
@@ -2417,6 +2840,9 @@
    "vendor": "Moonshot AI",
    "family": "kimi",
    "status": "public",
+   "or": [
+    "moonshotai/kimi-k3"
+   ],
    "access": "API $3/$15 per 1M tokens ($0.30 cached) · free kimi.com chat · open weights on Hugging Face (July 27, Modified MIT)",
    "tags": [
     "free",
@@ -2440,8 +2866,12 @@
     "priceOut": 15
    },
    "score": {
-    "aa": 59.7,
+    "aa": 43.6,
     "est": false,
+    "src": "aa",
+    "coding": 76.2,
+    "agentic": 50,
+    "at": "2026-10-03",
     "cat": {
      "coding": 90,
      "reasoning": 91,
@@ -2457,6 +2887,9 @@
    "vendor": "Moonshot AI",
    "family": "kimi",
    "status": "public",
+   "or": [
+    "moonshotai/kimi-k2.6"
+   ],
    "access": "Open weights · API hosts · free chat app",
    "tags": [
     "free",
@@ -2470,8 +2903,12 @@
     "long-context"
    ],
    "score": {
-    "aa": 45.1,
+    "aa": 27,
     "est": false,
+    "src": "aa",
+    "coding": 61.8,
+    "agentic": 20.5,
+    "at": "2026-10-03",
     "cat": {
      "coding": 88,
      "reasoning": 76,
@@ -2487,6 +2924,9 @@
    "vendor": "Moonshot AI",
    "family": "kimi",
    "status": "preview",
+   "or": [
+    "moonshotai/kimi-k2.7-code"
+   ],
    "access": "Early access via Moonshot · open weights promised",
    "tags": [
     "preview",
@@ -2498,8 +2938,12 @@
     "agents"
    ],
    "score": {
-    "aa": 42,
+    "aa": 25.8,
     "est": false,
+    "src": "aa",
+    "coding": 60.8,
+    "agentic": 21,
+    "at": "2026-10-03",
     "cat": {
      "coding": 86,
      "reasoning": 70,
@@ -2515,6 +2959,9 @@
    "vendor": "Moonshot AI",
    "family": "kimi",
    "status": "public",
+   "or": [
+    "moonshotai/kimi-k2.5"
+   ],
    "access": "Open weights · API hosts",
    "tags": [
     "free",
@@ -2526,8 +2973,10 @@
     "long-context"
    ],
    "score": {
-    "aa": 35.4,
-    "est": false,
+    "aa": 20.8,
+    "est": true,
+    "src": "converted",
+    "was": 35.4,
     "cat": {
      "coding": 72,
      "reasoning": 66,
@@ -2543,6 +2992,9 @@
    "vendor": "Z.ai",
    "family": "glm",
    "status": "public",
+   "or": [
+    "z-ai/glm-5.3"
+   ],
    "spec": {
     "released": "2026-08-14",
     "note": "743B post-trained base · weights held back pending a staged safety review · price not published"
@@ -2558,8 +3010,12 @@
     "agents"
    ],
    "score": {
-    "aa": 59.5,
+    "aa": 44.8,
     "est": false,
+    "src": "aa",
+    "coding": 74.8,
+    "agentic": 53.1,
+    "at": "2026-10-03",
     "cat": {
      "coding": 91,
      "reasoning": 88,
@@ -2567,7 +3023,7 @@
      "agents": 88
     }
    },
-   "review": "Z.ai's 743B flagship: AA 59.5, the highest a Chinese lab has scored, with 84.5% on CyberGym and 54.4% on ExploitBench. The break with tradition matters more than the score: weights are held back behind a staged safety review, so for now GLM-5.3 is not the open model its version number suggests. The Flash sibling is."
+   "review": "Z.ai's 743B flagship, among the highest AA scores any Chinese lab has reached, with 84.5% on CyberGym and 54.4% on ExploitBench. The break with tradition matters more than the score: weights are held back behind a staged safety review, so for now GLM-5.3 is not the open model its version number suggests. The Flash sibling is."
   },
   {
    "id": "glm-5-3-flash",
@@ -2575,6 +3031,9 @@
    "vendor": "Z.ai",
    "family": "glm",
    "status": "public",
+   "or": [
+    "z-ai/glm-5.3-flash"
+   ],
    "spec": {
     "released": "2026-08-26",
     "ctx": "1M",
@@ -2599,8 +3058,12 @@
     "long-context"
    ],
    "score": {
-    "aa": 57.5,
+    "aa": 41.8,
     "est": false,
+    "src": "aa",
+    "coding": 71.5,
+    "agentic": 50.9,
+    "at": "2026-10-03",
     "cat": {
      "coding": 89,
      "reasoning": 84,
@@ -2616,6 +3079,9 @@
    "vendor": "Z.ai",
    "family": "glm",
    "status": "public",
+   "or": [
+    "z-ai/glm-5.2"
+   ],
    "access": "Open weights · low-cost API hosts",
    "tags": [
     "free",
@@ -2629,8 +3095,12 @@
     "value"
    ],
    "score": {
-    "aa": 52.6,
+    "aa": 33.7,
     "est": false,
+    "src": "aa",
+    "coding": 68.8,
+    "agentic": 38.4,
+    "at": "2026-10-03",
     "cat": {
      "coding": 90,
      "reasoning": 80,
@@ -2646,6 +3116,9 @@
    "vendor": "Z.ai",
    "family": "glm",
    "status": "public",
+   "or": [
+    "z-ai/glm-5.1"
+   ],
    "access": "Open weights",
    "tags": [
     "free",
@@ -2656,8 +3129,12 @@
     "coding"
    ],
    "score": {
-    "aa": 40.2,
+    "aa": 26.1,
     "est": false,
+    "src": "aa",
+    "coding": 55.8,
+    "agentic": 23.9,
+    "at": "2026-10-03",
     "cat": {
      "coding": 78,
      "reasoning": 68,
@@ -2673,6 +3150,9 @@
    "vendor": "Z.ai",
    "family": "glm",
    "status": "public",
+   "or": [
+    "z-ai/glm-5"
+   ],
    "access": "Open weights",
    "tags": [
     "free",
@@ -2683,8 +3163,10 @@
     "coding"
    ],
    "score": {
-    "aa": 39.5,
-    "est": false,
+    "aa": 24.7,
+    "est": true,
+    "src": "converted",
+    "was": 39.5,
     "cat": {
      "coding": 76,
      "reasoning": 66,
@@ -2700,6 +3182,10 @@
    "vendor": "Tencent",
    "family": "llama",
    "status": "public",
+   "or": [
+    "tencent/hy3",
+    "tencent/hy3-preview"
+   ],
    "access": "Open weights (Apache 2.0, released July 6, 2026) · 295B MoE, 21B active · 256K context",
    "tags": [
     "free",
@@ -2711,8 +3197,10 @@
     "long-context"
    ],
    "score": {
-    "aa": 41.2,
-    "est": false,
+    "aa": 25.4,
+    "est": true,
+    "src": "converted",
+    "was": 41.2,
     "cat": {
      "coding": 62,
      "reasoning": 60,
@@ -2739,8 +3227,10 @@
     "multilingual"
    ],
    "score": {
-    "aa": 42,
+    "aa": 25.6,
     "est": true,
+    "src": "converted",
+    "was": 42,
     "cat": {
      "coding": 72,
      "reasoning": 70,
@@ -2767,8 +3257,10 @@
     "enterprise"
    ],
    "score": {
-    "aa": 38,
+    "aa": 23.9,
     "est": true,
+    "src": "converted",
+    "was": 38,
     "cat": {
      "coding": 64,
      "reasoning": 64,
@@ -2784,6 +3276,9 @@
    "vendor": "Xiaomi",
    "family": null,
    "status": "public",
+   "or": [
+    "xiaomi/mimo-v2.5-pro"
+   ],
    "access": "Xiaomi cloud & devices (closed)",
    "tags": [
     "paid",
@@ -2794,8 +3289,12 @@
     "speed"
    ],
    "score": {
-    "aa": 42.2,
+    "aa": 26,
     "est": false,
+    "src": "aa",
+    "coding": 60.2,
+    "agentic": 21.3,
+    "at": "2026-10-03",
     "cat": {
      "coding": 70,
      "reasoning": 70,
@@ -2822,8 +3321,10 @@
     "value"
    ],
    "score": {
-    "aa": 14.1,
-    "est": false,
+    "aa": 8.4,
+    "est": true,
+    "src": "converted",
+    "was": 14.1,
     "cat": {
      "coding": 32,
      "reasoning": 28,
@@ -2839,6 +3340,9 @@
    "vendor": "StepFun",
    "family": "llama",
    "status": "public",
+   "or": [
+    "stepfun/step-3.7-flash"
+   ],
    "access": "Open weights · API",
    "tags": [
     "free",
@@ -2851,8 +3355,10 @@
     "multilingual"
    ],
    "score": {
-    "aa": 30.3,
-    "est": false,
+    "aa": 16.2,
+    "est": true,
+    "src": "converted",
+    "was": 30.3,
     "cat": {
      "coding": 54,
      "reasoning": 52,
@@ -2868,6 +3374,9 @@
    "vendor": "MiniMax",
    "family": "llama",
    "status": "public",
+   "or": [
+    "minimax/minimax-m3"
+   ],
    "access": "Open weights · API hosts",
    "tags": [
     "free",
@@ -2880,8 +3389,12 @@
     "long-context"
    ],
    "score": {
-    "aa": 44.4,
+    "aa": 29.2,
     "est": false,
+    "src": "aa",
+    "coding": 58.6,
+    "agentic": 29.5,
+    "at": "2026-10-03",
     "cat": {
      "coding": 82,
      "reasoning": 74,
@@ -2897,6 +3410,9 @@
    "vendor": "MiniMax",
    "family": "llama",
    "status": "public",
+   "or": [
+    "minimax/minimax-m2.7"
+   ],
    "access": "Open weights · API hosts",
    "tags": [
     "free",
@@ -2908,8 +3424,12 @@
     "coding"
    ],
    "score": {
-    "aa": 38.1,
+    "aa": 22.8,
     "est": false,
+    "src": "aa",
+    "coding": 52.6,
+    "agentic": 15.3,
+    "at": "2026-10-03",
     "cat": {
      "coding": 72,
      "reasoning": 64,
@@ -2925,6 +3445,9 @@
    "vendor": "Thinking Machines Lab",
    "family": "llama",
    "status": "public",
+   "or": [
+    "thinkingmachines/inkling"
+   ],
    "access": "Open weights (Apache 2.0) on Hugging Face · Tinker API (256K ctx)",
    "tags": [
     "free",
@@ -2943,8 +3466,12 @@
     "modal": "Text, image, audio"
    },
    "score": {
-    "aa": 42.3,
+    "aa": 25,
     "est": false,
+    "src": "aa",
+    "coding": 52.1,
+    "agentic": 22.5,
+    "at": "2026-10-03",
     "cat": {
      "coding": 62,
      "reasoning": 68,
@@ -2960,6 +3487,9 @@
    "vendor": "NVIDIA",
    "family": "nemotron",
    "status": "public",
+   "or": [
+    "nvidia/nemotron-3-ultra-550b-a55b"
+   ],
    "spec": {
     "ctx": "1M",
     "speed": "400+ tok/s on some hosts"
@@ -2978,8 +3508,12 @@
     "reasoning"
    ],
    "score": {
-    "aa": 37.8,
+    "aa": 22.9,
     "est": false,
+    "src": "aa",
+    "coding": 49.3,
+    "agentic": 20.1,
+    "at": "2026-10-03",
     "cat": {
      "coding": 68,
      "reasoning": 68,
@@ -2995,6 +3529,9 @@
    "vendor": "NVIDIA",
    "family": "nemotron",
    "status": "public",
+   "or": [
+    "nvidia/nemotron-3-super-120b-a12b"
+   ],
    "access": "FREE on OpenRouter (nvidia/nemotron-3-super-120b-a12b:free) · open weights",
    "tags": [
     "free",
@@ -3008,8 +3545,12 @@
     "value"
    ],
    "score": {
-    "aa": 25.4,
+    "aa": 12.8,
     "est": false,
+    "src": "aa",
+    "coding": 37.7,
+    "agentic": 1.7,
+    "at": "2026-10-03",
     "cat": {
      "coding": 48,
      "reasoning": 46,
@@ -3025,6 +3566,9 @@
    "vendor": "Mistral AI",
    "family": "llama",
    "status": "public",
+   "or": [
+    "mistralai/mistral-medium-3-5"
+   ],
    "access": "Open weights · Le Chat · API",
    "tags": [
     "free",
@@ -3037,8 +3581,12 @@
     "value"
    ],
    "score": {
-    "aa": 29.9,
+    "aa": 14.2,
     "est": false,
+    "src": "aa",
+    "coding": 46.9,
+    "agentic": 7,
+    "at": "2026-10-03",
     "cat": {
      "coding": 56,
      "reasoning": 54,
@@ -3054,6 +3602,9 @@
    "vendor": "Mistral AI",
    "family": "llama",
    "status": "public",
+   "or": [
+    "mistralai/mistral-large-2512"
+   ],
    "access": "Open weights · Le Chat free tier · API",
    "tags": [
     "free",
@@ -3065,8 +3616,12 @@
     "multilingual"
    ],
    "score": {
-    "aa": 15.9,
+    "aa": 9.3,
     "est": false,
+    "src": "aa",
+    "coding": 20.1,
+    "agentic": 1,
+    "at": "2026-10-03",
     "cat": {
      "coding": 36,
      "reasoning": 32,
@@ -3082,6 +3637,9 @@
    "vendor": "Mistral AI",
    "family": "llama",
    "status": "public",
+   "or": [
+    "mistralai/mistral-small-2603"
+   ],
    "access": "Open weights (Apache 2.0) · laptop-class",
    "tags": [
     "free",
@@ -3093,8 +3651,12 @@
     "value"
    ],
    "score": {
-    "aa": 19.6,
+    "aa": 11.3,
     "est": false,
+    "src": "aa",
+    "coding": 26.6,
+    "agentic": 0.8,
+    "at": "2026-10-03",
     "cat": {
      "coding": 40,
      "reasoning": 36,
@@ -3110,6 +3672,9 @@
    "vendor": "Mistral AI",
    "family": "llama",
    "status": "public",
+   "or": [
+    "mistralai/ministral-14b-2512"
+   ],
    "access": "Open weights · edge/on-device",
    "tags": [
     "free",
@@ -3120,8 +3685,12 @@
     "speed"
    ],
    "score": {
-    "aa": 11.1,
+    "aa": 6,
     "est": false,
+    "src": "aa",
+    "coding": 14.4,
+    "agentic": 1.1,
+    "at": "2026-10-03",
     "cat": {
      "coding": 26,
      "reasoning": 22,
@@ -3137,6 +3706,9 @@
    "vendor": "Inception Labs",
    "family": null,
    "status": "public",
+   "or": [
+    "inception/mercury-2"
+   ],
    "access": "API",
    "tags": [
     "paid",
@@ -3147,8 +3719,10 @@
     "speed"
    ],
    "score": {
-    "aa": 21.4,
-    "est": false,
+    "aa": 11.5,
+    "est": true,
+    "src": "converted",
+    "was": 21.4,
     "cat": {
      "coding": 52,
      "reasoning": 44,
@@ -3164,6 +3738,9 @@
    "vendor": "Cohere",
    "family": null,
    "status": "public",
+   "or": [
+    "cohere/command-a-plus"
+   ],
    "access": "Enterprise API · open weights for research · private deployments",
    "tags": [
     "paid",
@@ -3176,8 +3753,10 @@
     "multilingual"
    ],
    "score": {
-    "aa": 22.5,
-    "est": false,
+    "aa": 11.5,
+    "est": true,
+    "src": "converted",
+    "was": 22.5,
     "cat": {
      "coding": 42,
      "reasoning": 40,
@@ -3204,8 +3783,10 @@
     "value"
    ],
    "score": {
-    "aa": 22,
+    "aa": 11.5,
     "est": true,
+    "src": "converted",
+    "was": 22,
     "cat": {
      "coding": 44,
      "reasoning": 42,
@@ -3232,8 +3813,10 @@
     "local"
    ],
    "score": {
-    "aa": 8,
+    "aa": 5.1,
     "est": true,
+    "src": "converted",
+    "was": 8,
     "cat": {
      "coding": 22,
      "reasoning": 18,
@@ -3261,8 +3844,10 @@
     "enterprise"
    ],
    "score": {
-    "aa": 12,
+    "aa": 6.7,
     "est": true,
+    "src": "converted",
+    "was": 12,
     "cat": {
      "coding": 26,
      "reasoning": 24,
@@ -3288,8 +3873,10 @@
     "enterprise"
    ],
    "score": {
-    "aa": 22.1,
-    "est": false,
+    "aa": 11.5,
+    "est": true,
+    "src": "converted",
+    "was": 22.1,
     "cat": {
      "coding": 46,
      "reasoning": 44,
@@ -3316,8 +3903,10 @@
     "value"
    ],
    "score": {
-    "aa": 7.8,
-    "est": false,
+    "aa": 5,
+    "est": true,
+    "src": "converted",
+    "was": 7.8,
     "cat": {
      "coding": 20,
      "reasoning": 16,
@@ -3333,6 +3922,9 @@
    "vendor": "Arcee AI",
    "family": "llama",
    "status": "public",
+   "or": [
+    "arcee-ai/trinity-large-thinking"
+   ],
    "access": "Open weights",
    "tags": [
     "free",
@@ -3344,8 +3936,12 @@
     "value"
    ],
    "score": {
-    "aa": 18.2,
+    "aa": 10.8,
     "est": false,
+    "src": "aa",
+    "coding": 25.8,
+    "agentic": 1,
+    "at": "2026-10-03",
     "cat": {
      "coding": 46,
      "reasoning": 44,
@@ -3371,8 +3967,10 @@
     "multilingual"
    ],
    "score": {
-    "aa": 11.9,
-    "est": false,
+    "aa": 6.6,
+    "est": true,
+    "src": "converted",
+    "was": 11.9,
     "cat": {
      "coding": 24,
      "reasoning": 22,
@@ -3398,8 +3996,10 @@
     "local"
    ],
    "score": {
-    "aa": 7,
+    "aa": 4.6,
     "est": true,
+    "src": "converted",
+    "was": 7,
     "cat": {
      "coding": 18,
      "reasoning": 16,
@@ -3415,6 +4015,9 @@
    "vendor": "Reka AI",
    "family": null,
    "status": "public",
+   "or": [
+    "rekaai/reka-flash-3"
+   ],
    "access": "Open weights",
    "tags": [
     "free",
@@ -3426,8 +4029,10 @@
     "vision"
    ],
    "score": {
-    "aa": 8,
+    "aa": 5.1,
     "est": true,
+    "src": "converted",
+    "was": 8,
     "cat": {
      "coding": 20,
      "reasoning": 18,
@@ -3453,8 +4058,10 @@
     "local"
    ],
    "score": {
-    "aa": 5,
+    "aa": 3.3,
     "est": true,
+    "src": "converted",
+    "was": 5,
     "cat": {
      "coding": 14,
      "reasoning": 12,
@@ -3481,8 +4088,10 @@
     "speed"
    ],
    "score": {
-    "aa": 8.3,
-    "est": false,
+    "aa": 5.2,
+    "est": true,
+    "src": "converted",
+    "was": 8.3,
     "cat": {
      "coding": 18,
      "reasoning": 16,

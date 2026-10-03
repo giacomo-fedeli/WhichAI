@@ -2399,7 +2399,7 @@
   S.en.navRadar = "Model Radar";
   S.en.navRadarSub = "What changed: new models, prices, free tiers";
   S.en.radarTitle = "Model Radar";
-  S.en.radarSub = "New models, price moves, score snapshots and free-tier changes, curated with every data refresh.";
+  S.en.radarSub = "New models, prices, scores and free tiers: arrivals appear automatically, with curated notes on what matters.";
   S.en.radarNew = "NEW";
   S.en.radarUpcoming = "Coming up";
   S.en.radarAll = "All";
@@ -2420,7 +2420,7 @@
   S.it.navRadar = "Model Radar";
   S.it.navRadarSub = "Cosa è cambiato: nuovi modelli, prezzi, piani gratuiti";
   S.it.radarTitle = "Model Radar";
-  S.it.radarSub = "Nuovi modelli, variazioni di prezzo, snapshot dei punteggi e cambi dei piani gratuiti, curati a ogni refresh dei dati.";
+  S.it.radarSub = "Nuovi modelli, prezzi, punteggi e piani gratuiti: gli arrivi compaiono in automatico, con note curate su ciò che conta.";
   S.it.radarNew = "NUOVO";
   S.it.radarUpcoming = "In arrivo";
   S.it.radarAll = "Tutto";
@@ -2441,7 +2441,7 @@
   S.fr.navRadar = "Model Radar";
   S.fr.navRadarSub = "Ce qui a changé : nouveaux modèles, prix, offres gratuites";
   S.fr.radarTitle = "Model Radar";
-  S.fr.radarSub = "Nouveaux modèles, évolutions de prix, snapshots de scores et offres gratuites, mis à jour à chaque refresh des données.";
+  S.fr.radarSub = "Nouveaux modèles, prix, scores et offres gratuites : les arrivées apparaissent automatiquement, avec des notes sur ce qui compte.";
   S.fr.radarNew = "NOUVEAU";
   S.fr.radarUpcoming = "À venir";
   S.fr.radarAll = "Tout";
@@ -2462,7 +2462,7 @@
   S.es.navRadar = "Model Radar";
   S.es.navRadarSub = "Qué cambió: nuevos modelos, precios, niveles gratis";
   S.es.radarTitle = "Model Radar";
-  S.es.radarSub = "Nuevos modelos, cambios de precios, snapshots de puntuaciones y niveles gratis, curados en cada actualización de datos.";
+  S.es.radarSub = "Nuevos modelos, precios, puntuaciones y planes gratuitos: las novedades aparecen solas, con notas sobre lo que importa.";
   S.es.radarNew = "NUEVO";
   S.es.radarUpcoming = "Próximamente";
   S.es.radarAll = "Todo";
@@ -2483,7 +2483,7 @@
   S.de.navRadar = "Model Radar";
   S.de.navRadarSub = "Was sich geändert hat: neue Modelle, Preise, Gratis-Stufen";
   S.de.radarTitle = "Model Radar";
-  S.de.radarSub = "Neue Modelle, Preisänderungen, Score-Snapshots und Gratis-Stufen, kuratiert bei jedem Daten-Refresh.";
+  S.de.radarSub = "Neue Modelle, Preise, Werte und Gratis-Stufen: Neuzugänge erscheinen automatisch, mit Notizen zu dem, was zählt.";
   S.de.radarNew = "NEU";
   S.de.radarUpcoming = "Demnächst";
   S.de.radarAll = "Alles";
@@ -2504,7 +2504,7 @@
   S.pt.navRadar = "Model Radar";
   S.pt.navRadarSub = "O que mudou: novos modelos, preços, níveis grátis";
   S.pt.radarTitle = "Model Radar";
-  S.pt.radarSub = "Novos modelos, mudanças de preço, snapshots de pontuações e níveis grátis, curados a cada atualização de dados.";
+  S.pt.radarSub = "Novos modelos, preços, pontuações e planos grátis: as novidades aparecem sozinhas, com notas sobre o que importa.";
   S.pt.radarNew = "NOVO";
   S.pt.radarUpcoming = "Em breve";
   S.pt.radarAll = "Tudo";
@@ -2525,7 +2525,7 @@
   S.zh.navRadar = "模型雷达";
   S.zh.navRadarSub = "最新变化：新模型、价格、免费额度";
   S.zh.radarTitle = "模型雷达";
-  S.zh.radarSub = "新模型、价格变动、分数快照与免费额度变化，每次数据更新时人工整理。";
+  S.zh.radarSub = "新模型、价格、评分与免费额度：新模型自动出现，并附有重点说明。";
   S.zh.radarNew = "新";
   S.zh.radarUpcoming = "即将到来";
   S.zh.radarAll = "全部";
@@ -2546,7 +2546,7 @@
   S.hi.navRadar = "मॉडल राडार";
   S.hi.navRadarSub = "क्या बदला: नए मॉडल, कीमतें, मुफ़्त स्तर";
   S.hi.radarTitle = "मॉडल राडार";
-  S.hi.radarSub = "नए मॉडल, कीमतों में बदलाव, स्कोर स्नैपशॉट और मुफ़्त स्तर, हर डेटा रिफ़्रेश पर संकलित।";
+  S.hi.radarSub = "नए मॉडल, कीमतें, स्कोर और मुफ़्त स्तर: नए आगमन अपने आप दिखते हैं, ज़रूरी बातों पर नोट्स के साथ।";
   S.hi.radarNew = "नया";
   S.hi.radarUpcoming = "आने वाला";
   S.hi.radarAll = "सब";
@@ -2567,7 +2567,7 @@
   S.ru.navRadar = "Радар моделей";
   S.ru.navRadarSub = "Что изменилось: новые модели, цены, бесплатные уровни";
   S.ru.radarTitle = "Радар моделей";
-  S.ru.radarSub = "Новые модели, изменения цен, снапшоты оценок и бесплатные уровни, курируются при каждом обновлении данных.";
+  S.ru.radarSub = "Новые модели, цены, оценки и бесплатные тарифы: новинки появляются автоматически, с заметками о главном.";
   S.ru.radarNew = "НОВОЕ";
   S.ru.radarUpcoming = "Скоро";
   S.ru.radarAll = "Все";
@@ -2588,7 +2588,7 @@
   S.ja.navRadar = "モデルレーダー";
   S.ja.navRadarSub = "変更点：新モデル、価格、無料枠";
   S.ja.radarTitle = "モデルレーダー";
-  S.ja.radarSub = "新モデル、価格の変動、スコアのスナップショット、無料枠の変更。データ更新のたびにキュレーションしています。";
+  S.ja.radarSub = "新モデル、価格、スコア、無料枠：新着は自動で表示され、重要な点には解説が付きます。";
   S.ja.radarNew = "新着";
   S.ja.radarUpcoming = "近日";
   S.ja.radarAll = "すべて";
@@ -2609,7 +2609,7 @@
   S.ar.navRadar = "رادار النماذج";
   S.ar.navRadarSub = "ما الذي تغيّر: نماذج جديدة، أسعار، خطط مجانية";
   S.ar.radarTitle = "رادار النماذج";
-  S.ar.radarSub = "نماذج جديدة وتغيّرات أسعار ولقطات درجات وخطط مجانية، تُنسَّق مع كل تحديث للبيانات.";
+  S.ar.radarSub = "نماذج جديدة وأسعار ودرجات وخطط مجانية: تظهر الإضافات تلقائيًا، مع ملاحظات حول ما يهم.";
   S.ar.radarNew = "جديد";
   S.ar.radarUpcoming = "قريبًا";
   S.ar.radarAll = "الكل";
@@ -3417,6 +3417,63 @@
   S.ar.journeyFreeAlt = "بديل مجاني";
   S.ar.journeyWritePrompt = "اكتب المطالبة المناسبة له";
   S.ar.journeySeeEvidence = "اطّلع على الأدلة";
+
+  /* ---------- v0.35: the catalog that updates itself ---------- */
+  S.en.livePill = "Live data";
+  S.en.liveDataLine = "Live data: official Artificial Analysis scores and OpenRouter prices, read {when}; {n} models added automatically.";
+  S.en.liveAutoChip = "auto-added";
+  S.en.liveAutoTitle = "Added automatically from live public data (Artificial Analysis via OpenRouter). No editorial review yet.";
+  S.en.liveHealed = "The free route {from} was retired by OpenRouter: switched automatically to {to}.";
+  S.it.livePill = "Dati live";
+  S.it.liveDataLine = "Dati live: punteggi ufficiali Artificial Analysis e prezzi OpenRouter, letti {when}; {n} modelli aggiunti in automatico.";
+  S.it.liveAutoChip = "aggiunto in automatico";
+  S.it.liveAutoTitle = "Aggiunto in automatico dai dati pubblici live (Artificial Analysis via OpenRouter). Nessuna recensione editoriale ancora.";
+  S.it.liveHealed = "La route gratuita {from} è stata ritirata da OpenRouter: sostituita in automatico con {to}.";
+  S.fr.livePill = "Données en direct";
+  S.fr.liveDataLine = "Données en direct : scores officiels Artificial Analysis et prix OpenRouter, lus {when} ; {n} modèles ajoutés automatiquement.";
+  S.fr.liveAutoChip = "ajouté automatiquement";
+  S.fr.liveAutoTitle = "Ajouté automatiquement à partir des données publiques en direct (Artificial Analysis via OpenRouter). Pas encore de revue éditoriale.";
+  S.fr.liveHealed = "La route gratuite {from} a été retirée par OpenRouter : remplacée automatiquement par {to}.";
+  S.es.livePill = "Datos en vivo";
+  S.es.liveDataLine = "Datos en vivo: puntuaciones oficiales de Artificial Analysis y precios de OpenRouter, leídos {when}; {n} modelos añadidos automáticamente.";
+  S.es.liveAutoChip = "añadido automáticamente";
+  S.es.liveAutoTitle = "Añadido automáticamente desde datos públicos en vivo (Artificial Analysis vía OpenRouter). Aún sin reseña editorial.";
+  S.es.liveHealed = "OpenRouter retiró la ruta gratuita {from}: se cambió automáticamente a {to}.";
+  S.de.livePill = "Live-Daten";
+  S.de.liveDataLine = "Live-Daten: offizielle Artificial-Analysis-Werte und OpenRouter-Preise, gelesen {when}; {n} Modelle automatisch hinzugefügt.";
+  S.de.liveAutoChip = "automatisch hinzugefügt";
+  S.de.liveAutoTitle = "Automatisch aus öffentlichen Live-Daten hinzugefügt (Artificial Analysis über OpenRouter). Noch keine redaktionelle Bewertung.";
+  S.de.liveHealed = "Die kostenlose Route {from} wurde von OpenRouter eingestellt: automatisch auf {to} umgestellt.";
+  S.pt.livePill = "Dados ao vivo";
+  S.pt.liveDataLine = "Dados ao vivo: pontuações oficiais da Artificial Analysis e preços da OpenRouter, lidos {when}; {n} modelos adicionados automaticamente.";
+  S.pt.liveAutoChip = "adicionado automaticamente";
+  S.pt.liveAutoTitle = "Adicionado automaticamente a partir de dados públicos ao vivo (Artificial Analysis via OpenRouter). Ainda sem análise editorial.";
+  S.pt.liveHealed = "A rota gratuita {from} foi retirada pela OpenRouter: substituída automaticamente por {to}.";
+  S.zh.livePill = "实时数据";
+  S.zh.liveDataLine = "实时数据：Artificial Analysis 官方评分与 OpenRouter 价格，读取于{when}；已自动添加 {n} 个模型。";
+  S.zh.liveAutoChip = "自动添加";
+  S.zh.liveAutoTitle = "根据实时公开数据自动添加（Artificial Analysis，经 OpenRouter）。尚无编辑评测。";
+  S.zh.liveHealed = "OpenRouter 已下线免费路由 {from}：已自动切换为 {to}。";
+  S.hi.livePill = "लाइव डेटा";
+  S.hi.liveDataLine = "लाइव डेटा: Artificial Analysis के आधिकारिक स्कोर और OpenRouter की कीमतें, {when} पढ़ी गईं; {n} मॉडल अपने आप जोड़े गए।";
+  S.hi.liveAutoChip = "अपने आप जोड़ा गया";
+  S.hi.liveAutoTitle = "लाइव सार्वजनिक डेटा से अपने आप जोड़ा गया (OpenRouter के ज़रिए Artificial Analysis)। अभी कोई संपादकीय समीक्षा नहीं।";
+  S.hi.liveHealed = "OpenRouter ने मुफ़्त रूट {from} बंद कर दिया: अपने आप {to} पर बदल दिया गया।";
+  S.ru.livePill = "Живые данные";
+  S.ru.liveDataLine = "Живые данные: официальные оценки Artificial Analysis и цены OpenRouter, получены {when}; автоматически добавлено моделей: {n}.";
+  S.ru.liveAutoChip = "добавлено автоматически";
+  S.ru.liveAutoTitle = "Добавлено автоматически из живых публичных данных (Artificial Analysis через OpenRouter). Редакционного обзора пока нет.";
+  S.ru.liveHealed = "OpenRouter отключил бесплатный маршрут {from}: автоматически заменён на {to}.";
+  S.ja.livePill = "ライブデータ";
+  S.ja.liveDataLine = "ライブデータ：Artificial Analysis の公式スコアと OpenRouter の価格（{when}取得）。{n} モデルを自動追加。";
+  S.ja.liveAutoChip = "自動追加";
+  S.ja.liveAutoTitle = "公開ライブデータから自動追加（OpenRouter 経由の Artificial Analysis）。編集レビューはまだありません。";
+  S.ja.liveHealed = "無料ルート {from} は OpenRouter で終了しました：自動的に {to} に切り替えました。";
+  S.ar.livePill = "بيانات مباشرة";
+  S.ar.liveDataLine = "بيانات مباشرة: درجات Artificial Analysis الرسمية وأسعار OpenRouter، قُرئت {when}؛ أُضيف {n} نموذجًا تلقائيًا.";
+  S.ar.liveAutoChip = "أُضيف تلقائيًا";
+  S.ar.liveAutoTitle = "أُضيف تلقائيًا من البيانات العامة المباشرة (Artificial Analysis عبر OpenRouter). لا توجد مراجعة تحريرية بعد.";
+  S.ar.liveHealed = "أوقفت OpenRouter المسار المجاني {from}: تم التبديل تلقائيًا إلى {to}.";
 
   var I18n = {
     LANGS: LANGS,

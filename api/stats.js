@@ -18,10 +18,11 @@ function tally(models, key) {
     .map(function (k) { return { name: k, count: out[k] }; });
 }
 
-module.exports = function handler(req, res) {
+module.exports = async function handler(req, res) {
   if (!L.guard(req, res)) return;
   var q = L.query(req);
-  var models = L.DB.models;
+  var DBx = await L.currentDB();
+  var models = DBx.models;
   var measured = models.filter(function (m) { return m.score && m.score.est === false && typeof m.score.aa === "number"; });
   var vendors = {};
   models.forEach(function (m) { vendors[m.vendor] = (vendors[m.vendor] || 0) + 1; });
@@ -38,7 +39,7 @@ module.exports = function handler(req, res) {
     .map(function (m, i) { return { rank: i + 1, id: m.id, name: m.name, vendor: m.vendor, score: m.score.aa }; });
 
   L.send(req, res, 200, {
-    meta: L.meta(),
+    meta: L.meta(DBx),
     totals: {
       models: models.length,
       vendors: Object.keys(vendors).length,
@@ -48,7 +49,8 @@ module.exports = function handler(req, res) {
       openWeights: models.filter(function (m) { return (m.tags || []).indexOf("open-weights") >= 0; }).length,
       inGenerator: models.filter(function (m) { return (m.tags || []).indexOf("prompt-target") >= 0; }).length,
       autoRun: models.filter(function (m) { return (m.tags || []).indexOf("auto-run") >= 0; }).length,
-      rumored: models.filter(function (m) { return m.status === "rumored"; }).length
+      rumored: models.filter(function (m) { return m.status === "rumored"; }).length,
+      addedAutomatically: models.filter(function (m) { return m.auto === true; }).length
     },
     scoreDistribution: { min: pct(0), p25: pct(25), median: pct(50), p75: pct(75), max: pct(100) },
     byVendor: Object.keys(vendors).sort(function (a, b) { return vendors[b] - vendors[a]; })

@@ -1,6 +1,6 @@
 {
   "name": "whichai",
-  "version": "0.34.0",
+  "version": "0.35.0",
   "private": true,
   "description": "WhichAI - which AI should do this, and what prompt should it get. Static frontend, serverless read-only API, zero tracking.",
   "homepage": "https://whichai.wiki",
@@ -11,7 +11,7 @@
     "seo": "node tools/build-seo.mjs",
     "refresh": "node tools/refresh-data.mjs",
     "api": "node tools/api-dev.mjs 8787",
-    "test": "node tests/run-tests.mjs && node tests/smoke-dom.mjs && node tests/api-tests.mjs"
+    "test": "node tests/run-tests.mjs && node tests/smoke-dom.mjs && node tests/api-tests.mjs && node tests/live-data-tests.mjs && node tests/catalog-tests.mjs"
   },
   "devDependencies": {
     "esbuild": "^0.25.0",

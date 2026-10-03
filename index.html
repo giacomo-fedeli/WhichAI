@@ -41,7 +41,8 @@
           <path class="brand-needle" d="M15.5 8.5l-2.2 5-5 2.2 2.2-5z" fill="currentColor" stroke="none"></path>
         </svg>
         <span class="brand-name">WhichAI</span>
-        <span class="badge">v0.34 · Growth</span>
+        <span class="badge">v0.35 · Growth</span>
+        <a class="badge badge-live" id="live-pill" href="#radar" hidden><span class="live-dot" aria-hidden="true"></span><span id="live-pill-text">Live data</span></a>
         <span class="badge badge-privacy" title="No account, no tracking. Goals, prompts and API keys stay in your browser. The WhichAI API is read-only and serves only the public model catalog."><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><rect x="4" y="10" width="16" height="10" rx="2"></rect><path d="M8 10V7a4 4 0 0 1 8 0v3"></path></svg><span id="privacy-text">Private by design</span></span>
       </div>
       <nav class="site-nav" aria-label="Views">
@@ -545,7 +546,8 @@
           <input type="text" id="or-model-deepseek" placeholder="no free route - paid ID uses your credits" autocomplete="off" />
         </div>
       </div>
-      <p class="field-hint">Defaults are free routes: nvidia/nemotron-3-ultra-550b-a55b:free and qwen/qwen3-coder:free. GLM, Kimi and DeepSeek currently have no free OpenRouter route - leave empty to keep copy &amp; paste, or set a paid ID (billed to your own OpenRouter credits) from openrouter.ai/models.</p>
+      <p class="field-hint">Defaults are free routes, checked against OpenRouter automatically: if a default route is retired, WhichAI switches to the best free route of the same family that exists right now (your own custom IDs are never touched). GLM, Kimi and DeepSeek usually have no free route - leave empty to keep copy &amp; paste, or set a paid ID (billed to your own OpenRouter credits) from openrouter.ai/models.</p>
+      <p class="field-hint or-heal-note" id="or-heal-note" hidden></p>
       <div class="test-row"><button id="test-openrouter" class="btn-copy btn-test" type="button">Test key</button><span class="run-status test-status" id="test-openrouter-status" hidden></span></div>
 
       <h2 class="card-title">Preferences</h2>
@@ -592,7 +594,7 @@
             <tr><th scope="row">Question it answers</th><td>Which model scores higher?</td><td>Where do I get and run a model?</td><td>Which AI should do <em>this</em> job, and what do I send it?</td></tr>
             <tr><th scope="row">What you leave with</th><td>A ranking</td><td>Weights, datasets, spaces</td><td>A model pick, the reason, and a prompt written for it</td></tr>
             <tr><th scope="row">Made for</th><td>Researchers tracking the frontier</td><td>ML engineers and builders</td><td>Anyone with a task and twelve open tabs</td></tr>
-            <tr><th scope="row">Where numbers come from</th><td>Their own evaluations</td><td>Community uploads</td><td>Their published snapshots, cited and dated</td></tr>
+            <tr><th scope="row">Where numbers come from</th><td>Their own evaluations</td><td>Community uploads</td><td>Their official numbers, read automatically every hour and attributed</td></tr>
             <tr><th scope="row">Needs an account</th><td>No</td><td>For most things, yes</td><td>No, and nothing here stores one</td></tr>
           </tbody>
         </table>
@@ -604,8 +606,9 @@
       <h2 class="card-title">The WhichAI API</h2>
       <p class="about-text">The catalog is not locked inside the page. Every endpoint is read-only, needs no key, sends CORS headers and is cached at the edge, so anyone can build on the dataset under CC BY 4.0.</p>
       <ul class="catalog-list api-list">
-        <li><span class="router-app"><code>GET /api/health</code></span><span class="router-free">Status, data volume, snapshot dates and the list of endpoints.</span></li>
-        <li><span class="router-app"><code>GET /api/models</code></span><span class="router-free">The full catalog with search, tag and vendor filters, sorting and pagination. Add <code>?id=claude-opus-5</code> for one model.</span></li>
+        <li><span class="router-app"><code>GET /api/health</code></span><span class="router-free">Status, data volume, the editorial and live data dates and the list of endpoints.</span></li>
+        <li><span class="router-app"><code>GET /api/catalog</code></span><span class="router-free">The self-updating layer: official Artificial Analysis scores, current prices, live free routes and every model measured since the last deploy, as one small delta.</span></li>
+        <li><span class="router-app"><code>GET /api/models</code></span><span class="router-free">The full live catalog with search, tag and vendor filters, sorting and pagination. Add <code>?id=claude-opus-5</code> for one model.</span></li>
         <li><span class="router-app"><code>GET /api/benchmarks</code></span><span class="router-free">The curated task rankings with sources. Add <code>?task=coding</code> to run the router server-side.</span></li>
         <li><span class="router-app"><code>GET /api/recommend</code></span><span class="router-free">Send <code>?goal=</code> a plain-language goal: the server detects the task type and answers with a recommended AI plus a free alternative.</span></li>
         <li><span class="router-app"><code>GET /api/stats</code></span><span class="router-free">Aggregates computed on the server: totals, score distribution, tallies by vendor and tag, leaderboard.</span></li>
@@ -615,13 +618,16 @@
 
     <div class="card about-card" id="about-freshness">
       <h2 class="card-title">How the data stays current</h2>
-      <p class="about-text">Not by hand, and not by pretending a machine can judge a benchmark. The split is deliberate:</p>
+      <p class="about-text">By itself, every hour, and without a machine ever inventing a number. Figures come from their publishers; words come from people. The split is deliberate:</p>
       <ul class="catalog-list">
-        <li><span class="router-app">Automatic, every week</span> - a scheduled job queries public sources, verifies that every free model route the app ships still exists, flags price and context-window drift beyond a threshold, and lists models released since the last snapshot. It then regenerates the static pages and the sitemap and runs the full test suite.</li>
-        <li><span class="router-app">Automatic, on every change</span> - continuous integration runs the static checks, a DOM smoke test that boots the real app, and the API tests. A change that breaks any of them never reaches the site.</li>
-        <li><span class="router-app">Human, on purpose</span> - intelligence scores are never rewritten by a script. A drifting number opens a pull request with the evidence; a person confirms it against a dated public snapshot and cites it. The whole site is judged on those numbers being honest, so a robot does not get to change them quietly.</li>
+        <li><span class="router-app">Scores: official, automatic</span> - the Artificial Analysis Intelligence, Coding and Agentic indices are read from OpenRouter's public model list, which relays the same official numbers published on artificialanalysis.ai. The backend re-reads them every hour; your browser lays them over the catalog on every visit.</li>
+        <li><span class="router-app">New models appear on their own</span> - as soon as Artificial Analysis measures a model, it joins the catalog, the rankings and the Radar, marked "auto-added" until a person writes its review. Brand-new models from the big labs show in the Radar even before they are measured, and are ranked only once they are.</li>
+        <li><span class="router-app">Prices and free routes, automatic</span> - prices follow OpenRouter's list and are labelled as such; a retired free route that powered auto-run is replaced by the best live route of the same family, without touching IDs you typed yourself.</li>
+        <li><span class="router-app">Every deploy bakes fresh data in</span> - the build reads the same sources, ships them inside the page and regenerates the static wiki, so even the first paint and the search-engine pages are current.</li>
+        <li><span class="router-app">Never automatic</span> - reviews, caveats and category ratings. A model without a current official measurement keeps a converted value marked "~" and is never ranked; a rumored model gets no score at all.</li>
+        <li><span class="router-app">Checked on every change</span> - continuous integration runs the static checks, a DOM smoke test that boots the real app, the API tests and the self-updating catalog against a real saved snapshot. A change that breaks any of them never reaches the site.</li>
       </ul>
-      <p class="router-meta">Every page shows the snapshot date it was built from. When the API is reachable, the Model guide reports the live figures the backend is serving.</p>
+      <p class="router-meta">The green "Live data" badge at the top says when the numbers were last read. If the sources are unreachable, the site keeps its last known values and says so.</p>
     </div>
 
     <div class="card about-card" id="about-faq">
@@ -629,7 +635,7 @@
       <details class="faq"><summary>Is WhichAI really free?</summary><p>Yes, completely. No account, no subscription, no ads, no tracking. It runs on free hosting and the optional auto-run features use your own free API keys (Google AI Studio, Groq). There is nothing to sell you.</p></details>
       <details class="faq"><summary>Where do my data and API keys go?</summary><p>Nowhere. Everything (goals, prompts, comparisons, chains, keys) lives only in your browser. By default API keys are kept for the current session only; saving them on the device is an explicit opt-in in Settings. WhichAI runs a read-only API that serves the public model catalog and nothing else: it accepts no request body, stores nothing and never sees what you type. API keys are sent only to the provider you call (Google, Groq or OpenRouter), directly from your browser.</p></details>
       <details class="faq"><summary>Why are generated prompts in English?</summary><p>Every major model performs measurably best with English instructions. Each generated prompt includes a rule telling the AI to answer in the language of your task - so you can write your goal in any language and get the answer in your language, with English-optimized instructions doing the heavy lifting.</p></details>
-      <details class="faq"><summary>How reliable are the benchmark numbers?</summary><p>Where public leaderboards publish a score (LMArena, SWE-bench, Artificial Analysis) we use it and link the source. Where they don't - private, preview, rumored or niche models - we show a clearly marked estimate ("~", "est."). Data is refreshed roughly monthly; the snapshot date is always shown.</p></details>
+      <details class="faq"><summary>How reliable are the benchmark numbers?</summary><p>The main score is the official Artificial Analysis Intelligence Index, read automatically every hour (via OpenRouter's public model list) - the same number artificialanalysis.ai publishes. Where no current official number exists we show a clearly marked value ("~") and never rank it; rumored models get no score at all. The badge at the top says when the data was last read.</p></details>
       <details class="faq"><summary>What do the category scores and labels mean?</summary><p>Each model in the database gets one overall score (Artificial Analysis Intelligence Index where published) plus four category ratings - Coding, Reasoning, Writing, Agents &amp; tools - on a 0–100 scale. Category ratings are WhichAI blends of public category leaderboards and editorial judgment: use them to compare models at a glance, not as official measurements. Labels (like "free", "open weights", "in Generator") are filters: "in Generator" means you can generate optimized prompts for that model family right here.</p></details>
       <details class="faq"><summary>Do I need API keys to use this?</summary><p>No. Copy &amp; paste works with every model. Keys only add convenience: with free Google AI Studio, Groq or OpenRouter keys, Compare and Chains can run Gemini, Llama and several open models (Nemotron, Qwen Coder…) automatically.</p></details>
       <details class="faq"><summary>How does the model recommendation work?</summary><p>A curated dataset translates public benchmarks into per-task rankings with a confidence level and linked sources. It is guidance, not gospel - near-ties are declared as ties, and the router never hides its reasoning.</p></details>
@@ -651,16 +657,16 @@
 
     <div class="card about-card" id="about-methodology">
       <h2 class="card-title">Methodology v1.0</h2>
-      <p class="router-meta">Updated: July 20, 2026 · next review with the monthly data refresh.</p>
+      <p class="router-meta">Updated: October 3, 2026 (v0.35: official scores, refreshed automatically).</p>
       <ul class="catalog-list">
-        <li><span class="router-app">Overall score</span> - Artificial Analysis Intelligence Index (2026 rebased scale), taken from one dated public snapshot per refresh so every model sits on the same scale. Models without a published score get a clearly marked estimate ("~", "est.") and are never ranked against measured scores.</li>
+        <li><span class="router-app">Overall score</span> - the official Artificial Analysis Intelligence Index, read automatically every hour from OpenRouter's public model list (one source, one scale for every model). Models measured only on an older scale carry a converted value marked "~"; they, and models nobody has measured, are never ranked.</li>
         <li><span class="router-app">Category ratings (0-100)</span> - WhichAI blends of public category leaderboards (LMArena coding, SWE-bench, agentic and writing boards) plus editorial judgment. Guidance, not measurements.</li>
-        <li><span class="router-app">Task router</span> - per-task rankings built from the benchmarks above, with a confidence level (high / medium / low) and linked sources. Near-ties are declared as ties.</li>
-        <li><span class="router-app">Prices, context, speed</span> - vendor pages and public pricing mirrors, with the retrieval date stored in the database. Unpublished values show "n/a" and never enter charts.</li>
+        <li><span class="router-app">Task router</span> - per-task rankings with a confidence level (high / medium / low) and linked sources. For general use, analysis and coding the order of Claude, ChatGPT and Gemini follows the live index of each maker's best model; the other tasks are editorial. Near-ties are declared as ties.</li>
+        <li><span class="router-app">Prices, context, speed</span> - OpenRouter's public model list (read automatically, labelled "OpenRouter") and vendor pages for what it does not publish. Unpublished values show "n/a" and never enter charts.</li>
         <li><span class="router-app">Status labels</span> - public, preview, private, legacy, rumored. Rumored and private models are info-only: they never appear in rankings or recommendations.</li>
-        <li><span class="router-app">Independence</span> - no sponsored placements, no affiliate rankings, no accounts, no tracking. Corrections are welcome and get fixed in the next data refresh: the contact details are in Contribute below.</li>
+        <li><span class="router-app">Independence</span> - no sponsored placements, no affiliate rankings, no accounts, no tracking. Figures correct themselves when their source does; editorial corrections are welcome: the contact details are in Contribute below.</li>
       </ul>
-      <p class="router-meta">Limits: benchmarks are partial proxies of real work; snapshots age between refreshes; category blends involve judgment. When in doubt, run your own comparison in Compare.</p>
+      <p class="router-meta">Limits: benchmarks are partial proxies of real work; the live numbers are only as current as their publishers (an hour behind at most on our side); OpenRouter's price can differ from a vendor's own list; category blends involve judgment. When in doubt, run your own comparison in Compare.</p>
     </div>
 
     <div class="card about-card" id="about-support" hidden>
@@ -731,7 +737,7 @@
       <a href="#glossary" id="foot-glossary">Glossary</a>
       <a href="#" id="foot-support" class="foot-support" target="_blank" rel="noopener" hidden>Support ♥</a>
     </nav>
-    <p>WhichAI v0.34 · Growth · Runs in your browser: no account, no tracking. Your goals, prompts and keys never leave your device.</p>
+    <p>WhichAI v0.35 · Growth · Runs in your browser: no account, no tracking. Your goals, prompts and keys never leave your device.</p>
     <p id="visit-counter" class="visit-counter" hidden></p>
   </footer>
 
@@ -742,6 +748,8 @@
   <script src="js/chains.js"></script>
   <script src="js/i18n.js"></script>
   <script src="js/models-db.js"></script>
+  <script src="js/live-seed.js"></script>
+  <script src="js/live-catalog.js"></script>
   <script src="js/merge.js"></script>
   <script src="js/charts.js"></script>
   <script src="js/glossary.js"></script>

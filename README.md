@@ -72,8 +72,10 @@ Static site: deploy the folder as-is to any static host (Vercel, Netlify, GitHub
 index.html          - app entry point (all views, hash-routed)
 styles.css          - design system (3 themes, responsive, RTL-aware)
 js/engine.js        - prompt generation engine + task auto-detection (13 families)
-js/benchmarks.js    - curated benchmark dataset + per-task model router (update ~monthly)
-js/models-db.js     - 105-model database: scores, categories, specs, prices (update ~monthly)
+js/benchmarks.js    - editorial task rankings + live router (order follows the official index; no manual updates)
+js/models-db.js     - editorial model database (reviews, categories) + offline copy of the numbers
+js/live-catalog.js  - lays live public data over it on every visit (official AA scores, prices, new models)
+api/catalog.js      - the self-updating layer, computed by api/_catalog-core.js from OpenRouter's public list
 js/chains.js        - multi-step workflow templates per task type
 js/finder.js        - guided finder: adaptive questionnaire → transparent recommendation
 js/modelcompare.js  - on-paper model comparison (2–3 models)

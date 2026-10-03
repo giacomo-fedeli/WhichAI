@@ -1,18 +1,27 @@
 /*
- * WhichAI - Benchmark dataset, model router & catalog (v0.11.0)
- * Curated snapshot of public leaderboards, translated into plain language.
- * Task rankings are at APP level (the four big assistants people actually open);
- * the catalog covers specific models across the market, grouped by category.
- * Update this file periodically.
+ * WhichAI - Benchmark dataset, model router & catalog (v0.35.0)
+ *
+ * Two layers, kept apart on purpose:
+ *   - EDITORIAL (this file): what each app is like to use, its free tier, who
+ *     it suits. Written without figures, dates or ranks, because those rot
+ *     within weeks and then contradict the numbers rendered beside them.
+ *   - LIVE (computed at render time from js/models-db.js, which the live
+ *     catalog keeps current): who leads today on the official Artificial
+ *     Analysis indices, the general summary, the frontier and open-weight
+ *     cards. Nothing here has to be edited for the router to follow the market.
+ *
+ * Task rankings are at APP level (the four big assistants people actually
+ * open); for general, analysis and coding the order of the three model makers
+ * follows the live index of their best public model.
  */
 (function () {
   "use strict";
 
   var Bench = {
-    updated: "September 8, 2026",
+    updated: "October 3, 2026",
 
     disclaimer:
-      "Snapshot curated from public leaderboards and comparisons. Rankings shift fast - treat this as guidance, not gospel.",
+      "Live where a public measurement exists (official Artificial Analysis indices, refreshed automatically), editorial where it does not. Rankings shift fast - treat this as guidance, not gospel.",
 
     CONFIDENCE_NOTES: {
       high: "High confidence: direct benchmark coverage exists for this task type.",
@@ -24,61 +33,49 @@
       claude: {
         label: "Claude",
         vendor: "Anthropic",
-        topModel: "Claude Fable 5.1 / Opus 5 (Pro, $20/mo)",
-        freeModel: "Claude Sonnet 5 (usage limits vary by demand)"
+        topModel: "Anthropic's current flagships (Pro $20/mo, Max for heavy use)",
+        freeModel: "a Sonnet model (usage limits vary by demand)"
       },
       chatgpt: {
         label: "ChatGPT",
         vendor: "OpenAI",
-        topModel: "GPT-6 Astra / GPT-5.6 Sol (Plus $20/mo, Pro $200/mo)",
-        freeModel: "GPT-5.5 (limited messages, then a smaller model)"
+        topModel: "OpenAI's current flagships (Plus $20/mo, Pro $200/mo)",
+        freeModel: "a GPT model with limited messages, then a smaller model"
       },
       gemini: {
         label: "Gemini",
         vendor: "Google",
-        topModel: "Gemini 3.8 Flash / 3.7 Flash (AI Pro, $19.99/mo)",
-        freeModel: "Gemini 3.6 Flash (most generous free tier, includes a monthly Deep Research allowance)"
+        topModel: "Google's current Flash and Pro models (AI Pro, $19.99/mo)",
+        freeModel: "a Flash model (the most generous free tier, with a monthly Deep Research allowance)"
       },
       perplexity: {
         label: "Perplexity",
         vendor: "Perplexity AI",
         topModel: "Sonar Pro + Deep Research, with the current OpenAI, Anthropic and Google flagships inside (Pro, $20/mo)",
-        freeModel: "Sonar (unlimited basic cited searches + 5 Pro searches/day)"
+        freeModel: "Sonar (unlimited basic cited searches + a few Pro searches a day)"
       }
     },
 
     sources: [
+      { id: "aa", label: "Artificial Analysis Intelligence, Coding and Agentic indices (official, read live via OpenRouter)", url: "https://artificialanalysis.ai" },
+      { id: "or", label: "OpenRouter public model list (prices, context, routes; read live)", url: "https://openrouter.ai/models" },
       { id: "lmarena", label: "LMArena leaderboard (community head-to-head votes)", url: "https://arena.ai/leaderboard" },
       { id: "swebench", label: "SWE-bench Verified / Pro (real-world coding tasks)", url: "https://llm-stats.com/benchmarks/swe-bench-verified" },
-      { id: "aa", label: "Artificial Analysis Intelligence Index", url: "https://artificialanalysis.ai" },
-    {
-      id: "aa-aug",
-      label: "AA Intelligence Index snapshot, August 30, 2026 (BenchLM mirror)",
-      url: "https://benchlm.ai/benchmarks/artificialanalysis"
-    },
-    {
-      id: "aa-aug-mc",
-      label: "AA Intelligence Index snapshot, August 27, 2026 (ModelCap mirror)",
-      url: "https://modelcap.ai/benchmarks/artificial-analysis-intelligence-index"
-    },
       { id: "tiers", label: "Plans and free-tier comparison (June 2026)", url: "https://www.morphllm.com/comparisons/chatgpt-vs-claude-vs-gemini" },
       { id: "cw", label: "Creative-writing model guide (July 2026)", url: "https://www.buildmvpfast.com/articles/best-llms-2026-guide/creative-writing-ai" },
       { id: "pplx", label: "Perplexity plans, features and Sonar (2026)", url: "https://suprmind.ai/hub/perplexity/pricing/" },
       { id: "open", label: "Open-weight model benchmarks (2026)", url: "https://benchlm.ai/blog/posts/best-chinese-llm" },
       { id: "subs", label: "AI subscription pricing comparison (2026)", url: "https://www.sentisight.ai/ai-price-comparison-gemini-chatgpt-claude-grok/" },
-      { id: "aidx", label: "AA Intelligence Index snapshot, July 24, 2026 (BenchLM mirror)", url: "https://benchlm.ai/benchmarks/artificialAnalysis" },
-      { id: "opus5", label: "Claude Opus 5 launch coverage (July 24, 2026)", url: "https://www.marktechpost.com/2026/07/24/meet-the-new-claude-opus-5-frontier-class-agentic-coding-and-computer-use-at-unchanged-opus-pricing/" },
-      { id: "orfree", label: "OpenRouter free-model list (July 2026)", url: "https://costgoat.com/pricing/openrouter-free-models" },
-      { id: "price", label: "Vendor API pricing mirror (July 2026)", url: "https://benchlm.ai/anthropic/api-pricing" }
+      { id: "aa-mirror", label: "Older snapshots on the BenchLM mirror scale (used only for converted ~ values)", url: "https://benchlm.ai/benchmarks/artificialanalysis" }
     ],
 
     taskTypes: {
       writing: {
         confidence: "high",
         summary:
-          "Claude currently produces the most natural-sounding prose, and Anthropic's Fable 5 tops creative-writing benchmarks. ChatGPT is a close second and shines when you want many variants to choose from.",
+          "Claude produces the most natural-sounding prose, and Anthropic's Fable line is built specifically for creative work. ChatGPT is a close second and shines when you want many variants to choose from.",
         ranking: [
-          { app: "claude", note: "Best-rated prose: natural voice, subtext and character work (Fable 5 leads creative-writing benchmarks). Its free model, Sonnet 5, is rated the strongest free option for writing quality." },
+          { app: "claude", note: "Best-rated prose: natural voice, subtext and character work, with a model line built for creative writing. Its free tier is rated among the strongest free options for writing quality." },
           { app: "chatgpt", note: "Strong all-rounder: great at brainstorming angles, dialogue variants and turning rough notes into drafts. Canvas mode helps with editing." },
           { app: "gemini", note: "Capable writer with the most generous free tier - good for high-volume everyday writing." },
           { app: "perplexity", note: "Not built for prose - but excellent for gathering cited facts and references before you write." }
@@ -89,23 +86,23 @@
       coding: {
         confidence: "high",
         summary:
-          "It is nearly a tie at the top: Claude leads the toughest real-repo benchmark and LMArena's coding board, and the new Opus 5 leads AA's Agentic Index (55.3, July 24) with computer use at unchanged pricing; GPT-5.6 Sol tops the Coding Agent Index. Kimi K3 debuted #1 on the Frontend Code Arena.",
+          "It is close at the top, and the order below follows the live Artificial Analysis Coding Index of each maker's best model. Claude is the reference for multi-file, real-repository work; open models are now within reach for many coding tasks at a fraction of the price.",
         ranking: [
-          { app: "claude", note: "Leads SWE-bench Pro (uncontaminated, real repositories) at 69.2%, sits at the top of SWE-bench Verified (88.6%), and Fable 5 now leads LMArena's coding board (July 16 snapshot) - strongest at multi-file, real-project work." },
-          { app: "chatgpt", note: "Statistically tied on SWE-bench Verified (88.7%); the Codex variant is built specifically for coding workflows." },
-          { app: "gemini", note: "Gemini 3.1 Pro long led LMArena's coding arena and stays top-tier in head-to-head developer votes - the July 16 snapshot has Claude Fable 5 ahead." },
+          { app: "claude", note: "Strongest at multi-file, real-project work: consistently at or near the top of SWE-bench Pro (uncontaminated, real repositories) and of LMArena's coding board." },
+          { app: "chatgpt", note: "Statistically tied with Claude on SWE-bench Verified for most of 2026; the Codex variants are built specifically for coding workflows." },
+          { app: "gemini", note: "Top-tier in head-to-head developer votes, with fast, cheap Flash models that are ideal for quick iteration." },
           { app: "perplexity", note: "Useful for looking up current docs, APIs and error messages with sources - pair it with a coding model." }
         ],
-        sourceIds: ["swebench", "lmarena", "open", "aidx"]
+        sourceIds: ["aa", "swebench", "lmarena", "open"]
       },
 
       analysis: {
         confidence: "medium",
         summary:
-          "The top models are close on reasoning. Claude leads the overall intelligence index, Gemini 3.1 Pro leads several reasoning boards, and ChatGPT has the most mature built-in tools for uploaded data files.",
+          "The top models are close on reasoning; the order below follows the live Intelligence Index. Claude states its assumptions most carefully, Gemini handles very long documents well, and ChatGPT has the most mature built-in tools for uploaded data files.",
         ranking: [
-          { app: "claude", note: "Holds the top two spots on the July 24 AA snapshot (Opus 5 = 60.7, Fable 5 = 59.9) with careful, assumption-stating reasoning - a good default for rigorous analysis." },
-          { app: "gemini", note: "Leads several reasoning benchmarks and handles very long documents well." },
+          { app: "claude", note: "Careful, assumption-stating reasoning: a good default for rigorous analysis." },
+          { app: "gemini", note: "Strong on reasoning benchmarks and handles very long documents well." },
           { app: "chatgpt", note: "Best built-in tooling for spreadsheets and data files you upload directly in chat." },
           { app: "perplexity", note: "Good for pulling in current external data and benchmarks to feed the analysis, with citations." }
         ],
@@ -117,9 +114,9 @@
         summary:
           "Perplexity is purpose-built for this: every answer runs a live web search and comes back cited, and its citation accuracy is rated best in class. Gemini's Deep Research is the strongest bundled alternative; Claude excels at digesting long documents you already have.",
         ranking: [
-          { app: "perplexity", note: "Best-in-class citations on every answer; free tier has unlimited basic searches, Pro adds Deep Research (20/day) and frontier models inside." },
+          { app: "perplexity", note: "Best-in-class citations on every answer; the free tier has unlimited basic searches, Pro adds Deep Research and frontier models inside." },
           { app: "gemini", note: "Deep Research with a monthly allowance even on the free tier, plus tight Google Search integration." },
-          { app: "claude", note: "Very large context and up to 128K tokens of output in one pass - best for summarizing long documents you paste in." },
+          { app: "claude", note: "Very large context and very long outputs in one pass - best for summarizing long documents you paste in." },
           { app: "chatgpt", note: "Solid browsing on every tier; good at fusing multiple sources into a readable summary." }
         ],
         sourceIds: ["pplx", "tiers", "aa"]
@@ -167,44 +164,38 @@
       general: {
         confidence: "high",
         summary:
-          "September reopened a gap August had closed: Claude Fable 5.1 leads by more than two points, the widest lead since spring. Behind it the field is still packed - Opus 5, Muse Spark 1.3, GPT-6 Astra and Grok 4.6 all sit within two points of each other, and two Chinese labs remain in the top eight. Perplexity remains the specialist you add for anything that needs sources.",
+          "The top of the market is tight and changes every few weeks; the order below follows the live Artificial Analysis Intelligence Index of each maker's best public model. Perplexity remains the specialist you add for anything that needs sources.",
         ranking: [
-          { app: "claude", note: "The new Opus 5 (July 24) tops the AA snapshot at 60.7 with Fable 5 right behind (59.9): Anthropic holds the top two spots. GPT-5.6 Sol follows (58.9) and stays the value pick for agentic work; Moonshot's Kimi K3 (57.1) remains the closest outside challenger." },
-          { app: "chatgpt", note: "A hair behind on aggregate scores, and the most complete all-round app." },
-          { app: "gemini", note: "Close third, with the most generous free tier of the three." },
+          { app: "claude", note: "Careful reasoning, the most natural prose and very long context: the strongest default when quality matters more than speed." },
+          { app: "chatgpt", note: "The most complete all-round app: tools, voice, files and custom GPTs in one place." },
+          { app: "gemini", note: "Fast, with the most generous free tier of the three and deep Google Workspace integration." },
           { app: "perplexity", note: "Not a generalist - but the first stop whenever the answer must be current and cited." }
         ],
-        sourceIds: ["lmarena", "aa", "aidx", "tiers"]
+        sourceIds: ["aa", "lmarena", "tiers"]
       }
     },
 
-    /* ---------------- Model catalog: who's who on the market ---------------- */
+    /* ---------------- Model catalog: who's who on the market ----------------
+       "frontier" and "open" are rebuilt from live data at render time
+       (catalogView). The other groups are about how people use an app, which
+       no index measures, so they stay editorial - and figure-free. */
 
     catalog: [
       {
         id: "frontier",
         label: "Frontier flagships",
-        blurb: "The most capable models on the market - paid tiers, overkill for simple tasks, unbeatable for hard ones.",
-        models: [
-          { name: "Claude Opus 4.8", vendor: "Anthropic", access: "Claude Pro ($20/mo); limited on free tier", note: "#1 on LMArena overall, top-3 on the Artificial Analysis index (56); leads real-repo coding (SWE-bench Pro 69.2%)." },
-          { name: "GPT-5.5 Pro", vendor: "OpenAI", access: "ChatGPT Pro ($200/mo); standard GPT-5.5 on Plus ($20/mo)", note: "OpenAI's maximum-reasoning tier, statistically tied with Opus on many boards - and the new GPT-5.6 series (Sol/Terra/Luna, July 9) sits one point behind Fable 5 at max effort - Sol leads the Coding Agent Index." },
-          { name: "Gemini 3.1 Pro", vendor: "Google", access: "Google AI Pro ($19.99/mo); also inside Perplexity Pro", note: "#1 in LMArena's coding arena, top-tier reasoning, deep Google Workspace integration." },
-          { name: "Claude Opus 5", vendor: "Anthropic", access: "Claude Pro / Max plans · API $5/$25 per 1M", note: "July 24: the new overall #1 (AA 60.7; Agentic Index 55.3) with 1M context, default thinking and computer use at unchanged Opus pricing." },
-          { name: "Claude Fable 5", vendor: "Anthropic", access: "Claude Pro / Max plans · API $10/$50 per 1M", note: "Purpose-built for creative work - tops creative-writing benchmarks; #2 overall (59.9) behind its new sibling Opus 5." },
-          { name: "Kimi K3", vendor: "Moonshot AI", access: "API $3/$15 per 1M · open weights announced for July 27", note: "July 16 surprise: 2.8T-parameter MoE, 1M context, native vision - #3 on the AA index (57.1), best published BrowseComp (91.2%), #1 Frontend Code Arena at launch." }
-        ]
+        blurb: "The most capable models on the market right now, by the official Artificial Analysis Intelligence Index - paid tiers, overkill for simple tasks, unbeatable for hard ones.",
+        models: []
       },
       {
         id: "everyday",
         label: "Everyday workhorses",
         blurb: "Fast, capable defaults - what you actually talk to most of the time, often free.",
         models: [
-          { name: "GPT-5.5", vendor: "OpenAI", access: "Free (limited messages); higher limits on Plus ($20/mo) or Go (~$8/mo)", note: "The strongest broad generalist; excellent brainstorming and drafting." },
-          { name: "GPT-5.4", vendor: "OpenAI", access: "Plus ($20/mo); also inside Perplexity Pro", note: "The previous flagship, still very strong - a reliable known quantity." },
-          { name: "Claude Sonnet 5", vendor: "Anthropic", access: "Free tier of claude.ai", note: "Rated the strongest free option for writing and coding quality." },
-          { name: "Claude Sonnet 4.6", vendor: "Anthropic", access: "Claude Pro ($20/mo)", note: "The balanced default of the Claude line - near-flagship quality with higher limits." },
-          { name: "Claude Haiku 4.5", vendor: "Anthropic", access: "All Claude tiers; cheapest Claude via API", note: "Fastest and cheapest of the line - quick answers, light tasks, high volume." },
-          { name: "Gemini 3.6 Flash", vendor: "Google", access: "Free (the most generous free tier around)", note: "July 21 refresh of the free workhorse (AA 50.1): cheaper output than 3.5 Flash, 1M context, free Deep Research allowance included." }
+          { name: "ChatGPT free tier", vendor: "OpenAI", access: "Free (limited messages); higher limits on Plus ($20/mo) or Go (~$8/mo)", note: "The strongest broad generalist; excellent brainstorming and drafting." },
+          { name: "Claude free tier", vendor: "Anthropic", access: "Free tier of claude.ai", note: "Rated the strongest free option for writing and coding quality." },
+          { name: "Gemini Flash", vendor: "Google", access: "Free (the most generous free tier around)", note: "Near-instant, 1M-token context, with a free Deep Research allowance." },
+          { name: "Claude Haiku", vendor: "Anthropic", access: "All Claude tiers; cheapest Claude via API", note: "Fastest and cheapest of the line - quick answers, light tasks, high volume." }
         ]
       },
       {
@@ -212,8 +203,8 @@
         label: "Search & research assistants",
         blurb: "Built around live web search with citations - the right tool when the answer must be current and sourced.",
         models: [
-          { name: "Perplexity Sonar", vendor: "Perplexity AI", access: "Free: unlimited basic cited searches + 5 Pro searches/day", note: "Best-in-class citation accuracy - a smarter, cited replacement for googling." },
-          { name: "Perplexity Pro (Sonar Pro + Deep Research)", vendor: "Perplexity AI", access: "$20/mo", note: "Unlimited Pro Search, 20 Deep Research runs/day, plus GPT-5.4, Opus and Gemini 3.1 Pro selectable inside." },
+          { name: "Perplexity Sonar", vendor: "Perplexity AI", access: "Free: unlimited basic cited searches + a few Pro searches a day", note: "Best-in-class citation accuracy - a smarter, cited replacement for googling." },
+          { name: "Perplexity Pro (Sonar Pro + Deep Research)", vendor: "Perplexity AI", access: "$20/mo", note: "Unlimited Pro Search, daily Deep Research runs, plus the current OpenAI, Anthropic and Google flagships selectable inside." },
           { name: "Gemini Deep Research", vendor: "Google", access: "Monthly allowance on the free tier; more on AI Pro", note: "Long autonomous research reports generated inside Gemini." }
         ]
       },
@@ -222,33 +213,133 @@
         label: "Ecosystem assistants",
         blurb: "Assistants bundled into platforms you may already use - often the shortest path to a good answer.",
         models: [
-          { name: "Grok 4.1", vendor: "xAI", access: "Free tier on X / grok.com; paid from ~$16/mo", note: "Direct, up-to-the-minute answers with X data, a Think mode and a 2M-token context; among the lowest measured hallucination rates." },
-          { name: "Copilot", vendor: "Microsoft", access: "Free tier; Copilot Pro $20/mo; built into Windows and Office", note: "GPT-5-family models woven into Word, Excel, PowerPoint, Teams and Windows - best when your work lives in Microsoft 365." },
-          { name: "Meta AI", vendor: "Meta", access: "Free - meta.ai web app and inside WhatsApp, Instagram, Messenger", note: "Llama-powered and always at hand inside Meta's apps, with real-time info via search integration." }
+          { name: "Grok", vendor: "xAI", access: "Free tier on X / grok.com; paid from ~$16/mo", note: "Direct, up-to-the-minute answers with X data and selectable reasoning effort." },
+          { name: "Copilot", vendor: "Microsoft", access: "Free tier; Copilot Pro $20/mo; built into Windows and Office", note: "OpenAI models woven into Word, Excel, PowerPoint, Teams and Windows - best when your work lives in Microsoft 365." },
+          { name: "Meta AI", vendor: "Meta", access: "Free - meta.ai web app and inside WhatsApp, Instagram, Messenger", note: "Always at hand inside Meta's apps, now running on the proprietary Muse line." }
         ]
       },
       {
         id: "open",
         label: "Open-weight models",
-        blurb: "Downloadable and cheap or free to run via hosts like Groq and OpenRouter - a step below the frontier, and closing fast.",
-        models: [
-          { name: "GLM-5.2", vendor: "Z.ai", access: "Open weights; low-cost API hosts", note: "Best open-weight coder (SWE-bench Pro 62.1%) and the top open-weight score on the July 16 AA snapshot (51.1) - a genuine frontier challenger." },
-          { name: "Kimi K2.6", vendor: "Moonshot AI", access: "Open weights; API hosts", note: "Strong open all-rounder (AA 44.2 on the July 16 rebased snapshot; SWE-bench Verified 80.2%) - now overshadowed by its flagship sibling K3." },
-          { name: "Nemotron 3 Ultra", vendor: "NVIDIA", access: "FREE on OpenRouter; open weights on Hugging Face", note: "Extremely fast US open model (AA 37.8 on the July 16 rebased snapshot; 400+ tokens/second on some hosts) - still free on OpenRouter." },
-          { name: "Llama 4", vendor: "Meta", access: "Free tier on Groq (near-instant)", note: "The classic open workhorse - great for fast drafts and iteration." },
-          { name: "DeepSeek V4", vendor: "DeepSeek", access: "Free chat app; open weights", note: "Solid open reasoning (V4 Pro at AA 44.3 on the July 16 snapshot); the most popular free alternative worldwide - currently no free OpenRouter route." },
-          { name: "Qwen 3.7 Max", vendor: "Alibaba", access: "Free chat app · API; open weights for smaller Qwen tiers", note: "Alibaba's strongest line (AA 46.0) for coding and multilingual work; Qwen3 Coder remains the best free coding route on OpenRouter." },
-          { name: "Inkling", vendor: "Thinking Machines Lab", access: "Open weights (Apache 2.0) on Hugging Face · Tinker API", note: "July 15 debut: 975B-parameter multimodal MoE (41B active), 1M context - the new leading US open-weights base for customization (AA 40.7)." }
-        ]
+        blurb: "Downloadable, and cheap or free to run via hosts like OpenRouter - the strongest by the official index right now, a step below the frontier and closing.",
+        models: []
       }
-    ],
-
-    /** recommend(taskType) -> recommendation object (falls back to "general"). */
-    recommend: function (taskType) {
-      return this.taskTypes[taskType] || this.taskTypes.general;
-    }
+    ]
   };
 
+  /* ---------------- live layer ---------------- */
+
+  function currentDb() {
+    var db = (typeof window !== "undefined" ? window.PromptCompassModelsDB : null) ||
+             (typeof module !== "undefined" && module.exports ? tryRequireDb() : null);
+    return db && db.models ? db : null;
+  }
+  function tryRequireDb() {
+    try { return require("./models-db.js"); } catch (e) { return null; }
+  }
+
+  /* Official = measured by Artificial Analysis on the current scale. A
+     converted (~) or guessed value is context, never a rank. */
+  function official(m) {
+    return m && m.score && typeof m.score.aa === "number" && !m.score.est && m.status !== "rumored" && m.status !== "private";
+  }
+
+  var LIVE_METRIC = { general: "aa", analysis: "aa", coding: "coding" };
+  var METRIC_LABEL = { aa: "AA Intelligence", coding: "AA Coding" };
+  var APP_VENDOR = { claude: "Anthropic", chatgpt: "OpenAI", gemini: "Google" };
+
+  function bestOf(vendor, metric, db) {
+    var best = null;
+    db.models.forEach(function (m) {
+      if (m.vendor !== vendor || m.status !== "public" || !official(m)) return;
+      var v = metric === "coding" ? m.score.coding : m.score.aa;
+      if (typeof v !== "number") return;
+      if (!best || v > best.value) best = { id: m.id, name: m.name, value: v, metric: metric, label: METRIC_LABEL[metric] };
+    });
+    return best;
+  }
+
+  /* One sentence that is true today because it is computed today. */
+  function liveSummary(db) {
+    db = db || currentDb();
+    if (!db) return null;
+    var top = db.models.filter(function (m) { return official(m) && m.status === "public"; })
+      .sort(function (a, b) { return b.score.aa - a.score.aa; });
+    if (top.length < 10) return null;
+    var lead = top[0], second = top[1], tenth = top[9];
+    var gap = Math.round((lead.score.aa - second.score.aa) * 10) / 10;
+    var spread = Math.round((lead.score.aa - tenth.score.aa) * 10) / 10;
+    var vendors = {};
+    top.slice(0, 10).forEach(function (m) { vendors[m.vendor] = (vendors[m.vendor] || 0) + 1; });
+    var makers = Object.keys(vendors).length;
+    return "Right now " + lead.name + " (" + lead.vendor + ") leads the official Artificial Analysis Intelligence Index at " + lead.score.aa +
+      (gap > 0 ? ", " + gap + " points ahead of " + second.name : ", tied with " + second.name) +
+      ". The top ten fit inside " + spread + " points and come from " + makers + " different " + (makers === 1 ? "lab" : "labs") +
+      ". Perplexity remains the specialist you add for anything that needs sources.";
+  }
+
+  /* recommend(taskType, db?) - db defaults to the page's catalog; the API
+     passes the live merged copy it serves, so both answer the same. */
+  Bench.recommend = function (taskType, dbOverride) {
+    var key = this.taskTypes[taskType] ? taskType : "general";
+    var base = this.taskTypes[key];
+    var metric = LIVE_METRIC[key];
+    var db = metric ? (dbOverride && dbOverride.models ? dbOverride : currentDb()) : null;
+    if (!db) return base;
+    var live = {};
+    Object.keys(APP_VENDOR).forEach(function (app) {
+      var b = bestOf(APP_VENDOR[app], metric, db);
+      if (b) live[app] = b;
+    });
+    if (Object.keys(live).length < 2) return base;
+    var order = base.ranking.map(function (r, i) { return { r: r, i: i }; });
+    order.sort(function (a, b) {
+      var va = live[a.r.app] ? live[a.r.app].value : -1;
+      var vb = live[b.r.app] ? live[b.r.app].value : -1;
+      return vb - va || a.i - b.i;
+    });
+    var out = {};
+    for (var k in base) out[k] = base[k];
+    out.ranking = order.map(function (o) {
+      var r = { app: o.r.app, note: o.r.note };
+      if (live[o.r.app]) r.live = live[o.r.app];
+      return r;
+    });
+    out.metric = metric;
+    if (key === "general") out.summary = liveSummary(db) || base.summary;
+    return out;
+  };
+
+  /* The catalog cards, with the two data-driven groups filled from the
+     current catalog: the six strongest public models, and the six strongest
+     you can download. Each note is built from figures, never typed. */
+  Bench.catalogView = function () {
+    var db = currentDb();
+    function money(n) { return "$" + n; }
+    function card(m) {
+      var s = m.spec || {};
+      var bits = ["AA " + m.score.aa];
+      if (typeof m.score.coding === "number") bits.push("coding " + m.score.coding);
+      if (s.ctx) bits.push(s.ctx + " context");
+      return {
+        id: m.id, name: m.name, vendor: m.vendor,
+        access: s.priceIn != null && s.priceOut != null ? "API " + money(s.priceIn) + "/" + money(s.priceOut) + " per 1M tokens" + ((m.tags || []).indexOf("free") !== -1 ? " · has a free route" : "") : (m.access || ""),
+        note: bits.join(" · ") + (m.auto ? " · added automatically" : "")
+      };
+    }
+    return Bench.catalog.map(function (cat) {
+      if (!db || (cat.id !== "frontier" && cat.id !== "open")) return cat;
+      var pool = db.models.filter(function (m) {
+        return official(m) && m.status === "public" && (cat.id === "frontier" || (m.tags || []).indexOf("open-weights") !== -1);
+      }).sort(function (a, b) { return b.score.aa - a.score.aa; }).slice(0, 6);
+      var copy = {};
+      for (var k in cat) copy[k] = cat[k];
+      copy.models = pool.map(card);
+      return copy;
+    });
+  };
+
+  Bench.liveSummary = liveSummary;
 
   /* The catalog used to carry its own copy of each score, and those copies
      drifted from js/models-db.js within a single refresh - two different
@@ -256,19 +347,14 @@
      written without figures and any score shown next to a catalog entry is
      read from the database at render time. One number, one owner. */
   function dbModel(name) {
-    var db = (typeof window !== "undefined" ? window.PromptCompassModelsDB : null) ||
-             (typeof module !== "undefined" && module.exports ? tryRequireDb() : null);
-    if (!db || !db.models) return null;
+    var db = currentDb();
+    if (!db) return null;
     var want = String(name || "").toLowerCase().replace(/[^a-z0-9]/g, "");
     for (var i = 0; i < db.models.length; i++) {
       var k = db.models[i].name.toLowerCase().replace(/[^a-z0-9]/g, "");
       if (k === want) return db.models[i];
     }
     return null;
-  }
-
-  function tryRequireDb() {
-    try { return require("./models-db.js"); } catch (e) { return null; }
   }
 
   function liveScore(name) {

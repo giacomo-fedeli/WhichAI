@@ -7,7 +7,16 @@ Read-only, no key, no account, no rate-limit gate. Every endpoint answers `GET`
 with an `ETag` so a repeat call costs a `304`.
 
 The catalog is published under **CC BY 4.0** — attribution: *WhichAI,
-whichai.wiki*. The application code is not open source; the data is.
+whichai.wiki*. Benchmark scores are **Artificial Analysis**'s official indices
+(attribution: artificialanalysis.ai), relayed by OpenRouter's public model
+list. The application code is not open source; the data is.
+
+**Since v0.35 the API is live.** `/api/models`, `/api/stats`, `/api/recommend`
+and `/api/health` serve the editorial catalog merged with the current public
+data (official scores, prices, models measured since the last deploy). Each
+response's `meta.live.retrievedAt` says when the source was read; when the
+source is unreachable the editorial catalog is served unchanged and `meta.live`
+is absent.
 
 ---
 
@@ -19,7 +28,7 @@ whichai.wiki*. The application code is not open source; the data is.
 | No request body, ever | Nothing a caller sends can be stored, because nothing is read. |
 | No cookies, no session, no logging of query text | The site's promise is that what you type stays in your browser. The API is not an exception carved into it. |
 | Same data modules as the browser (`js/models-db.js`, `js/benchmarks.js`) | One source of truth. The API cannot drift from the page. |
-| `s-maxage=3600, stale-while-revalidate=86400` | Warm cache, cheap function invocations, and the catalog changes weekly at most. |
+| `s-maxage=3600, stale-while-revalidate=86400` | Warm cache, cheap function invocations: the upstream is read about once an hour per region however busy the site is. |
 
 ---
 
@@ -127,11 +136,59 @@ median / p75 / max), tallies by vendor, tag and label, and a leaderboard.
 
 ---
 
+## `GET /api/catalog`
+
+The self-updating layer (v0.35). One small delta that the browser, the build
+and every other endpoint lay over the editorial catalog in `js/models-db.js`.
+Computed by `api/_catalog-core.js` from OpenRouter's public model list.
+
+```bash
+curl https://whichai.wiki/api/catalog
+```
+
+```json
+{
+  "schemaVersion": 1,
+  "kind": "whichai-live-catalog",
+  "status": "fresh",
+  "retrievedAt": "2026-10-03T18:46:00.000Z",
+  "updated": "October 3, 2026",
+  "source": { "name": "OpenRouter", "benchmarks": { "name": "Artificial Analysis", "url": "https://artificialanalysis.ai/" } },
+  "patches": { "claude-opus-5": { "score": { "aa": 50.8, "coding": 78, "agentic": 56.5, "src": "aa" } } },
+  "added": [ { "id": "claude-opus-5-5", "name": "Claude Opus 5.5", "score": { "aa": 57.6, "src": "aa" }, "auto": true } ],
+  "freeRoutes": [ { "id": "qwen/qwen3.8-27b:free", "family": "qwen", "aa": 33.7 } ],
+  "arrivals": [ { "date": "2026-09-29", "name": "GPT-6.1 Sol", "aa": 51.8 } ],
+  "counts": { "matched": 90, "official": 97, "added": 42, "freeRoutes": 10 }
+}
+```
+
+| Field | Meaning |
+| --- | --- |
+| `patches` | Per catalog id: official scores (`src: "aa"`), current price (`priceSrc: "OpenRouter"`, with `priceWas`), context and date only where the catalog has none, tags that become true (`free`, `open-weights`). Never a review. |
+| `added` | Models Artificial Analysis has measured that the catalog does not list. Marked `auto: true` until a person writes their review. |
+| `freeRoutes` | `:free` routes that exist right now, best measured first. The app heals a retired default with the best route of the same family. |
+| `arrivals` | Everything listed in the last 45 days that is measured, plus new unmeasured models from the big labs (tiers like `-pro`/`-prime` of listed models are skipped). Feeds the Model Radar. |
+
+`status` is `fresh`, `stale` (upstream down, last good read under 7 days old,
+cached 5 minutes) or `unavailable` (no delta: the response carries no
+`patches`, and clients keep what they have). Rules the delta never breaks: no
+review is rewritten, no model is deleted, no tag is removed, no unmeasured
+model gets a score, a converted value (`~`) is never ranked.
+
+---
+
 ## `GET /api/refresh`
 
 The automated data check, running on the same host that serves the site. A
 Vercel Cron calls it daily; the Model Radar page reads it so the answer is
 visible where the data lives.
+
+Since v0.35 it is an **audit** of the automation rather than a to-do list for a
+human: scores, prices and new measured models are applied by `/api/catalog`,
+and a retired free default is healed in the browser. The report's `automated`
+block says what the automation did; `needsHuman` keeps only what it cannot do
+(for example, no live free route left for a family, or OpenRouter no longer
+relaying the indices - `relayedScores` drops below 20).
 
 It asks the public OpenRouter model list four questions:
 
@@ -154,7 +211,9 @@ curl https://whichai.wiki/api/refresh
   "deadFreeRoutes": [],
   "priceDrift": [],
   "missingFromCatalog": [],
-  "needsHuman": ["Artificial Analysis scores are never updated automatically: re-check the snapshot and cite it."]
+  "relayedScores": 109,
+  "automated": { "scores": "official Artificial Analysis indices applied automatically by /api/catalog" },
+  "needsHuman": []
 }
 ```
 
@@ -165,7 +224,7 @@ even when the upstream source is unreachable, returning `skipped: true` with a
 The analysis lives in `api/_refresh-core.js` and is shared with
 `tools/refresh-data.mjs`, so the command line, CI and the endpoint can never
 mean different things. It is read-only: it reports findings and never edits
-the catalog. Intelligence scores in particular are never touched by a machine.
+anything itself.
 
 ---
 

@@ -1,14 +1,24 @@
 /*
- * WhichAI - Model Radar change feed (v0.25.0)
- * Curated, dated, sourced changes. Update this file at every data refresh
- * (add new entries at the top; keep sources). Dates are ISO (YYYY-MM-DD).
- * Types: new-model · price · score · free-tier · upcoming
+ * WhichAI - Model Radar change feed (v0.35.0)
+ * Two sources, merged and sorted by date:
+ *   - CHANGES below: curated, dated, sourced editorial entries (the "why")
+ *   - live arrivals: every model listed on OpenRouter in the last 45 days that
+ *     Artificial Analysis has measured, plus brand-new models from the big
+ *     labs, read automatically by js/live-catalog.js (the "what", with no
+ *     human in the loop). Nobody has to add a line here for a launch to show.
+ * Dates are ISO (YYYY-MM-DD). Types: new-model · price · score · free-tier · upcoming.
  * Entries with a future date are shown under "Coming up".
+ * Entries before October 2026 quote the BenchLM-mirror scale of the time
+ * (e.g. "AA 63.0"); since v0.35 the site uses the official scale (see the
+ * October 3 entry), so those figures are history, not current values.
  */
 (function () {
   "use strict";
 
   var CHANGES = [
+    { date: "2026-10-03", type: "score", title: "WhichAI now reads the official AA index, by itself", dbId: "claude-opus-5",
+      note: "Scores now come straight from Artificial Analysis (relayed by OpenRouter's public model list) and refresh automatically every hour; new measured models appear on their own. The official scale is lower than the mirror the site used before: Claude Opus 5 reads 50.8 here where the mirror said 63.0. Models without a current official number show a converted value marked ~ and are never ranked.",
+      src: { label: "Artificial Analysis", url: "https://artificialanalysis.ai/" } },
     { date: "2026-08-30", type: "score", title: "AA index: August snapshot, and the field closes in", dbId: "claude-opus-5",
       note: "The whole table moved up 1.5 to 2.5 points, so August scores are not directly comparable with July's. Opus 5 63.0, Fable 5 62.1, Grok 4.6 60.9, Kimi K3 59.7, GLM-5.3 59.5. The top ten now fit inside 6.3 points, and two Chinese labs sit in the top five for the first time.",
       src: { label: "BenchLM mirror (Aug 30)", url: "https://benchlm.ai/benchmarks/artificialanalysis" } },
@@ -86,17 +96,45 @@
       src: { label: "BenchLM mirror", url: "https://benchlm.ai/benchmarks/artificialAnalysis" } }
   ];
 
+  /* Live arrivals become Radar entries. The text is built from figures only,
+     so it can never claim more than the data says. */
+  function liveEntries() {
+    var db = typeof window !== "undefined" ? window.PromptCompassModelsDB : null;
+    var arr = db && db.live && Array.isArray(db.live.arrivals) ? db.live.arrivals : [];
+    return arr.map(function (a) {
+      var measured = typeof a.aa === "number";
+      return {
+        date: a.date, type: "new-model", auto: true,
+        title: a.name + (measured ? " appears, measured at " + a.aa : " is listed, not measured yet"),
+        dbId: a.dbId || undefined,
+        note: a.vendor + " \u00b7 listed on OpenRouter " + a.date + ". " + (measured
+          ? "Artificial Analysis Intelligence Index: " + a.aa + " (official). Added automatically: the numbers are measured, the review is not written yet."
+          : "Artificial Analysis has not published a score yet: it will be ranked automatically when it does."),
+        src: { label: measured ? "Artificial Analysis via OpenRouter" : "OpenRouter listing", url: a.url || "https://openrouter.ai/models" }
+      };
+    });
+  }
+
+  function merged() {
+    var curatedIds = {};
+    CHANGES.forEach(function (c) { if (c.dbId && c.type === "new-model") curatedIds[c.dbId] = true; });
+    var live = liveEntries().filter(function (e) { return !(e.dbId && curatedIds[e.dbId]); });
+    return CHANGES.concat(live).map(function (c, i) { return { c: c, i: i }; })
+      .sort(function (a, b) { return a.c.date < b.c.date ? 1 : a.c.date > b.c.date ? -1 : a.i - b.i; })
+      .map(function (x) { return x.c; });
+  }
+
   var Changes = {
     CHANGES: CHANGES,
-    /** entries not in the future, newest first */
+    /** curated + live entries not in the future, newest first */
     past: function (today) {
       today = today || new Date().toISOString().slice(0, 10);
-      return CHANGES.filter(function (c) { return c.date <= today; });
+      return merged().filter(function (c) { return c.date <= today; });
     },
     /** future entries, soonest first */
     upcoming: function (today) {
       today = today || new Date().toISOString().slice(0, 10);
-      return CHANGES.filter(function (c) { return c.date > today; }).slice().reverse();
+      return CHANGES.filter(function (c) { return c.date > today; }).slice().sort(function (a, b) { return a.date < b.date ? -1 : a.date > b.date ? 1 : 0; });
     },
     /** how many past entries are newer than the given ISO date string */
     unseenCount: function (lastSeen, today) {

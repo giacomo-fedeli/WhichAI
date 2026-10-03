@@ -36,7 +36,7 @@ REGOLE FISSE:
 - Deploy: lo fa Jack (upload GitHub → Vercel auto-deploy, o npx vercel). La sandbox non raggiunge Vercel/GitHub.
 - Test in sandbox con node prima di consegnare (sintassi, integrità models-db, id cross-check HTML↔JS, completezza i18n).
 - ATTENZIONE bug di sync noto: file modificati lato host possono apparire troncati nella sandbox. Se succede, modifica i file DALLA SANDBOX (python3/heredoc) — vedi nota in STATUS.md.
-- Manutenzione mensile: refresh js/models-db.js + js/benchmarks.js + slug OpenRouter :free (ricerca web), riverifica voci rumored/est.
+- Dati (dalla v0.35): punteggi ufficiali Artificial Analysis, prezzi, nuovi modelli misurati e route :free si aggiornano DA SOLI (api/catalog.js + js/live-catalog.js, e ogni deploy li ricuoce nel bundle). Nessun refresh manuale dei numeri. Resta umano solo il lavoro editoriale: recensioni dei modelli marcati "auto-added", voci rumored, AI Debates, glossario. NON reintrodurre punteggi scritti a mano in models-db.js: per i modelli con misura ufficiale il valore viene dalla fonte.
 - Separa sempre: "cosa faccio io (Claude)" vs "cosa devi fare tu (Jack)", con passi semplici.
 - Spiegazioni a Jack in italiano, semplici e dirette.
 

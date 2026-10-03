@@ -39,6 +39,9 @@ jobs:
       - name: Live data normalization, caching and fallback
         run: node tests/live-data-tests.mjs
 
+      - name: Self-updating catalog (delta, merge, API, build seed) on a real snapshot
+        run: node tests/catalog-tests.mjs
+
       - name: Static wiki regenerates cleanly
         run: |
           node tools/build-seo.mjs

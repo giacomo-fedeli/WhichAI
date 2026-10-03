@@ -2,6 +2,35 @@
 
 (Older release-by-release history lives in `STATUS.md`, the project's working memory.)
 
+## v0.35.0 (2026-10-03)
+
+The site updates itself. Scores, prices, new models and free routes now come from their public sources automatically, every hour, with nobody editing a file.
+
+### Added
+- **`GET /api/catalog`** - the self-updating layer. `api/_catalog-core.js` turns OpenRouter's public model list into one small delta: the official Artificial Analysis Intelligence, Coding and Agentic indices, current prices, the free routes that exist right now, every model Artificial Analysis has measured that the catalog lacks, and the newest arrivals. Cached at the edge for an hour and served stale while it revalidates, so the upstream sees about one read per hour per region.
+- **`js/live-catalog.js`** - lays that delta over the editorial catalog in the browser. At load it applies the newest of the build seed and this browser's saved copy (so the first paint is already current); once the page settles it asks `/api/catalog` for fresher data and every view redraws: ranks, the Model guide, the welcome ladder, the Radar.
+- **New models appear on their own.** On October 3 that meant 42 measured models the catalog did not list - Claude Opus 5.5 (57.6, the new #1), Claude Sonnet 5.5, GPT-6.1 Sol, GPT-6 Sol and Luna, Grok 4.7, MiMo-V2.6 and more - each marked "auto-added" until a person writes its review. Brand-new unmeasured models from the big labs show in the Radar and are ranked only once measured.
+- **Every deploy bakes fresh data in.** `tools/build.mjs` reads the same sources, writes `dist/js/live-seed.js` and regenerates the static wiki from the merged catalog, so search-engine pages and new model pages are current from the first byte. If the source does not answer, the build ships the committed snapshot and says so.
+- **`js/wiki-live.js`** keeps wiki figures current between deploys (elements marked `data-live-*`), and the models index lists what was measured since the page was generated.
+- **Self-healing free routes.** OpenRouter retired `qwen/qwen3-coder:free`, the shipped Qwen default, which silently broke auto-run for everyone who kept it. A retired default is now replaced by the best live free route of the same family (today `qwen/qwen3.8-27b:free`), and the Settings page says so. Routes a user typed are never touched.
+- **A live router.** For general use, analysis and coding the order of Claude, ChatGPT and Gemini follows the live index of each maker's best public model; the general summary and the Frontier / Open-weight catalog cards are computed from the data instead of typed. The guided finder picks "whatever is best", the developer value pick, the best free route and the best downloadable model from the live catalog too.
+- A green **Live data** badge in the header says when the numbers were last read, in the reader's language.
+- **`tests/catalog-tests.mjs`** - 69 checks on a real OpenRouter response saved on October 3 (`tests/fixtures/openrouter-2026-10-03.json`): the delta, the merge, the browser lifecycle, the endpoint, the build seed and the wiki.
+
+### Corrected
+- **The catalog's "AA index" was not the official one.** Until v0.34 the scores came from the BenchLM mirror, which sits on a different scale (Claude Opus 5: 63.0 on the mirror, 50.8 official). The values OpenRouter relays match what Artificial Analysis publishes itself (OfficeChai, September 22: Opus 5.5 58, GPT-6 Astra 53, Fable 5.1 53, Opus 5 51). A one-time migration (`tools/migrations/2026-10-03-official-aa-scale.mjs`, kept for provenance) moved the static catalog to the official scale: 55 entries take their official value; 53 measured only on the old scale carry a converted value marked "~" (with the original kept in `was`), never ranked.
+- **Rankings use official measurements only** - liveRank, the welcome ladder, the 3D ladder, charts, the finder and the API. A converted or guessed value is context, not a position.
+- Three reviews quoted old-scale figures (Grok 4.6, Muse Spark 1.2, GLM-5.3); the figures are gone, the judgment stays.
+- `js/benchmarks.js` prose no longer carries numbers, dates or ranks (it had "Opus 5 = 60.7, July 24" beside a September summary); the editorial layer describes character, the live layer supplies figures.
+
+### Changed
+- `/api/models`, `/api/stats`, `/api/recommend` and `/api/health` serve the live catalog (`meta.live` says when the source was read); with the source down they serve the editorial catalog unchanged. `WHICHAI_LIVE=off` pins the static data.
+- `/api/refresh` became an audit of the automation: what was applied, what was healed, and only what still needs a person. It also raises a flag if OpenRouter ever stops relaying the indices (`relayedScores` under 20), because then scores would freeze.
+- About, Methodology and FAQ describe how the data now stays current; the Radar merges curated entries with automatic arrivals; the price-performance chart labels only the frontier and the leaders so a hundred dots stay readable.
+
+### Tests
+232 static + 115 DOM smoke + 50 API + 55 live data + 69 catalog = **521 passing**.
+
 ## v0.34.0 (2026-09-08)
 
 The live market feed, finished and mounted, plus the test file two workflows were already calling.

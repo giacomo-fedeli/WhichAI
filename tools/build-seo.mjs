@@ -80,8 +80,9 @@ ${body}
       <a href="/#about-contribute">Contribute</a>
       <a href="/data/models.json">Open dataset</a>
     </nav>
-    <p>Generated from the WhichAI model database · Data snapshot: ${esc(DB.updated)} · Free, no account, no tracking.</p>
+    <p>Generated from the WhichAI model database · Data read <span data-live-updated>${esc(DB.updated)}</span>, refreshed automatically · Free, no account, no tracking.</p>
   </footer>
+  <script src="/js/wiki-live.js" defer></script>
 </body>
 </html>
 `;
@@ -94,15 +95,16 @@ function specRows(m) {
   const rows = [
     ["Provider", m.vendor],
     ["Status", m.status],
-    ["AA Intelligence Index", m.score && m.score.aa ? (m.score.est ? "~" + m.score.aa + " (WhichAI estimate)" : m.score.aa + " (" + DB.updated + " snapshot)") : "n/a"],
+    ["AA Intelligence Index", m.score && typeof m.score.aa === "number" ? (m.score.est ? "~" + m.score.aa + " (not a current official measurement)" : m.score.aa + " (official, read " + DB.updated + ")") : "not measured yet", "score"],
     ["Released", s.released || "n/a"],
     ["Context window", s.ctx || "n/a"],
     ["Modalities", s.modal || "n/a"],
-    ["API price $/1M (in / out)", s.priceIn != null ? "$" + s.priceIn + " / $" + s.priceOut + (s.note ? " · " + s.note : "") : "n/a"],
+    ["API price $/1M (in / out)", s.priceIn != null ? "$" + s.priceIn + " / $" + s.priceOut + (s.priceSrc ? " (" + s.priceSrc + ")" : "") + (s.note ? " · " + s.note : "") : "n/a", "price"],
     ["Speed", s.speed || "n/a"],
     ["Access", m.access]
   ];
-  return rows.map(r => `<div class="db-spec"><b>${esc(r[0])}</b>${r[0] === "Provider" ? brand(m.vendor, m.vendor, { wordmark: true }) : esc(r[1])}</div>`).join("\n        ");
+  /* data-live-* lets /js/wiki-live.js refresh the figure between deploys. */
+  return rows.map(r => `<div class="db-spec"><b>${esc(r[0])}</b>${r[0] === "Provider" ? brand(m.vendor, m.vendor, { wordmark: true }) : r[2] ? `<span data-live-${r[2]}="${esc(m.id)}">${esc(r[1])}</span>` : esc(r[1])}</div>`).join("\n        ");
 }
 
 function catBars(m) {
@@ -180,7 +182,8 @@ for (const m of DB.models) {
   DB.models.forEach(m => { (groups[m.vendor] = groups[m.vendor] || []).push(m); });
   const body = `    <div class="guide-head">
       <h1>All ${DB.models.length} tracked AI models</h1>
-      <p>Every model in the WhichAI database, with score, price and an honest one-line review. Snapshot: ${esc(DB.updated)}.</p>
+      <p>Every model in the WhichAI database, with score, price and an honest one-line review. Data read <span data-live-updated>${esc(DB.updated)}</span>.</p>
+      <div id="live-new-models" hidden></div>
     </div>
     ${Object.keys(groups).map(v => `<div class="card about-card"><h2 class="card-title">${brand(v, v, { wordmark: true })}</h2><ul class="catalog-list">${groups[v].map(m => `<li><span class="router-app"><a href="/models/${m.id}.html">${brand(m, m.name, { providerWordmark: true })}</a></span>${m.score && m.score.aa ? " · AA " + (m.score.est ? "~" : "") + m.score.aa : ""} · ${esc(m.status)}</li>`).join("")}</ul></div>`).join("\n    ")}`;
   writeFileSync("models/index.html", shell({ path: "/models/", title: `All ${DB.models.length} AI models compared (2026) | WhichAI`, desc: `Searchable list of ${DB.models.length} AI models from ${new Set(DB.models.map(m => m.vendor)).size} vendors with scores, prices and honest reviews. Updated ${DB.updated}.`, body, crumb: `<a href="/">WhichAI</a> / Models` }));

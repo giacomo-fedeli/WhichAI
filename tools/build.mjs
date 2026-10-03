@@ -1,10 +1,15 @@
 /*
- * WhichAI - production build (v0.30.0)
+ * WhichAI - production build (v0.35.0)
  *
  * The repository keeps readable, commented sources; production gets a
  * minified copy. Run: node tools/build.mjs  ->  dist/
  *
  * What it does:
+ *   - reads the public data (OpenRouter + the official Artificial Analysis
+ *     indices it relays) and bakes it into dist/js/live-seed.js, then
+ *     regenerates the static wiki in dist/ from the merged catalog: every
+ *     deploy ships current numbers without anybody editing a file. If the
+ *     source does not answer, the build ships the committed snapshot and says so
  *   - minifies every js/*.js and styles.css with esbuild (comments, the
  *     methodology notes inside them and local variable names all go away)
  *   - collapses HTML whitespace and drops HTML comments, leaving inline
@@ -20,6 +25,7 @@
  */
 import { build } from "esbuild";
 import { createHash } from "node:crypto";
+import { createRequire } from "node:module";
 import { cp, mkdir, readFile, readdir, rm, stat, writeFile } from "node:fs/promises";
 import { existsSync } from "node:fs";
 import path from "node:path";
@@ -130,6 +136,53 @@ async function copyStatic() {
   return n;
 }
 
+/* The live layer, at build time. Same code as /api/catalog and the browser:
+   _live-core normalizes, _catalog-core computes the delta, live-catalog
+   applies it. A network failure or a malformed feed is never a broken build. */
+async function syncLive() {
+  if (process.env.WHICHAI_LIVE === "off") return { skipped: "disabled (WHICHAI_LIVE=off)" };
+  const require = createRequire(import.meta.url);
+  globalThis.window = globalThis.window || globalThis;
+  const DB = require("../js/models-db.js");
+  const Live = require("../api/_live-core.js");
+  const Core = require("../api/_catalog-core.js");
+  const LiveCatalog = require("../js/live-catalog.js");
+  let payload;
+  /* WHICHAI_LIVE_FIXTURE=<file> replays a saved OpenRouter response: the
+     offline tests use it to exercise this exact path without a network. */
+  if (process.env.WHICHAI_LIVE_FIXTURE) {
+    try { payload = JSON.parse(await readFile(path.resolve(ROOT, process.env.WHICHAI_LIVE_FIXTURE), "utf8")); }
+    catch (e) { return { skipped: "fixture unreadable (" + e.message + ")" }; }
+  } else try {
+    const res = await fetch(Live.SOURCE, { headers: { Accept: "application/json", "User-Agent": "WhichAI-build (+https://whichai.wiki)" }, signal: AbortSignal.timeout(15000) });
+    if (!res.ok) throw new Error("HTTP " + res.status);
+    payload = await res.json();
+  } catch (e) {
+    return { skipped: "source unreachable (" + (e && e.message ? e.message : e) + ")" };
+  }
+  let delta;
+  try {
+    delta = Core.computeDelta(DB, Live.normalize(payload, DB));
+  } catch (e) {
+    return { skipped: "source rejected (" + e.message + ")" };
+  }
+  await writeFile(path.join(OUT, "js", "live-seed.js"), "window.WhichAILiveSeed=" + JSON.stringify(delta) + ";\n");
+  const applied = LiveCatalog.applyDelta(DB, delta);
+  return { ok: applied.ok, counts: delta.counts, at: delta.retrievedAt };
+}
+
+/* The wiki is regenerated inside dist/ from the merged catalog, so pages for
+   models measured since the last commit exist the moment they are deployed. */
+async function regenerateWiki() {
+  const cwd = process.cwd();
+  try {
+    process.chdir(OUT);
+    await import("./build-seo.mjs?dist=" + Date.now());
+  } finally {
+    process.chdir(cwd);
+  }
+}
+
 async function main() {
   await rm(OUT, { recursive: true, force: true });
   await mkdir(OUT, { recursive: true });
@@ -138,6 +191,8 @@ async function main() {
   const css = await minifyCss();
   const html = await buildHtml();
   const copied = await copyStatic();
+  const live = await syncLive();
+  if (live.ok) await regenerateWiki();
 
   const saved = js.before - js.after + (css.before - css.after) + (html.before - html.after);
   console.log("WhichAI production build -> dist/");
@@ -146,6 +201,9 @@ async function main() {
   console.log("  html    " + bytes(html.before) + " -> " + bytes(html.after));
   console.log("  copied  " + copied + " static entries");
   console.log("  saved   " + bytes(saved) + " over the wire");
+  console.log(live.ok
+    ? "  live    " + live.counts.official + " official scores, " + live.counts.added + " models added, " + live.counts.freeRoutes + " free routes (read " + live.at + "); wiki regenerated"
+    : "  live    skipped: " + live.skipped + " - shipping the committed snapshot");
 
   /* A build that produced a broken CSP or lost a script would be worse than
      no build at all, so verify before anyone can deploy it. */

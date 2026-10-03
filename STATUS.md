@@ -1,10 +1,58 @@
 # WhichAI (ex PromptCompass) — STATUS
 
-Ultimo aggiornamento: 2026-09-08 (sessione 35 - Claude)
-Versione app: v0.34.0 (in cartella; live v0.30 verificata. NOTA: GitHub Actions bloccate da un problema di autorizzazione carta sull'account, NON da costi: vedi sessione 33)
+Ultimo aggiornamento: 2026-10-03 (sessione 36 - Claude)
+Versione app: v0.35.0 (in cartella; live v0.34 verificata il 3 ottobre. Il sito ora si aggiorna DA SOLO: vedi sessione 36. GitHub Actions non serve più per i dati)
 Sito live: https://whichai.wiki · https://promptcompass.vercel.app resta come alias
 
 ## Fase corrente: Growth - fase 2 (backend reale, automazione dati, risposta alla review esterna)
+
+## Fatto (sessione 36, 2026-10-03 - Claude): il sito si aggiorna da solo
+
+Richiesta di Jack, testuale: *"il sito non deve avere aggiornamenti manuali da me. si deve aggiornare da solo. i benchmarking dei modelli sono ancora datati, deve aggiornarsi in automatico e comparire da solo."*
+
+### 0. Cosa ho trovato (3 ottobre, sito live v0.34)
+- Catalogo fermo all'8 settembre. `/api/refresh` live diceva: **severity "broken"**, 51 modelli upstream assenti dal catalogo, 6 prezzi cambiati, e la route di default **`qwen/qwen3-coder:free` non esiste più** (auto-run Qwen rotto per tutti).
+- Usciti nel frattempo, e assenti dal sito: Claude Opus 5.5 (22 set, nuovo #1), Claude Sonnet 5.5, GPT-6.1 Sol, GPT-6 Sol/Luna, Grok 4.7, MiMo-V2.6, DeepSeek V4.1 Flash, Qwen3.8 Max (0902)...
+- **Scoperta importante**: OpenRouter ora relaya gli indici Artificial Analysis su **146 modelli** (erano ~18 a settembre), gratis e senza chiave. E i suoi numeri **sono quelli ufficiali**: OfficeChai (22 set) riporta dall'AA Opus 5.5 = 58, GPT-6 Astra 53, Fable 5.1 53, Opus 5 51; OpenRouter dice 57.6 / 52.7 / 53.4 / 50.8. Il catalogo invece usava il **mirror BenchLM**, su un'altra scala (Opus 5 = 63.0). **I numeri "AA" che il sito mostrava non erano l'indice ufficiale.**
+
+### 1. L'architettura: tre livelli, zero interventi umani
+1. **`GET /api/catalog`** (`api/catalog.js` + `api/_catalog-core.js`): legge la lista pubblica OpenRouter, calcola un *delta*: punteggi ufficiali AA (Intelligence, Coding, Agentic), prezzi attuali, route `:free` vive, modelli misurati che il catalogo non ha, arrivi recenti. Cache edge 1 ora + stale-while-revalidate 1 giorno: ~1 lettura all'ora per regione, gratis sul piano Hobby.
+2. **`js/live-catalog.js`** nel browser: al caricamento applica subito il più recente tra il seed del build e la copia salvata in localStorage (prima schermata già aggiornata), poi chiede `/api/catalog` e ridisegna ranking, guida, welcome, Radar. Valida tutto (schema, id, markup), non va mai indietro nel tempo, non cancella nulla.
+3. **Build** (`tools/build.mjs`): a ogni deploy legge le stesse fonti, scrive `dist/js/live-seed.js` e **rigenera il wiki statico dal catalogo aggiornato** (pagine per i modelli nuovi incluse). Se la fonte non risponde, spedisce lo snapshot del repo e lo dice. Tra un deploy e l'altro `js/wiki-live.js` aggiorna le cifre delle pagine wiki (`data-live-*`).
+
+Gli altri endpoint (`/api/models`, `/stats`, `/recommend`, `/health`) servono il catalogo **live** (`meta.live.retrievedAt`). `WHICHAI_LIVE=off` blocca i dati statici (test, debug).
+
+### 2. Cosa si aggiorna da solo, cosa no
+| Da solo | Mai da solo |
+| --- | --- |
+| punteggi ufficiali AA (+ coding/agentic) | recensioni (`review`) |
+| prezzi (etichettati "OpenRouter", col vecchio prezzo in `priceWas`) | categorie editoriali (`cat`) |
+| modelli nuovi misurati (badge "auto-added", recensione automatica fatta solo di cifre) | AI Debates, glossario, note del Radar curate |
+| route `:free` morte nelle impostazioni (solo i default di WhichAI, mai quelle scritte dall'utente) | modelli rumored (nessun punteggio finché non misurati) |
+| ordine Claude/ChatGPT/Gemini per generale, analisi, coding; riassunto "general"; card Frontier e Open-weight; scelte del finder | |
+| Radar: arrivi automatici (misurati + nuovi dei grandi lab non ancora misurati, varianti -pro/-prime escluse) | |
+
+### 3. Migrazione una tantum alla scala ufficiale
+`tools/migrations/2026-10-03-official-aa-scale.mjs` (tenuto per provenienza, rifiuta di girare due volte): aggiunge a ogni voce la lista `or` (route OpenRouter, curata a mano da me su 91 voci), mette il valore ufficiale su **55 voci** (`src:"aa"`), converte **53 voci** misurate solo sulla vecchia scala con un fit monotono sui 54 modelli misurati su entrambe (`src:"converted"`, `est:true`, valore originale in `was`, mostrate con "~", **mai in classifica**), converte le 6 stime dei rumored. Tre recensioni con cifre vecchie corrette (Grok 4.6, Muse Spark 1.2, GLM-5.3).
+
+### 4. Regola nuova: le classifiche usano solo misure ufficiali
+liveRank, scala del welcome, scala 3D (`src/scene3d.src.js`, bundle rigenerato), grafici, finder, API: un valore `~` o una stima non prende mai una posizione.
+
+### 5. Il resto
+- `js/benchmarks.js` riscritto: prosa senza cifre/date/rank (c'era "Opus 5 = 60.7, July 24" accanto a un riassunto di settembre), `recommend()` ordina le app con l'indice live, `liveSummary()` scrive la frase "Right now X leads..." dai dati, `catalogView()` costruisce Frontier/Open-weight dal catalogo.
+- Default Qwen ora `qwen/qwen3.8-27b:free` (esiste, AA 33.7). `healFreeRoutes()` in app.js ripara chi aveva salvato quello vecchio.
+- `/api/refresh` è diventato un **audit**: blocco `automated` (cosa ha fatto l'automazione), `healedFreeRoutes`, `relayedScores` (se OpenRouter smette di relayare gli indici, <20, scatta l'allarme: i punteggi si congelerebbero).
+- Badge verde "Live data · 2 ore fa" nell'header (Intl.RelativeTimeFormat, 11 lingue), 5 chiavi i18n nuove x11, sottotitolo Radar aggiornato x11.
+- About / Methodology / FAQ riscritti: dicevano "aggiornato mensilmente" e "i punteggi non li tocca mai una macchina".
+- Grafico prezzo/prestazioni: con ~100 punti era illeggibile; ora etichetta solo frontiera + top 6, con anti-collisione delle etichette.
+- HANDOVER/AGENTS/README: tolta la "manutenzione mensile" dei numeri.
+
+### Test e versione
+- **521 test verdi**: 232 statici + 115 smoke DOM + 50 API + 55 live data + **69 catalog (nuovi)**, tutti offline su una risposta OpenRouter vera salvata il 3 ottobre (`tests/fixtures/openrouter-2026-10-03.json`, 161 modelli). Verifica visiva in Chromium (desktop + mobile, tutte le viste, zero errori JS).
+- v0.35 ovunque (APP_VERSION, badge, footer, CACHE sw.js, package.json, API_VERSION 1.1.0).
+- [ ] **Jack**: un solo push di v0.35. Da quel momento i dati si aggiornano da soli, senza altri push.
+- [ ] Facoltativo, non necessario: chiave gratuita Artificial Analysis (`AA_API_KEY`) per coprire anche i modelli che OpenRouter non elenca. Non implementato: OpenRouter copre già 146 modelli.
+- [ ] Aperto da `docs/AUDIT-2026-09.md` (editoriale, non automatizzabile): due AI Debates superati (regulation, copyright), buildReasoning nell'engine, Prompt Doctor, Stack Optimizer Grok/Copilot.
 
 ## Fatto (sessione 35, 2026-09-08 - Claude): integrato il lavoro di Jack su /api/live, e una correzione che devo a lui
 

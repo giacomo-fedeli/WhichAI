@@ -1,9 +1,9 @@
 /* WhichAI service worker: network-first, precached shell, offline fallback.
    Bump CACHE on every release so old assets never linger. */
-var CACHE = "whichai-v0.34.0";
+var CACHE = "whichai-v0.35.0";
 var SHELL = [
   "./", "index.html", "styles.css", "manifest.webmanifest",
-  "js/engine.js", "js/benchmarks.js", "js/chains.js", "js/i18n.js", "js/models-db.js",
+  "js/engine.js", "js/benchmarks.js", "js/chains.js", "js/i18n.js", "js/models-db.js", "js/live-seed.js", "js/live-catalog.js",
   "js/merge.js", "js/charts.js", "js/glossary.js", "js/finder.js", "js/modelcompare.js", "js/stack.js", "js/doctor.js", "js/changes.js", "js/radar.js", "js/live-data.js", "js/sharecard.js", "js/arena.js", "js/config.js", "js/api.js", "js/stage.js", "js/journey.js", "js/support.js", "js/topics.js", "js/brands.js", "js/welcome.js", "js/app.js",
   "assets/brands/claude-color.svg", "assets/brands/claude-text.svg", "assets/brands/openai.svg", "assets/brands/openai-text.svg",
   "assets/brands/gemini-color.svg", "assets/brands/gemini-text.svg", "assets/brands/perplexity-color.svg", "assets/brands/perplexity-text.svg",

@@ -112,7 +112,7 @@
   var THEME_KEY = "pc_theme";
   var DEFAULT_GEMINI_MODEL = "gemini-3.6-flash";
   var DEFAULT_GROQ_MODEL = "llama-3.3-70b-versatile";
-  var APP_VERSION = "v0.34";
+  var APP_VERSION = "v0.35";
   var BRAND = "WhichAI";
   var TASK_ICONS = {
     writing: '<svg class="guide-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M4 20l1-4L16.5 4.5a2.1 2.1 0 013 3L8 19l-4 1z"/><path d="M13.5 7.5l3 3"/></svg>',
@@ -124,7 +124,11 @@
     business: '<svg class="guide-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="3" y="8" width="18" height="12" rx="2"/><path d="M9 8V6a3 3 0 016 0v2"/><path d="M3 13h18"/></svg>',
     general: '<svg class="guide-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8L12 3z"/><path d="M19 15l.9 2.6L22.5 18l-2.6.9L19 21.5l-.9-2.6L15.5 18l2.6-.9L19 15z"/></svg>'
   };
-  var DEFAULT_OR_MODELS = { nemotron: "nvidia/nemotron-3-ultra-550b-a55b:free", qwen: "qwen/qwen3-coder:free", glm: "", kimi: "", deepseek: "" };
+  var DEFAULT_OR_MODELS = { nemotron: "nvidia/nemotron-3-ultra-550b-a55b:free", qwen: "qwen/qwen3.8-27b:free", glm: "", kimi: "", deepseek: "" };
+  /* Free routes WhichAI shipped as defaults in earlier versions. A user who
+     saved settings still has them stored; when OpenRouter retires one, the
+     live catalog heals it (healFreeRoutes). A route the user typed is theirs. */
+  var HISTORIC_OR_DEFAULTS = ["qwen/qwen3-coder:free", "nvidia/nemotron-3-ultra-550b-a55b:free"];
 
   /* ---------- Language & theme (v0.12) ---------- */
 
@@ -1326,17 +1330,17 @@
     if (!C || !DBx || !wrap) return;
     wrap.hidden = false;
     var note = document.getElementById("insights-note");
-    if (note) note.textContent = "Measured scores only (no estimates). " + DBx.scaleNote;
+    if (note) note.textContent = "Official measurements only (no estimates, no conversions). " + DBx.scaleNote;
 
     var top = DBx.models
-      .filter(function (m) { return m.score && m.score.aa && !m.score.est && (m.status === "public" || m.status === "preview"); })
+      .filter(function (m) { return m.score && typeof m.score.aa === "number" && !m.score.est && (m.status === "public" || m.status === "preview"); })
       .sort(function (a, b) { return b.score.aa - a.score.aa; })
       .slice(0, 12);
     var topEl = document.getElementById("chart-top");
     if (topEl) {
       topEl.innerHTML = C.barChart(top.map(function (m) {
         return { label: m.name, value: m.score.aa };
-      }), { max: 65, aria: "Top 12 models by AA Intelligence Index" });
+      }), { max: top.length ? Math.ceil((top[0].score.aa + 2) / 5) * 5 : 65, aria: "Top 12 models by AA Intelligence Index" });
     }
 
     var pp = DBx.models.filter(function (m) {
@@ -1352,13 +1356,23 @@
           labelDy: (i % 2) ? 16 : 0
         };
       });
+      /* Label what a reader is looking for: the price/performance frontier
+         (nothing is both cheaper and better) and the six strongest models.
+         Every other dot keeps its tooltip. */
+      var topY = pts.map(function (p) { return p.y; }).sort(function (a, b) { return b - a; })[Math.min(5, pts.length - 1)];
+      pts.forEach(function (p) {
+        var dominated = pts.some(function (q) { return q !== p && q.x <= p.x && q.y >= p.y && (q.x < p.x || q.y > p.y); });
+        p.quiet = dominated && p.y < topY;
+      });
+      var shown = 0;
+      pts.forEach(function (p) { if (!p.quiet) p.labelDy = (shown++ % 2) ? 16 : 0; });
       ppEl.innerHTML = C.scatter(pts, {
         xLabel: "Blended API price, $ per 1M tokens (3:1 input:output)",
         yLabel: "AA Intelligence Index",
         aria: "Price versus performance scatter plot"
       });
       var ppNote = document.getElementById("chart-pp-note");
-      if (ppNote) ppNote.textContent = "Top-left = more intelligence per dollar. Prices and index both from the " + ((window.PromptCompassModelsDB || {}).updated || "current") + " snapshot. Only models with published price AND measured score are plotted.";
+      if (ppNote) ppNote.textContent = "Top-left = more intelligence per dollar. Index (official, Artificial Analysis) and prices (OpenRouter) as of " + ((window.PromptCompassModelsDB || {}).updated || "the latest read") + ", refreshed automatically. Only models with a published price AND an official score are plotted.";
     }
   }
 
@@ -1573,6 +1587,12 @@
       setBrandMark(name, item.app, app.label, { wordmark: true });
       li.appendChild(name);
       li.appendChild(document.createTextNode(" (" + app.vendor + ") - " + item.note));
+      if (item.live) {
+        var lv = document.createElement("span");
+        lv.className = "router-live";
+        lv.textContent = item.live.label + " (live): " + item.live.name + " " + item.live.value;
+        li.appendChild(lv);
+      }
       var free = document.createElement("span");
       free.className = "router-free";
       free.textContent = T("freeTier") + " " + app.freeModel;
@@ -1659,12 +1679,89 @@
     if (!DBx || !DBx.models) return null;
     if (!_rankCache) {
       var measured = DBx.models.filter(function (m) {
-        return m.score && typeof m.score.aa === "number" && m.status !== "rumored" && m.status !== "private";
+        return m.score && typeof m.score.aa === "number" && !m.score.est && m.status !== "rumored" && m.status !== "private";
       }).sort(function (a, b) { return b.score.aa - a.score.aa; });
       _rankCache = {};
       measured.forEach(function (m, i) { _rankCache[m.id] = { rank: i + 1, total: measured.length }; });
     }
     return _rankCache[id] || null;
+  }
+
+  /* ---------- v0.35: the catalog that updates itself ----------
+     js/live-catalog.js has already laid the newest data it had (build seed or
+     this browser's cache) over the catalog before this file ran, and fetches
+     /api/catalog once the page settles. When fresher data lands, everything
+     derived from the catalog is recomputed here: ranks, the guide, the
+     journey's numbers, the free-route defaults. Nobody presses anything. */
+
+  function dataLine() {
+    var DBx = window.PromptCompassModelsDB || {};
+    var LC = window.WhichAILiveCatalog;
+    if (DBx.live && DBx.live.at) {
+      var auto = (DBx.models || []).filter(function (m) { return m.auto; }).length;
+      var when = (LC && LC.ago(currentLang)) || DBx.updated;
+      return T("liveDataLine").replace("{when}", when).replace("{n}", String(auto));
+    }
+    return T("journeySnapshot") + ": " + (DBx.updated || (Bench && Bench.updated) || "n/a") + ".";
+  }
+
+  function paintLivePill() {
+    var pill = document.getElementById("live-pill");
+    var txt = document.getElementById("live-pill-text");
+    var LC = window.WhichAILiveCatalog;
+    var DBx = window.PromptCompassModelsDB;
+    if (!pill || !LC || !DBx || !DBx.live || !DBx.live.at) return;
+    var ago = LC.ago(currentLang);
+    if (txt) txt.textContent = T("livePill") + (ago ? " \u00b7 " + ago : "");
+    pill.title = dataLine();
+    pill.hidden = false;
+  }
+
+  /* A free default that OpenRouter retired breaks auto-run for everyone who
+     kept it. Swap it for the best live free route of the same family; leave
+     any ID the user typed alone. */
+  function healFreeRoutes() {
+    var LC = window.WhichAILiveCatalog;
+    var routes = LC ? LC.freeRoutes() : [];
+    if (!routes || !routes.length || !settings || !settings.orModels) return [];
+    var alive = {};
+    routes.forEach(function (r) { alive[r.id] = r; });
+    var healed = [];
+    Object.keys(DEFAULT_OR_MODELS).forEach(function (f) {
+      var cur = String(settings.orModels[f] || "").trim();
+      if (!cur || !/:free$/.test(cur) || alive[cur]) return;
+      if (cur !== DEFAULT_OR_MODELS[f] && HISTORIC_OR_DEFAULTS.indexOf(cur) === -1) return;
+      var pick = routes.filter(function (r) { return r.family === f; })[0] || null;
+      settings.orModels[f] = pick ? pick.id : "";
+      if ($orModelInputs[f]) $orModelInputs[f].value = settings.orModels[f];
+      healed.push({ family: f, from: cur, to: pick ? pick.id : null });
+    });
+    if (healed.length) {
+      try {
+        var raw = (keyMode() === "local" ? localStorage : sessionStorage);
+        if (raw.getItem(SETTINGS_KEY)) raw.setItem(SETTINGS_KEY, JSON.stringify(settings));
+      } catch (e) { /* storage unavailable: the in-memory fix still holds for this visit */ }
+      var note = document.getElementById("or-heal-note");
+      if (note) {
+        note.textContent = healed.map(function (h) {
+          return T("liveHealed").replace("{from}", h.from).replace("{to}", h.to || "-");
+        }).join(" ");
+        note.hidden = false;
+      }
+    }
+    return healed;
+  }
+
+  function onLiveData() {
+    _rankCache = null;
+    paintLivePill();
+    healFreeRoutes();
+    if (window.WhichAIJourney && window.WhichAIJourney.refresh) window.WhichAIJourney.refresh();
+    var gv = document.getElementById("guide-view");
+    if (guideBuilt) {
+      guideBuilt = false;
+      if (gv && !gv.hidden) buildGuide();
+    }
   }
 
 
@@ -1688,7 +1785,7 @@
     if (!Bench || !$guideGrid) return;
     guideBuilt = true;
     $guideGrid.innerHTML = "";
-    if ($guideUpdated) $guideUpdated.textContent = "Benchmark snapshot: " + Bench.updated + ". " + Bench.disclaimer;
+    if ($guideUpdated) $guideUpdated.textContent = dataLine() + " " + Bench.disclaimer;
     if (window.WhichAIApi) window.WhichAIApi.renderStatus(document.getElementById("api-status"));
 
     Engine.TASK_ORDER.forEach(function (key) {
@@ -1756,9 +1853,9 @@
     var note = document.getElementById("catalog-note");
     if (!wrap || !grid || !Bench || !Bench.catalog) return;
     wrap.hidden = false;
-    note.textContent = "Who is who on the market, grouped by what they are for. Snapshot: " + Bench.updated + ". " + Bench.disclaimer;
+    note.textContent = "Who is who on the market, grouped by what they are for. " + dataLine() + " " + Bench.disclaimer;
     grid.innerHTML = "";
-    Bench.catalog.forEach(function (cat) {
+    (Bench.catalogView ? Bench.catalogView() : Bench.catalog).forEach(function (cat) {
       var card = document.createElement("div");
       card.className = "card guide-card";
       var head = document.createElement("div");
@@ -1778,8 +1875,12 @@
       cat.models.forEach(function (m, i) {
         var li = document.createElement("li");
         if (i >= VISIBLE) li.className = "catalog-extra";
-        var name = document.createElement("span");
-        name.className = "router-app";
+        var name = document.createElement(m.id ? "button" : "span");
+        name.className = "router-app" + (m.id ? " btn-link catalog-open" : "");
+        if (m.id) {
+          name.type = "button";
+          name.addEventListener("click", function () { openModelById(m.id); });
+        }
         setBrandMark(name, m.vendor, m.name, { small: true });
         li.appendChild(name);
         li.appendChild(document.createTextNode(" - " + m.vendor));
@@ -1874,13 +1975,15 @@
       var score = document.createElement("span");
       score.className = "badge";
       if (m.score && typeof m.score.aa === "number") {
-        score.textContent = "AA " + m.score.aa;
+        score.textContent = "AA " + (m.score.est ? "~" : "") + m.score.aa;
+        if (m.score.src === "aa") score.title = "Official Artificial Analysis Intelligence Index" + (m.score.at ? ", read " + m.score.at : "") + " (via OpenRouter).";
+        else if (m.score.src === "converted") score.title = "Converted from an older snapshot scale: no current official measurement, so it is never ranked.";
         var pos = liveRank(m.id);
         if (pos) {
           var rankEl = document.createElement("span");
           rankEl.className = "badge badge-rank";
           rankEl.textContent = "#" + pos.rank + " of " + pos.total;
-          rankEl.title = "Live position among measured models, " + ((window.PromptCompassModelsDB || {}).updated || "current") + " snapshot. Computed now, never written into the text.";
+          rankEl.title = "Live position among officially measured models (" + ((window.PromptCompassModelsDB || {}).updated || "latest read") + "). Computed now, never written into the text.";
           head.appendChild(score);
           head.appendChild(rankEl);
         } else {
@@ -1902,6 +2005,11 @@
       var chips = document.createElement("div");
       chips.className = "db-chips";
       chips.appendChild(chipEl(m.status, "chip-" + m.status));
+      if (m.auto) {
+        var autoChip = chipEl(T("liveAutoChip"), "chip-auto");
+        autoChip.title = T("liveAutoTitle");
+        chips.appendChild(autoChip);
+      }
       m.tags.forEach(function (t) {
         if (t !== m.status) chips.appendChild(chipEl(t === "prompt-target" ? "in Generator" : t, "chip-" + t));
       });
@@ -1929,7 +2037,10 @@
           var pb = document.createElement("b");
           pb.textContent = T("mcPrice");
           pc.appendChild(pb);
-          pc.appendChild(document.createTextNode("$" + m.spec.priceIn + " / $" + m.spec.priceOut + (m.spec.note ? " \u00b7 " + m.spec.note : "")));
+          pc.appendChild(document.createTextNode("$" + m.spec.priceIn + " / $" + m.spec.priceOut +
+            (m.spec.priceSrc ? " (" + m.spec.priceSrc + ", live)" : "") +
+            (m.priceWas ? " \u00b7 editorial record had $" + m.priceWas[0] + " / $" + m.priceWas[1] : "") +
+            (m.spec.note ? " \u00b7 " + (m.spec.priceSrc ? "editorial note: " : "") + m.spec.note : "")));
           sp.appendChild(pc);
         } else if (m.spec.note) {
           var nc = document.createElement("div");
@@ -1979,6 +2090,14 @@
         catNote.textContent = "Category scores (0–100) are WhichAI blended ratings: public category leaderboards plus editorial judgment - guidance, not official measurements.";
         card.appendChild(catNote);
       }
+      if (m.score && m.score.src === "aa") {
+        var off = document.createElement("p");
+        off.className = "router-meta official-indices";
+        off.textContent = "Artificial Analysis, official" + (m.score.at ? " (read " + m.score.at + ")" : "") + ": Intelligence " + m.score.aa +
+          (m.score.coding != null ? " \u00b7 Coding " + m.score.coding : "") + (m.score.agentic != null ? " \u00b7 Agentic " + m.score.agentic : "") +
+          ". Each index has its own scale; WhichAI ranks on Intelligence only.";
+        card.appendChild(off);
+      }
 
       var acc = document.createElement("p");
       acc.className = "router-free";
@@ -1998,7 +2117,9 @@
       if (m.score && m.score.est) {
         var est = document.createElement("p");
         est.className = "router-meta";
-        est.textContent = "The score shown is a WhichAI estimate from adjacent benchmarks - not an official measurement.";
+        est.textContent = m.score.src === "converted"
+          ? "The score shown (~) is converted from an older snapshot scale (it read " + m.score.was + " there): Artificial Analysis has not published a current official number for this model, so it is never ranked. It updates by itself the moment one appears."
+          : "The score shown is a WhichAI estimate from adjacent benchmarks - not an official measurement.";
         card.appendChild(est);
       }
 
@@ -2142,7 +2263,7 @@
         hit.appendChild(left);
         var sc = document.createElement("span");
         sc.className = "badge";
-        sc.textContent = m.score && m.score.aa ? "AA " + (m.score.est ? "~" : "") + m.score.aa : "n/a";
+        sc.textContent = m.score && typeof m.score.aa === "number" ? "AA " + (m.score.est ? "~" : "") + m.score.aa + (m.auto ? " \u00b7 auto" : "") : "n/a";
         hit.appendChild(sc);
         hit.addEventListener("click", function () { showDetail(m, hit); });
         resultsEl.appendChild(hit);
@@ -3228,6 +3349,11 @@
   initLangTheme();
   adoptJourneyGoal();
   if (window.WhichAIJourney) window.WhichAIJourney.init({ T: T });
+  if (window.WhichAILiveCatalog) {
+    window.WhichAILiveCatalog.onChange(onLiveData);
+    if (window.WhichAILiveCatalog.state().last) { paintLivePill(); healFreeRoutes(); }
+    setInterval(paintLivePill, 60000);
+  }
   syncViewToHash();
   viewInitDone = true;
 })();

@@ -1,4 +1,5 @@
-# The public site updates through /api/live, independently of this workflow.
+# The public site updates itself through /api/catalog (and every deploy bakes
+# fresh data into the bundle), independently of this workflow.
 # This scheduled job retains diagnostics as an artifact; it needs no PR/write
 # permission and never blocks fresh data on a human merge or account policy.
 name: Data refresh
@@ -44,6 +45,7 @@ jobs:
           node tests/smoke-dom.mjs
           node tests/api-tests.mjs
           node tests/live-data-tests.mjs
+          node tests/catalog-tests.mjs
       - name: Retain diagnostic reports
         if: always()
         uses: actions/upload-artifact@v4

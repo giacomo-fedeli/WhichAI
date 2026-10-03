@@ -9,22 +9,68 @@
 var DB = require("../js/models-db.js");
 var Bench = require("../js/benchmarks.js");
 var Engine = require("../js/engine.js");
+var LiveCore = require("./_live-core.js");
+var CatalogCore = require("./_catalog-core.js");
+var LiveCatalog = require("../js/live-catalog.js");
 
-var API_VERSION = "1.0.0";
-var APP_VERSION = "v0.34";
+var API_VERSION = "1.1.0";
+var APP_VERSION = "v0.35";
 
-function meta() {
-  return {
+/* meta(db): pass the catalog the endpoint actually served, so the dates and
+   the scale note always describe the numbers next to them. */
+function meta(db) {
+  var d = db || DB;
+  var out = {
     project: "WhichAI",
     site: "https://whichai.wiki",
     apiVersion: API_VERSION,
     appVersion: APP_VERSION,
-    license: "CC BY 4.0 (attribution: WhichAI, whichai.wiki)",
-    dataUpdated: DB.updated,
+    license: "CC BY 4.0 (attribution: WhichAI, whichai.wiki). Scores: Artificial Analysis (artificialanalysis.ai), relayed by OpenRouter.",
+    dataUpdated: d.updated,
     benchmarkUpdated: Bench.updated,
-    scaleNote: DB.scaleNote,
-    specNote: DB.specNote
+    scaleNote: d.scaleNote,
+    specNote: d.specNote
   };
+  if (d.live) out.live = { retrievedAt: d.live.at, source: d.live.source, counts: d.live.counts || null };
+  return out;
+}
+
+/* ---------- the live catalog, shared by every endpoint ----------
+   One upstream read per warm instance per hour (TTL in _live-core), one
+   delta per upstream read, one merged copy per delta. The static catalog is
+   never mutated: endpoints get a merged deep copy, or the static catalog
+   itself when the source is down. WHICHAI_LIVE=off pins the static data
+   (tests, local debugging). */
+var liveService = null;
+var deltaCache = null;
+var mergedCache = null;
+
+function liveEnabled() { return process.env.WHICHAI_LIVE !== "off"; }
+
+async function currentDelta() {
+  if (!liveEnabled()) return null;
+  liveService = liveService || LiveCore.createService({ catalog: DB });
+  var live = await liveService.get();
+  if (!live || !Array.isArray(live.models) || !live.models.length) return null;
+  if (deltaCache && deltaCache.at === live.retrievedAt) {
+    deltaCache.status = live.status;
+    return deltaCache;
+  }
+  var delta = CatalogCore.computeDelta(DB, live);
+  deltaCache = { at: live.retrievedAt, delta: delta, status: live.status };
+  return deltaCache;
+}
+
+async function currentDB() {
+  var c = null;
+  try { c = await currentDelta(); } catch (e) { c = null; }
+  if (!c) return DB;
+  if (mergedCache && mergedCache.at === c.at) return mergedCache.db;
+  var copy = JSON.parse(JSON.stringify(DB));
+  var r = LiveCatalog.applyDelta(copy, c.delta);
+  if (!r.ok) return DB;
+  mergedCache = { at: c.at, db: copy };
+  return copy;
 }
 
 /* Weak ETag over the payload: lets browsers and the Vercel edge cache
@@ -108,4 +154,4 @@ function intParam(v, def, min, max) {
   return Math.max(min, Math.min(max, n));
 }
 
-module.exports = { DB: DB, Bench: Bench, Engine: Engine, meta: meta, send: send, fail: fail, guard: guard, query: query, intParam: intParam, etagOf: etagOf, API_VERSION: API_VERSION, APP_VERSION: APP_VERSION };
+module.exports = { DB: DB, Bench: Bench, Engine: Engine, meta: meta, send: send, fail: fail, guard: guard, query: query, intParam: intParam, etagOf: etagOf, currentDB: currentDB, currentDelta: currentDelta, liveEnabled: liveEnabled, API_VERSION: API_VERSION, APP_VERSION: APP_VERSION };

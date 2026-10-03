@@ -96,7 +96,11 @@ const Brands = require("../js/brands.js");
   }
   check("bench: 8 tasks × 4 apps, sources resolve", ok, msg);
   check("bench: snapshot date matches the database", Bench.updated === DB.updated && isFinite(Date.parse(Bench.updated)));
-  check("bench: recommend falls back", Bench.recommend("nope") === Bench.taskTypes.general);
+  /* v0.35: general, analysis and coding are re-ordered live from the index,
+     so an unknown task returns the general ranking (same apps, live order). */
+  const fb = Bench.recommend("nope");
+  check("bench: recommend falls back to general", fb.ranking.map(r => r.app).sort().join() === Bench.taskTypes.general.ranking.map(r => r.app).sort().join() && !!fb.summary);
+  check("bench: editorial tasks are returned untouched", Bench.recommend("writing") === Bench.taskTypes.writing);
 }
 
 /* ---------- 5. i18n completeness ---------- */
@@ -154,9 +158,9 @@ const Brands = require("../js/brands.js");
   const r3 = Finder._recommend({ step: 99, task: "coding", mode: "dev", budget: "free", needs: [], extra: "help" });
   check("finder: dev+free coding offers Qwen3 Coder", [r3.top].concat(r3.alts).some(o => o.dbId === "qwen3-coder"));
   const r4 = Finder._recommend({ step: 99, task: "general", mode: "app", budget: "free", needs: ["privacy"], extra: null });
-  check("finder: privacy surfaces Inkling", [r4.top].concat(r4.alts).some(o => o.dbId === "inkling"));
+  check("finder: privacy surfaces the strongest downloadable model", [r4.top].concat(r4.alts).some(o => { const m = DB.models.find(x => x.id === o.dbId); return m && m.tags.includes("open-weights"); }));
   const r5 = Finder._recommend({ step: 99, task: "coding", mode: "dev", budget: "any", needs: [], extra: "agent" });
-  check("finder: dev+any coding surfaces Kimi K3", [r5.top].concat(r5.alts).some(o => o.dbId === "kimi-k3"));
+  check("finder: dev+any coding surfaces a value pick outside the big three", [r5.top].concat(r5.alts).some(o => { const m = DB.models.find(x => x.id === o.dbId); return m && !["Anthropic", "OpenAI", "Google"].includes(m.vendor); }));
   check("finder: why lists populated", r1.top.why.length >= 1 && r2.top.why.length >= 1);
   check("finder: offers carry access + limit", [r1, r2, r3].every(r => r.top.access && r.top.limit));
 }
@@ -207,14 +211,14 @@ const Brands = require("../js/brands.js");
 {
   const Arena = require("../js/arena.js");
   const o5 = DB.models.find(m => m.id === "claude-opus-5");
-  check("v28: Claude Opus 5 public with specs", o5 && o5.status === "public" && !o5.score.est && o5.score.aa > 55 && o5.spec.priceIn === 5 && o5.family === "claude");
+  check("v28: Claude Opus 5 public with specs", o5 && o5.status === "public" && !o5.score.est && o5.score.src === "aa" && o5.spec.priceIn === 5 && o5.family === "claude");
   check("v28: the measured leader is a public, non-estimated model", (() => {
     const lead = DB.models.filter(m => m.score && typeof m.score.aa === "number" && !m.score.est).sort((a, b) => b.score.aa - a.score.aa)[0];
-    return lead && lead.status === "public" && lead.score.aa > 55;
+    return lead && lead.status === "public" && lead.score.src === "aa";
   })());
   check("v28: Gemini 3.6 Flash + Flash-Lite present", ["gemini-3-6-flash", "gemini-3-5-flash-lite"].every(id => DB.models.some(m => m.id === id && !m.score.est)));
   check("v28: no rumored model is presented as measured", !DB.models.some(m => m.status === "rumored" && m.score && m.score.est === false));
-  check("v28: lower-table corrections applied", DB.models.find(m => m.id === "mercury-2").score.aa === 21.4 && DB.models.find(m => m.id === "trinity-large").score.aa === 18.2);
+  check("v35: every converted score keeps its provenance", DB.models.filter(m => m.score && m.score.src === "converted").every(m => m.score.est === true && typeof m.score.was === "number"));
   check("v28+: db and bench carry the same snapshot date", DB.updated === Bench.updated);
   check("v28: gemini BYOK default bumped", readFileSync("js/app.js", "utf8").includes('DEFAULT_GEMINI_MODEL = "gemini-3.6-flash"'));
   check("v28: finder/stack paid Claude pick is Opus 5", readFileSync("js/finder.js", "utf8").includes('low: "claude-opus-5"') && readFileSync("js/stack.js", "utf8").includes('paid: "claude-opus-5"'));
@@ -308,7 +312,7 @@ const Brands = require("../js/brands.js");
   const refreshCli = readFileSync("tools/refresh-data.mjs", "utf8");
   const refreshCore = readFileSync("api/_refresh-core.js", "utf8");
   check("v30: refresh checks the shipped free routes", refreshCore.includes("DEFAULT_OR_MODELS") && refreshCore.includes("deadFreeRoutes"));
-  check("v30: refresh never rewrites scores by itself", !/score\s*\.\s*aa\s*=/.test(refreshCore + refreshCli) && refreshCore.includes("never updated automatically"));
+  check("v35: the refresh check audits the automation instead of asking a human", !/score\s*\.\s*aa\s*=/.test(refreshCore + refreshCli) && refreshCore.includes("report.automated") && refreshCore.includes("healedFreeRoutes"));
   check("v30: refresh writes a report a human can read", refreshCli.includes("refresh-report.md") && refreshCore.includes("Needs a human"));
 
   // --- production build ---
@@ -341,7 +345,9 @@ const Brands = require("../js/brands.js");
   check("v30: says how it differs from leaderboards", html.includes('id="about-different"') && html.includes("LMArena") && html.includes("Hugging Face"));
   check("v30: does not claim to run its own benchmarks", html.includes("does not run its own benchmarks"));
   check("v30: documents the API publicly", html.includes('id="about-api"') && html.includes("/api/recommend"));
-  check("v30: explains how data stays current", html.includes('id="about-freshness"') && html.includes("never rewritten by a script"));
+  /* v0.35: the promise changed from "a human rewrites the scores" to "the
+     scores come from their publisher automatically, words stay human". */
+  check("v35: explains how data stays current, automatically and honestly", html.includes('id="about-freshness"') && html.includes("Scores: official, automatic") && html.includes("Never automatic") && html.includes("never ranked"));
 
   // --- honesty: the claim had to change when the API arrived ---
   check("v30: no stale 'no server' claim in the UI", !/no server|nessun server|aucun serveur|sin servidor|kein Server|sem servidor/i.test(html) && !I18n.LANGS.some(l => /no server|nessun server|aucun serveur|sin servidor|kein Server|sem servidor/i.test(JSON.stringify(I18n.STRINGS[l.code]))));
@@ -365,9 +371,10 @@ const Brands = require("../js/brands.js");
     return m && m.score.est === false && m.spec && /^2026-08-/.test(m.spec.released);
   }));
   const NEW_SEP = ["fable-5-1", "muse-spark-1-3", "gemini-3-8-flash", "gpt-6"];
-  check("v33: the September models are in the catalog and measured", NEW_SEP.every(id => {
+  check("v33: the September models are in the catalog, measured or honestly converted", NEW_SEP.every(id => {
     const m = DB.models.find(x => x.id === id);
-    return m && m.score && typeof m.score.aa === "number" && m.score.est === false && m.spec && /^2026-09-/.test(m.spec.released);
+    const ok = m && m.score && typeof m.score.aa === "number" && ((m.score.est === false && m.score.src === "aa") || (m.score.est === true && m.score.src === "converted"));
+    return ok && m.spec && /^2026-09-/.test(m.spec.released);
   }));
   check("v31: every August model resolves an official link", NEW_AUG.every(id => {
     const m = DB.models.find(x => x.id === id);
@@ -575,10 +582,10 @@ const Brands = require("../js/brands.js");
   const html = readFileSync("index.html", "utf8");
   const app = readFileSync("js/app.js", "utf8");
   const sw = readFileSync("sw.js", "utf8");
-  check("version: badge v0.34", html.includes(">v0.34 · Growth<"));
-  check("version: footer v0.34", html.includes("WhichAI v0.34"));
-  check("version: APP_VERSION v0.34", app.includes('APP_VERSION = "v0.34"'));
-  check("version: SW cache v0.34", sw.includes('"whichai-v0.34.0"'));
+  check("version: badge v0.35", html.includes(">v0.35 · Growth<"));
+  check("version: footer v0.35", html.includes("WhichAI v0.35"));
+  check("version: APP_VERSION v0.35", app.includes('APP_VERSION = "v0.35"'));
+  check("version: SW cache v0.35", sw.includes('"whichai-v0.35.0"'));
   const welcomeJs = readFileSync("js/welcome.js", "utf8");
   check("v0.27: morph reaches target before opacity fade", welcomeJs.includes("offset: 0.76") && welcomeJs.includes("opacity: 0") && welcomeJs.includes("1050"));
   check("v0.27: dark wordmarks use a light treatment", /\[data-theme="dark"\] \.ai-brand-wordmark\s*\{[^}]*invert\(1\)/s.test(readFileSync("styles.css", "utf8")));
