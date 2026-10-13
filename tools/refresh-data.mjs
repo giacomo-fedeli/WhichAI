@@ -1,5 +1,5 @@
 /*
- * WhichAI - scheduled data check, command-line runner (v0.32.0)
+ * WhichAI - scheduled data check, command-line runner (v0.36.0)
  *
  * The analysis itself lives in api/_refresh-core.js and is shared with
  * /api/refresh, so the check cannot mean two different things depending on
@@ -8,7 +8,7 @@
  *
  * Usage:
  *   node tools/refresh-data.mjs                       check and write the report
- *   node tools/refresh-data.mjs --strict              exit 1 if a shipped free route died
+ *   node tools/refresh-data.mjs --strict              exit 1 if a free route named in the catalog was retired
  *   node tools/refresh-data.mjs --fixture path.json   offline run, for the tests
  */
 import { readFileSync, writeFileSync } from "node:fs";
@@ -17,7 +17,6 @@ const require = createRequire(import.meta.url);
 
 const Core = require("../api/_refresh-core.js");
 const DB = require("../js/models-db.js");
-const appSrc = readFileSync(new URL("../js/app.js", import.meta.url), "utf8");
 
 const args = process.argv.slice(2);
 const STRICT = args.includes("--strict");
@@ -62,7 +61,7 @@ if (!upstream) {
   process.exit(STRICT ? 1 : 0);
 }
 
-const report = Core.analyse(upstream, DB, appSrc);
+const report = Core.analyse(upstream, DB);
 const md = Core.markdown(report);
 
 out("refresh-report.json", JSON.stringify(report, null, 1) + "\n");
@@ -73,6 +72,6 @@ appendEnvFile("GITHUB_STEP_SUMMARY", md + "\n");
 appendEnvFile("GITHUB_OUTPUT", "changes=" + report.actionable + "\ndead_routes=" + report.deadFreeRoutes.length + "\n");
 
 if (STRICT && report.deadFreeRoutes.length) {
-  console.error("\nFAIL: shipped free route(s) gone: " + report.deadFreeRoutes.join(", "));
+  console.error("\nFAIL: the catalog names retired free route(s): " + report.deadFreeRoutes.join(", "));
   process.exit(1);
 }

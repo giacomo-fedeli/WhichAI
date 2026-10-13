@@ -62,7 +62,8 @@ function shell({ path, title, desc, body, crumb }) {
       </div>
       <nav class="site-nav" aria-label="Site">
         <a href="/">Open the app</a>
-        <a href="/#finder">AI Finder</a>
+        <a href="/#ranking">Live ranking</a>
+        <a href="/#find">AI Finder</a>
         <a href="/models/">All models</a>
         <a href="/best-ai-for/">Best AI for…</a>
         <a href="/glossary/">Glossary</a>
@@ -76,9 +77,13 @@ ${body}
   <footer class="site-footer">
     <nav class="footer-links" aria-label="More">
       <a href="/#about-faq">FAQ</a>
-      <a href="/#about-methodology">Methodology</a>
+      <a href="/#about-method">Methodology</a>
       <a href="/#about-contribute">Contribute</a>
       <a href="/data/models.json">Open dataset</a>
+    </nav>
+    <nav class="footer-links" aria-label="More projects">
+      <a href="https://complyai.wiki" target="_blank" rel="noopener">ComplyAI.wiki - AI rules and compliance</a>
+      <a href="https://warrightnow.vercel.app" target="_blank" rel="noopener">War Right Now - conflicts, live</a>
     </nav>
     <p>Generated from the WhichAI model database · Data read <span data-live-updated>${esc(DB.updated)}</span>, refreshed automatically · Free, no account, no tracking.</p>
   </footer>
@@ -168,9 +173,9 @@ for (const m of DB.models) {
       <div class="compare-actions">
         ${linkFor(m) ? `<a class="btn-copy" href="${esc(linkFor(m))}" rel="noopener">Open ${esc(m.name.split(" ")[0])}'s official app ↗</a>` : ""}
         <a class="btn-copy" href="/#model=${m.id}">Open in the WhichAI app</a>
-        <a class="btn-copy" href="/#finder">Not sure? Take the 30-second finder</a>
+        <a class="btn-copy" href="/#find">Not sure? Take the 30-second finder</a>
       </div>
-      <p class="router-meta">${esc(DB.scaleNote)} ${esc(DB.specNote || "")} Sources are linked inside the app (Model guide and About > Methodology).</p>
+      <p class="router-meta">${esc(DB.scaleNote)} ${esc(DB.specNote || "")} Sources are linked inside the app (the Ranking chapter and About > Methodology).</p>
     </div>`;
   writeFileSync("models/" + m.id + ".html", shell({ path: p, title: `${m.name} review, price and benchmarks (2026) | WhichAI`, desc, body, crumb: `<a href="/">WhichAI</a> / <a href="/models/">Models</a> / ${esc(m.name)}` }));
   pages.push(p);
@@ -210,7 +215,7 @@ for (const t of Engine.TASK_ORDER) {
       <p class="router-meta">${esc(Bench.CONFIDENCE_NOTES[rec.confidence])} ${esc(Bench.disclaimer)}</p>
       <p class="router-meta">Sources: ${rec.sourceIds.map(sid => { const s = Bench.sources.find(x => x.id === sid); return s ? `<a href="${esc(s.url)}" rel="noopener">${esc(s.label)}</a>` : ""; }).filter(Boolean).join(" · ")}</p>
       <div class="compare-actions">
-        <a class="btn-copy" href="/#finder">Answer 4 questions for a personal pick</a>
+        <a class="btn-copy" href="/#find">Answer 4 questions for a personal pick</a>
         <a class="btn-copy" href="/">Generate an optimized prompt for ${esc(top.label)}</a>
       </div>
     </div>`;
@@ -293,8 +298,8 @@ for (const pr of COMPARE_PAIRS) {
       <p class="about-text"><strong>${brand(a, a.name)}:</strong> ${esc(a.review)}</p>
       <p class="about-text"><strong>${brand(b, b.name)}:</strong> ${esc(b.review)}</p>
       <div class="compare-actions">
-        <a class="btn-copy" href="/#compare-specs">Compare them live in the app</a>
-        <a class="btn-copy" href="/#finder">Which one is right for you? 30-second finder</a>
+        <a class="btn-copy" href="/#compare=${a.id},${b.id}">Compare them live in the app</a>
+        <a class="btn-copy" href="/#find">Which one is right for you? 30-second finder</a>
       </div>
     </div>`;
   writeFileSync("compare/" + pr[0] + "-vs-" + pr[1] + ".html", shell({ path: p, title: `${a.name} vs ${b.name}: benchmarks, price, context (2026) | WhichAI`, desc: `${a.name} vs ${b.name} compared on the AA index, price, context window and real strengths. ${winner}. Updated ${DB.updated}.`, body, crumb: `<a href="/">WhichAI</a> / <a href="/compare/">Compare</a> / ${esc(a.name)} vs ${esc(b.name)}` }));
@@ -334,8 +339,8 @@ for (const t of Topics.TOPICS) {
       <p class="topic-status">${esc(t.status)}</p>
       <p class="router-meta">Sources: ${t.sources.map(x => `<a href="${esc(x.url)}" rel="noopener">${esc(x.label)}</a>`).join(" · ")}</p>
       <div class="compare-actions">
-        <a class="btn-copy" href="/#topics">All AI debates</a>
-        <a class="btn-copy" href="/#finder">Find the right AI for you</a>
+        <a class="btn-copy" href="/#debates">All AI debates</a>
+        <a class="btn-copy" href="/#find">Find the right AI for you</a>
       </div>
     </div>`;
   writeFileSync("topics/" + t.id + ".html", shell({ path: p, title: `${t.title}: the debate, summarized (2026) | WhichAI`, desc: t.question + " " + t.summary.slice(0, 120), body, crumb: `<a href="/">WhichAI</a> / <a href="/topics/">AI Debates</a> / ${esc(t.title)}` }));

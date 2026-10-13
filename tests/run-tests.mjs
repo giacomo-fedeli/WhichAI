@@ -1,6 +1,11 @@
-/* WhichAI — sandbox test suite (v0.22)
+/* WhichAI - sandbox test suite (v0.36)
    Run: node tests/run-tests.mjs   (from the project root)
-   Pure Node, no dependencies. Exits 1 on any failure. */
+   Pure Node, no dependencies. Exits 1 on any failure.
+
+   v0.36 rebuilt the page as one scroll of six connected chapters. The checks
+   of the views that were removed with it (welcome cover, journey, 3D stage,
+   Chains, Merge, Blind Arena, API keys and auto-run) were replaced by checks
+   on the new structure. The data, honesty and automation checks carry over. */
 import { readFileSync, existsSync } from "fs";
 import { execSync } from "child_process";
 import { createRequire } from "module";
@@ -10,41 +15,60 @@ let pass = 0, fail = 0;
 const failures = [];
 function check(name, cond, detail) {
   if (cond) { pass++; console.log("  ok  " + name); }
-  else { fail++; failures.push(name + (detail ? " — " + detail : "")); console.log("FAIL  " + name + (detail ? " — " + detail : "")); }
+  else { fail++; failures.push(name + (detail ? " - " + detail : "")); console.log("FAIL  " + name + (detail ? " - " + detail : "")); }
 }
 
 /* Node needs a window for the browser-style modules */
 globalThis.window = globalThis;
 
-/* ---------- 1. Syntax of every shipped JS file ---------- */
-const jsFiles = ["js/engine.js", "js/benchmarks.js", "js/chains.js", "js/i18n.js", "js/models-db.js", "js/merge.js", "js/charts.js", "js/glossary.js", "js/finder.js", "js/modelcompare.js", "js/stack.js", "js/doctor.js", "js/changes.js", "js/radar.js", "js/sharecard.js", "js/brands.js", "js/welcome.js", "js/arena.js", "js/config.js", "js/support.js", "js/topics.js", "js/app.js", "sw.js"];
-for (const f of jsFiles) {
-  try { execSync("node --check " + f, { stdio: "pipe" }); check("syntax " + f, true); }
-  catch (e) { check("syntax " + f, false, String(e.stderr || e)); }
+const html = readFileSync("index.html", "utf8");
+const css = readFileSync("styles.css", "utf8");
+const app = readFileSync("js/app.js", "utf8");
+const sw = readFileSync("sw.js", "utf8");
+const SCRIPTS = [...html.matchAll(/<script src="(js\/[\w.-]+\.js)"><\/script>/g)].map(m => m[1]);
+const htmlIds = new Set([...html.matchAll(/\sid="([^"]+)"/g)].map(m => m[1]));
+const between = (needle, a, b) => {
+  const i = html.indexOf(needle), ia = html.indexOf('id="' + a + '"'), ib = b ? html.indexOf('id="' + b + '"') : html.length;
+  return i > ia && ia >= 0 && i < ib;
+};
+
+/* ---------- 1. syntax of every shipped file ---------- */
+{
+  check("index loads 25 scripts, app.js last", SCRIPTS.length === 25 && SCRIPTS[SCRIPTS.length - 1] === "js/app.js", String(SCRIPTS.length));
+  const apiFiles = ["api/_lib.js", "api/_live-core.js", "api/_catalog-core.js", "api/_refresh-core.js", "api/_news-core.js", "api/health.js", "api/models.js", "api/benchmarks.js", "api/recommend.js", "api/stats.js", "api/refresh.js", "api/live.js", "api/catalog.js", "api/news.js"];
+  for (const f of SCRIPTS.concat(["sw.js"], apiFiles)) {
+    try { execSync("node --check " + f, { stdio: "pipe" }); check("syntax " + f, true); }
+    catch (e) { check("syntax " + f, false, String(e.stderr || e)); }
+  }
 }
 
-/* ---------- 2. Load data modules ---------- */
+/* ---------- 2. load the modules ---------- */
 const Engine = require("../js/engine.js");
 const Bench = require("../js/benchmarks.js");
-const Chains = require("../js/chains.js");
 const I18n = require("../js/i18n.js");
 const DB = require("../js/models-db.js");
 const Charts = require("../js/charts.js");
 const Glossary = require("../js/glossary.js");
 const Finder = require("../js/finder.js");
-const MC = require("../js/modelcompare.js");
 const Stack = require("../js/stack.js");
 const Doctor = require("../js/doctor.js");
 const ChangesFeed = require("../js/changes.js");
 const Radar = require("../js/radar.js");
 const ShareCard = require("../js/sharecard.js");
 const Brands = require("../js/brands.js");
+const Ranking = require("../js/ranking.js");
+const Market = require("../js/market.js");
+const Motion = require("../js/motion.js");
+const Generator = require("../js/generator.js");
+const Topics = require("../js/topics.js");
+const MC = require("../js/modelcompare.js");
+check("modules: every chapter module exports its interface", [Ranking.init, Ranking.tiers, MC.init, MC.compareWith, Radar.init, Radar.fillNewest, Market.init, Market.fillLeader, Topics.init, Finder.init, Finder.startWith, Generator.init, Generator.useModel, Doctor.init, Stack.init, Motion.init, Motion.mount].every(f => typeof f === "function"));
 
 /* ---------- 3. models-db integrity ---------- */
 {
   const ids = new Set();
   let dup = null, badTag = null, badCat = null, badPriv = null, badFam = null, badSpec = null, weakReview = null;
-  const VALID_TAGS = ["free", "paid", "api", "open-weights", "prompt-target", "auto-run", "info-only", "private", "preview", "legacy", "rumored"];
+  const VALID_TAGS = ["free", "paid", "api", "open-weights", "prompt-target", "info-only", "private", "preview", "legacy", "rumored"];
   const VALID_LABELS = ["coding", "reasoning", "writing", "research", "agents", "speed", "value", "multilingual", "vision", "long-context", "local", "enterprise"];
   const FAMILIES = Engine.MODEL_ORDER;
   for (const m of DB.models) {
@@ -61,7 +85,7 @@ const Brands = require("../js/brands.js");
     if (!m.review || m.review.length < 40) weakReview = m.id;
   }
   check("db: " + DB.models.length + " models, unique ids", !dup, dup);
-  check("db: tags/labels valid", !badTag, badTag);
+  check("db: tags/labels valid (auto-run retired in v0.36)", !badTag, badTag);
   check("db: private/rumored are info-only", !badPriv, badPriv);
   check("db: families exist in engine", !badFam, badFam);
   check("db: category scores 0-100", !badCat, badCat);
@@ -75,6 +99,10 @@ const Brands = require("../js/brands.js");
     const d = Date.parse(DB.updated);
     return isFinite(d) && d <= Date.now() + 864e5;
   })());
+  /* A free tag is a promise. A model whose only free route was retired must
+     not keep it, or the "Free" filter of the ranking would lie. */
+  const freeClaims = DB.models.filter(m => m.tags.includes("free") && /route[^.]*has been retired/i.test(m.access || ""));
+  check("db: no model keeps a free tag for a retired route", freeClaims.length === 0, freeClaims.map(m => m.id).join(", "));
   const brandFiles = new Set();
   Object.values(Brands.FAMILIES).concat(Object.values(Brands.VENDORS)).forEach(b => {
     if (b.icon) brandFiles.add(b.icon);
@@ -94,7 +122,7 @@ const Brands = require("../js/brands.js");
     for (const item of r.ranking) if (!Bench.apps[item.app]) { ok = false; msg = t + ":" + item.app; }
     for (const sid of r.sourceIds) if (!Bench.sources.some(s => s.id === sid)) { ok = false; msg = t + " src " + sid; }
   }
-  check("bench: 8 tasks × 4 apps, sources resolve", ok, msg);
+  check("bench: 8 tasks x 4 apps, sources resolve", ok, msg);
   check("bench: snapshot date matches the database", Bench.updated === DB.updated && isFinite(Date.parse(Bench.updated)));
   /* v0.35: general, analysis and coding are re-ordered live from the index,
      so an unknown task returns the general ranking (same apps, live order). */
@@ -103,7 +131,7 @@ const Brands = require("../js/brands.js");
   check("bench: editorial tasks are returned untouched", Bench.recommend("writing") === Bench.taskTypes.writing);
 }
 
-/* ---------- 5. i18n completeness ---------- */
+/* ---------- 5. i18n: complete, aligned, and covering what the page uses ---------- */
 {
   const langs = I18n.LANGS.map(l => l.code);
   const en = Object.keys(I18n.STRINGS.en);
@@ -113,68 +141,133 @@ const Brands = require("../js/brands.js");
     for (const k of en) if (d[k] === undefined) bad = l + " missing " + k;
     for (const k of Object.keys(d)) if (!en.includes(k)) bad = l + " extra " + k;
   }
-  check("i18n: " + en.length + " keys aligned across " + langs.length + " languages", !bad, bad);
-  const newKeys = ["finderTitle", "glossTitle", "mcTitle", "footFaq", "chainMapTitle", "cmpTabSpecs", "specCompareBtn"];
-  check("i18n: v0.22 keys present", newKeys.every(k => I18n.STRINGS.en[k] && I18n.STRINGS.ar[k] && I18n.STRINGS.ja[k]));
+  check("i18n: " + en.length + " keys aligned across " + langs.length + " languages", langs.length === 11 && !bad, bad);
+  check("i18n: Arabic is the right-to-left language", I18n.LANGS.some(l => l.code === "ar" && l.dir === "rtl") || /dir.*rtl|rtl/.test(app));
+  const used = new Set();
+  for (const m of html.matchAll(/data-i18n(?:-ph|-aria)?="([A-Za-z0-9_]+)"/g)) used.add(m[1]);
+  const scriptSrc = SCRIPTS.map(f => readFileSync(f, "utf8")).join("\n");
+  for (const m of scriptSrc.matchAll(/\b(?:T|tr)\("([A-Za-z0-9_]+)"\)/g)) used.add(m[1]);
+  /* English may leave a note empty on purpose (langNote: there is nothing to
+     warn an English reader about); every other language must say something. */
+  const filled = (l, k) => typeof I18n.STRINGS[l][k] === "string" && (I18n.STRINGS[l][k].length > 0 || (l === "en" && k === "langNote"));
+  const missing = [...used].filter(k => !langs.every(l => filled(l, k)));
+  check("i18n: all " + used.size + " keys the page uses exist in every language", used.size > 200 && missing.length === 0, missing.slice(0, 12).join(", "));
+  /* Keys reached only through a computed name ("task_" + id, "tier" + t,
+     "topics" + Kind) are the only ones allowed to look unused. */
+  const everything = scriptSrc + html;
+  const unused = en.filter(k => !everything.includes('"' + k + '"') && !/^(task_\w+|tier[SABCD]|topics(Estimate|Projection|Research|Reported|Guidance|Definition))$/.test(k));
+  check("i18n: no dead keys (every key is referenced somewhere)", unused.length === 0, unused.slice(0, 12).join(", "));
+  const dashed = langs.filter(l => JSON.stringify(I18n.STRINGS[l]).includes("—"));
+  check("i18n: no em dash in any language", dashed.length === 0, dashed.join(", "));
 }
 
-/* ---------- 6. engine + chains regression ---------- */
+/* ---------- 6. engine ---------- */
 {
   const res = Engine.generate({ goal: "Write a launch email for a new app", context: "", taskType: "writing", models: Engine.MODEL_ORDER });
   check("engine: 13 prompts generated", res.length === 13 && res.every(r => r.prompt.length > 200));
-  let ok = true;
-  for (const t of Object.keys(Chains.TEMPLATES)) {
-    const tpl = Chains.TEMPLATES[t];
-    if (tpl.length !== 3 || !tpl.every(s => s.instruction.includes("{goal}"))) ok = false;
-  }
-  check("chains: templates 3 steps each with {goal}", ok);
+  check("engine: task detection still works", Engine.detectTaskType("Fix this Python function that throws a KeyError") === "coding");
 }
 
-/* ---------- 7. charts ---------- */
+/* ---------- 7. charts: a scatter nobody can squash ---------- */
 {
   const bar = Charts.barChart([{ label: "A<script>", value: 59.9 }, { label: "B", value: 40, est: true }], { max: 65 });
   check("charts: barChart svg + escaping", bar.startsWith("<svg") && !bar.includes("<script>") && bar.includes("wc-est"));
-  const sc = Charts.scatter([{ x: 4, y: 53.4, label: "S" }, { x: 20, y: 59.9, label: "F" }], { xLabel: "x", yLabel: "y" });
-  check("charts: scatter svg", sc.startsWith("<svg") && sc.includes("wc-dot"));
   const gb = Charts.groupedBars(["Coding"], [{ name: "M1", values: [90] }, { name: "M2", values: [null] }]);
   check("charts: groupedBars handles missing values", gb.includes("not available") && gb.includes("wc-s1"));
+
+  /* The v0.35 bug: one legacy model at $262 per 1M squeezed every other dot
+     into the first few pixels. On a log axis a decade is a decade. */
+  const pts = [
+    { x: 0.2, y: 30, label: "Cheap", id: "cheap" }, { x: 1, y: 40, label: "One", id: "one" },
+    { x: 3, y: 50, label: "Three", id: "three" }, { x: 10, y: 55, label: "Ten", id: "ten" },
+    { x: 262, y: 35, label: "Outlier", id: "outlier" }, { x: 0, y: 33, label: "Gratis", id: "gratis" }
+  ];
+  const cxOf = (svg, id) => parseFloat((svg.match(new RegExp('data-id="' + id + '"[^>]*><title>[^<]*</title><circle cx="([0-9.]+)"')) || [])[1]);
+  const logSvg = Charts.scatter(pts, { logX: true, frontier: true, freeLabel: "Free" });
+  const linSvg = Charts.scatter(pts.filter(p => p.x > 0), {});
+  const logGap = cxOf(logSvg, "ten") - cxOf(logSvg, "one");
+  const linGap = cxOf(linSvg, "ten") - cxOf(linSvg, "one");
+  check("charts: on the log axis $1 and $10 sit a decade apart (" + Math.round(logGap) + "px vs " + Math.round(linGap) + "px linear)", logGap > 100 && linGap < 30);
+  check("charts: a $0 price sits in its own free lane instead of breaking the scale", logSvg.includes("wc-free-lane") && cxOf(logSvg, "gratis") < cxOf(logSvg, "cheap"));
+  check("charts: the best-value frontier is drawn", logSvg.includes("wc-frontier") && logSvg.includes("wc-on-frontier"));
+  const fr = Charts.frontierOf([{ x: 1, y: 40 }, { x: 2, y: 35 }, { x: 3, y: 50 }, { x: 4, y: 45 }]);
+  check("charts: frontierOf keeps only points no cheaper model beats", fr.map(p => p.x).join() === "1,3");
+  check("charts: log ticks read 1-3-10", Charts.logTicks(0.1, 316).join() === "0.1,0.3,1,3,10,30,100,300");
+  check("charts: dots carry ids for the chip <-> dot highlight", /<g class="wc-pt[^"]*" data-id="one"/.test(logSvg));
+  check("charts: the ranking uses the log axis and the frontier", /logX: true, frontier: true/.test(readFileSync("js/ranking.js", "utf8")));
 }
 
-/* ---------- 8. glossary ---------- */
+/* ---------- 8. ranking: tiers are computed, never chosen ---------- */
+{
+  const t = Ranking.tiers("aa", false);
+  const official = DB.models.filter(m => m.score && typeof m.score.aa === "number" && !m.score.est && m.status !== "rumored" && m.status !== "private" && m.status !== "legacy");
+  const all = ["S", "A", "B", "C", "D"].flatMap(k => t.tiers[k]);
+  check("tiers: every official current model appears exactly once (" + t.total + ")", all.length === official.length && new Set(all.map(m => m.id)).size === all.length);
+  check("tiers: nothing estimated, converted or rumored is ranked", all.every(m => !m.score.est && m.status !== "rumored"));
+  check("tiers: the list is ordered by the index", t.list.every((m, i) => i === 0 || t.list[i - 1].score.aa >= m.score.aa));
+  const tieBreak = t.list.every((m, i) => i === 0 || t.list[i - 1].score.aa !== m.score.aa || t.ranks[t.list[i - 1].id].tier === t.ranks[m.id].tier);
+  check("tiers: ties share a tier and a rank", tieBreak && t.list.every((m, i) => i === 0 || t.list[i - 1].score.aa !== m.score.aa || t.ranks[t.list[i - 1].id].rank === t.ranks[m.id].rank));
+  const cut = { S: 0.05, A: 0.20, B: 0.40, C: 0.65 };
+  check("tiers: S is the top 5%, A to 20%, B to 40%, C to 65%", Object.keys(cut).every(k => t.tiers[k].every(m => (t.ranks[m.id].rank - 1) / t.total < cut[k])) && t.tiers.S.length >= 1);
+  check("tiers: the coding and agentic views rank only models measured on them", ["coding", "agentic"].every(k => { const x = Ranking.tiers(k, false); return x.total > 20 && x.list.every(m => typeof m.score[k] === "number"); }));
+  check("tiers: legacy models join only when asked", Ranking.tiers("aa", true).total >= t.total);
+  check("tiers: the compare chapter follows the live top pair", Ranking.topPair().length === 2 && Ranking.topPair()[0] === t.list[0].id);
+}
+
+/* ---------- 9. market: computed from the catalog the page holds ---------- */
+{
+  const t = Ranking.tiers("aa", false);
+  const blended = m => (3 * m.spec.priceIn + m.spec.priceOut) / 4;
+  const lad = Market._ladder(t);
+  check("market: the ladder names the cheapest priced model of each tier", lad.length === 4 && lad.every(r => !r.model || (t.tiers[r.tier].includes(r.model) && t.tiers[r.tier].filter(m => m.spec && typeof m.spec.priceIn === "number" && typeof m.spec.priceOut === "number").every(m => blended(m) >= blended(r.model)))));
+  const bv = Market._bestValue(t, 8);
+  const median = t.list[Math.floor(t.list.length / 2)].score.aa;
+  check("market: best value is points per dollar among models at or above the median", bv.length > 0 && bv.every(v => v.m.score.aa >= median) && bv.every((v, i) => i === 0 || bv[i - 1].value >= v.value));
+  const cost = Market._monthly({ spec: { priceIn: 1, priceOut: 2 } }, 30, "medium");
+  check("market: the monthly calculator does the arithmetic (30 msgs/day, medium = $2.61)", Math.abs(cost - 2.61) < 1e-9, String(cost));
+  check("market: price moves are read from priceWas, biggest first", Array.isArray(Market._moves()));
+}
+
+/* ---------- 10. glossary ---------- */
 {
   check("glossary: >= 21 terms", Glossary.TERMS.length >= 21);
   check("glossary: every term has one-sentence def", Glossary.TERMS.every(t => t.term && t.def && t.def.length > 20));
   check("glossary: search works", Glossary.filter("token").some(t => t.id === "token") && Glossary.filter("zzzz").length === 0);
   const linked = Glossary.TERMS.filter(t => t.link);
-  check("glossary: " + linked.length + " terms link into the app", linked.length >= 5 && linked.every(t => typeof t.link.hash === "string"));
+  const deadLinks = linked.filter(t => !htmlIds.has(String(t.link.hash).replace(/^#/, "")));
+  check("glossary: " + linked.length + " terms link to a place that exists on the page", linked.length >= 5 && deadLinks.length === 0, deadLinks.map(t => t.id + "->" + t.link.hash).join(", "));
+  check("glossary: no stale claim about keys or auto-run", !/WhichAI is BYOK|auto-run/i.test(readFileSync("js/glossary.js", "utf8")));
 }
 
-/* ---------- 9. finder recommendation logic ---------- */
+/* ---------- 11. finder, stack, doctor ---------- */
 {
   const r1 = Finder._recommend({ step: 99, task: "writing", mode: "app", budget: "low", needs: [], extra: "creative" });
-  check("finder: creative writing → Claude/Fable", r1.top.dbId === "fable-5", JSON.stringify(r1.top && r1.top.dbId));
+  check("finder: creative writing -> Claude/Fable", r1.top.dbId === "fable-5", JSON.stringify(r1.top && r1.top.dbId));
   const r2 = Finder._recommend({ step: 99, task: "research", mode: "app", budget: "free", needs: ["web"], extra: "quick" });
-  check("finder: sourced research → Perplexity", r2.top.app === "perplexity", r2.top && r2.top.name);
+  check("finder: sourced research -> Perplexity", r2.top.app === "perplexity", r2.top && r2.top.name);
   const r3 = Finder._recommend({ step: 99, task: "coding", mode: "dev", budget: "free", needs: [], extra: "help" });
-  check("finder: dev+free coding offers Qwen3 Coder", [r3.top].concat(r3.alts).some(o => o.dbId === "qwen3-coder"));
+  const r3free = [r3.top].concat(r3.alts).filter(o => o && o.kind === "model");
+  check("finder: dev+free coding offers a model that is free right now", r3free.length >= 1 && r3free.every(o => { const m = DB.models.find(x => x.id === o.dbId); return m && /free/i.test(m.access) && !/retired/i.test(m.access); }), r3free.map(o => o.dbId).join(","));
   const r4 = Finder._recommend({ step: 99, task: "general", mode: "app", budget: "free", needs: ["privacy"], extra: null });
   check("finder: privacy surfaces the strongest downloadable model", [r4.top].concat(r4.alts).some(o => { const m = DB.models.find(x => x.id === o.dbId); return m && m.tags.includes("open-weights"); }));
   const r5 = Finder._recommend({ step: 99, task: "coding", mode: "dev", budget: "any", needs: [], extra: "agent" });
   check("finder: dev+any coding surfaces a value pick outside the big three", [r5.top].concat(r5.alts).some(o => { const m = DB.models.find(x => x.id === o.dbId); return m && !["Anthropic", "OpenAI", "Google"].includes(m.vendor); }));
   check("finder: why lists populated", r1.top.why.length >= 1 && r2.top.why.length >= 1);
   check("finder: offers carry access + limit", [r1, r2, r3].every(r => r.top.access && r.top.limit));
-}
+  check("finder: the quick answer has one button per task", Engine.TASK_ORDER.every(t => Finder.TASK_ICONS[t]));
+  check("finder: paid Claude pick is Opus 5, stack agrees", readFileSync("js/finder.js", "utf8").includes('low: "claude-opus-5"') && readFileSync("js/stack.js", "utf8").includes('paid: "claude-opus-5"'));
 
-/* ---------- 9b. stack optimizer + prompt doctor logic ---------- */
-{
-  const r1 = Stack._optimize({ tasks: ["writing", "research", "coding"], subs: ["chatgpt", "perplexity", "claude"], budget: "20", needs: ["web"], done: true });
-  check("stack: $20 budget keeps 1 paid sub", r1.stack.filter(s => s.paid).length === 1 && r1.newCost <= 20);
-  check("stack: redundancy detected", r1.redundant.length >= 1 && r1.currentCost === 60);
-  const r2 = Stack._optimize({ tasks: ["writing"], subs: [], budget: "0", needs: [], done: true });
-  check("stack: free-only budget costs 0", r2.newCost === 0 && r2.stack.every(s => !s.paid));
-  const r3 = Stack._optimize({ tasks: ["research"], subs: [], budget: "nolimit", needs: ["web", "privacy"], done: true });
-  check("stack: web need routes research to Perplexity", r3.stack.some(s => s.app === "perplexity"));
-  check("stack: privacy extra surfaces local option", r3.extras.some(x => x.kind === "privacy" && x.dbId === "inkling"));
+  const s1 = Stack._optimize({ tasks: ["writing", "research", "coding"], subs: ["chatgpt", "perplexity", "claude"], budget: "20", needs: ["web"], done: true });
+  check("stack: $20 budget keeps 1 paid sub", s1.stack.filter(s => s.paid).length === 1 && s1.newCost <= 20);
+  check("stack: redundancy detected", s1.redundant.length >= 1 && s1.currentCost === 60);
+  const s2 = Stack._optimize({ tasks: ["writing"], subs: [], budget: "0", needs: [], done: true });
+  check("stack: free-only budget costs 0", s2.newCost === 0 && s2.stack.every(s => !s.paid));
+  const s3 = Stack._optimize({ tasks: ["research"], subs: [], budget: "nolimit", needs: ["web", "privacy"], done: true });
+  check("stack: web need routes research to Perplexity", s3.stack.some(s => s.app === "perplexity"));
+  check("stack: privacy extra surfaces local option", s3.extras.some(x => x.kind === "privacy" && x.dbId === "inkling"));
+  const s4 = Stack._optimize({ tasks: ["coding"], subs: [], budget: "0", needs: ["api"], done: true });
+  check("stack: the API extra points at the Market, not a removed view", s4.extras.some(x => x.kind === "api" && /Market/.test(x.text) && !/Compare|Chains/.test(x.text)));
+
   const weak = Doctor._analyze("write something");
   const strong = Doctor._analyze("Act as a senior editor. Rewrite my article for beginner developers as a 5-bullet list, max 200 words, avoid jargon. Context: our company sells devtools. For example keep the tone like our blog. Make sure it is accurate; if unsure, ask clarifying questions. Cite sources.");
   check("doctor: weak prompt scores low (" + weak.score + ")", weak.score <= 20);
@@ -182,11 +275,9 @@ const Brands = require("../js/brands.js");
   check("doctor: 10 weighted checks with tips", Doctor._checks.length === 10 && Doctor._checks.every(c => c.tip && c.w > 0));
   const it = Doctor._analyze("Agisci come un editor esperto. Riscrivi il testo per principianti, al massimo 200 parole, evita il gergo. Ad esempio come il nostro blog. Se non sei sicuro chiedi. Cita le fonti.");
   check("doctor: Italian keywords recognized (" + it.score + ")", it.score >= 60);
-  const v24keys = ["navMore", "stackTitle", "stackGo", "doctorTitle", "doctorGo", "demoTitle", "demoTry"];
-  check("i18n: v0.24 keys in all languages", v24keys.every(k => I18n.STRINGS.en[k] && I18n.STRINGS.ar[k] && I18n.STRINGS.zh[k] && I18n.STRINGS.it[k]));
 }
 
-/* ---------- 9c. official links, change feed, radar/share exports ---------- */
+/* ---------- 12. official links, change feed, radar/share exports ---------- */
 {
   const linkFor = m => m.url || (m.family && DB.links && DB.links[m.family]) || (DB.vendorLinks && DB.vendorLinks[m.vendor]) || null;
   const unlinked = DB.models.filter(m => !linkFor(m)).map(m => m.id);
@@ -207,9 +298,8 @@ const Brands = require("../js/brands.js");
   check("radar + sharecard modules export", typeof Radar.init === "function" && typeof ShareCard.share === "function");
 }
 
-/* ---------- 9d. v0.28: July 26 refresh + arena ---------- */
+/* ---------- 13. catalog facts that must not regress ---------- */
 {
-  const Arena = require("../js/arena.js");
   const o5 = DB.models.find(m => m.id === "claude-opus-5");
   check("v28: Claude Opus 5 public with specs", o5 && o5.status === "public" && !o5.score.est && o5.score.src === "aa" && o5.spec.priceIn === 5 && o5.family === "claude");
   check("v28: the measured leader is a public, non-estimated model", (() => {
@@ -220,149 +310,24 @@ const Brands = require("../js/brands.js");
   check("v28: no rumored model is presented as measured", !DB.models.some(m => m.status === "rumored" && m.score && m.score.est === false));
   check("v35: every converted score keeps its provenance", DB.models.filter(m => m.score && m.score.src === "converted").every(m => m.score.est === true && typeof m.score.was === "number"));
   check("v28+: db and bench carry the same snapshot date", DB.updated === Bench.updated);
-  check("v28: gemini BYOK default bumped", readFileSync("js/app.js", "utf8").includes('DEFAULT_GEMINI_MODEL = "gemini-3.6-flash"'));
-  check("v28: finder/stack paid Claude pick is Opus 5", readFileSync("js/finder.js", "utf8").includes('low: "claude-opus-5"') && readFileSync("js/stack.js", "utf8").includes('paid: "claude-opus-5"'));
-  const elo = Arena._elo({}, "a", "b", 1);
-  check("v28: arena elo math (winner +16 at equal ratings)", elo.a.r === 1016 && elo.b.r === 984 && elo.a.g === 1);
-  const elo2 = Arena._elo({ a: { r: 1016, g: 1 }, b: { r: 984, g: 1 } }, "a", "b", 0.5);
-  check("v28: arena elo tie pulls ratings together", elo2.a.r < 1016 && elo2.b.r > 984);
-  const pair = Arena._pickTwo([{ id: "x" }, { id: "y" }, { id: "z" }]);
-  check("v28: arena picks two distinct models", pair.length === 2 && pair[0].id !== pair[1].id);
-}
 
-/* ---------- 9e. v0.29: topics, support config, welcome home ---------- */
-{
-  const TopicsMod = require("../js/topics.js");
-  const Cfg = require("../js/config.js");
-  const SupportMod = require("../js/support.js");
-  check("v29: 6 debates, all sourced, both sides", TopicsMod.TOPICS.length === 6 && TopicsMod.TOPICS.every(t => t.sideA && t.sideB && t.status && t.sources.length >= 2 && t.sources.every(s => /^https:/.test(s.url))));
-  check("v29: debates carry numbers with labels", TopicsMod.TOPICS.every(t => t.numbers.length >= 2 && t.numbers.every(n => n.v && n.label)));
-  check("v29: no em dash in topics", !readFileSync("js/topics.js", "utf8").includes("\u2014"));
+  check("v29: 6 debates, all sourced, both sides", Topics.TOPICS.length === 6 && Topics.TOPICS.every(t => t.sideA && t.sideB && t.status && t.sources.length >= 2 && t.sources.every(s => /^https:/.test(s.url))));
+  check("v29: debates carry numbers with labels", Topics.TOPICS.every(t => t.numbers.length >= 2 && t.numbers.every(n => n.v && n.label)));
+  check("v36: debates link to ComplyAI.wiki where the law is the topic", /complyai\.wiki/.test(readFileSync("js/topics.js", "utf8")));
+  check("v36: debate decisions point at chapters that exist", Topics.TOPICS.every(t => { const d = Topics.getDecision ? Topics.getDecision(t.id) : null; return !d || !d.href || htmlIds.has(String(d.href).replace(/^#/, "").split("=")[0]); }));
   {
     /* The owner may legitimately have filled these in. What must hold is that
        an EMPTY value hides the feature and never invents a number. */
+    const Cfg = require("../js/config.js");
+    const SupportMod = require("../js/support.js");
     const supportSrc = readFileSync("js/support.js", "utf8");
-    const hidesWhenEmpty = supportSrc.includes('if (!code)') && supportSrc.includes('if (!url)');
+    const hidesWhenEmpty = supportSrc.includes("if (!code)") && supportSrc.includes("if (!url)");
     const noFakeNumber = !/count\s*[:=]\s*\d{2,}/.test(supportSrc);
     check("v29: counter and donate stay hidden until configured", hidesWhenEmpty && noFakeNumber && typeof SupportMod.init === "function" && typeof Cfg.goatCode === "string" && typeof Cfg.donateUrl === "string");
     check("v30: counter degrades instead of throwing without fetch", supportSrc.includes('typeof fetch !== "function"'));
   }
-  check("v29: welcome exposes show()", readFileSync("js/welcome.js", "utf8").includes("show: show"));
-  check("v29: CSP allows goatcounter only", (() => { const h = readFileSync("index.html", "utf8"); return h.includes("https://gc.zgo.at") && h.includes("https://*.goatcounter.com"); })());
   check("v29: kimi k3 now open-weights", DB.models.some(m => m.id === "kimi-k3" && m.tags.includes("open-weights")));
   check("v29: gemini 3.5 pro rumor is info-only + estimated", DB.models.some(m => m.id === "gemini-3-5-pro" && m.status === "rumored" && m.score.est && m.tags.includes("info-only")));
-  check("v29: support/topics ids in html", ["foot-support", "visit-counter", "welcome-visits", "about-support", "support-btn", "topics-view", "topics-wrap", "nav-topics"].every(id => readFileSync("index.html", "utf8").includes('id="' + id + '"')));
-}
-
-/* ---------- 9f. v0.30: serverless API, automation, layout, key safety ---------- */
-{
-  const html = readFileSync("index.html", "utf8");
-  const css = readFileSync("styles.css", "utf8");
-  const app = readFileSync("js/app.js", "utf8");
-  const apiClient = readFileSync("js/api.js", "utf8");
-  const sw = readFileSync("sw.js", "utf8");
-
-  // --- the backend actually exists and is read-only ---
-  const endpoints = ["health", "models", "benchmarks", "recommend", "stats"];
-  check("v30: every API endpoint file exists", endpoints.every(e => existsSync("api/" + e + ".js")) && existsSync("api/_lib.js"));
-  check("v30: every endpoint exports a handler", endpoints.every(e => typeof require("../api/" + e + ".js") === "function"));
-  const lib = readFileSync("api/_lib.js", "utf8");
-  check("v30: API refuses anything but GET/HEAD/OPTIONS", lib.includes('req.method !== "GET" && req.method !== "HEAD"') && lib.includes("405"));
-  check("v30: API sets cache and cors headers", lib.includes("s-maxage") && lib.includes("Access-Control-Allow-Origin"));
-  check("v30: API reuses the browser data modules (one source of truth)", lib.includes('require("../js/models-db.js")') && lib.includes('require("../js/benchmarks.js")'));
-  check("v30: no secret or env token is read by the API", !/process\.env\.[A-Z_]*(KEY|TOKEN|SECRET)/.test(lib + readFileSync("api/models.js", "utf8")));
-
-  // --- the frontend uses it without depending on it ---
-  check("v30: index loads api.js before app.js", html.indexOf("js/api.js") > 0 && html.indexOf("js/api.js") < html.indexOf("js/app.js"));
-  check("v30: api client has a timeout and aborts", apiClient.includes("AbortController") && /TIMEOUT_MS\s*=\s*\d+/.test(apiClient));
-  check("v30: api client falls back to null, never throws", apiClient.includes("return null") && apiClient.includes(".catch("));
-  check("v30: api client sends no credentials and no user data", apiClient.includes('credentials: "omit"') && !/localStorage|sessionStorage|Key\b/.test(apiClient));
-  check("v30: guide paints the API status", app.includes("WhichAIApi.renderStatus"));
-  check("v30: service worker never caches /api/", sw.includes('url.pathname.indexOf("/api/") === 0') && sw.includes('"js/api.js"'));
-
-  // --- automation ---
-  check("v30: CI workflow runs all three suites", (() => {
-    const y = readFileSync(".github/workflows/ci.yml", "utf8");
-    return y.includes("run-tests.mjs") && y.includes("smoke-dom.mjs") && y.includes("api-tests.mjs");
-  })());
-  /* This pinned an exact cron minute and required a pull-request action. Both
-     were implementation choices, not requirements, and the workflow has since
-     been rewritten to need no write permission at all - which is better. The
-     test now asserts what actually has to be true. */
-  check("v30: scheduled data refresh exists and is cron driven", (() => {
-    const y = readFileSync(".github/workflows/data-refresh.yml", "utf8");
-    const weekly = /cron:\s*"\s*\d+\s+\d+\s+\*\s+\*\s+[0-6]"/.test(y);
-    return weekly && y.includes("refresh-data.mjs") && /workflow_dispatch/.test(y);
-  })());
-  check("v34: the scheduled job needs no write access to the repository", (() => {
-    const y = readFileSync(".github/workflows/data-refresh.yml", "utf8");
-    return /permissions:\s*\n\s*contents:\s*read/.test(y) && !/contents:\s*write/.test(y);
-  })());
-  check("v34: every workflow step points at a file that exists", (() => {
-    const files = [".github/workflows/data-refresh.yml", ".github/workflows/ci.yml"];
-    const missing = [];
-    for (const f of files) {
-      const y = readFileSync(f, "utf8");
-      for (const m of y.matchAll(/node\s+((?:tests|tools)\/[\w.-]+\.mjs)/g)) {
-        if (!existsSync(m[1])) missing.push(f + " -> " + m[1]);
-      }
-    }
-    return missing.length === 0;
-  })(), "a workflow calls a script that is not in the repo");
-  const refreshCli = readFileSync("tools/refresh-data.mjs", "utf8");
-  const refreshCore = readFileSync("api/_refresh-core.js", "utf8");
-  check("v30: refresh checks the shipped free routes", refreshCore.includes("DEFAULT_OR_MODELS") && refreshCore.includes("deadFreeRoutes"));
-  check("v35: the refresh check audits the automation instead of asking a human", !/score\s*\.\s*aa\s*=/.test(refreshCore + refreshCli) && refreshCore.includes("report.automated") && refreshCore.includes("healedFreeRoutes"));
-  check("v30: refresh writes a report a human can read", refreshCli.includes("refresh-report.md") && refreshCore.includes("Needs a human"));
-
-  // --- production build ---
-  check("v30: build script and vercel config exist", existsSync("tools/build.mjs") && existsSync("vercel.json") && existsSync("package.json"));
-  check("v30: vercel builds from tools/build.mjs into dist", (() => {
-    const v = JSON.parse(readFileSync("vercel.json", "utf8"));
-    return v.buildCommand === "node tools/build.mjs" && v.outputDirectory === "dist";
-  })());
-  check("v30: security headers configured", (() => {
-    const v = JSON.parse(readFileSync("vercel.json", "utf8"));
-    const flat = JSON.stringify(v.headers);
-    return ["X-Content-Type-Options", "Referrer-Policy", "Strict-Transport-Security", "Permissions-Policy"].every(h => flat.includes(h));
-  })());
-  const build = readFileSync("tools/build.mjs", "utf8");
-  check("v30: build recomputes the CSP hash instead of trusting it", build.includes("refreshCspHash") && build.includes("createHash"));
-  check("v30: build keeps non-ascii intact (11 languages)", build.includes('charset: "utf8"'));
-  check("v30: build never ships api/ or the drift report", !build.includes('"api"') && build.includes("EXCLUDE_DATA"));
-
-  // --- layout: one measure, even cards ---
-  check("v30: single content measure token", css.includes("--measure:") && css.includes("max-width: var(--layout-measure, var(--measure-wide))") && css.includes("--layout-measure: var(--measure)"));
-  check("v30: guide cards stretch and pin their action", css.includes(".guide-grid { align-items: stretch; }") && css.includes(".guide-card .guide-cta,"));
-  check("v30: catalog folds its tail", app.includes("catalog-extra") && app.includes("catalog-more") && css.includes(".catalog-open .catalog-list .catalog-extra"));
-
-  // --- key safety ---
-  check("v30: key risk model is spelled out", html.includes('id="key-risk-title"') && html.includes("If a key leaks"));
-  check("v30: warning shown only in device mode", html.includes('id="keymode-warn"') && app.includes("paintWarn"));
-  check("v30: every key field has a reveal toggle", (html.match(/class="key-reveal"/g) || []).length === 3 && app.includes("initKeyReveal"));
-
-  // --- positioning and honesty ---
-  check("v30: says how it differs from leaderboards", html.includes('id="about-different"') && html.includes("LMArena") && html.includes("Hugging Face"));
-  check("v30: does not claim to run its own benchmarks", html.includes("does not run its own benchmarks"));
-  check("v30: documents the API publicly", html.includes('id="about-api"') && html.includes("/api/recommend"));
-  /* v0.35: the promise changed from "a human rewrites the scores" to "the
-     scores come from their publisher automatically, words stay human". */
-  check("v35: explains how data stays current, automatically and honestly", html.includes('id="about-freshness"') && html.includes("Scores: official, automatic") && html.includes("Never automatic") && html.includes("never ranked"));
-
-  // --- honesty: the claim had to change when the API arrived ---
-  check("v30: no stale 'no server' claim in the UI", !/no server|nessun server|aucun serveur|sin servidor|kein Server|sem servidor/i.test(html) && !I18n.LANGS.some(l => /no server|nessun server|aucun serveur|sin servidor|kein Server|sem servidor/i.test(JSON.stringify(I18n.STRINGS[l.code]))));
-  check("v30: privacy promise names what actually stays local", I18n.STRINGS.en.privacyTip.includes("read-only") && I18n.STRINGS.it.privacyTip.includes("sola lettura"));
-
-  // --- i18n for the new chrome ---
-  const newKeys = ["keyShow", "keyHide", "keymodeWarn", "keyRiskTitle", "apiLive", "apiLocal", "catalogShowAll", "catalogShowLess"];
-  check("v30: new UI keys exist in all 11 languages", I18n.LANGS.every(l => newKeys.every(k => typeof I18n.STRINGS[l.code][k] === "string" && I18n.STRINGS[l.code][k].length > 0)));
-  check("v30: no em dash in the new modules", ![apiClient, refreshCli, refreshCore, build, lib].some(f => f.includes("—")));
-}
-
-/* ---------- 9g. v0.31: the August data refresh ---------- */
-{
-  const Changes = require("../js/changes.js");
-  const feed = Array.isArray(Changes) ? Changes : (Changes.CHANGES || Changes.changes || Changes.items || Changes.list || []);
 
   const NEW_AUG = ["grok-4-6", "glm-5-3", "glm-5-3-flash", "gemini-3-7-flash", "muse-spark-1-2"];
   check("v31: the five August models are in the catalog", NEW_AUG.every(id => DB.models.some(m => m.id === id)));
@@ -376,261 +341,208 @@ const Brands = require("../js/brands.js");
     const ok = m && m.score && typeof m.score.aa === "number" && ((m.score.est === false && m.score.src === "aa") || (m.score.est === true && m.score.src === "converted"));
     return ok && m.spec && /^2026-09-/.test(m.spec.released);
   }));
-  check("v31: every August model resolves an official link", NEW_AUG.every(id => {
-    const m = DB.models.find(x => x.id === id);
-    return !!(DB.links[m.family] || DB.vendorLinks[m.vendor]);
-  }));
-
   const measured = DB.models.filter(m => m.score && m.score.est === false && typeof m.score.aa === "number");
   const rank = measured.slice().sort((a, b) => b.score.aa - a.score.aa);
   check("v31: leaderboard is ordered and led by a measured public model", rank.length > 50 && rank[0].status === "public" && rank[0].score.est === false && rank[0].score.aa >= rank[1].score.aa && rank[1].score.aa >= rank[2].score.aa);
-  check("v31: the top ten are a plausible spread, not a data error", (() => {
-    const spread = rank[0].score.aa - rank[9].score.aa;
-    return spread >= 0 && spread <= 15;
-  })());
-
-  /* The August index shifted the whole table upward. Saying so is the point:
-     a reader comparing to July must not be told the models all improved. */
+  check("v31: the top ten are a plausible spread, not a data error", (() => { const spread = rank[0].score.aa - rank[9].score.aa; return spread >= 0 && spread <= 15; })());
   check("v31: the scale note names its snapshot and its retrieval date", /[A-Z][a-z]+ \d{1,2}, 20\d\d/.test(DB.scaleNote) && /snapshot/i.test(DB.scaleNote) && /retriev/i.test(DB.scaleNote));
   check("v31: the index snapshot is backed by a cited https source", Bench.sources.some(s2 => /aa/i.test(s2.id) && /^https:/.test(s2.url)));
-
-  /* GLM-5.3 shipped without weights: claiming otherwise would be the exact
-     kind of error the methodology page promises not to make. */
   const glm53 = DB.models.find(m => m.id === "glm-5-3");
   check("v31: GLM-5.3 is not tagged open-weights", !glm53.tags.includes("open-weights") && /NOT released/.test(glm53.access));
   const glmFlash = DB.models.find(m => m.id === "glm-5-3-flash");
   check("v31: GLM-5.3-Flash is tagged open-weights with its licence", glmFlash.tags.includes("open-weights") && /MIT/.test(glmFlash.access));
-
-  /* Gemini 3.7 Flash has no confirmed free tier, so it must not become the
-     auto-run default and must not carry the free tag. */
   const g37 = DB.models.find(m => m.id === "gemini-3-7-flash");
   check("v31: Gemini 3.7 Flash is not claimed free", !g37.tags.includes("free") && /not confirmed/.test(g37.access));
-  check("v31: BYOK default stays on the model with a confirmed free tier", readFileSync("js/app.js", "utf8").includes('DEFAULT_GEMINI_MODEL = "gemini-3.6-flash"'));
-
-  check("v31: Sonnet 5 intro pricing recorded as expired", (() => {
-    const m = DB.models.find(x => x.id === "sonnet-5");
-    return m.spec.priceIn === 3 && m.spec.priceOut === 15 && /expired/.test(m.spec.note);
-  })());
-
-  check("v31: radar carries the August entries with sources", (() => {
-    const aug = feed.filter(e => /^2026-08-/.test(e.date));
-    return aug.length >= 6 && aug.every(e => e.src && /^https:/.test(e.src.url) && e.note && e.note.length > 40);
-  })());
-  check("v31: radar dbIds all resolve", feed.every(e => !e.dbId || DB.models.some(m => m.id === e.dbId)));
-
-  const refresh31 = readFileSync("tools/refresh-data.mjs", "utf8");
-  check("v31: a dead upstream source degrades instead of failing the run", refresh31.includes("Skipped: the upstream source did not answer") && refresh31.includes("process.exit(STRICT ? 1 : 0)"));
-
+  check("v31: Sonnet 5 intro pricing recorded as expired", (() => { const m = DB.models.find(x => x.id === "sonnet-5"); return m.spec.priceIn === 3 && m.spec.priceOut === 15 && /expired/.test(m.spec.note); })());
+  const feed = ChangesFeed.CHANGES;
+  check("v31: radar carries the August entries with sources", (() => { const aug = feed.filter(e => /^2026-08-/.test(e.date)); return aug.length >= 6 && aug.every(e => e.src && /^https:/.test(e.src.url) && e.note && e.note.length > 40); })());
   check("v31: repo references point at the current repository", !["README.md", "AGENTS.md", "HANDOVER.md"].some(f => readFileSync(f, "utf8").includes("Jackfdl/promptcompass-")));
-}
 
-/* ---------- 9h. v0.32: automation that does not depend on GitHub ---------- */
-{
-  const html = readFileSync("index.html", "utf8");
-  const css = readFileSync("styles.css", "utf8");
-  const core = readFileSync("api/_refresh-core.js", "utf8");
-  const cli = readFileSync("tools/refresh-data.mjs", "utf8");
-  const endpoint = readFileSync("api/refresh.js", "utf8");
-  const radar = readFileSync("js/radar.js", "utf8");
-  const vercel = JSON.parse(readFileSync("vercel.json", "utf8"));
-
-  /* One implementation. A second copy of the check would recreate exactly
-     the drift the check exists to catch. */
-  check("v32: the check has a single shared implementation", existsSync("api/_refresh-core.js") && cli.includes('require("../api/_refresh-core.js")') && endpoint.includes('require("./_refresh-core.js")'));
-  check("v32: neither caller reimplements the analysis", !/function analyse\(/.test(cli) && !/function analyse\(/.test(endpoint) && /function analyse\(/.test(core));
-  check("v32: the endpoint is registered for the dev runner and tests", readFileSync("tools/api-dev.mjs", "utf8").includes('"refresh"'));
-
-  /* The whole point: the automation runs on the host that already serves the
-     site, so a blocked CI account cannot switch it off. */
-  check("v32: a Vercel cron drives the check", Array.isArray(vercel.crons) && vercel.crons.some(c => c.path === "/api/refresh" && /^\S+ \S+ \S+ \S+ \S+$/.test(c.schedule)));
-  check("v32: the cron runs at most daily (free plan)", vercel.crons.every(c => !/^\*/.test(c.schedule.split(" ")[1])));
-  check("v32: js/app.js is bundled so the free-route check can run", vercel.functions && vercel.functions["api/refresh.js"] && /app\.js/.test(vercel.functions["api/refresh.js"].includeFiles));
-  check("v32: the endpoint degrades instead of failing", endpoint.includes("skippedReport") && !/throw /.test(endpoint));
-  check("v32: the endpoint never edits the catalog", !/\.push\(|models\s*=/.test(endpoint.replace(/needsHuman[^;]*;/g, "")));
-  check("v32: health advertises the check", readFileSync("api/health.js", "utf8").includes("/api/refresh"));
-
-  /* Visible where the data lives, not only in a dashboard nobody opens. */
-  check("v32: the radar shows the check result", radar.includes("paintCheck") && radar.includes('WhichAIApi.get("/refresh")'));
-  check("v32: the radar degrades silently when the API is unreachable", /if \(!r\) return;/.test(radar));
-  check("v32: severity has a style for every state", ["api-dot.review", "api-dot.broken", "radar-check"].every(c => css.includes(c)));
-  const radarKeys = ["radarCheckClean", "radarCheckReview", "radarCheckBroken", "radarCheckSkipped"];
-  check("v32: check labels exist in all 11 languages", I18n.LANGS.every(l => radarKeys.every(k => typeof I18n.STRINGS[l.code][k] === "string" && I18n.STRINGS[l.code][k].length > 0)));
-  check("v32: no em dash in the new modules", ![core, endpoint].some(f => f.includes("—")));
-}
-
-/* ---------- 9i. v0.33: numbers that cannot rot ---------- */
-{
-  /* A rank or an index score written into a sentence is wrong within weeks and
-     then contradicts the score rendered beside it. The site was carrying eleven
-     of these. Prose describes character; figures are computed. */
-  const rankClaim = /#\s?([1-9]|10)\b/;
-  const offenders = DB.models.filter(m => rankClaim.test(m.review || ""));
+  /* A rank or an index score written into a sentence is wrong within weeks. */
+  const offenders = DB.models.filter(m => /#\s?([1-9]|10)\b/.test(m.review || ""));
   check("v33: no model review claims a rank in prose", offenders.length === 0, offenders.map(m => m.id).join(", "));
-
   const contradictions = DB.models.filter(m => {
     const own = m.score && typeof m.score.aa === "number" ? m.score.aa : null;
     if (own === null) return false;
-    /* An index-shaped figure (two digits, one decimal, in the plausible band)
-       inside a review must either be this model's own score or not appear. */
     const nums = [...(m.review || "").matchAll(/\b([3-6][0-9]\.[0-9])\b/g)].map(x => parseFloat(x[1]));
     return nums.some(n => Math.abs(n - own) > 0.05 && !/%/.test((m.review || "").slice((m.review || "").indexOf(String(n)), (m.review || "").indexOf(String(n)) + String(n).length + 1)));
   });
   check("v33: no review states an index score that is not its own", contradictions.length === 0, contradictions.map(m => m.id).join(", "));
-
-  /* Nothing unmeasured may ever be ranked, charted or recommended. This is the
-     promise the Methodology page makes, now enforced instead of remembered. */
   const ghost = DB.models.filter(m => (m.status === "rumored" || m.status === "private") && m.score && typeof m.score.aa === "number");
   check("v33: unmeasured models carry no index score at all", ghost.length === 0, ghost.map(m => m.id).join(", "));
   const guessed = DB.models.filter(m => m.score && m.score.aa === null && typeof m.score.guess === "number");
   check("v33: their estimate survives in a separate field", guessed.length >= 5 && guessed.every(m => m.score.est === true));
-  check("v33: the app shows a guess as unmeasured, never as a rank", (() => {
-    const app = readFileSync("js/app.js", "utf8");
-    return app.includes("badge-unmeasured") && app.includes("liveRank") && /status !== "rumored" && m.status !== "private"/.test(app);
-  })());
-
-  /* Snapshot dates were hardcoded in four modules and each refresh left them
-     lying. They are read from the database now. */
-  const hardcoded = ["js/app.js", "js/finder.js", "js/modelcompare.js", "tools/build-seo.mjs"]
-    .filter(f => /July \d{1,2}, 20\d\d|July 20\d\d/.test(readFileSync(f, "utf8")));
+  check("v33: the drawer shows a guess as unmeasured, never as a rank", app.includes("badge-unmeasured") && app.includes("R.tierOf(m.id)") && /!m\.score\.est \? R\.tierOf/.test(app));
+  const hardcoded = ["js/app.js", "js/finder.js", "js/modelcompare.js", "js/ranking.js", "js/market.js", "tools/build-seo.mjs"].filter(f => /July \d{1,2}, 20\d\d|July 20\d\d/.test(readFileSync(f, "utf8")));
   check("v33: no module hardcodes a snapshot date", hardcoded.length === 0, hardcoded.join(", "));
-
-  /* One number, one owner: the benchmark file may no longer keep its own copy. */
-  check("v33: benchmarks reads scores from the database", (() => {
-    const b = readFileSync("js/benchmarks.js", "utf8");
-    return b.includes("function liveScore") && b.includes("models-db.js");
-  })());
-  check("v33: benchmark app tiers name current models", !/GPT-5\.5 \/ GPT-5\.5 Pro|Gemini 3\.1 Pro \(AI Pro/.test(readFileSync("js/benchmarks.js", "utf8")));
+  check("v33: benchmarks reads scores from the database", (() => { const b = readFileSync("js/benchmarks.js", "utf8"); return b.includes("function liveScore") && b.includes("models-db.js"); })());
 }
 
-/* ---------- 9j. v0.33: the journey and the 3D stage ---------- */
+/* ---------- 14. the API and the automation ---------- */
 {
-  const html = readFileSync("index.html", "utf8");
-  const css = readFileSync("styles.css", "utf8");
-  const stageJs = readFileSync("js/stage.js", "utf8");
-  const journey = readFileSync("js/journey.js", "utf8");
-  const sceneSrc = readFileSync("src/scene3d.src.js", "utf8");
+  const apiClient = readFileSync("js/api.js", "utf8");
+  const lib = readFileSync("api/_lib.js", "utf8");
+  const endpoints = ["health", "models", "benchmarks", "recommend", "stats", "refresh", "live", "catalog", "news"];
+  check("api: every endpoint file exists and exports a handler", endpoints.every(e => existsSync("api/" + e + ".js") && typeof require("../api/" + e + ".js") === "function"));
+  check("api: the dev runner mounts every endpoint", endpoints.every(e => readFileSync("tools/api-dev.mjs", "utf8").includes('"' + e + '"')));
+  check("api: refuses anything but GET/HEAD/OPTIONS", lib.includes('req.method !== "GET" && req.method !== "HEAD"') && lib.includes("405"));
+  check("api: cache and cors headers", lib.includes("s-maxage") && lib.includes("Access-Control-Allow-Origin"));
+  check("api: reuses the browser data modules (one source of truth)", lib.includes('require("../js/models-db.js")') && lib.includes('require("../js/benchmarks.js")'));
+  check("api: no secret or env token is read", !/process\.env\.[A-Z_]*(KEY|TOKEN|SECRET)/.test(lib + readFileSync("api/models.js", "utf8") + readFileSync("api/_news-core.js", "utf8")));
+  check("api: health advertises the news wire and the check", readFileSync("api/health.js", "utf8").includes("/api/news") && readFileSync("api/health.js", "utf8").includes("/api/refresh"));
+  check("api: the client has a timeout, never throws, sends nothing of the user's", apiClient.includes("AbortController") && /TIMEOUT_MS\s*=\s*\d+/.test(apiClient) && apiClient.includes("return null") && apiClient.includes('credentials: "omit"') && !/localStorage|sessionStorage/.test(apiClient));
+  check("api: the client can skip its memory cache for the news", /opts\.fresh/.test(apiClient));
+  check("api: service worker never caches /api/", sw.includes('url.pathname.indexOf("/api/") === 0'));
 
-  check("v33: the four acts exist in the markup", (html.match(/class="act"/g) || []).length === 4 && html.includes('id="journey"'));
-  check("v33: the acts are readable without javascript", ["act-map-title", "act-rank-title", "act-goal-title", "act-tools-title"].every(id => html.includes('id="' + id + '"')));
-  check("v33: the stage canvas and its readout are declared", html.includes('id="stage-canvas"') && html.includes('id="stage-tip"'));
-  check("v33: journey and stage load before the app", html.indexOf("js/stage.js") < html.indexOf("js/app.js") && html.indexOf("js/journey.js") < html.indexOf("js/app.js"));
-
-  /* The whole point of the gate: heavy graphics must never be forced on a
-     device or a person who has asked for less. */
-  ["prefers-reduced-motion", "saveData", "deviceMemory", "hardwareConcurrency"].forEach(sig => {
-    check("v33: the stage respects " + sig, stageJs.includes(sig));
-  });
-  check("v33: the scene is loaded lazily, never in the critical path", !html.includes("js/scene3d.js") && stageJs.includes('SCENE_SRC = "js/scene3d.js"') && stageJs.includes("createElement(\"script\")"));
-  check("v33: a flat renderer exists and carries the same data", stageJs.includes("function Flat") && stageJs.includes("Flat.prototype.draw"));
-  check("v33: the loop stops when nobody is looking", stageJs.includes("IntersectionObserver") && stageJs.includes("visibilitychange"));
-  check("v33: the pixel ratio is capped for phones", sceneSrc.includes("devicePixelRatio || 1, 1.75"));
-  check("v33: touch scroll is not hijacked unless the gesture is horizontal", stageJs.includes("Math.abs(dx) > Math.abs(dy)"));
-
-  /* The geometry has to mean something, or it is just a screensaver. */
-  check("v33: point positions are computed from price, score and date", sceneSrc.includes("priceOut") && sceneSrc.includes("score.aa") && sceneSrc.includes("spec.released"));
-  check("v33: unmeasured models are never placed in the ladder", /ladder = aa == null/.test(sceneSrc));
-  check("v33: the generated bundle exists and exposes one global", existsSync("js/scene3d.js") && readFileSync("js/scene3d.js", "utf8").includes("WhichAIScene"));
-  check("v33: the bundle is generated, not hand-edited", readFileSync("js/scene3d.js", "utf8").includes("generated by tools/bundle-3d.mjs") && existsSync("tools/bundle-3d.mjs"));
-  check("v33: the 133 KB scene is not precached", (() => {
-    const sw = readFileSync("sw.js", "utf8");
-    return !sw.includes("scene3d.js") && sw.includes("js/stage.js") && sw.includes("js/journey.js");
+  const yCi = readFileSync(".github/workflows/ci.yml", "utf8");
+  const yData = readFileSync(".github/workflows/data-refresh.yml", "utf8");
+  check("ci: runs every suite", ["run-tests.mjs", "smoke-dom.mjs", "api-tests.mjs", "live-data-tests.mjs", "catalog-tests.mjs", "news-tests.mjs"].every(f => yCi.includes(f)));
+  check("ci: scheduled data refresh exists and is cron driven", /cron:\s*"\s*\d+\s+\d+\s+\*\s+\*\s+[0-6]"/.test(yData) && yData.includes("refresh-data.mjs") && /workflow_dispatch/.test(yData));
+  check("ci: the scheduled job needs no write access", /permissions:\s*\n\s*contents:\s*read/.test(yData) && !/contents:\s*write/.test(yData));
+  check("ci: every workflow step points at a file that exists", (() => {
+    const missing = [];
+    for (const y of [yCi, yData]) for (const m of y.matchAll(/node\s+((?:tests|tools)\/[\w.-]+\.mjs)/g)) if (!existsSync(m[1])) missing.push(m[1]);
+    return missing.length === 0;
   })());
 
-  /* Journey behaviour that must survive a refactor. */
-  check("v33: the journey reads the real scroll container", journey.includes('scroller = $("welcome")'));
-  check("v33: the ladder is built from the live database, not a list", journey.includes("PromptCompassModelsDB") && !/Claude|GPT-|Gemini/.test(journey.replace(/\/\*[\s\S]*?\*\//g, "")));
-  check("v33: a goal typed in the journey survives into the generator", journey.includes("pc_journey_goal") && readFileSync("js/app.js", "utf8").includes("adoptJourneyGoal"));
-  check("v33: the spine tracks with rects, not offsetTop", journey.includes("getBoundingClientRect") && !journey.includes("a.node.offsetTop"));
+  const core = readFileSync("api/_refresh-core.js", "utf8");
+  const cli = readFileSync("tools/refresh-data.mjs", "utf8");
+  const endpoint = readFileSync("api/refresh.js", "utf8");
+  const vercel = JSON.parse(readFileSync("vercel.json", "utf8"));
+  check("refresh: one shared implementation", cli.includes('require("../api/_refresh-core.js")') && endpoint.includes('require("./_refresh-core.js")') && /function analyse\(/.test(core) && !/function analyse\(/.test(cli + endpoint));
+  check("refresh: checks the free routes the catalog names, not app defaults (v0.36)", core.includes("function citedFreeRoutes") && !/DEFAULT_OR_MODELS|appSrc/.test(core + cli + endpoint));
+  check("refresh: audits the automation instead of editing data", !/score\s*\.\s*aa\s*=/.test(core + cli) && core.includes("report.automated") && core.includes("Needs a human"));
+  check("refresh: a dead upstream degrades instead of failing", cli.includes("Skipped: the upstream source did not answer") && cli.includes("process.exit(STRICT ? 1 : 0)") && endpoint.includes("skippedReport"));
+  check("refresh: a daily Vercel cron drives it", Array.isArray(vercel.crons) && vercel.crons.some(c => c.path === "/api/refresh" && /^\S+ \S+ \S+ \S+ \S+$/.test(c.schedule)) && vercel.crons.every(c => !/^\*/.test(c.schedule.split(" ")[1])));
+  check("refresh: the radar shows the result and degrades silently", readFileSync("js/radar.js", "utf8").includes('WhichAIApi.get("/refresh")') && /if \(!r\) return;/.test(readFileSync("js/radar.js", "utf8")));
+  const radarKeys = ["radarCheckClean", "radarCheckReview", "radarCheckBroken", "radarCheckSkipped"];
+  check("refresh: check labels exist in all 11 languages", I18n.LANGS.every(l => radarKeys.every(k => typeof I18n.STRINGS[l.code][k] === "string" && I18n.STRINGS[l.code][k].length > 0)));
 
-  check("v33: motion is disabled for reduced-motion users", /@media \(prefers-reduced-motion: reduce\)[\s\S]{0,400}\.act-inner/.test(css));
-  check("v33: the journey has a mobile layout", /@media \(max-width: 720px\)[\s\S]{0,900}journey-spine/.test(css));
-  const jKeys = ["journeyCue", "journeyStatModels", "journeyBestPick", "journeyWritePrompt"];
-  check("v33: journey chrome exists in all 11 languages", I18n.LANGS.every(l => jKeys.every(k => typeof I18n.STRINGS[l.code][k] === "string" && I18n.STRINGS[l.code][k].length > 0)));
+  check("build: vercel builds from tools/build.mjs into dist", vercel.buildCommand === "node tools/build.mjs" && vercel.outputDirectory === "dist");
+  check("build: security headers configured", ["X-Content-Type-Options", "Referrer-Policy", "Strict-Transport-Security", "Permissions-Policy"].every(h => JSON.stringify(vercel.headers).includes(h)));
+  const build = readFileSync("tools/build.mjs", "utf8");
+  check("build: recomputes the CSP hash, keeps non-ascii, never ships api/", build.includes("refreshCspHash") && build.includes("createHash") && build.includes('charset: "utf8"') && !build.includes('"api"'));
+  check("build: no 3D bundle step left", !/bundle-3d|scene3d/.test(build));
 }
 
-/* ---------- 10. HTML ↔ JS id cross-check ---------- */
+/* ---------- 15. v0.36: one page, six chapters, visibly connected ---------- */
 {
-  const html = readFileSync("index.html", "utf8");
-  const htmlIds = new Set([...html.matchAll(/id="([^"]+)"/g)].map(m => m[1]));
-  const missing = [];
-  for (const f of ["js/app.js", "js/merge.js"]) {
+  const CH = ["ranking", "compare", "radar", "market", "debates", "tools"];
+  const pos = CH.map(c => html.indexOf('id="' + c + '" data-chapter="' + c + '"'));
+  check("chapters: ranking, compare, radar, market, debates, tools - in that order", pos.every((p, i) => p > 0 && (i === 0 || p > pos[i - 1])));
+  check("chapters: the conductor walks the same order", app.includes('var CHAPTERS = ["ranking", "compare", "radar", "market", "debates", "tools"];'));
+  check("chapters: each one carries its accent colour", CH.every(c => new RegExp('id="' + c + '" data-chapter="' + c + '" data-accent="\\d{1,3} \\d{1,3} \\d{1,3}"').test(html)));
+  check("chapters: the data comes first (the page opens on the ranking)", html.indexOf('id="ranking"') < html.indexOf('id="tools"') && /<h1[^>]*id="ranking-title"/.test(html));
+  check("chapters: no cover, no menu of views", !htmlIds.has("welcome") && !htmlIds.has("journey") && ![...htmlIds].some(id => /^nav-|-view$/.test(id)));
+  check("chapters: the tools end the page: finder first, then prompt, doctor, stack", ["find", "prompt", "doctor", "stack"].map(id => html.indexOf('id="' + id + '"')).every((p, i, a) => p > html.indexOf('id="tools"') && (i === 0 || p > a[i - 1])));
+  check("chapters: the quick answer comes before the guided finder", html.indexOf('id="quick-wrap"') < html.indexOf('id="finder-wrap"') && html.indexOf('id="finder-wrap"') < html.indexOf('id="gen"'));
+
+  /* Every hand-off between chapters is a visible object that travels: it
+     leaves from the end of one chapter and lands inside the next. */
+  const HANDOFF = [["duel", "ranking", "compare"], ["newest", "compare", "radar"], ["price", "radar", "market"], ["debate", "market", "debates"], ["task", "debates", "tools"]];
+  const jsAll = SCRIPTS.map(f => readFileSync(f, "utf8")).join("\n");
+  for (const [key, from, to] of HANDOFF) {
+    const leaves = (html.match(new RegExp('data-morph-from="' + key + '"', "g")) || []).length === 1 && between('data-morph-from="' + key + '"', from, to);
+    const nextIdx = CH.indexOf(to) + 1 < CH.length ? CH[CH.indexOf(to) + 1] : null;
+    const lands = between('data-morph-to="' + key + '"', to, nextIdx) || new RegExp('setAttribute\\("data-morph-to", "' + key + '"\\)').test(jsAll);
+    check("morph: '" + key + "' leaves " + from + " and lands in " + to, leaves && lands);
+  }
+  const motion = readFileSync("js/motion.js", "utf8");
+  check("motion: everything turns off for prefers-reduced-motion", motion.includes("prefers-reduced-motion") && /@media \(prefers-reduced-motion: reduce\)/.test(css));
+  check("motion: chapters mount lazily, ahead of the reader", motion.includes("IntersectionObserver") && /rootMargin/.test(motion));
+  check("motion: a ghost never rests mid-air (it settles when scrolling stops)", /function settleAll/.test(motion) && /is-settling/.test(css));
+  check("motion: scrolling is never hijacked", !/preventDefault|scrollTo\(|wheel/.test(motion) && /passive: true/.test(motion));
+  check("motion: the progress bar and rail exist", htmlIds.has("progress-bar") && htmlIds.has("rail-fill"));
+
+  /* Old addresses keep working: every retired view has a home. */
+  const legacy = (app.match(/var LEGACY = \{([\s\S]*?)\};/) || [])[1] || "";
+  const pairs = [...legacy.matchAll(/"([\w-]+)":\s*"([\w-]+)"/g)].map(m => [m[1], m[2]]);
+  const OLD = ["guide", "compare-specs", "compare-outputs", "merge", "chains", "arena", "live", "topics", "finder", "generator", "settings", "about-different", "about-freshness", "about-methodology", "glossary-view"];
+  check("links: every old address is mapped", OLD.every(o => pairs.some(p => p[0] === o)), OLD.filter(o => !pairs.some(p => p[0] === o)).join(", "));
+  check("links: every mapped address lands on an id that exists", pairs.every(p => htmlIds.has(p[1])), pairs.filter(p => !htmlIds.has(p[1])).map(p => p.join("->")).join(", "));
+
+  /* Removed features leave nothing behind: no file, no script, no cache
+     entry, no stored key in a returning visitor's browser. */
+  const GONE = ["js/welcome.js", "js/journey.js", "js/stage.js", "js/scene3d.js", "js/chains.js", "js/merge.js", "js/arena.js", "js/live-data.js", "src/scene3d.src.js", "tools/bundle-3d.mjs"];
+  check("removed: the retired modules are gone from the repo", GONE.every(f => !existsSync(f)), GONE.filter(f => existsSync(f)).join(", "));
+  check("removed: nothing loads or precaches them", GONE.every(f => !html.includes(f) && !sw.includes('"' + f + '"')));
+  check("removed: three.js is no longer a dependency", !JSON.stringify(JSON.parse(readFileSync("package.json", "utf8")).dependencies || {}).includes("three"));
+  check("removed: no API key field, no auto-run, no BYOK host in the CSP", !/type="password"|keymode|key-reveal/.test(html) && /connect-src 'self' https:\/\/\*\.goatcounter\.com;/.test(html) && !/googleapis\.com\/v1|api\.groq\.com|openrouter\.ai\/api/.test(html));
+  check("removed: keys stored by older versions are wiped on load", /function forgetRetiredKeys/.test(app) && ["pc_settings_v1", "pc_keymode", "pc_chains_v1", "pc_arena_v1", "pc_merge_v1"].every(k => app.includes('"' + k + '"')));
+  check("removed: every page script is precached for offline use", SCRIPTS.every(s => sw.includes('"' + s + '"')));
+
+  /* Jack's other projects are linked visibly. */
+  check("projects: ComplyAI.wiki and War Right Now are linked from the footer", /href="https:\/\/complyai\.wiki"[^>]*rel="noopener"/.test(html) && /href="https:\/\/warrightnow\.vercel\.app"[^>]*rel="noopener"/.test(html) && htmlIds.has("projects"));
+
+  check("drawer: a real dialog with a close button", /id="drawer"[^>]*role="dialog"|role="dialog"[^>]*id="drawer"/.test(html) && /aria-modal="true"/.test(html) && htmlIds.has("drawer-close"));
+  check("drawer: deep links use #model= and are kept in sync", app.includes("#model=") && app.includes("replaceState"));
+  check("theme: light and dark only, chosen before first paint", /data-theme/.test(html) && /\[data-theme="dark"\]/.test(css) && !/sepia/.test(app));
+  check("honesty: says how it differs from leaderboards and does not run its own benchmarks", htmlIds.has("about-diff") && html.includes("LMArena") && html.includes("Hugging Face") && html.includes("does not run its own benchmarks"));
+  check("honesty: explains how data stays current, automatically and honestly", htmlIds.has("about-data") && html.includes("Scores: official, automatic") && html.includes("Never automatic"));
+  check("honesty: documents the API, news wire included", htmlIds.has("about-api") && html.includes("/api/recommend") && html.includes("/api/news"));
+  check("honesty: no stale 'no server' claim in the UI", !/no server|nessun server|aucun serveur|sin servidor|kein Server|sem servidor/i.test(html) && !I18n.LANGS.some(l => /no server|nessun server|aucun serveur|sin servidor|kein Server|sem servidor/i.test(JSON.stringify(I18n.STRINGS[l.code]))));
+}
+
+/* ---------- 16. HTML <-> JS id cross-check ---------- */
+{
+  const created = new Set();
+  const refs = [];
+  for (const f of SCRIPTS) {
     const src = readFileSync(f, "utf8");
-    for (const m of src.matchAll(/getElementById\("([^"]+)"\)/g)) {
-      const id = m[1];
-      if (id.includes("-" + '" +')) continue;
-      if (/\$\{|" \+/.test(id)) continue;
-      if (["test-gemini", "test-groq", "test-openrouter"].includes(id)) continue; // dynamic prefix ids exist
-      if (!htmlIds.has(id) && !["chain-map", "glossary-view", "update-toast"].includes(id)) {
-        // dynamically created ids are allowed only if created in JS
-        if (!/createElement/.test(src.slice(Math.max(0, m.index - 400), m.index)) && !htmlIds.has(id)) missing.push(f + ":" + id);
-      }
-    }
+    for (const m of src.matchAll(/\.id\s*=\s*"([^"]+)"/g)) created.add(m[1]);
+    for (const m of src.matchAll(/setAttribute\("id",\s*"([^"]+)"\)/g)) created.add(m[1]);
+    for (const m of src.matchAll(/(?:getElementById|\$)\("([A-Za-z][\w-]*)"\)/g)) refs.push([f, m[1]]);
   }
-  const reallyMissing = missing.filter(x => {
-    const id = x.split(":")[1];
-    return !htmlIds.has(id);
-  });
-  check("ids: every getElementById exists in HTML", reallyMissing.length === 0, reallyMissing.join(", "));
-  for (const must of ["finder-wrap", "cmp-specs-wrap", "cmp-outputs-wrap", "glossary-list", "chain-map", "chain-addstep", "foot-faq", "foot-glossary", "insights-wrap", "chart-top", "chart-pp", "mode-goal", "mode-finder", "about-faq", "about-similar", "about-contribute"]) {
-    if (!htmlIds.has(must)) check("ids: required v0.22 id " + must, false);
-  }
-  check("ids: v0.22 required ids present", true);
+  const missing = refs.filter(([, id]) => !htmlIds.has(id) && !created.has(id)).map(([f, id]) => f + ":" + id);
+  check("ids: every element the scripts look up exists (" + refs.length + " lookups)", missing.length === 0, [...new Set(missing)].join(", "));
+  const MUST = ["ranking-title", "rank-kpis", "rank-summary", "rank-controls", "rank-search", "rank-results", "tier-list", "tier-note", "scatter", "vs-stage", "vs-body", "radar-latest", "radar-wrap", "mk-leader", "market-wrap", "topics-wrap", "glossary-list", "quick-wrap", "finder-wrap", "gen", "goal", "generate", "panels", "doctor-wrap", "stack-wrap", "drawer", "drawer-body", "live-pill", "lang-select", "theme-toggle", "data-export", "data-import", "data-wipe", "foot-support", "visit-counter", "about-support", "support-btn", "foot-version"];
+  const absent = MUST.filter(id => !htmlIds.has(id));
+  check("ids: the v0.36 skeleton is complete", absent.length === 0, absent.join(", "));
 }
 
-/* ---------- 11. version coherence ---------- */
+/* ---------- 17. version coherence ---------- */
 {
-  const html = readFileSync("index.html", "utf8");
-  const app = readFileSync("js/app.js", "utf8");
-  const sw = readFileSync("sw.js", "utf8");
-  check("version: badge v0.35", html.includes(">v0.35 · Growth<"));
-  check("version: footer v0.35", html.includes("WhichAI v0.35"));
-  check("version: APP_VERSION v0.35", app.includes('APP_VERSION = "v0.35"'));
-  check("version: SW cache v0.35", sw.includes('"whichai-v0.35.0"'));
-  const welcomeJs = readFileSync("js/welcome.js", "utf8");
-  check("v0.27: morph reaches target before opacity fade", welcomeJs.includes("offset: 0.76") && welcomeJs.includes("opacity: 0") && welcomeJs.includes("1050"));
-  check("v0.27: dark wordmarks use a light treatment", /\[data-theme="dark"\] \.ai-brand-wordmark\s*\{[^}]*invert\(1\)/s.test(readFileSync("styles.css", "utf8")));
-  check("v0.26: welcome + morph scripts and markup", ["welcome", "welcome-brand", "welcome-generator", "welcome-guide", "welcome-compare", "welcome-explore"].every(id => html.includes('id="' + id + '"')) && html.includes("js/welcome.js"));
-  check("v0.26: 13 branded model controls", (html.match(/data-ai-brand=/g) || []).length === 13 && html.includes("js/brands.js"));
-  check("v0.26: SW precaches entrance + core brand assets", sw.includes("js/welcome.js") && sw.includes("js/brands.js") && sw.includes("assets/brands/claude-color.svg") && sw.includes("assets/brands/qwen-color.svg"));
-  check("v0.25: radar ids + scripts", ["nav-radar", "radar-view", "radar-wrap"].every(id => html.includes('id="' + id + '"')) && ["changes.js", "radar.js", "sharecard.js"].every(s => html.includes("js/" + s)));
-  check("v0.25: SW precaches radar + share", sw.includes("js/radar.js") && sw.includes("js/sharecard.js") && sw.includes("js/changes.js"));
-  check("v0.24: nav More + new views ids", ["nav-more", "nav-more-panel", "nav-stack", "nav-doctor", "nav-glossary", "stack-view", "doctor-view", "stack-wrap", "doctor-wrap", "demo-card", "open-doctor"].every(id => html.includes('id="' + id + '"')));
-  check("v0.24: SW precaches stack + doctor", sw.includes("js/stack.js") && sw.includes("js/doctor.js"));
-  check("v0.23: CSP meta present", html.includes("Content-Security-Policy") && html.includes("connect-src 'self' https://generativelanguage.googleapis.com"));
-  check("v0.23: key storage + data tools ids", ["keymode-session", "keymode-local", "keys-clear", "data-export", "data-import", "data-wipe", "data-file"].every(id => html.includes('id="' + id + '"')));
-  check("v0.23: methodology card", html.includes('id="about-methodology"') && html.includes("Methodology v1.0"));
-  check("v0.23: SW precaches shell", sw.includes("js/finder.js") && sw.includes("icons/icon-512.png") && sw.includes("addAll"));
+  check("version: APP_VERSION v0.36", app.includes('APP_VERSION = "v0.36"'));
+  check("version: footer v0.36", html.includes(">WhichAI v0.36<"));
+  check("version: SW cache v0.36.0", sw.includes('"whichai-v0.36.0"'));
+  check("version: package.json 0.36.0", JSON.parse(readFileSync("package.json", "utf8")).version === "0.36.0");
+  check("version: the API reports v0.36", readFileSync("api/_lib.js", "utf8").includes('APP_VERSION = "v0.36"'));
+  check("brands: 13 branded model controls in the generator", (html.match(/data-ai-brand=/g) || []).length === 13 && html.includes("js/brands.js"));
+  check("brands: dark wordmarks use a light treatment", /\[data-theme="dark"\] \.ai-brand-wordmark\s*\{[^}]*invert\(1\)/s.test(css));
+  check("brands: SW precaches the core brand assets", sw.includes("assets/brands/claude-color.svg") && sw.includes("assets/brands/qwen-color.svg"));
+  check("csp: meta present, goatcounter the only third party", html.includes("Content-Security-Policy") && html.includes("https://gc.zgo.at") && html.includes("https://*.goatcounter.com"));
   {
-    const noDash = ["js/i18n.js", "js/models-db.js", "js/benchmarks.js", "js/engine.js", "js/finder.js", "js/glossary.js", "js/modelcompare.js", "js/charts.js", "js/app.js", "js/merge.js", "js/chains.js", "index.html", "manifest.webmanifest"];
-    const dirty = noDash.filter(f => readFileSync(f, "utf8").includes("\u2014"));
-    check("v0.23: no em dashes in visible files", dirty.length === 0, dirty.join(", "));
+    const noDash = ["js/i18n.js", "js/models-db.js", "js/benchmarks.js", "js/engine.js", "js/finder.js", "js/glossary.js", "js/modelcompare.js", "js/charts.js", "js/app.js", "js/ranking.js", "js/market.js", "js/radar.js", "js/topics.js", "js/motion.js", "js/generator.js", "index.html", "manifest.webmanifest"];
+    const dirty = noDash.filter(f => readFileSync(f, "utf8").includes("—"));
+    check("text: no em dashes in visible files", dirty.length === 0, dirty.join(", "));
   }
   {
     const sm = readFileSync("sitemap.xml", "utf8");
     const urlCount = (sm.match(/<loc>/g) || []).length;
-    check("v0.23: sitemap has 150+ urls (" + urlCount + ")", urlCount >= 150);
-    check("v0.23: model page generated + clean", existsSync("models/fable-5.html") && existsSync("models/index.html") && !readFileSync("models/fable-5.html", "utf8").includes("\u2014"));
-    check("v0.23: best-ai-for + glossary + compare + dataset", existsSync("best-ai-for/coding.html") && existsSync("glossary/token.html") && existsSync("compare/fable-5-vs-gpt-5-6-sol.html") && existsSync("data/models.json"));
+    check("wiki: sitemap has 150+ urls (" + urlCount + ")", urlCount >= 150);
+    check("wiki: model page generated + clean", existsSync("models/fable-5.html") && existsSync("models/index.html") && !readFileSync("models/fable-5.html", "utf8").includes("—"));
+    check("wiki: best-ai-for + glossary + compare + dataset", existsSync("best-ai-for/coding.html") && existsSync("glossary/token.html") && existsSync("compare/fable-5-vs-gpt-5-6-sol.html") && existsSync("data/models.json"));
     const ds = JSON.parse(readFileSync("data/models.json", "utf8"));
-    check("v0.23: open dataset valid (" + ds.count + " models)", ds.count === ds.models.length && ds.count >= 105);
+    check("wiki: open dataset valid (" + ds.count + " models)", ds.count === ds.models.length && ds.count >= 105);
+    const wikiLinks = readFileSync("models/fable-5.html", "utf8") + readFileSync("best-ai-for/coding.html", "utf8");
+    check("wiki: pages link to the new chapters, not retired views", !/\/#(finder|compare-specs|compare-outputs|topics|chains|arena|guide|about-methodology)\b/.test(wikiLinks));
   }
-  check("version: scripts include new modules", ["charts.js", "glossary.js", "finder.js", "modelcompare.js"].every(s => html.includes("js/" + s)));
 }
 
-/* ---------- 12. CSS sanity ---------- */
+/* ---------- 18. CSS sanity ---------- */
 {
-  const css = readFileSync("styles.css", "utf8");
   check("css: braces balanced", css.split("{").length === css.split("}").length);
-  check("css: clip fix present", css.includes("padding-block: 5px") && css.includes("margin-block: -5px"));
+  check("css: [hidden] always wins over display rules", /\[hidden\]\s*\{\s*display:\s*none\s*!important;?\s*\}/.test(css));
   check("css: focus-visible ring", css.includes(":focus-visible"));
-  check("css: sepia take 2", css.includes("#f1e5cd"));
-  check("css: dark focus fix + color-scheme", css.includes('[data-theme="dark"] { --focus: #60a5fa; color-scheme: dark; }'));
-  check("css: unified radii tokens", css.includes("--r-card: 14px") && css.includes("--r-ctl: 10px"));
+  check("css: light and dark tokens with color-scheme", /color-scheme: light/.test(css) && /color-scheme: dark/.test(css));
+  check("css: unified radii tokens", css.includes("--r-card:") && css.includes("--r-ctl:"));
+  check("css: tier colours defined", ["--t-S", "--t-A", "--t-B", "--t-C", "--t-D"].every(v => css.includes(v)));
   check("css: update toast", css.includes(".update-toast"));
-  check("css: chain map + finder + mc styles", ["chain-node", "finder-opt", "mc-grid", "footer-links", "wc-chart"].every(c => css.includes(c)));
+  check("css: a phone layout exists", /@media \(max-width: 640px\)/.test(css) && /@media \(max-width: 420px\)/.test(css));
+  check("css: right-to-left handled", /\[dir="rtl"\]/.test(css));
 }
 
-/* ---------- 13. manifest ---------- */
+/* ---------- 19. manifest ---------- */
 {
   try {
     const man = JSON.parse(readFileSync("manifest.webmanifest", "utf8"));
@@ -638,5 +550,5 @@ const Brands = require("../js/brands.js");
   } catch (e) { check("manifest: valid JSON", false, String(e)); }
 }
 
-console.log("\n" + pass + " passed, " + fail + " failed" + (fail ? "\n\nFAILURES:\n" + failures.join("\n") : " — ALL GREEN"));
+console.log("\n" + pass + " passed, " + fail + " failed" + (fail ? "\n\nFAILURES:\n" + failures.join("\n") : " - ALL GREEN"));
 process.exit(fail ? 1 : 0);

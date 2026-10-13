@@ -45,7 +45,8 @@ const VENDORS = {
 /* Labs whose brand-new, not-yet-measured models still deserve a Radar line. */
 const MAJOR = ["openai", "anthropic", "google", "x-ai", "meta", "meta-llama", "deepseek", "qwen", "moonshotai", "z-ai", "mistralai", "xiaomi", "minimax"];
 
-/* Prompt families that auto-run through an OpenRouter free route. */
+/* Prompt families a free OpenRouter route can be matched to, so the Finder,
+   the Stack and the Market can point at a free way to try that family. */
 const FAMILY_PREFIX = { nemotron: "nvidia/", qwen: "qwen/", glm: "z-ai/", kimi: "moonshotai/", deepseek: "deepseek/", llama: "meta-llama/" };
 
 /* Suffixes that mark a tier or packaging of a model already listed, not a new model. */

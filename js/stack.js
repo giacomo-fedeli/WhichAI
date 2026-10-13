@@ -1,5 +1,5 @@
 /*
- * WhichAI - AI Stack Optimizer (v0.24.0)
+ * WhichAI - AI Stack Optimizer (v0.36.0)
  * Rule-based, 100% client-side: which subscriptions to keep, what to use free,
  * what is redundant, with an honest estimated cost. Facts come from
  * benchmarks.js and models-db.js; prices from vendor pages (July 2026 snapshot).
@@ -55,6 +55,17 @@
   }
   function saveState() {
     try { localStorage.setItem(LS_KEY, JSON.stringify(state)); } catch (e) { /* ignore */ }
+  }
+
+  function freeRouteModel() {
+    var db = DB();
+    var routes = db && db.live && db.live.freeRoutes ? db.live.freeRoutes : [];
+    for (var i = 0; i < routes.length; i++) {
+      var base = String(routes[i].id || "").replace(/:free$/, "");
+      var m = db.models.filter(function (x) { return (x.or || []).indexOf(base) !== -1; })[0];
+      if (m) return m;
+    }
+    return null;
   }
 
   /* ---------------- Optimizer (transparent rules) ---------------- */
@@ -130,7 +141,10 @@
       extras.push({ kind: "privacy", text: "Privacy-first option: run an open-weight model locally. Inkling (Apache 2.0, multimodal) or Qwen tiers cost nothing per token and keep data on your machine.", dbId: "inkling" });
     }
     if (state.needs.indexOf("api") !== -1) {
-      extras.push({ kind: "api", text: "For API and automation on a zero budget: free OpenRouter routes (Nemotron 3 Ultra, Qwen3 Coder) plus Google AI Studio and Groq free keys, all usable for auto-run right here in Compare and Chains.", dbId: "qwen3-coder" });
+      /* The free route is read from the live catalog: the ones typed here in
+         earlier versions were retired by OpenRouter within weeks. */
+      var fr = freeRouteModel();
+      extras.push({ kind: "api", text: "For API and automation on a zero budget: OpenRouter's free routes" + (fr ? " (right now the strongest is " + fr.name + ")" : "") + " and the free API tier of Google AI Studio. The Market chapter lists every free route that exists today; all are rate-limited.", dbId: fr ? fr.id : "nemotron-3-ultra" });
     }
 
     return {

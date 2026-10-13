@@ -34,6 +34,7 @@ File modificati "host-side" possono apparire troncati lato sandbox di Claude. Se
 
 | Sessione | AI | Data | Commit | Area toccata | Nota per la prossima AI |
 |---|---|---|---|---|---|
+| 37 | Claude | 2026-10-13 | (vedi git log) | **Ristrutturazione completa**: `index.html` + `styles.css` + `js/app.js` riscritti (una pagina, 6 capitoli); NUOVI `js/motion.js`, `js/ranking.js`, `js/market.js`, `js/generator.js`, `api/news.js`, `api/_news-core.js`, `tests/news-tests.mjs`; riscritti `js/modelcompare.js`, `js/radar.js`, `js/topics.js` (render), `js/i18n.js` (373 chiavi x11), `tests/run-tests.mjs`, `tests/smoke-dom.mjs`; RIMOSSI welcome/journey/stage/scene3d/chains/merge/arena/live-data | v0.36: niente copertina né menu, capitoli collegati da morph, Chains/Merge/Arena/BYOK/Output comparison tolti, scatter su scala log, news automatiche. 541 test verdi. |
 | 36 | Claude | 2026-10-03 | (vedi git log) | `api/_catalog-core.js`+`api/catalog.js`+`js/live-catalog.js`+`js/live-seed.js`+`js/wiki-live.js` (NUOVI), `js/models-db.js` (migrato alla scala ufficiale + liste `or`), `js/benchmarks.js` (riscritto), `api/_lib.js` (catalogo live per tutti gli endpoint), `tools/build.mjs` (seed + wiki rigenerato), finder/journey/radar/changes/app, `tests/catalog-tests.mjs` (NUOVO) | v0.35: **il sito si aggiorna da solo**. Punteggi = indice AA UFFICIALE relayato da OpenRouter (non più il mirror BenchLM). La regola della sessione 35 "due scale, mai mescolarle" è SUPERATA: ora c'è una scala sola. 521 test verdi. |
 | 35 | Claude | 2026-09-08 | 77dd828 | `api/_live-core.js`+`api/live.js`+`js/live-data.js` (integrati da Jack), `tests/live-data-tests.mjs` (NUOVO), `index.html`/`js/app.js`/`sw.js` (vista `#live` montata), `api/health.js`, `api/_lib.js`, `tools/api-dev.mjs`, i tre file di test | v0.34: il feed OpenRouter serve `/api/live`. **L'indice AA relayato da OpenRouter e' su una scala diversa dal mirror citato nel catalogo** (Opus 5: 50.7 vs 63.0): i due numeri non si toccano mai, e un test lo impone. 435 test verdi. |
 | 30 | Claude | 2026-07-30 | (vedi git log) | topics NUOVO, config/support NUOVI, welcome.js (solo aggiunta show()), footer/about, dati K3+rumor, wiki regen | v0.29: AI Debates con fonti, contatore GoatCounter reale (config-driven, niente numeri finti), donate config-driven, brand→welcome. 194/194 verdi. Morph/brands NON toccati oltre show(). |
@@ -97,3 +98,22 @@ Non serve fare nulla di manuale per "passare" da un'AI all'altra oltre a: aprire
 8. **Prosa senza numeri**: `js/benchmarks.js` ora è editoriale (carattere delle app) + live (cifre calcolate). Non rimettere cifre, date o rank nelle note: si contraddirebbero con i numeri live entro settimane. Stesso discorso per le recensioni in models-db.js (test v33 attivi).
 
 **Aperto per la prossima sessione**: Jack deve fare un push (uno solo) per mettere online la v0.35. Poi verificare dal vivo `https://whichai.wiki/api/catalog` (status "fresh", counts) e il badge "Live data" in home. Restano i punti editoriali di `docs/AUDIT-2026-09.md`.
+
+---
+
+### 2026-10-13 - Claude - sessione 37 (v0.36)
+
+**Aree toccate**: vedi riga 37 della tabella. In più: `js/charts.js` (scatter log + frontiera + corsia free), `js/finder.js` (risposta rapida, teaser), `js/stack.js`, `js/glossary.js`, `js/changes.js`, `js/models-db.js` (tag auto-run tolto, free route ritirate), `js/api.js` (`opts.fresh`), `js/support.js`, `api/_refresh-core.js` + `api/refresh.js` + `tools/refresh-data.mjs` (free route citate dal catalogo), `api/stats.js`, `api/health.js`, `api/_lib.js`, `vercel.json` (tolto includeFiles), `tools/build-seo.mjs` + wiki rigenerato, `tools/api-dev.mjs`, `sw.js`, `package.json` (via `three`), i due workflow (news-tests), `docs/API.md`.
+
+**Cose da NON rifare / da sapere prima di toccare**:
+1. **Non esistono più "viste".** C'è una pagina con 6 capitoli (`data-chapter`) in ordine fisso: ranking, compare, radar, market, debates, tools. L'ordine sta in `CHAPTERS` di app.js e un test lo verifica. Per aggiungere un capitolo: sezione in index.html con `data-chapter` + `data-accent`, voce in `CHAPTERS`/`CHAPTER_KEYS`/`MOUNTS`, precache in sw.js.
+2. **I capitoli si montano tardi** (`Motion.mount`, 900px prima del viewport). Prima di saltare a un'ancora si chiama `mountThrough(id)`, così niente sopra il bersaglio cresce durante lo scroll. Un deep link usa `behavior: "instant"` (non "auto", che segue lo smooth del CSS).
+3. **I morph** si dichiarano solo nel markup: `data-morph-from="chiave"` (fondo di un capitolo) e `data-morph-to="chiave"` (dentro il successivo, anche creato via JS: finder.js mette `task`, topics.js mette `debate`). motion.js ricerca gli estremi a ogni misura. Un test verifica partenza e arrivo per ogni chiave.
+4. **Indirizzi vecchi**: la mappa `LEGACY` in app.js deve coprire ogni hash pubblicato in passato (link condivisi, wiki, Google). Test attivi sia statici sia nello smoke.
+5. **Niente più chiavi API nel browser.** `forgetRetiredKeys()` cancella quelle vecchie. Non reintrodurre BYOK senza una decisione di Jack.
+6. **i18n**: test che ogni chiave usata (`data-i18n*`, `T("...")`, `tr("...")`) esista in 11 lingue e che non ci siano chiavi morte (eccezioni: nomi calcolati `task_*`, `tier*`, `topics<Kind>`). Le traduzioni sorgente stavano in scratchpad di sessione: per aggiungere chiavi si edita direttamente `js/i18n.js` in tutte e 11 le sezioni.
+7. **`[hidden]` vince sempre** (`display:none !important` globale): non serve più ripetere `[hidden]` per ogni componente.
+8. **/api/news**: ogni fonte fallisce da sola; se cambia un feed, si sistema in `SOURCES` di `api/_news-core.js` e si aggiorna la fixture inline in `tests/news-tests.mjs`.
+
+**Aperto per la prossima sessione**: Jack deve fare il push della v0.36. Poi verificare dal vivo il Radar (news), i morph su telefono e il wiki. Restano i punti editoriali di `docs/AUDIT-2026-09.md` (debates regulation/copyright, recensioni dei modelli auto-added più importanti).
+

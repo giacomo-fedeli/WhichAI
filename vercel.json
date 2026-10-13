@@ -72,10 +72,5 @@
       "path": "/api/refresh",
       "schedule": "10 6 * * *"
     }
-  ],
-  "functions": {
-    "api/refresh.js": {
-      "includeFiles": "js/app.js"
-    }
-  }
+  ]
 }

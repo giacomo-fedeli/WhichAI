@@ -166,7 +166,7 @@ curl https://whichai.wiki/api/catalog
 | --- | --- |
 | `patches` | Per catalog id: official scores (`src: "aa"`), current price (`priceSrc: "OpenRouter"`, with `priceWas`), context and date only where the catalog has none, tags that become true (`free`, `open-weights`). Never a review. |
 | `added` | Models Artificial Analysis has measured that the catalog does not list. Marked `auto: true` until a person writes their review. |
-| `freeRoutes` | `:free` routes that exist right now, best measured first. The app heals a retired default with the best route of the same family. |
+| `freeRoutes` | `:free` routes that exist right now, best measured first. The Market, the Finder and the Stack read it to point at a free way to try a model (since v0.36 the site ships no free-route defaults of its own). |
 | `arrivals` | Everything listed in the last 45 days that is measured, plus new unmeasured models from the big labs (tiers like `-pro`/`-prime` of listed models are skipped). Feeds the Model Radar. |
 
 `status` is `fresh`, `stale` (upstream down, last good read under 7 days old,
@@ -184,15 +184,15 @@ Vercel Cron calls it daily; the Model Radar page reads it so the answer is
 visible where the data lives.
 
 Since v0.35 it is an **audit** of the automation rather than a to-do list for a
-human: scores, prices and new measured models are applied by `/api/catalog`,
-and a retired free default is healed in the browser. The report's `automated`
-block says what the automation did; `needsHuman` keeps only what it cannot do
-(for example, no live free route left for a family, or OpenRouter no longer
-relaying the indices - `relayedScores` drops below 20).
+human: scores, prices, new measured models and the list of free routes are
+applied by `/api/catalog`. The report's `automated` block says what the
+automation did; `needsHuman` keeps only what it cannot do (for example, a
+catalog sentence that still names a retired free route, or OpenRouter no
+longer relaying the indices - `relayedScores` drops below 20).
 
 It asks the public OpenRouter model list four questions:
 
-1. does every `:free` route WhichAI ships as a default still exist?
+1. does every `:free` route the catalog text names still exist?
 2. did any price drift more than 15% from the catalog?
 3. did any context window drift more than 25%?
 4. which models exist upstream and are missing from the catalog?
@@ -207,7 +207,7 @@ curl https://whichai.wiki/api/refresh
   "actionable": 0,
   "catalogModels": 114,
   "catalogUpdated": "August 31, 2026",
-  "liveFreeRoutes": ["nvidia/nemotron-3-ultra-550b-a55b:free", "qwen/qwen3-coder:free"],
+  "liveFreeRoutes": ["nvidia/nemotron-3-ultra-550b-a55b:free"],
   "deadFreeRoutes": [],
   "priceDrift": [],
   "missingFromCatalog": [],
@@ -217,7 +217,8 @@ curl https://whichai.wiki/api/refresh
 }
 ```
 
-`severity` is one of `clean`, `review`, `broken` or `unknown`. It answers 200
+`severity` is one of `clean`, `review` or `unknown` (nothing this check can
+find breaks the site, so v0.36 no longer emits `broken`). It answers 200
 even when the upstream source is unreachable, returning `skipped: true` with a
 `reason`, because a third party being down is not an error in WhichAI.
 
@@ -225,6 +226,45 @@ The analysis lives in `api/_refresh-core.js` and is shared with
 `tools/refresh-data.mjs`, so the command line, CI and the endpoint can never
 mean different things. It is read-only: it reports findings and never edits
 anything itself.
+
+---
+
+## `GET /api/news`
+
+The Model Radar's news wire (v0.36): official lab blogs (OpenAI, Google
+DeepMind, Mistral AI), TechCrunch AI (titles naming an AI lab or model only),
+Hacker News (AI stories with 100+ points in the last 14 days, via the public
+Algolia search) and Hugging Face (blog and trending models). Headlines and
+links only, merged into one dated list, newest first. Computed by
+`api/_news-core.js`; every source is read with a timeout and fails on its own,
+so one feed being down never empties the wire.
+
+```bash
+curl https://whichai.wiki/api/news
+```
+
+```json
+{
+  "status": "fresh",
+  "schemaVersion": 1,
+  "kind": "whichai-news",
+  "generatedAt": "2026-10-13T08:00:00.000Z",
+  "windowDays": 14,
+  "items": [
+    { "source": "openai", "sourceName": "OpenAI", "kind": "lab", "title": "Introducing ...", "url": "https://openai.com/index/...", "date": "2026-10-12T16:00:00.000Z" }
+  ],
+  "sources": [ { "id": "openai", "name": "OpenAI", "kind": "lab", "ok": true, "count": 4 } ]
+}
+```
+
+| Field | Meaning |
+| --- | --- |
+| `items` | Up to 60 headlines from the last 14 days. `kind` is `lab`, `press`, `community` or `open`. Hacker News items add `score` and a `discuss` link; trending models add `model`. |
+| `sources` | One line per feed: `ok`, how many items it gave, and a short `error` when it failed. |
+| `status` | `fresh`, or `unavailable` when no source answered (cached 2 minutes, `items` empty). The browser keeps its last good wire in that case. |
+
+Cached 30 minutes at the edge. Titles are plain text (HTML stripped, length
+capped), links are `https` only.
 
 ---
 

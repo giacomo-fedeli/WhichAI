@@ -1,5 +1,5 @@
 /*
- * WhichAI - the data check, as one implementation (v0.32.0)
+ * WhichAI - the data check, as one implementation (v0.36.0)
  *
  * The same analysis runs in two places and must never diverge:
  *   - tools/refresh-data.mjs  (command line and GitHub Actions)
@@ -9,16 +9,17 @@
  * prevent, so both callers import this file.
  *
  * It reads the public OpenRouter model list and answers four questions:
- *   1. does every ":free" route WhichAI ships as a default still exist?
+ *   1. does every ":free" route the catalog text names still exist?
  *   2. did any price drift more than 15% from the catalog?
  *   3. did any context window drift more than 25%?
  *   4. which models exist upstream and are missing from the catalog?
  *
- * Since v0.35 it is a diagnostic only: the fixes it used to ask a human for
- * happen by themselves. Official Artificial Analysis scores, prices and newly
- * measured models are applied automatically by /api/catalog (see
- * api/_catalog-core.js), and a retired free default is healed in the browser.
- * This report says what the automation did and what is left to look at.
+ * It is a diagnostic only: the fixes it used to ask a human for happen by
+ * themselves. Official Artificial Analysis scores, prices, newly measured
+ * models and the list of free routes are applied automatically by
+ * /api/catalog (see api/_catalog-core.js). Since v0.36 the site ships no
+ * free-route defaults of its own (the in-browser auto-run is gone), so the
+ * only thing left that can go stale is an editorial sentence in the catalog.
  */
 "use strict";
 
@@ -26,12 +27,20 @@ const OR_ENDPOINT = "https://openrouter.ai/api/v1/models";
 const PRICE_TOLERANCE = 0.15;
 const CTX_TOLERANCE = 0.25;
 
-/* Read the shipped defaults out of the source, so the check can never drift
-   from what users actually receive. */
-function shippedFreeRoutes(appSrc) {
-  const m = String(appSrc || "").match(/DEFAULT_OR_MODELS\s*=\s*\{([^}]*)\}/);
-  if (!m) return [];
-  return [...m[1].matchAll(/"([^"]+:free)"/g)].map((x) => x[1]);
+/* Free routes the catalog's own text names, e.g. "FREE on OpenRouter
+   (vendor/model:free)". A mention that already says the route was retired
+   is history, not a claim, so it is not checked. */
+function citedFreeRoutes(DB) {
+  const out = [];
+  for (const m of (DB && DB.models) || []) {
+    const text = String(m.access || "");
+    for (const x of text.matchAll(/([a-z0-9][\w.-]*\/[\w.:-]+?:free)\b/gi)) {
+      const after = text.slice(x.index + x[0].length, x.index + x[0].length + 40);
+      if (/retired|expired|removed/i.test(after)) continue;
+      if (out.indexOf(x[1]) === -1) out.push(x[1]);
+    }
+  }
+  return out;
 }
 
 async function fetchUpstream(timeoutMs) {
@@ -81,7 +90,7 @@ function sameModel(a, b) {
   return a === b;
 }
 
-function analyse(upstream, DB, appSrc) {
+function analyse(upstream, DB) {
   validateUpstream(upstream);
   const all = Array.isArray(upstream && upstream.data) ? upstream.data : [];
   const byId = new Map(all.map((m) => [m.id, m]));
@@ -100,7 +109,7 @@ function analyse(upstream, DB, appSrc) {
     needsHuman: []
   };
 
-  for (const route of shippedFreeRoutes(appSrc)) {
+  for (const route of citedFreeRoutes(DB)) {
     (byId.has(route) ? report.liveFreeRoutes : report.deadFreeRoutes).push(route);
   }
 
@@ -147,7 +156,10 @@ function analyse(upstream, DB, appSrc) {
   }
   report.missingFromCatalog.sort((a, b) => String(b.released).localeCompare(String(a.released)));
 
-  /* What the live layer already does on its own, so nobody acts on it twice. */
+  /* What the live layer already does on its own, so nobody acts on it twice:
+     the free list users see is read live, so a retired route has already
+     left the site. Suggest the nearest live route of the same vendor for the
+     sentence that still names it. */
   const freeAlive = all.filter((m) => /:free$/.test(m.id)).map((m) => m.id);
   report.healedFreeRoutes = report.deadFreeRoutes.map((route) => {
     const prefix = route.split("/")[0] + "/";
@@ -157,22 +169,21 @@ function analyse(upstream, DB, appSrc) {
     scores: "official Artificial Analysis indices applied automatically by /api/catalog",
     prices: report.priceDrift.length ? report.priceDrift.length + " price change(s) applied automatically (OpenRouter price, labelled as such)" : "no drift",
     newModels: report.missingFromCatalog.length + " upstream model(s) newer than the editorial snapshot: measured ones are added automatically, unmeasured ones appear in the Radar",
-    freeRoutes: report.deadFreeRoutes.length ? "retired default(s) healed in the browser with a live route of the same family where one exists" : "all shipped defaults alive"
+    freeRoutes: "the free list on the site is read live by /api/catalog (" + report.upstreamFreeRoutes + " routes upstream today)"
   };
   /* The automation depends on OpenRouter relaying the official indices. If
      that ever stops, scores freeze at their last values: say so loudly. */
   report.relayedScores = all.filter((m) => m.benchmarks && m.benchmarks.artificial_analysis && typeof m.benchmarks.artificial_analysis.intelligence_index === "number").length;
   if (report.relayedScores < 20) report.needsHuman.push("OpenRouter relays only " + report.relayedScores + " Artificial Analysis scores (usually 100+): automatic score updates are effectively paused and the catalog keeps its last known values.");
-  const unhealed = report.healedFreeRoutes.filter((h) => !h.replacement);
-  if (unhealed.length) report.needsHuman.push("No live free route left for: " + unhealed.map((h) => h.route).join(", ") + " - auto-run for that family falls back to copy & paste until one returns.");
-  else if (report.deadFreeRoutes.length) report.needsHuman.push("A shipped :free default was retired upstream; users are healed automatically. Update DEFAULT_OR_MODELS in js/app.js at the next code change.");
+  if (report.deadFreeRoutes.length) report.needsHuman.push("The catalog text still names retired free route(s): " + report.deadFreeRoutes.join(", ") + ". The site's live free list is already correct; reword that model's access line (js/models-db.js) at the next maintenance.");
   if (report.contextDrift.length) report.needsHuman.push(report.contextDrift.length + " context window(s) differ from the route: check whether the catalog figure describes the model or the route.");
 
   /* One number the site can show without anyone reading the report. */
   /* Context drift is information (a hosted route often caps the window), not
-     a fault: it no longer turns the light yellow on its own. */
-  report.actionable = unhealed.length + report.deadFreeRoutes.length;
-  report.severity = unhealed.length ? "broken" : (report.deadFreeRoutes.length || report.relayedScores < 20 ? "review" : "clean");
+     a fault: it does not turn the light yellow on its own. Nothing this check
+     finds can break the site any more, so the worst state is "review". */
+  report.actionable = report.deadFreeRoutes.length;
+  report.severity = report.deadFreeRoutes.length || report.relayedScores < 20 ? "review" : "clean";
   return report;
 }
 
@@ -184,7 +195,7 @@ function markdown(r) {
   L.push("");
   L.push("| Check | Result |");
   L.push("| --- | --- |");
-  L.push("| Shipped `:free` routes alive | " + r.liveFreeRoutes.length + " / " + (r.liveFreeRoutes.length + r.deadFreeRoutes.length) + (r.deadFreeRoutes.length ? " **BROKEN: " + r.deadFreeRoutes.join(", ") + "**" : " ok") + " |");
+  L.push("| `:free` routes named in the catalog alive | " + r.liveFreeRoutes.length + " / " + (r.liveFreeRoutes.length + r.deadFreeRoutes.length) + (r.deadFreeRoutes.length ? " **RETIRED: " + r.deadFreeRoutes.join(", ") + "**" : " ok") + " |");
   L.push("| Price drift > 15% | " + r.priceDrift.length + " |");
   L.push("| Context drift > 25% | " + r.contextDrift.length + " |");
   L.push("| New upstream models not in catalog | " + r.missingFromCatalog.length + " |");
@@ -239,4 +250,4 @@ function skippedReport(reason, DB) {
   };
 }
 
-module.exports = { OR_ENDPOINT, analyse, markdown, fetchUpstream, shippedFreeRoutes, skippedReport, sameModel, normName, upstreamKey, validateUpstream, perMillion };
+module.exports = { OR_ENDPOINT, analyse, markdown, fetchUpstream, citedFreeRoutes, skippedReport, sameModel, normName, upstreamKey, validateUpstream, perMillion };

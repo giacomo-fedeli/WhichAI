@@ -1,5 +1,5 @@
 /*
- * WhichAI - the catalog that updates itself, browser side (v0.35.0)
+ * WhichAI - the catalog that updates itself, browser side (v0.36.0)
  *
  * js/models-db.js is the editorial layer: reviews, caveats, categories, and an
  * offline copy of the numbers. This module lays the current public data on top
@@ -15,8 +15,9 @@
  * Applying a delta: official scores and prices replace the stored ones, missing
  * context windows and dates are filled, models Artificial Analysis has measured
  * appear on their own (marked "auto"), and the free routes that exist right now
- * become available to heal a dead auto-run default. Reviews are never touched,
- * nothing is deleted, and a malformed or older delta is ignored.
+ * become the free list the Market, the Finder and the Stack point at. Reviews
+ * are never touched, nothing is deleted, and a malformed or older delta is
+ * ignored.
  *
  * Views listen for the "whichai:data" event and redraw.
  */
@@ -254,8 +255,13 @@
      page has settled. Never in Node (build, tests), which call these directly. */
   if (typeof document !== "undefined" && root.PromptCompassModelsDB) {
     boot();
-    var go = function () { setTimeout(refresh, 300); };
-    if (document.readyState === "complete") go();
-    else root.addEventListener("load", go);
+    /* Not on "load": one slow third-party asset can hold that event for many
+       seconds (in production it did, and fresh data never arrived), so the
+       request leaves as soon as the document is parsed. */
+    var started = false;
+    var go = function () { if (started) return; started = true; setTimeout(refresh, 150); };
+    if (document.readyState !== "loading") go();
+    else document.addEventListener("DOMContentLoaded", go);
+    setTimeout(go, 3000);
   }
 })();

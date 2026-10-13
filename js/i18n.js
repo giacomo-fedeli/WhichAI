@@ -1,412 +1,3080 @@
 /*
- * WhichAI (formerly WhichAI) - UI translations (v0.21.0) - 11 languages
- * Interface chrome in 8 languages. Content (generated prompts, benchmark notes,
- * catalog, chain step instructions) intentionally stays in English: prompt
- * quality and benchmark data are tuned for English. The langNote string
- * explains this to the user whenever a non-English language is active.
+ * WhichAI - interface translations (v0.36.0), 11 languages
+ *
+ * Interface chrome only. Content (generated prompts, benchmark notes, model
+ * reviews, debates) stays in English on purpose: prompt quality and the
+ * benchmark data are tuned for English, and the langNote string says so to
+ * readers of other languages.
+ *
+ * Every language carries exactly the same keys (tests/run-tests.mjs checks).
+ * v0.36 rebuilt this file for the one-page site: keys of retired screens
+ * (welcome cover, chains, output comparison, merge studio, blind arena,
+ * API-key settings) are gone, the new chapter chrome is in all languages.
  */
 (function () {
   "use strict";
 
   var LANGS = [
-    { code: "en", label: "English" },
-    { code: "it", label: "Italiano" },
-    { code: "fr", label: "Français" },
-    { code: "es", label: "Español" },
-    { code: "de", label: "Deutsch" },
-    { code: "pt", label: "Português" },
-    { code: "zh", label: "中文" },
-    { code: "hi", label: "हिन्दी" },
-    { code: "ru", label: "Русский" },
-    { code: "ja", label: "日本語" },
-    { code: "ar", label: "العربية" }
+    {
+      "code": "en",
+      "label": "English"
+    },
+    {
+      "code": "it",
+      "label": "Italiano"
+    },
+    {
+      "code": "fr",
+      "label": "Français"
+    },
+    {
+      "code": "es",
+      "label": "Español"
+    },
+    {
+      "code": "de",
+      "label": "Deutsch"
+    },
+    {
+      "code": "pt",
+      "label": "Português"
+    },
+    {
+      "code": "zh",
+      "label": "中文"
+    },
+    {
+      "code": "hi",
+      "label": "हिन्दी"
+    },
+    {
+      "code": "ru",
+      "label": "Русский"
+    },
+    {
+      "code": "ja",
+      "label": "日本語"
+    },
+    {
+      "code": "ar",
+      "label": "العربية"
+    }
   ];
 
   var S = {};
 
   S.en = {
-    navGenerator: "Generator", navGuide: "Model guide", navCompare: "Compare", navChains: "Chains", navSettings: "Settings",
-    privacyPill: "Private by design",
-    privacyTip: "Runs entirely in your browser. No account, no server, no tracking. API keys stay on your device.",
-    trustLine: "No account · No server · Nothing leaves your browser",
+    navCompare: "Compare",
+    trustLine: "No account · No tracking · Nothing you write leaves your browser",
     langNote: "",
-    genTitle: "Describe your goal",
-    genSubtitle: "WhichAI turns it into a prompt tailored to each AI model - and tells you which model is the best fit for the job, in plain language.",
-    goalLabel: "Goal ", optionalTag: "(optional)", tryExample: "Try an example",
+    goalLabel: "Goal ",
+    optionalTag: "(optional)",
+    tryExample: "Try an example",
     goalPh: "e.g., Write a landing page headline and subheadline for a budgeting app aimed at freelancers",
     goalErr: "Describe your goal to generate prompts.",
-    contextLabel: "Context ", contextPh: "Background, audience, constraints, examples - anything the AI should know",
-    taskLabel: "Task type", formatLabel: "Output format", lengthLabel: "Length", toneLabel: "Tone",
-    targetsLabel: "Target models", groupAssistants: "AI assistants", groupEco: "Ecosystem assistants", groupOpen: "Open models ",
-    modelsErr: "Select at least one target model.", generateBtn: "Generate prompts",
+    contextLabel: "Context ",
+    contextPh: "Background, audience, constraints, examples - anything the AI should know",
+    taskLabel: "Task type",
+    formatLabel: "Output format",
+    lengthLabel: "Length",
+    toneLabel: "Tone",
+    targetsLabel: "Target models",
+    groupAssistants: "AI assistants",
+    groupEco: "Ecosystem assistants",
+    groupOpen: "Open models ",
+    modelsErr: "Select at least one target model.",
+    generateBtn: "Generate prompts",
     emptyLead: "Your optimized prompts will appear here - one version per model, plus a recommendation of which model fits this task best.",
-    step1: "Describe your goal", step2: "Copy the prompt tailored to each AI", step3: "Compare the answers and iterate",
-    resultsTitle: "Optimized prompts", toCompareBtn: "Compare outputs →",
-    optNone: "No preference", optProse: "Plain prose", optMarkdown: "Markdown", optBullets: "Bullet points", optTable: "Table", optJson: "JSON", optCode: "Code",
-    optShort: "Short", optMedium: "Medium", optLong: "Long & detailed",
-    optProfessional: "Professional", optFriendly: "Friendly", optCasual: "Casual", optPersuasive: "Persuasive", optAcademic: "Academic",
-    autoDetect: "Auto-detect", detected: "Detected:",
-    task_writing: "Writing & content", task_coding: "Coding & development", task_analysis: "Analysis & data", task_research: "Research & summarization",
-    task_brainstorming: "Brainstorming & ideas", task_education: "Education & explanation", task_business: "Business & marketing", task_general: "General / other",
-    routerTitle: "Which model for this task?", bestPick: "Best pick:", benchLabel: "Benchmarks:",
-    fullRanking: "Full ranking, free tiers and sources", freeTier: "Free tier:", sourcesLabel: "Sources:",
-    whyPrefix: "Why this prompt is built this way for", copy: "Copy", copied: "Copied", copyPrompt: "Copy prompt",
-    guideTitle: "Model guide", guideSub: "Which AI app fits each kind of task - public benchmarks translated into plain language.",
-    catalogTitle: "Model catalog",
-    compareTitle: "Compare outputs",
-    compareSub: "Run the same optimized prompt in each AI app, paste (or auto-run) the answers, and score them side by side. Everything stays in your browser.",
-    compareEmptyText: "No active comparison. Generate prompts first, then click \"Compare outputs\" to bring them here. ",
-    goGenerator: "Go to the Generator",
-    saveCmp: "Save comparison", newVersion: "New version", exportMd: "Export .md", savedCmps: "Saved comparisons",
-    notScored: "Not scored", winner: "Winner", tied: "Tied", tie: "Tie", winnerPrefix: "Winner:", openBtn: "Open", deleteBtn: "Delete",
-    chainsTitle: "Chains",
-    chainsSub: "Break a complex goal into linked steps: each step gets its own optimized prompt, and the output of one step feeds the next. Auto-run steps where you have a free key; copy & paste elsewhere.",
-    buildChain: "Build chain", saveChain: "Save chain", savedChains: "Saved chains",
-    promptForStep: "Prompt for this step", stepOutput: "Step output",
-    settingsTitle: "Settings",
-    settingsSub: "API keys enable automatic execution in Compare. Keys are stored only in this browser and are sent only to the provider you call - never to any WhichAI server (there is none).",
-    saveSettings: "Save settings", prefsReset: "Reset remembered preferences",
-    footerText: "Runs entirely in your browser: no account, no server, your keys and data never leave your device."
+    resultsTitle: "Optimized prompts",
+    optNone: "No preference",
+    optProse: "Plain prose",
+    optMarkdown: "Markdown",
+    optBullets: "Bullet points",
+    optTable: "Table",
+    optJson: "JSON",
+    optCode: "Code",
+    optShort: "Short",
+    optMedium: "Medium",
+    optLong: "Long & detailed",
+    optProfessional: "Professional",
+    optFriendly: "Friendly",
+    optCasual: "Casual",
+    optPersuasive: "Persuasive",
+    optAcademic: "Academic",
+    autoDetect: "Auto-detect",
+    detected: "Detected:",
+    task_writing: "Writing & content",
+    task_coding: "Coding & development",
+    task_analysis: "Analysis & data",
+    task_research: "Research & summarization",
+    task_brainstorming: "Brainstorming & ideas",
+    task_education: "Education & explanation",
+    task_business: "Business & marketing",
+    task_general: "General / other",
+    routerTitle: "Which model for this task?",
+    bestPick: "Best pick:",
+    benchLabel: "Benchmarks:",
+    fullRanking: "Full ranking, free tiers and sources",
+    freeTier: "Free tier:",
+    sourcesLabel: "Sources:",
+    whyPrefix: "Why this prompt is built this way for",
+    copy: "Copy",
+    copied: "Copied",
+    copyPrompt: "Copy prompt",
+    exportMd: "Export .md",
+    prefsReset: "Reset remembered preferences",
+    footerText: "Runs in your browser: no account, no tracking. Your goals and prompts never leave your device.",
+    dbNoResults: "No models match your search.",
+    themeTip: "Switch between light and dark theme",
+    footFaq: "FAQ",
+    footSimilar: "Similar tools",
+    footContribute: "Contribute",
+    footGlossary: "Glossary",
+    finderSub: "Answer a few quick questions - get a recommendation with reasons, limits and pricing. No prompt needed.",
+    finderBack: "← Back",
+    finderNext: "Next",
+    finderRestart: "Start over",
+    finderResults: "Our recommendation",
+    finderAlt: "Also worth considering",
+    finderWhy: "Why this pick",
+    finderBestFor: "Best for:",
+    finderLimit: "Keep in mind:",
+    finderAccess: "Access:",
+    finderOpenGuide: "Model details →",
+    finderUseGen: "Write a prompt for it →",
+    finderSwitchGoal: "Prefer to describe your goal? Write the prompt instead →",
+    finderTop: "Top match",
+    glossTitle: "AI glossary",
+    glossSearchPh: "Search terms…",
+    glossNoRes: "No matching term.",
+    glossCount: "terms",
+    mcAdd: "+ Add a third model",
+    mcRemove: "Remove",
+    mcReleased: "Released",
+    mcCtx: "Context window",
+    mcModal: "Modalities",
+    mcPrice: "API price $/1M (in / out)",
+    mcSpeed: "Speed",
+    mcAccess: "Access",
+    mcProfile: "Category profile",
+    mcStrengths: "Strengths",
+    mcReview: "In one line",
+    mcFootnote: "n/a = not published or not yet verified. Values marked ~ are not current official measurements: never read a small gap between one of them and a measured score as real.",
+    dataTitle: "Your data",
+    dataHint: "Everything WhichAI saves lives in this browser: preferences, your watchlist and the last data it read. Export a backup before switching device or clearing the browser.",
+    dataExport: "Export backup (.json)",
+    dataImport: "Import backup",
+    dataWipe: "Delete all data",
+    dataWipeAsk: "Delete ALL WhichAI data in this browser? Preferences, watchlist and saved data will be removed.",
+    dataImportAsk: "Import this backup? Existing data with the same names will be overwritten.",
+    dataImported: "Backup imported. Reloading.",
+    dataImportBad: "Invalid backup file.",
+    updateReady: "A new version of WhichAI is ready.",
+    updateReload: "Refresh",
+    navStack: "Stack Optimizer",
+    navDoctor: "Prompt Doctor",
+    navStackSub: "Which subscriptions to keep, what to use free",
+    navDoctorSub: "Score a prompt, see the optimized version",
+    navGlossarySub: "Every AI term in one plain sentence",
+    stackTitle: "AI Stack Optimizer",
+    stackSub: "Four quick choices: which subscription is worth keeping, what to use free, and what you can cancel. All on your device.",
+    stackGo: "Build my stack",
+    stackPickOne: "Pick at least one task first.",
+    stackResult: "Your recommended stack",
+    stackNewCost: "estimated monthly cost of the recommended stack",
+    stackCurrentCost: "You currently pay:",
+    stackSaving: "estimated saving",
+    stackRedundant: "Possibly redundant for your tasks:",
+    stackFreeTier: "Free tier",
+    stackToFinder: "Need a single pick instead? Take the finder",
+    doctorTitle: "Prompt Doctor",
+    doctorSub: "Paste a prompt: get a score, a checklist of what is missing, and an optimized version for the model you choose. No API needed.",
+    doctorPh: "Paste your prompt here…",
+    doctorGo: "Analyze prompt",
+    doctorDetected: "Detected task:",
+    doctorMissingLead: "Biggest gaps:",
+    doctorAllGood: "Solid prompt: all core ingredients are present.",
+    doctorChecklist: "Checklist",
+    doctorOptimized: "Optimized version",
+    doctorBefore: "Your prompt",
+    doctorAfter: "Optimized for the selected model",
+    doctorChanges: "What changed and why",
+    doctorToGen: "Open in Generator",
+    doctorNote: "Static analysis based on prompt-engineering best practices; the optimized version uses the same engine as the Generator. Review before using.",
+    officialOpen: "Open",
+    officialSite: "Open the official app",
+    navRadar: "Model Radar",
+    radarNew: "NEW",
+    radarUpcoming: "Coming up",
+    radarAll: "All",
+    radarFollowing: "Following",
+    radarSince: "changes since your last visit",
+    radarFollow: "Follow",
+    radarUnfollow: "Following",
+    radarTypeNew: "New models",
+    radarTypePrice: "Prices",
+    radarTypeScore: "Scores",
+    radarTypeFree: "Free tiers",
+    radarEmpty: "Nothing here yet. Follow a model with the star to build your own feed.",
+    shareBtn: "Share as image",
+    shareDone: "Image ready",
+    navTopics: "AI Debates",
+    topicsTitle: "AI Debates",
+    topicsCaseA: "The concern",
+    topicsCaseB: "The counter-view",
+    topicsStatus: "Where it stands",
+    topicsDisclaimer: "Curated summaries of public reporting and research, refreshed with the data updates. Not investment, career or legal advice.",
+    footSupport: "Support ♥",
+    supportTitle: "Support WhichAI",
+    supportText: "WhichAI is free, has no ads and no sponsors: the only costs are the domain and the hours that keep 100+ models honest and up to date. If it saved you time, a small donation keeps it independent.",
+    supportBtn: "Donate ♥",
+    visitsLabel: "visits",
+    catalogShowLess: "Show less",
+    radarCheckClean: "Data check: everything matches the public sources",
+    radarCheckReview: "item(s) from the data check need review",
+    radarCheckBroken: "Data check: a shipped free route is broken",
+    radarCheckSkipped: "Data check could not run today",
+    journeyConfidence: "confidence",
+    livePill: "Live data",
+    liveDataLine: "Live data: official Artificial Analysis scores and OpenRouter prices, read {when}; {n} models added automatically.",
+    liveAutoChip: "auto-added",
+    liveAutoTitle: "Added automatically from live public data (Artificial Analysis via OpenRouter). No editorial review yet.",
+    skipLink: "Skip to content",
+    langLabel: "Language",
+    railLabel: "Chapters",
+    close: "Close",
+    navRanking: "Ranking",
+    navMarket: "Market",
+    navTools: "Tools",
+    ch1Eyebrow: "The ranking",
+    ch1Title: "Which AI is best right now?",
+    ch1Lede: "Every model with an official Artificial Analysis score, sorted into tiers by itself. New measurements land here automatically, usually within the hour.",
+    heroFind: "Find the AI for my task",
+    heroPrompt: "Write a better prompt",
+    kpiModels: "models tracked",
+    kpiMeasured: "with an official score",
+    kpiLabs: "labs in the ranking",
+    kpiNew: "new in the last 30 days",
+    rankMetricLabel: "Rank by",
+    metricAA: "Intelligence",
+    metricCoding: "Coding",
+    metricAgentic: "Agentic",
+    rankFilterLabel: "Show",
+    fAll: "All",
+    fOpen: "Open weights",
+    fFree: "Free route",
+    fCheap: "Under $1",
+    fLegacy: "Include legacy",
+    rankSearchPh: "Find any model…",
+    rankUnmeasured: "not measured",
+    tierS: "Frontier",
+    tierA: "Near frontier",
+    tierB: "Strong",
+    tierC: "Capable",
+    tierD: "Light",
+    tierMore: "+{n} more",
+    tierNote: "Tiers are computed, not chosen: on the selected index S is the top 5% of current models, A the next 15%, B the next 20%, C the next 25%, D the rest. Ties share a tier. Converted (~) and unmeasured scores are never ranked.",
+    tierMissing: "{n} current models have no {metric} score yet.",
+    scatterTitle: "Price vs intelligence",
+    scatterNote: "Up and to the left is more intelligence per dollar. Price is on a log scale, so cheap models are no longer squeezed into one corner; the dashed line is the best-value frontier.",
+    scatterX: "Blended API price, $ per 1M tokens (log scale)",
+    scatterY: "AA Intelligence Index",
+    scatterFree: "Free",
+    scatterLegend: "Dot colour = tier on the Intelligence index. Hover a dot or a chip to find it in the other view; click for details.",
+    bridge1: "Close at the top? Put the two leaders side by side.",
+    ch2Eyebrow: "Head to head",
+    ch2Title: "Compare any two models",
+    ch2Lede: "Official indices, price, context and strengths, side by side. It opens on today's top two and follows the ranking until you pick your own; add a third whenever you like.",
+    cmpPick: "Model",
+    cmpSwap: "Swap",
+    cmpReset: "Reset to the top two",
+    cmpFollowing: "Following the live top two",
+    cmpYourPick: "Your selection",
+    cmpIndices: "Official indices",
+    cmpIndicesNote: "Artificial Analysis, read automatically. Each index has its own scale: compare within a row, not across rows. The better value in each row is marked with a star.",
+    cmpCost: "Price and specs",
+    cmpPriceIn: "Input $ / 1M",
+    cmpPriceOut: "Output $ / 1M",
+    cmpDaysAgo: "{n} days ago",
+    cmpPriceNote: "Prices are OpenRouter's, in USD per million tokens; for prices, the lower value gets the star.",
+    cmpProfileNote: "Category scores (0-100) are WhichAI blended ratings: guidance, not official measurements.",
+    mcDetails: "Details",
+    bridge2: "Something newer may already be out. Here is what changed this week.",
+    ch3Eyebrow: "What's new",
+    ch3Title: "Model radar: launches, prices, news",
+    ch3Lede: "Launches and price moves from the live catalog, next to headlines from the labs, the press, Hacker News and Hugging Face. Nobody has to post anything: it updates by itself.",
+    radarLatest: "Latest arrival",
+    radarFeedTitle: "Launches and changes",
+    newsTitle: "News wire",
+    newsAll: "All sources",
+    newsLabs: "Labs",
+    newsPress: "Press",
+    newsCommunity: "Community",
+    newsOpen: "Open source",
+    newsLoading: "Reading the sources…",
+    newsDown: "The news sources are unreachable right now. The launches feed beside it is complete without them.",
+    newsUpdated: "updated {when}",
+    newsPoints: "points",
+    newsDiscuss: "Discussion",
+    newsFoot: "Headlines and links only, from official lab blogs, TechCrunch AI, Hacker News stories with 100+ points and Hugging Face. Re-read every 30 minutes.",
+    newsSomeDown: "Unreachable right now: {list}.",
+    showMore: "Show more",
+    bridge3: "Every launch moves prices too. Here is what intelligence costs today.",
+    ch4Eyebrow: "What it costs",
+    ch4Title: "The AI market, live",
+    ch4Lede: "API prices from OpenRouter, recomputed on every visit: the cheapest way into each tier, the best value, what is free right now, and what a month of your own use would cost.",
+    mkLeaderKicker: "The leader costs",
+    mkPer1M: "per 1M tokens (input / output)",
+    mkPer1MShort: "per 1M",
+    mkCheapS: "cheapest Frontier-tier model, blended per 1M tokens",
+    mkFreeNow: "free API routes right now",
+    mkFreeBest: "strongest: {name}",
+    mkMoves: "live prices that differ from our last review",
+    mkLadderTitle: "The cheapest way into each tier",
+    mkLadderSub: "Lowest blended price (3 parts input to 1 part output) among the models of each tier on the Intelligence index.",
+    mkValueTitle: "Best value right now",
+    mkValueNote: "Intelligence points per dollar of blended price, among models at or above the median score.",
+    mkPtsPerUsd: "pts per $",
+    mkCalcTitle: "What would a month cost me?",
+    mkCalcMsgs: "Messages per day",
+    mkCalcLen: "Typical message",
+    mkPickLeader: "The leader",
+    mkPickValue: "Best value",
+    mkPickA: "Cheapest Near-frontier",
+    mkPickB: "Cheapest Strong",
+    mkPickFree: "A free route",
+    mkPerMonth: "per month",
+    mkRateLimited: "rate-limited",
+    mkCalcNote: "Assumes {in} input and {out} output tokens per message, 30 days a month, OpenRouter prices. Chat subscriptions are flat fees: see the Stack Optimizer below.",
+    mkFreeTitle: "Free right now",
+    mkFreeNote: "API routes priced at $0 on OpenRouter. All are rate-limited and some expire.",
+    mkFreeNone: "No free route is listed right now.",
+    mkUntil: "until",
+    mkAppsFree: "Free tiers of the big apps",
+    mkMovesTitle: "Price moves",
+    mkMovesNote: "Where the live OpenRouter price differs from the price in our last editorial review.",
+    mkMovesNone: "No differences right now.",
+    mkFoot: "Prices: OpenRouter, USD per 1M tokens, read automatically (catalog {when}). A vendor's own list price can differ.",
+    bridge4: "Behind the price tags: energy, jobs and a capital build-out measured in hundreds of billions. The debates, both sides.",
+    ch5Eyebrow: "The bigger picture",
+    ch5Title: "AI debates, both sides",
+    ch5Lede: "Energy, jobs, money, copyright, regulation, open weights: the strongest case on each side, the numbers with their dates, and what would change the picture.",
+    topicsReviewed: "Reviewed",
+    topicsCount: "debates",
+    topicsReviewNote: "Each figure keeps its original period; these summaries are reviewed by hand, not live news.",
+    topicsEvidence: "Evidence, with context",
+    topicsUncertainty: "What remains uncertain",
+    topicsWatch: "What would change the picture",
+    topicsDecision: "Choose your next step",
+    topicsChoose: "Select your situation",
+    topicsDecisionNote: "Practical editorial guidance. Your choice stays on this page; no AI call or account is needed.",
+    topicsReadSource: "Read source",
+    topicsReadPage: "Open reading page",
+    topicsEstimate: "Estimate",
+    topicsProjection: "Projection",
+    topicsResearch: "Study result",
+    topicsReported: "Company disclosure",
+    topicsGuidance: "Policy or guidance",
+    topicsDefinition: "Definition",
+    topicsTagEnvironment: "Environment",
+    topicsTagWork: "Work",
+    topicsTagEconomy: "Economy",
+    topicsTagLaw: "Law",
+    topicsTagPolicy: "Policy",
+    topicsTagEcosystem: "Ecosystem",
+    topicsCompareModels: "Compare models",
+    topicsFindAI: "Find the right AI",
+    topicsSeeMarket: "See what AI costs",
+    topicsImprovePrompt: "Improve a prompt",
+    topicsReviewStack: "Review my AI stack",
+    topicsExploreModels: "Explore the ranking",
+    topicsLearnTerms: "Explore the glossary",
+    complyTitle: "Your own obligations",
+    complyText: "Check which EU AI Act and GDPR duties apply to your organisation, step by step, on ComplyAI.",
+    complyGo: "Open ComplyAI.wiki",
+    bridge5: "Enough reading. What do you need to get done?",
+    ch6Eyebrow: "Put it to work",
+    ch6Title: "From the right AI to the right prompt",
+    ch6Lede: "Four tools on one path: find the AI for your task, write the prompt it responds to, check any prompt, then trim what you pay for.",
+    step1Title: "Find your AI",
+    step1Sub: "A quick answer by task, or four questions for a personal pick. No prompt needed.",
+    quickTitle: "Quick answer: pick a task",
+    quickHint: "The best app for the task appears here, with its reasons, the free tier and the sources.",
+    quickBestFor: "Best pick for {task}",
+    quickWrite: "Write the prompt for {app}",
+    quickPersonal: "Personalise it: 4 questions",
+    finderGuidedTitle: "A personal pick in four questions",
+    finderStart: "Start the four questions →",
+    step2Title: "Write the prompt",
+    step2Sub: "One goal, a prompt tuned for each AI family you select, and the best pick for the task.",
+    genMore: "Context and options",
+    genReco: "Recommended for this task",
+    genToDoctor: "Check in the Doctor",
+    genWords: "words",
+    genChars: "characters",
+    chipPromptTarget: "in the prompt generator",
+    drawerTitle: "Model details",
+    drawerRankTip: "Live position among current models with an official score, computed now and never written into the text.",
+    drawerWas: "last review:",
+    drawerCatNote: "Category scores (0-100) are WhichAI blended ratings: guidance, not official measurements.",
+    drawerCompare: "Compare ⇄",
+    drawerPrompt: "Write a prompt for it",
+    drawerWiki: "Model page",
+    snapshotLabel: "Snapshot",
+    footProjects: "More from the maker of WhichAI",
+    projComplyTag: "Compliance",
+    projComply: "EU AI Act, GDPR and contract compliance tools for small businesses. Free to start.",
+    projWarTag: "Geopolitics",
+    projWar: "A live map of wars and geopolitical crises, with the latest news, market indicators and scenarios.",
+    projVisit: "Visit",
+    footAbout: "About WhichAI",
+    aboutDiff: "How WhichAI differs from a leaderboard",
+    aboutData: "How the data stays current",
+    aboutMethod: "Methodology",
+    aboutApi: "The WhichAI API",
+    footModels: "All models",
+    footBestFor: "Best AI for…",
+    footHeadToHeads: "Head-to-heads",
+    footDataset: "Open dataset",
+    prefsDone: "Remembered preferences cleared."
   };
 
   S.it = {
-    navGenerator: "Generatore", navGuide: "Guida modelli", navCompare: "Confronta", navChains: "Catene", navSettings: "Impostazioni",
-    privacyPill: "Privacy by design",
-    privacyTip: "Funziona interamente nel tuo browser. Nessun account, nessun server, nessun tracciamento. Le chiavi API restano sul tuo dispositivo.",
-    trustLine: "Nessun account · Nessun server · Nulla esce dal tuo browser",
+    navCompare: "Confronta",
+    trustLine: "Nessun account · Nessun tracciamento · Nulla di ciò che scrivi esce dal browser",
     langNote: "Interfaccia in italiano. Nota: i prompt generati, le note sui benchmark e il rilevamento automatico del tipo di task sono ottimizzati per l'inglese (tutti i modelli AI rendono al meglio con istruzioni in inglese). Puoi comunque scrivere il tuo obiettivo in qualsiasi lingua: l'AI risponderà nella tua lingua.",
-    genTitle: "Descrivi il tuo obiettivo",
-    genSubtitle: "WhichAI lo trasforma in un prompt su misura per ogni modello AI - e ti dice quale modello è il più adatto, in parole semplici.",
-    goalLabel: "Obiettivo ", optionalTag: "(facoltativo)", tryExample: "Prova un esempio",
+    goalLabel: "Obiettivo ",
+    optionalTag: "(facoltativo)",
+    tryExample: "Prova un esempio",
     goalPh: "es. Scrivi titolo e sottotitolo per la landing page di un'app di budgeting per freelance",
     goalErr: "Descrivi il tuo obiettivo per generare i prompt.",
-    contextLabel: "Contesto ", contextPh: "Sfondo, pubblico, vincoli, esempi - tutto ciò che l'AI dovrebbe sapere",
-    taskLabel: "Tipo di task", formatLabel: "Formato output", lengthLabel: "Lunghezza", toneLabel: "Tono",
-    targetsLabel: "Modelli di destinazione", groupAssistants: "Assistenti AI", groupEco: "Assistenti di ecosistema", groupOpen: "Modelli open ",
-    modelsErr: "Seleziona almeno un modello.", generateBtn: "Genera i prompt",
+    contextLabel: "Contesto ",
+    contextPh: "Sfondo, pubblico, vincoli, esempi - tutto ciò che l'AI dovrebbe sapere",
+    taskLabel: "Tipo di task",
+    formatLabel: "Formato output",
+    lengthLabel: "Lunghezza",
+    toneLabel: "Tono",
+    targetsLabel: "Modelli di destinazione",
+    groupAssistants: "Assistenti AI",
+    groupEco: "Assistenti di ecosistema",
+    groupOpen: "Modelli open ",
+    modelsErr: "Seleziona almeno un modello.",
+    generateBtn: "Genera i prompt",
     emptyLead: "I tuoi prompt ottimizzati appariranno qui - una versione per modello, più il consiglio su quale modello è il migliore per questo task.",
-    step1: "Descrivi il tuo obiettivo", step2: "Copia il prompt su misura per ogni AI", step3: "Confronta le risposte e itera",
-    resultsTitle: "Prompt ottimizzati", toCompareBtn: "Confronta gli output →",
-    optNone: "Nessuna preferenza", optProse: "Prosa semplice", optMarkdown: "Markdown", optBullets: "Elenco puntato", optTable: "Tabella", optJson: "JSON", optCode: "Codice",
-    optShort: "Breve", optMedium: "Media", optLong: "Lunga e dettagliata",
-    optProfessional: "Professionale", optFriendly: "Amichevole", optCasual: "Informale", optPersuasive: "Persuasivo", optAcademic: "Accademico",
-    autoDetect: "Rilevamento automatico", detected: "Rilevato:",
-    task_writing: "Scrittura e contenuti", task_coding: "Codice e sviluppo", task_analysis: "Analisi e dati", task_research: "Ricerca e sintesi",
-    task_brainstorming: "Brainstorming e idee", task_education: "Formazione e spiegazioni", task_business: "Business e marketing", task_general: "Generale / altro",
-    routerTitle: "Quale modello per questo task?", bestPick: "Scelta migliore:", benchLabel: "Benchmark:",
-    fullRanking: "Classifica completa, piani gratuiti e fonti", freeTier: "Piano gratuito:", sourcesLabel: "Fonti:",
-    whyPrefix: "Perché questo prompt è costruito così per", copy: "Copia", copied: "Copiato", copyPrompt: "Copia prompt",
-    guideTitle: "Guida ai modelli", guideSub: "Quale app AI è adatta a ogni tipo di task - benchmark pubblici tradotti in parole semplici.",
-    catalogTitle: "Catalogo modelli",
-    compareTitle: "Confronta gli output",
-    compareSub: "Esegui lo stesso prompt ottimizzato in ogni app AI, incolla (o esegui in automatico) le risposte e valutale fianco a fianco. Tutto resta nel tuo browser.",
-    compareEmptyText: "Nessun confronto attivo. Genera prima i prompt, poi clicca \"Confronta gli output\". ",
-    goGenerator: "Vai al Generatore",
-    saveCmp: "Salva confronto", newVersion: "Nuova versione", exportMd: "Esporta .md", savedCmps: "Confronti salvati",
-    notScored: "Non valutato", winner: "Vincitore", tied: "Pareggio", tie: "Pareggio", winnerPrefix: "Vincitore:", openBtn: "Apri", deleteBtn: "Elimina",
-    chainsTitle: "Catene",
-    chainsSub: "Spezza un obiettivo complesso in passi collegati: ogni passo ha il suo prompt ottimizzato e l'output di un passo alimenta il successivo. Esecuzione automatica dove hai una chiave gratuita; copia e incolla altrove.",
-    buildChain: "Costruisci catena", saveChain: "Salva catena", savedChains: "Catene salvate",
-    promptForStep: "Prompt per questo passo", stepOutput: "Output del passo",
-    settingsTitle: "Impostazioni",
-    settingsSub: "Le chiavi API abilitano l'esecuzione automatica nel Confronto. Restano solo in questo browser e vengono inviate solo al provider che chiami - mai a un server WhichAI (che non esiste).",
-    saveSettings: "Salva impostazioni", prefsReset: "Ripristina preferenze predefinite",
-    footerText: "Funziona interamente nel tuo browser: nessun account, nessun server, chiavi e dati non lasciano mai il tuo dispositivo."
+    resultsTitle: "Prompt ottimizzati",
+    optNone: "Nessuna preferenza",
+    optProse: "Prosa semplice",
+    optMarkdown: "Markdown",
+    optBullets: "Elenco puntato",
+    optTable: "Tabella",
+    optJson: "JSON",
+    optCode: "Codice",
+    optShort: "Breve",
+    optMedium: "Media",
+    optLong: "Lunga e dettagliata",
+    optProfessional: "Professionale",
+    optFriendly: "Amichevole",
+    optCasual: "Informale",
+    optPersuasive: "Persuasivo",
+    optAcademic: "Accademico",
+    autoDetect: "Rilevamento automatico",
+    detected: "Rilevato:",
+    task_writing: "Scrittura e contenuti",
+    task_coding: "Codice e sviluppo",
+    task_analysis: "Analisi e dati",
+    task_research: "Ricerca e sintesi",
+    task_brainstorming: "Brainstorming e idee",
+    task_education: "Formazione e spiegazioni",
+    task_business: "Business e marketing",
+    task_general: "Generale / altro",
+    routerTitle: "Quale modello per questo task?",
+    bestPick: "Scelta migliore:",
+    benchLabel: "Benchmark:",
+    fullRanking: "Classifica completa, piani gratuiti e fonti",
+    freeTier: "Piano gratuito:",
+    sourcesLabel: "Fonti:",
+    whyPrefix: "Perché questo prompt è costruito così per",
+    copy: "Copia",
+    copied: "Copiato",
+    copyPrompt: "Copia prompt",
+    exportMd: "Esporta .md",
+    prefsReset: "Ripristina preferenze predefinite",
+    footerText: "Funziona nel tuo browser: nessun account, nessun tracciamento. I tuoi obiettivi e i tuoi prompt non lasciano mai il tuo dispositivo.",
+    dbNoResults: "Nessun modello corrisponde alla ricerca.",
+    themeTip: "Passa dal tema chiaro a quello scuro",
+    footFaq: "FAQ",
+    footSimilar: "Strumenti simili",
+    footContribute: "Contribuisci",
+    footGlossary: "Glossario",
+    finderSub: "Rispondi a poche domande rapide: ottieni un consiglio con motivi, limiti e prezzi. Nessun prompt necessario.",
+    finderBack: "← Indietro",
+    finderNext: "Avanti",
+    finderRestart: "Ricomincia",
+    finderResults: "Il nostro consiglio",
+    finderAlt: "Da considerare anche",
+    finderWhy: "Perché questa scelta",
+    finderBestFor: "Ideale per:",
+    finderLimit: "Da sapere:",
+    finderAccess: "Accesso:",
+    finderOpenGuide: "Dettagli del modello →",
+    finderUseGen: "Scrivi un prompt per questa AI →",
+    finderSwitchGoal: "Preferisci descrivere il tuo obiettivo? Scrivi direttamente il prompt →",
+    finderTop: "Scelta migliore",
+    glossTitle: "Glossario AI",
+    glossSearchPh: "Cerca un termine…",
+    glossNoRes: "Nessun termine trovato.",
+    glossCount: "termini",
+    mcAdd: "+ Aggiungi un terzo modello",
+    mcRemove: "Rimuovi",
+    mcReleased: "Uscita",
+    mcCtx: "Finestra di contesto",
+    mcModal: "Modalità",
+    mcPrice: "Prezzo API $/1M (in / out)",
+    mcSpeed: "Velocità",
+    mcAccess: "Accesso",
+    mcProfile: "Profilo per categoria",
+    mcStrengths: "Punti di forza",
+    mcReview: "In una riga",
+    mcFootnote: "n/d = non pubblicato o non ancora verificato. I valori con ~ non sono misure ufficiali attuali: una piccola differenza tra uno di questi e un punteggio misurato non va presa per reale.",
+    dataTitle: "I tuoi dati",
+    dataHint: "Tutto ciò che WhichAI salva resta in questo browser: preferenze, i modelli che segui e gli ultimi dati letti. Esporta un backup prima di cambiare dispositivo o di cancellare i dati del browser.",
+    dataExport: "Esporta backup (.json)",
+    dataImport: "Importa backup",
+    dataWipe: "Elimina tutti i dati",
+    dataWipeAsk: "Eliminare TUTTI i dati di WhichAI in questo browser? Preferenze, modelli seguiti e dati salvati verranno rimossi.",
+    dataImportAsk: "Importare questo backup? I dati esistenti con lo stesso nome verranno sovrascritti.",
+    dataImported: "Backup importato. Ricarico.",
+    dataImportBad: "File di backup non valido.",
+    updateReady: "È pronta una nuova versione di WhichAI.",
+    updateReload: "Aggiorna",
+    navStack: "Stack Optimizer",
+    navDoctor: "Prompt Doctor",
+    navStackSub: "Quali abbonamenti tenere, cosa usare gratis",
+    navDoctorSub: "Valuta un prompt, vedi la versione ottimizzata",
+    navGlossarySub: "Ogni termine AI in una frase semplice",
+    stackTitle: "AI Stack Optimizer",
+    stackSub: "Quattro scelte rapide: quale abbonamento vale la pena, cosa usare gratis e cosa puoi disdire. Tutto sul tuo dispositivo.",
+    stackGo: "Costruisci il mio stack",
+    stackPickOne: "Scegli prima almeno un'attività.",
+    stackResult: "Il tuo stack consigliato",
+    stackNewCost: "costo mensile stimato dello stack consigliato",
+    stackCurrentCost: "Oggi paghi:",
+    stackSaving: "risparmio stimato",
+    stackRedundant: "Forse ridondanti per le tue attività:",
+    stackFreeTier: "Piano gratuito",
+    stackToFinder: "Ti serve una sola scelta? Usa il finder",
+    doctorTitle: "Prompt Doctor",
+    doctorSub: "Incolla un prompt: ottieni un punteggio, la lista di cosa manca e una versione ottimizzata per il modello che scegli. Senza API.",
+    doctorPh: "Incolla qui il tuo prompt…",
+    doctorGo: "Analizza il prompt",
+    doctorDetected: "Attività rilevata:",
+    doctorMissingLead: "Lacune principali:",
+    doctorAllGood: "Prompt solido: ci sono tutti gli ingredienti fondamentali.",
+    doctorChecklist: "Checklist",
+    doctorOptimized: "Versione ottimizzata",
+    doctorBefore: "Il tuo prompt",
+    doctorAfter: "Ottimizzato per il modello scelto",
+    doctorChanges: "Cosa è cambiato e perché",
+    doctorToGen: "Apri nel Generator",
+    doctorNote: "Analisi statica basata sulle best practice di prompt engineering; la versione ottimizzata usa lo stesso engine del Generator. Rivedi prima di usare.",
+    officialOpen: "Apri",
+    officialSite: "Apri l'app ufficiale",
+    navRadar: "Model Radar",
+    radarNew: "NUOVO",
+    radarUpcoming: "In arrivo",
+    radarAll: "Tutto",
+    radarFollowing: "Seguiti",
+    radarSince: "novità dalla tua ultima visita",
+    radarFollow: "Segui",
+    radarUnfollow: "Seguito",
+    radarTypeNew: "Nuovi modelli",
+    radarTypePrice: "Prezzi",
+    radarTypeScore: "Punteggi",
+    radarTypeFree: "Piani gratuiti",
+    radarEmpty: "Ancora niente qui. Segui un modello con la stella per costruire il tuo feed.",
+    shareBtn: "Condividi come immagine",
+    shareDone: "Immagine pronta",
+    navTopics: "Dibattiti AI",
+    topicsTitle: "Dibattiti AI",
+    topicsCaseA: "La preoccupazione",
+    topicsCaseB: "La contro-tesi",
+    topicsStatus: "A che punto siamo",
+    topicsDisclaimer: "Sintesi curate di stampa e ricerca pubblica, aggiornate coi refresh dei dati. Non sono consigli finanziari, di carriera o legali.",
+    footSupport: "Sostienici ♥",
+    supportTitle: "Sostieni WhichAI",
+    supportText: "WhichAI è gratuito, senza pubblicità e senza sponsor: gli unici costi sono il dominio e le ore che tengono 100+ modelli onesti e aggiornati. Se ti ha fatto risparmiare tempo, una piccola donazione lo mantiene indipendente.",
+    supportBtn: "Dona ♥",
+    visitsLabel: "visite",
+    catalogShowLess: "Mostra meno",
+    radarCheckClean: "Controllo dati: tutto coincide con le fonti pubbliche",
+    radarCheckReview: "voce/i dal controllo dati da rivedere",
+    radarCheckBroken: "Controllo dati: una route gratuita spedita non funziona",
+    radarCheckSkipped: "Il controllo dati oggi non e' riuscito",
+    journeyConfidence: "affidabilita",
+    livePill: "Dati live",
+    liveDataLine: "Dati live: punteggi ufficiali Artificial Analysis e prezzi OpenRouter, letti {when}; {n} modelli aggiunti in automatico.",
+    liveAutoChip: "aggiunto in automatico",
+    liveAutoTitle: "Aggiunto in automatico dai dati pubblici live (Artificial Analysis via OpenRouter). Nessuna recensione editoriale ancora.",
+    skipLink: "Vai al contenuto",
+    langLabel: "Lingua",
+    railLabel: "Capitoli",
+    close: "Chiudi",
+    navRanking: "Classifica",
+    navMarket: "Mercato",
+    navTools: "Strumenti",
+    ch1Eyebrow: "La classifica",
+    ch1Title: "Qual è l'AI migliore in questo momento?",
+    ch1Lede: "Ogni modello con un punteggio ufficiale di Artificial Analysis, ordinato in fasce da solo. Le nuove misurazioni arrivano qui in automatico, di solito entro un'ora.",
+    heroFind: "Trova l'AI per il mio compito",
+    heroPrompt: "Scrivi un prompt migliore",
+    kpiModels: "modelli monitorati",
+    kpiMeasured: "con un punteggio ufficiale",
+    kpiLabs: "laboratori in classifica",
+    kpiNew: "nuovi negli ultimi 30 giorni",
+    rankMetricLabel: "Ordina per",
+    metricAA: "Intelligenza",
+    metricCoding: "Programmazione",
+    metricAgentic: "Agentico",
+    rankFilterLabel: "Mostra",
+    fAll: "Tutti",
+    fOpen: "Pesi aperti",
+    fFree: "Rotta gratuita",
+    fCheap: "Sotto 1 $",
+    fLegacy: "Includi i modelli datati",
+    rankSearchPh: "Cerca un modello…",
+    rankUnmeasured: "non misurato",
+    tierS: "Frontiera",
+    tierA: "Quasi frontiera",
+    tierB: "Forte",
+    tierC: "Capace",
+    tierD: "Leggero",
+    tierMore: "+{n} altri",
+    tierNote: "Le fasce sono calcolate, non scelte: sull'indice selezionato S è il 5% migliore dei modelli attuali, A il 15% successivo, B il 20% successivo, C il 25% successivo, D il resto. A parità di punteggio si resta nella stessa fascia. I punteggi convertiti (~) e quelli non misurati non entrano mai in classifica.",
+    tierMissing: "{n} modelli attuali non hanno ancora un punteggio {metric}.",
+    scatterTitle: "Prezzo e intelligenza",
+    scatterNote: "In alto a sinistra c'è più intelligenza per ogni dollaro. Il prezzo è su scala logaritmica, così i modelli economici non finiscono schiacciati in un angolo; la linea tratteggiata è la frontiera del miglior rapporto qualità-prezzo.",
+    scatterX: "Prezzo API combinato, $ per 1M di token (scala logaritmica)",
+    scatterY: "Indice di intelligenza AA",
+    scatterFree: "Gratis",
+    scatterLegend: "Colore del punto = fascia sull'indice di intelligenza. Passa sopra un punto o un modello per ritrovarlo nell'altra vista; clicca per i dettagli.",
+    bridge1: "In testa sono vicini? Metti i due leader uno accanto all'altro.",
+    ch2Eyebrow: "Testa a testa",
+    ch2Title: "Confronta due modelli qualsiasi",
+    ch2Lede: "Indici ufficiali, prezzo, contesto e punti di forza, fianco a fianco. Si apre sui primi due di oggi e segue la classifica finché non scegli tu; aggiungi un terzo quando vuoi.",
+    cmpPick: "Modello",
+    cmpSwap: "Inverti",
+    cmpReset: "Torna ai primi due",
+    cmpFollowing: "Segue i primi due in tempo reale",
+    cmpYourPick: "La tua selezione",
+    cmpIndices: "Indici ufficiali",
+    cmpIndicesNote: "Artificial Analysis, letto in automatico. Ogni indice ha la sua scala: confronta dentro la stessa riga, non tra righe diverse. Il valore migliore di ogni riga ha una stella.",
+    cmpCost: "Prezzo e caratteristiche",
+    cmpPriceIn: "Input $ / 1M",
+    cmpPriceOut: "Output $ / 1M",
+    cmpDaysAgo: "{n} giorni fa",
+    cmpPriceNote: "Prezzi di OpenRouter, in dollari per milione di token; per i prezzi la stella va al valore più basso.",
+    cmpProfileNote: "I punteggi per categoria (0-100) sono valutazioni combinate di WhichAI: orientamento, non misure ufficiali.",
+    mcDetails: "Dettagli",
+    bridge2: "Potrebbe essere già uscito qualcosa di più nuovo. Ecco cosa è cambiato questa settimana.",
+    ch3Eyebrow: "Novità",
+    ch3Title: "Model radar: lanci, prezzi, notizie",
+    ch3Lede: "Lanci e variazioni di prezzo dal catalogo live, accanto ai titoli dei laboratori, della stampa, di Hacker News e di Hugging Face. Nessuno deve pubblicare niente: si aggiorna da solo.",
+    radarLatest: "Ultimo arrivo",
+    radarFeedTitle: "Lanci e cambiamenti",
+    newsTitle: "Notizie",
+    newsAll: "Tutte le fonti",
+    newsLabs: "Laboratori",
+    newsPress: "Stampa",
+    newsCommunity: "Community",
+    newsOpen: "Open source",
+    newsLoading: "Sto leggendo le fonti…",
+    newsDown: "Le fonti delle notizie non sono raggiungibili in questo momento. Il feed dei lanci qui accanto è completo anche senza.",
+    newsUpdated: "aggiornato {when}",
+    newsPoints: "punti",
+    newsDiscuss: "Discussione",
+    newsFoot: "Solo titoli e link: blog ufficiali dei laboratori, TechCrunch AI, storie di Hacker News con oltre 100 punti e Hugging Face. Riletti ogni 30 minuti.",
+    newsSomeDown: "Non raggiungibili ora: {list}.",
+    showMore: "Mostra altro",
+    bridge3: "Ogni lancio muove anche i prezzi. Ecco quanto costa oggi l'intelligenza.",
+    ch4Eyebrow: "Quanto costa",
+    ch4Title: "Il mercato dell'AI, in tempo reale",
+    ch4Lede: "Prezzi API da OpenRouter, ricalcolati a ogni visita: il modo più economico per entrare in ogni fascia, il miglior rapporto qualità-prezzo, cosa è gratis adesso e quanto costerebbe un mese del tuo utilizzo.",
+    mkLeaderKicker: "Il leader costa",
+    mkPer1M: "per 1M di token (input / output)",
+    mkPer1MShort: "per 1M",
+    mkCheapS: "modello di fascia Frontiera più economico, prezzo combinato per 1M di token",
+    mkFreeNow: "rotte API gratuite in questo momento",
+    mkFreeBest: "la più forte: {name}",
+    mkMoves: "prezzi live diversi dalla nostra ultima revisione",
+    mkLadderTitle: "Il modo più economico per entrare in ogni fascia",
+    mkLadderSub: "Il prezzo combinato più basso (3 parti di input e 1 di output) tra i modelli di ciascuna fascia sull'indice di intelligenza.",
+    mkValueTitle: "Miglior rapporto qualità-prezzo adesso",
+    mkValueNote: "Punti di intelligenza per dollaro di prezzo combinato, tra i modelli con un punteggio pari o superiore alla mediana.",
+    mkPtsPerUsd: "punti per $",
+    mkCalcTitle: "Quanto mi costerebbe un mese?",
+    mkCalcMsgs: "Messaggi al giorno",
+    mkCalcLen: "Messaggio tipico",
+    mkPickLeader: "Il leader",
+    mkPickValue: "Miglior rapporto",
+    mkPickA: "Quasi frontiera più economico",
+    mkPickB: "Forte più economico",
+    mkPickFree: "Una rotta gratuita",
+    mkPerMonth: "al mese",
+    mkRateLimited: "con limiti d'uso",
+    mkCalcNote: "Ipotesi: {in} token di input e {out} di output per messaggio, 30 giorni al mese, prezzi OpenRouter. Gli abbonamenti alle chat sono a canone fisso: vedi lo Stack Optimizer più in basso.",
+    mkFreeTitle: "Gratis adesso",
+    mkFreeNote: "Rotte API a 0 $ su OpenRouter. Hanno tutte limiti d'uso e alcune scadono.",
+    mkFreeNone: "Al momento non risulta nessuna rotta gratuita.",
+    mkUntil: "fino al",
+    mkAppsFree: "I piani gratuiti delle grandi app",
+    mkMovesTitle: "Variazioni di prezzo",
+    mkMovesNote: "Dove il prezzo live di OpenRouter è diverso da quello della nostra ultima revisione editoriale.",
+    mkMovesNone: "Nessuna differenza al momento.",
+    mkFoot: "Prezzi: OpenRouter, dollari per 1M di token, letti in automatico (catalogo {when}). Il listino del produttore può essere diverso.",
+    bridge4: "Dietro i prezzi: energia, lavoro e investimenti da centinaia di miliardi. I dibattiti, da entrambi i lati.",
+    ch5Eyebrow: "Il quadro generale",
+    ch5Title: "Dibattiti AI, entrambe le parti",
+    ch5Lede: "Energia, lavoro, soldi, diritto d'autore, regole, modelli aperti: l'argomento più forte di ciascuna parte, i numeri con le loro date e cosa cambierebbe il quadro.",
+    topicsReviewed: "Rivisto il",
+    topicsCount: "dibattiti",
+    topicsReviewNote: "Ogni dato mantiene il suo periodo originale; queste sintesi sono riviste a mano, non sono notizie in tempo reale.",
+    topicsEvidence: "Le prove, con il contesto",
+    topicsUncertainty: "Cosa resta incerto",
+    topicsWatch: "Cosa cambierebbe il quadro",
+    topicsDecision: "Scegli il prossimo passo",
+    topicsChoose: "Seleziona la tua situazione",
+    topicsDecisionNote: "Indicazioni editoriali pratiche. La tua scelta resta su questa pagina; nessuna chiamata a un'AI e nessun account.",
+    topicsReadSource: "Leggi la fonte",
+    topicsReadPage: "Apri la pagina di lettura",
+    topicsEstimate: "Stima",
+    topicsProjection: "Proiezione",
+    topicsResearch: "Risultato di uno studio",
+    topicsReported: "Dato aziendale",
+    topicsGuidance: "Norma o linea guida",
+    topicsDefinition: "Definizione",
+    topicsTagEnvironment: "Ambiente",
+    topicsTagWork: "Lavoro",
+    topicsTagEconomy: "Economia",
+    topicsTagLaw: "Diritto",
+    topicsTagPolicy: "Regole",
+    topicsTagEcosystem: "Ecosistema",
+    topicsCompareModels: "Confronta i modelli",
+    topicsFindAI: "Trova l'AI giusta",
+    topicsSeeMarket: "Guarda quanto costa l'AI",
+    topicsImprovePrompt: "Migliora un prompt",
+    topicsReviewStack: "Rivedi i miei abbonamenti AI",
+    topicsExploreModels: "Esplora la classifica",
+    topicsLearnTerms: "Esplora il glossario",
+    complyTitle: "I tuoi obblighi",
+    complyText: "Verifica passo per passo quali obblighi dell'EU AI Act e del GDPR valgono per la tua organizzazione, su ComplyAI.",
+    complyGo: "Apri ComplyAI.wiki",
+    bridge5: "Basta leggere. Cosa devi fare?",
+    ch6Eyebrow: "Mettila al lavoro",
+    ch6Title: "Dall'AI giusta al prompt giusto",
+    ch6Lede: "Quattro strumenti su un unico percorso: trova l'AI per il tuo compito, scrivi il prompt a cui risponde meglio, controlla qualsiasi prompt e poi taglia ciò che paghi.",
+    step1Title: "Trova la tua AI",
+    step1Sub: "Una risposta rapida per tipo di compito, oppure quattro domande per una scelta personale. Nessun prompt necessario.",
+    quickTitle: "Risposta rapida: scegli un compito",
+    quickHint: "Qui compare la migliore app per il compito, con le motivazioni, il piano gratuito e le fonti.",
+    quickBestFor: "Scelta migliore per {task}",
+    quickWrite: "Scrivi il prompt per {app}",
+    quickPersonal: "Personalizza: 4 domande",
+    finderGuidedTitle: "Una scelta personale in quattro domande",
+    finderStart: "Inizia le quattro domande →",
+    step2Title: "Scrivi il prompt",
+    step2Sub: "Un obiettivo, un prompt calibrato per ogni famiglia di AI che selezioni e la scelta migliore per il compito.",
+    genMore: "Contesto e opzioni",
+    genReco: "Consigliato per questo compito",
+    genToDoctor: "Controlla con il Doctor",
+    genWords: "parole",
+    genChars: "caratteri",
+    chipPromptTarget: "nel generatore di prompt",
+    drawerTitle: "Dettagli del modello",
+    drawerRankTip: "Posizione live tra i modelli attuali con un punteggio ufficiale, calcolata adesso e mai scritta nel testo.",
+    drawerWas: "ultima revisione:",
+    drawerCatNote: "I punteggi per categoria (0-100) sono valutazioni combinate di WhichAI: orientamento, non misure ufficiali.",
+    drawerCompare: "Confronta ⇄",
+    drawerPrompt: "Scrivi un prompt per questo modello",
+    drawerWiki: "Pagina del modello",
+    snapshotLabel: "Istantanea",
+    footProjects: "Altri progetti dell'autore di WhichAI",
+    projComplyTag: "Conformità",
+    projComply: "Strumenti per la conformità a EU AI Act, GDPR e contratti, pensati per le piccole imprese. Si inizia gratis.",
+    projWarTag: "Geopolitica",
+    projWar: "Una mappa in tempo reale di guerre e crisi geopolitiche, con le ultime notizie, gli indicatori di mercato e gli scenari.",
+    projVisit: "Visita",
+    footAbout: "Informazioni su WhichAI",
+    aboutDiff: "In cosa WhichAI è diverso da una classifica",
+    aboutData: "Come restano aggiornati i dati",
+    aboutMethod: "Metodologia",
+    aboutApi: "L'API di WhichAI",
+    footModels: "Tutti i modelli",
+    footBestFor: "La migliore AI per…",
+    footHeadToHeads: "Testa a testa",
+    footDataset: "Dataset aperto",
+    prefsDone: "Preferenze memorizzate cancellate."
   };
 
   S.fr = {
-    navGenerator: "Générateur", navGuide: "Guide des modèles", navCompare: "Comparer", navChains: "Chaînes", navSettings: "Paramètres",
-    privacyPill: "Privé par conception",
-    privacyTip: "Fonctionne entièrement dans votre navigateur. Pas de compte, pas de serveur, pas de suivi. Les clés API restent sur votre appareil.",
-    trustLine: "Pas de compte · Pas de serveur · Rien ne quitte votre navigateur",
+    navCompare: "Comparer",
+    trustLine: "Aucun compte · Aucun suivi · Rien de ce que vous écrivez ne quitte le navigateur",
     langNote: "Interface en français. Remarque : les prompts générés, les notes de benchmark et la détection automatique du type de tâche sont optimisés pour l'anglais (tous les modèles d'IA fonctionnent mieux avec des instructions en anglais). Vous pouvez écrire votre objectif dans n'importe quelle langue : l'IA répondra dans votre langue.",
-    genTitle: "Décrivez votre objectif",
-    genSubtitle: "WhichAI le transforme en un prompt adapté à chaque modèle d'IA - et vous dit quel modèle convient le mieux, en langage simple.",
-    goalLabel: "Objectif ", optionalTag: "(facultatif)", tryExample: "Essayer un exemple",
+    goalLabel: "Objectif ",
+    optionalTag: "(facultatif)",
+    tryExample: "Essayer un exemple",
     goalPh: "ex. Rédigez le titre d'une landing page pour une app de budget destinée aux freelances",
     goalErr: "Décrivez votre objectif pour générer les prompts.",
-    contextLabel: "Contexte ", contextPh: "Contexte, public, contraintes, exemples - tout ce que l'IA devrait savoir",
-    taskLabel: "Type de tâche", formatLabel: "Format de sortie", lengthLabel: "Longueur", toneLabel: "Ton",
-    targetsLabel: "Modèles cibles", groupAssistants: "Assistants IA", groupEco: "Assistants d'écosystème", groupOpen: "Modèles ouverts ",
-    modelsErr: "Sélectionnez au moins un modèle.", generateBtn: "Générer les prompts",
+    contextLabel: "Contexte ",
+    contextPh: "Contexte, public, contraintes, exemples - tout ce que l'IA devrait savoir",
+    taskLabel: "Type de tâche",
+    formatLabel: "Format de sortie",
+    lengthLabel: "Longueur",
+    toneLabel: "Ton",
+    targetsLabel: "Modèles cibles",
+    groupAssistants: "Assistants IA",
+    groupEco: "Assistants d'écosystème",
+    groupOpen: "Modèles ouverts ",
+    modelsErr: "Sélectionnez au moins un modèle.",
+    generateBtn: "Générer les prompts",
     emptyLead: "Vos prompts optimisés apparaîtront ici - une version par modèle, plus une recommandation du modèle le mieux adapté.",
-    step1: "Décrivez votre objectif", step2: "Copiez le prompt adapté à chaque IA", step3: "Comparez les réponses et itérez",
-    resultsTitle: "Prompts optimisés", toCompareBtn: "Comparer les réponses →",
-    optNone: "Sans préférence", optProse: "Prose simple", optMarkdown: "Markdown", optBullets: "Liste à puces", optTable: "Tableau", optJson: "JSON", optCode: "Code",
-    optShort: "Court", optMedium: "Moyen", optLong: "Long et détaillé",
-    optProfessional: "Professionnel", optFriendly: "Chaleureux", optCasual: "Décontracté", optPersuasive: "Persuasif", optAcademic: "Académique",
-    autoDetect: "Détection automatique", detected: "Détecté :",
-    task_writing: "Rédaction et contenu", task_coding: "Code et développement", task_analysis: "Analyse et données", task_research: "Recherche et synthèse",
-    task_brainstorming: "Brainstorming et idées", task_education: "Éducation et explication", task_business: "Business et marketing", task_general: "Général / autre",
-    routerTitle: "Quel modèle pour cette tâche ?", bestPick: "Meilleur choix :", benchLabel: "Benchmarks :",
-    fullRanking: "Classement complet, offres gratuites et sources", freeTier: "Offre gratuite :", sourcesLabel: "Sources :",
-    whyPrefix: "Pourquoi ce prompt est construit ainsi pour", copy: "Copier", copied: "Copié", copyPrompt: "Copier le prompt",
-    guideTitle: "Guide des modèles", guideSub: "Quelle app d'IA convient à chaque type de tâche - benchmarks publics traduits en langage simple.",
-    catalogTitle: "Catalogue des modèles",
-    compareTitle: "Comparer les réponses",
-    compareSub: "Exécutez le même prompt optimisé dans chaque app d'IA, collez (ou exécutez automatiquement) les réponses et notez-les côte à côte. Tout reste dans votre navigateur.",
-    compareEmptyText: "Aucune comparaison active. Générez d'abord les prompts, puis cliquez sur « Comparer les réponses ». ",
-    goGenerator: "Aller au Générateur",
-    saveCmp: "Enregistrer", newVersion: "Nouvelle version", exportMd: "Exporter .md", savedCmps: "Comparaisons enregistrées",
-    notScored: "Non noté", winner: "Gagnant", tied: "Égalité", tie: "Égalité", winnerPrefix: "Gagnant :", openBtn: "Ouvrir", deleteBtn: "Supprimer",
-    chainsTitle: "Chaînes",
-    chainsSub: "Découpez un objectif complexe en étapes liées : chaque étape a son prompt optimisé, et la sortie d'une étape alimente la suivante. Exécution automatique avec une clé gratuite ; copier-coller sinon.",
-    buildChain: "Construire la chaîne", saveChain: "Enregistrer la chaîne", savedChains: "Chaînes enregistrées",
-    promptForStep: "Prompt de cette étape", stepOutput: "Sortie de l'étape",
-    settingsTitle: "Paramètres",
-    settingsSub: "Les clés API activent l'exécution automatique. Elles restent uniquement dans ce navigateur et ne sont envoyées qu'au fournisseur appelé - jamais à un serveur WhichAI (il n'y en a pas).",
-    saveSettings: "Enregistrer", prefsReset: "Réinitialiser les préférences",
-    footerText: "Fonctionne entièrement dans votre navigateur : pas de compte, pas de serveur, vos clés et données ne quittent jamais votre appareil."
+    resultsTitle: "Prompts optimisés",
+    optNone: "Sans préférence",
+    optProse: "Prose simple",
+    optMarkdown: "Markdown",
+    optBullets: "Liste à puces",
+    optTable: "Tableau",
+    optJson: "JSON",
+    optCode: "Code",
+    optShort: "Court",
+    optMedium: "Moyen",
+    optLong: "Long et détaillé",
+    optProfessional: "Professionnel",
+    optFriendly: "Chaleureux",
+    optCasual: "Décontracté",
+    optPersuasive: "Persuasif",
+    optAcademic: "Académique",
+    autoDetect: "Détection automatique",
+    detected: "Détecté :",
+    task_writing: "Rédaction et contenu",
+    task_coding: "Code et développement",
+    task_analysis: "Analyse et données",
+    task_research: "Recherche et synthèse",
+    task_brainstorming: "Brainstorming et idées",
+    task_education: "Éducation et explication",
+    task_business: "Business et marketing",
+    task_general: "Général / autre",
+    routerTitle: "Quel modèle pour cette tâche ?",
+    bestPick: "Meilleur choix :",
+    benchLabel: "Benchmarks :",
+    fullRanking: "Classement complet, offres gratuites et sources",
+    freeTier: "Offre gratuite :",
+    sourcesLabel: "Sources :",
+    whyPrefix: "Pourquoi ce prompt est construit ainsi pour",
+    copy: "Copier",
+    copied: "Copié",
+    copyPrompt: "Copier le prompt",
+    exportMd: "Exporter .md",
+    prefsReset: "Réinitialiser les préférences",
+    footerText: "Fonctionne dans votre navigateur : aucun compte, aucun pistage. Vos objectifs et vos prompts ne quittent jamais votre appareil.",
+    dbNoResults: "Aucun modèle ne correspond à votre recherche.",
+    themeTip: "Basculer entre thème clair et sombre",
+    footFaq: "FAQ",
+    footSimilar: "Outils similaires",
+    footContribute: "Contribuer",
+    footGlossary: "Glossaire",
+    finderSub: "Répondez à quelques questions rapides : une recommandation avec raisons, limites et prix. Aucun prompt requis.",
+    finderBack: "← Retour",
+    finderNext: "Suivant",
+    finderRestart: "Recommencer",
+    finderResults: "Notre recommandation",
+    finderAlt: "À considérer aussi",
+    finderWhy: "Pourquoi ce choix",
+    finderBestFor: "Idéal pour :",
+    finderLimit: "À savoir :",
+    finderAccess: "Accès :",
+    finderOpenGuide: "Détails du modèle →",
+    finderUseGen: "Écrire un prompt pour cette IA →",
+    finderSwitchGoal: "Vous préférez décrire votre objectif ? Écrivez plutôt le prompt →",
+    finderTop: "Meilleur choix",
+    glossTitle: "Glossaire IA",
+    glossSearchPh: "Rechercher un terme…",
+    glossNoRes: "Aucun terme trouvé.",
+    glossCount: "termes",
+    mcAdd: "+ Ajouter un troisième modèle",
+    mcRemove: "Retirer",
+    mcReleased: "Sortie",
+    mcCtx: "Fenêtre de contexte",
+    mcModal: "Modalités",
+    mcPrice: "Prix API $/1M (in / out)",
+    mcSpeed: "Vitesse",
+    mcAccess: "Accès",
+    mcProfile: "Profil par catégorie",
+    mcStrengths: "Points forts",
+    mcReview: "En une ligne",
+    mcFootnote: "n/d = non publié ou pas encore vérifié. Les valeurs marquées ~ ne sont pas des mesures officielles actuelles : un petit écart entre l'une d'elles et un score mesuré ne doit pas être pris pour réel.",
+    dataTitle: "Vos données",
+    dataHint: "Tout ce que WhichAI enregistre reste dans ce navigateur : préférences, modèles suivis et dernières données lues. Exportez une sauvegarde avant de changer d'appareil ou d'effacer le navigateur.",
+    dataExport: "Exporter la sauvegarde (.json)",
+    dataImport: "Importer une sauvegarde",
+    dataWipe: "Supprimer toutes les données",
+    dataWipeAsk: "Supprimer TOUTES les données de WhichAI dans ce navigateur ? Préférences, modèles suivis et données enregistrées seront effacés.",
+    dataImportAsk: "Importer cette sauvegarde ? Les données existantes portant le même nom seront écrasées.",
+    dataImported: "Sauvegarde importée. Rechargement.",
+    dataImportBad: "Fichier de sauvegarde invalide.",
+    updateReady: "Une nouvelle version de WhichAI est prête.",
+    updateReload: "Actualiser",
+    navStack: "Stack Optimizer",
+    navDoctor: "Prompt Doctor",
+    navStackSub: "Quels abonnements garder, quoi utiliser gratuitement",
+    navDoctorSub: "Notez un prompt, voyez la version optimisée",
+    navGlossarySub: "Chaque terme IA en une phrase simple",
+    stackTitle: "AI Stack Optimizer",
+    stackSub: "Quatre choix rapides : quel abonnement garder, quoi utiliser gratuitement, quoi résilier. Tout sur votre appareil.",
+    stackGo: "Construire mon stack",
+    stackPickOne: "Choisissez d'abord au moins une tâche.",
+    stackResult: "Votre stack recommandé",
+    stackNewCost: "coût mensuel estimé du stack recommandé",
+    stackCurrentCost: "Vous payez actuellement :",
+    stackSaving: "économie estimée",
+    stackRedundant: "Peut-être redondants pour vos tâches :",
+    stackFreeTier: "Offre gratuite",
+    stackToFinder: "Un seul choix suffit ? Utilisez le finder",
+    doctorTitle: "Prompt Doctor",
+    doctorSub: "Collez un prompt : score, liste de ce qui manque et version optimisée pour le modèle choisi. Sans API.",
+    doctorPh: "Collez votre prompt ici…",
+    doctorGo: "Analyser le prompt",
+    doctorDetected: "Tâche détectée :",
+    doctorMissingLead: "Principales lacunes :",
+    doctorAllGood: "Prompt solide : tous les ingrédients essentiels sont là.",
+    doctorChecklist: "Checklist",
+    doctorOptimized: "Version optimisée",
+    doctorBefore: "Votre prompt",
+    doctorAfter: "Optimisé pour le modèle choisi",
+    doctorChanges: "Ce qui a changé et pourquoi",
+    doctorToGen: "Ouvrir dans le Generator",
+    doctorNote: "Analyse statique fondée sur les bonnes pratiques de prompt engineering ; la version optimisée utilise le même moteur que le Generator. Relisez avant usage.",
+    officialOpen: "Ouvrir",
+    officialSite: "Ouvrir l'app officielle",
+    navRadar: "Model Radar",
+    radarNew: "NOUVEAU",
+    radarUpcoming: "À venir",
+    radarAll: "Tout",
+    radarFollowing: "Suivis",
+    radarSince: "nouveautés depuis votre dernière visite",
+    radarFollow: "Suivre",
+    radarUnfollow: "Suivi",
+    radarTypeNew: "Nouveaux modèles",
+    radarTypePrice: "Prix",
+    radarTypeScore: "Scores",
+    radarTypeFree: "Offres gratuites",
+    radarEmpty: "Rien ici pour l'instant. Suivez un modèle avec l'étoile pour créer votre propre flux.",
+    shareBtn: "Partager en image",
+    shareDone: "Image prête",
+    navTopics: "Débats IA",
+    topicsTitle: "Débats IA",
+    topicsCaseA: "L'inquiétude",
+    topicsCaseB: "Le contre-argument",
+    topicsStatus: "Où on en est",
+    topicsDisclaimer: "Synthèses de presse et de recherche publiques, mises à jour avec les données. Ni conseil financier, ni de carrière, ni juridique.",
+    footSupport: "Soutenir ♥",
+    supportTitle: "Soutenir WhichAI",
+    supportText: "WhichAI est gratuit, sans publicité ni sponsors : les seuls coûts sont le domaine et les heures qui gardent plus de 100 modèles honnêtes et à jour. S'il vous a fait gagner du temps, un petit don le garde indépendant.",
+    supportBtn: "Faire un don ♥",
+    visitsLabel: "visites",
+    catalogShowLess: "Afficher moins",
+    radarCheckClean: "Verification des donnees : tout correspond aux sources publiques",
+    radarCheckReview: "element(s) a revoir apres la verification",
+    radarCheckBroken: "Verification : une route gratuite livree est cassee",
+    radarCheckSkipped: "La verification n'a pas pu etre faite aujourd'hui",
+    journeyConfidence: "confiance",
+    livePill: "Données en direct",
+    liveDataLine: "Données en direct : scores officiels Artificial Analysis et prix OpenRouter, lus {when} ; {n} modèles ajoutés automatiquement.",
+    liveAutoChip: "ajouté automatiquement",
+    liveAutoTitle: "Ajouté automatiquement à partir des données publiques en direct (Artificial Analysis via OpenRouter). Pas encore de revue éditoriale.",
+    skipLink: "Aller au contenu",
+    langLabel: "Langue",
+    railLabel: "Chapitres",
+    close: "Fermer",
+    navRanking: "Classement",
+    navMarket: "Marché",
+    navTools: "Outils",
+    ch1Eyebrow: "Le classement",
+    ch1Title: "Quelle IA est la meilleure en ce moment ?",
+    ch1Lede: "Chaque modèle doté d'un score officiel Artificial Analysis, classé en paliers automatiquement. Les nouvelles mesures arrivent ici d'elles-mêmes, en général en moins d'une heure.",
+    heroFind: "Trouver l'IA pour ma tâche",
+    heroPrompt: "Écrire un meilleur prompt",
+    kpiModels: "modèles suivis",
+    kpiMeasured: "avec un score officiel",
+    kpiLabs: "laboratoires classés",
+    kpiNew: "nouveaux ces 30 derniers jours",
+    rankMetricLabel: "Classer par",
+    metricAA: "Intelligence",
+    metricCoding: "Code",
+    metricAgentic: "Agentique",
+    rankFilterLabel: "Afficher",
+    fAll: "Tous",
+    fOpen: "Poids ouverts",
+    fFree: "Accès gratuit",
+    fCheap: "Moins de 1 $",
+    fLegacy: "Inclure les anciens",
+    rankSearchPh: "Trouver un modèle…",
+    rankUnmeasured: "non mesuré",
+    tierS: "Frontière",
+    tierA: "Presque frontière",
+    tierB: "Solide",
+    tierC: "Capable",
+    tierD: "Léger",
+    tierMore: "+{n} autres",
+    tierNote: "Les paliers sont calculés, pas choisis : sur l'indice sélectionné, S regroupe les 5 % meilleurs modèles actuels, A les 15 % suivants, B les 20 % suivants, C les 25 % suivants, D le reste. Les ex aequo partagent un palier. Les scores convertis (~) et non mesurés ne sont jamais classés.",
+    tierMissing: "{n} modèles actuels n'ont pas encore de score {metric}.",
+    scatterTitle: "Prix et intelligence",
+    scatterNote: "En haut à gauche, plus d'intelligence par dollar. Le prix est sur une échelle logarithmique, pour que les modèles bon marché ne soient plus écrasés dans un coin ; la ligne pointillée trace la frontière du meilleur rapport qualité-prix.",
+    scatterX: "Prix API combiné, $ par million de tokens (échelle log)",
+    scatterY: "Indice d'intelligence AA",
+    scatterFree: "Gratuit",
+    scatterLegend: "Couleur du point = palier sur l'indice d'intelligence. Survolez un point ou un modèle pour le retrouver dans l'autre vue ; cliquez pour les détails.",
+    bridge1: "Coude à coude en tête ? Mettez les deux leaders côte à côte.",
+    ch2Eyebrow: "Face à face",
+    ch2Title: "Comparer deux modèles au choix",
+    ch2Lede: "Indices officiels, prix, contexte et points forts, côte à côte. Il s'ouvre sur les deux premiers du jour et suit le classement jusqu'à ce que vous choisissiez ; ajoutez un troisième quand vous voulez.",
+    cmpPick: "Modèle",
+    cmpSwap: "Inverser",
+    cmpReset: "Revenir aux deux premiers",
+    cmpFollowing: "Suit les deux premiers en direct",
+    cmpYourPick: "Votre sélection",
+    cmpIndices: "Indices officiels",
+    cmpIndicesNote: "Artificial Analysis, lu automatiquement. Chaque indice a sa propre échelle : comparez à l'intérieur d'une ligne, pas d'une ligne à l'autre. La meilleure valeur de chaque ligne porte une étoile.",
+    cmpCost: "Prix et caractéristiques",
+    cmpPriceIn: "Entrée $ / 1M",
+    cmpPriceOut: "Sortie $ / 1M",
+    cmpDaysAgo: "il y a {n} jours",
+    cmpPriceNote: "Prix OpenRouter, en dollars par million de tokens ; pour les prix, l'étoile va à la valeur la plus basse.",
+    cmpProfileNote: "Les scores par catégorie (0-100) sont des notes combinées de WhichAI : des repères, pas des mesures officielles.",
+    mcDetails: "Détails",
+    bridge2: "Un modèle plus récent est peut-être déjà sorti. Voici ce qui a changé cette semaine.",
+    ch3Eyebrow: "Nouveautés",
+    ch3Title: "Model radar : lancements, prix, actualités",
+    ch3Lede: "Lancements et variations de prix du catalogue en direct, à côté des titres des laboratoires, de la presse, de Hacker News et de Hugging Face. Personne n'a rien à publier : tout se met à jour seul.",
+    radarLatest: "Dernière arrivée",
+    radarFeedTitle: "Lancements et changements",
+    newsTitle: "Fil d'actualités",
+    newsAll: "Toutes les sources",
+    newsLabs: "Laboratoires",
+    newsPress: "Presse",
+    newsCommunity: "Communauté",
+    newsOpen: "Open source",
+    newsLoading: "Lecture des sources…",
+    newsDown: "Les sources d'actualités sont injoignables pour le moment. Le fil des lancements, à côté, est complet sans elles.",
+    newsUpdated: "mis à jour {when}",
+    newsPoints: "points",
+    newsDiscuss: "Discussion",
+    newsFoot: "Titres et liens uniquement : blogs officiels des laboratoires, TechCrunch AI, articles de Hacker News à plus de 100 points et Hugging Face. Relus toutes les 30 minutes.",
+    newsSomeDown: "Injoignables pour le moment : {list}.",
+    showMore: "Afficher plus",
+    bridge3: "Chaque lancement fait aussi bouger les prix. Voici ce que coûte l'intelligence aujourd'hui.",
+    ch4Eyebrow: "Ce que ça coûte",
+    ch4Title: "Le marché de l'IA, en direct",
+    ch4Lede: "Prix API d'OpenRouter, recalculés à chaque visite : la façon la moins chère d'accéder à chaque palier, le meilleur rapport qualité-prix, ce qui est gratuit maintenant et ce que coûterait un mois de votre usage.",
+    mkLeaderKicker: "Le leader coûte",
+    mkPer1M: "par million de tokens (entrée / sortie)",
+    mkPer1MShort: "par 1M",
+    mkCheapS: "modèle Frontière le moins cher, prix combiné par million de tokens",
+    mkFreeNow: "accès API gratuits en ce moment",
+    mkFreeBest: "le plus fort : {name}",
+    mkMoves: "prix en direct différents de notre dernière revue",
+    mkLadderTitle: "La façon la moins chère d'accéder à chaque palier",
+    mkLadderSub: "Le prix combiné le plus bas (3 parts d'entrée pour 1 de sortie) parmi les modèles de chaque palier de l'indice d'intelligence.",
+    mkValueTitle: "Meilleur rapport qualité-prix maintenant",
+    mkValueNote: "Points d'intelligence par dollar de prix combiné, parmi les modèles au niveau de la médiane ou au-dessus.",
+    mkPtsPerUsd: "pts par $",
+    mkCalcTitle: "Combien me coûterait un mois ?",
+    mkCalcMsgs: "Messages par jour",
+    mkCalcLen: "Message type",
+    mkPickLeader: "Le leader",
+    mkPickValue: "Meilleur rapport",
+    mkPickA: "Presque frontière le moins cher",
+    mkPickB: "Solide le moins cher",
+    mkPickFree: "Un accès gratuit",
+    mkPerMonth: "par mois",
+    mkRateLimited: "à débit limité",
+    mkCalcNote: "Hypothèse : {in} tokens en entrée et {out} en sortie par message, 30 jours par mois, prix OpenRouter. Les abonnements aux chatbots sont forfaitaires : voir le Stack Optimizer plus bas.",
+    mkFreeTitle: "Gratuit maintenant",
+    mkFreeNote: "Accès API à 0 $ sur OpenRouter. Tous ont des limites d'usage et certains expirent.",
+    mkFreeNone: "Aucun accès gratuit n'est listé pour le moment.",
+    mkUntil: "jusqu'au",
+    mkAppsFree: "Les offres gratuites des grandes applis",
+    mkMovesTitle: "Mouvements de prix",
+    mkMovesNote: "Là où le prix en direct d'OpenRouter diffère de celui de notre dernière revue éditoriale.",
+    mkMovesNone: "Aucune différence pour le moment.",
+    mkFoot: "Prix : OpenRouter, en dollars par million de tokens, lus automatiquement (catalogue {when}). Le tarif officiel d'un éditeur peut différer.",
+    bridge4: "Derrière les étiquettes de prix : énergie, emploi et des investissements de plusieurs centaines de milliards. Les débats, des deux côtés.",
+    ch5Eyebrow: "La vue d'ensemble",
+    ch5Title: "Débats IA, les deux camps",
+    ch5Lede: "Énergie, emploi, argent, droit d'auteur, régulation, poids ouverts : l'argument le plus fort de chaque camp, les chiffres avec leurs dates et ce qui changerait la donne.",
+    topicsReviewed: "Revu le",
+    topicsCount: "débats",
+    topicsReviewNote: "Chaque chiffre garde sa période d'origine ; ces synthèses sont revues à la main, ce ne sont pas des actualités en direct.",
+    topicsEvidence: "Les preuves, avec le contexte",
+    topicsUncertainty: "Ce qui reste incertain",
+    topicsWatch: "Ce qui changerait la donne",
+    topicsDecision: "Choisissez votre prochaine étape",
+    topicsChoose: "Sélectionnez votre situation",
+    topicsDecisionNote: "Conseils éditoriaux pratiques. Votre choix reste sur cette page ; aucun appel à une IA ni compte nécessaire.",
+    topicsReadSource: "Lire la source",
+    topicsReadPage: "Ouvrir la page de lecture",
+    topicsEstimate: "Estimation",
+    topicsProjection: "Projection",
+    topicsResearch: "Résultat d'étude",
+    topicsReported: "Déclaration d'entreprise",
+    topicsGuidance: "Politique ou recommandation",
+    topicsDefinition: "Définition",
+    topicsTagEnvironment: "Environnement",
+    topicsTagWork: "Travail",
+    topicsTagEconomy: "Économie",
+    topicsTagLaw: "Droit",
+    topicsTagPolicy: "Régulation",
+    topicsTagEcosystem: "Écosystème",
+    topicsCompareModels: "Comparer les modèles",
+    topicsFindAI: "Trouver la bonne IA",
+    topicsSeeMarket: "Voir ce que coûte l'IA",
+    topicsImprovePrompt: "Améliorer un prompt",
+    topicsReviewStack: "Revoir mes abonnements IA",
+    topicsExploreModels: "Explorer le classement",
+    topicsLearnTerms: "Explorer le glossaire",
+    complyTitle: "Vos propres obligations",
+    complyText: "Vérifiez pas à pas quelles obligations de l'EU AI Act et du GDPR s'appliquent à votre organisation, sur ComplyAI.",
+    complyGo: "Ouvrir ComplyAI.wiki",
+    bridge5: "Assez lu. Qu'avez-vous à faire ?",
+    ch6Eyebrow: "Passez à l'action",
+    ch6Title: "De la bonne IA au bon prompt",
+    ch6Lede: "Quatre outils sur un même chemin : trouvez l'IA pour votre tâche, écrivez le prompt auquel elle répond le mieux, vérifiez n'importe quel prompt, puis réduisez ce que vous payez.",
+    step1Title: "Trouvez votre IA",
+    step1Sub: "Une réponse rapide par tâche, ou quatre questions pour un choix personnalisé. Aucun prompt nécessaire.",
+    quickTitle: "Réponse rapide : choisissez une tâche",
+    quickHint: "La meilleure appli pour la tâche s'affiche ici, avec ses raisons, son offre gratuite et ses sources.",
+    quickBestFor: "Meilleur choix pour {task}",
+    quickWrite: "Écrire le prompt pour {app}",
+    quickPersonal: "Personnaliser : 4 questions",
+    finderGuidedTitle: "Un choix personnalisé en quatre questions",
+    finderStart: "Commencer les quatre questions →",
+    step2Title: "Écrivez le prompt",
+    step2Sub: "Un objectif, un prompt adapté à chaque famille d'IA sélectionnée et le meilleur choix pour la tâche.",
+    genMore: "Contexte et options",
+    genReco: "Recommandé pour cette tâche",
+    genToDoctor: "Vérifier avec le Doctor",
+    genWords: "mots",
+    genChars: "caractères",
+    chipPromptTarget: "dans le générateur de prompts",
+    drawerTitle: "Détails du modèle",
+    drawerRankTip: "Position en direct parmi les modèles actuels dotés d'un score officiel, calculée maintenant et jamais écrite dans le texte.",
+    drawerWas: "dernière revue :",
+    drawerCatNote: "Les scores par catégorie (0-100) sont des notes combinées de WhichAI : des repères, pas des mesures officielles.",
+    drawerCompare: "Comparer ⇄",
+    drawerPrompt: "Écrire un prompt pour ce modèle",
+    drawerWiki: "Page du modèle",
+    snapshotLabel: "Instantané",
+    footProjects: "D'autres projets du créateur de WhichAI",
+    projComplyTag: "Conformité",
+    projComply: "Des outils de conformité EU AI Act, GDPR et contrats pour les petites entreprises. Gratuit pour commencer.",
+    projWarTag: "Géopolitique",
+    projWar: "Une carte en direct des guerres et crises géopolitiques, avec les dernières actualités, des indicateurs de marché et des scénarios.",
+    projVisit: "Visiter",
+    footAbout: "À propos de WhichAI",
+    aboutDiff: "En quoi WhichAI diffère d'un classement",
+    aboutData: "Comment les données restent à jour",
+    aboutMethod: "Méthodologie",
+    aboutApi: "L'API de WhichAI",
+    footModels: "Tous les modèles",
+    footBestFor: "La meilleure IA pour…",
+    footHeadToHeads: "Face-à-face",
+    footDataset: "Jeu de données ouvert",
+    prefsDone: "Préférences mémorisées effacées."
   };
 
   S.es = {
-    navGenerator: "Generador", navGuide: "Guía de modelos", navCompare: "Comparar", navChains: "Cadenas", navSettings: "Ajustes",
-    privacyPill: "Privado por diseño",
-    privacyTip: "Funciona por completo en tu navegador. Sin cuenta, sin servidor, sin rastreo. Las claves API se quedan en tu dispositivo.",
-    trustLine: "Sin cuenta · Sin servidor · Nada sale de tu navegador",
+    navCompare: "Comparar",
+    trustLine: "Sin cuenta · Sin rastreo · Nada de lo que escribes sale del navegador",
     langNote: "Interfaz en español. Nota: los prompts generados, las notas de benchmarks y la detección automática del tipo de tarea están optimizados para el inglés (todos los modelos de IA rinden mejor con instrucciones en inglés). Puedes escribir tu objetivo en cualquier idioma: la IA responderá en tu idioma.",
-    genTitle: "Describe tu objetivo",
-    genSubtitle: "WhichAI lo convierte en un prompt a medida para cada modelo de IA - y te dice qué modelo encaja mejor, en lenguaje sencillo.",
-    goalLabel: "Objetivo ", optionalTag: "(opcional)", tryExample: "Probar un ejemplo",
+    goalLabel: "Objetivo ",
+    optionalTag: "(opcional)",
+    tryExample: "Probar un ejemplo",
     goalPh: "p. ej., Escribe el titular de una landing page para una app de presupuestos para freelancers",
     goalErr: "Describe tu objetivo para generar los prompts.",
-    contextLabel: "Contexto ", contextPh: "Antecedentes, público, restricciones, ejemplos - todo lo que la IA deba saber",
-    taskLabel: "Tipo de tarea", formatLabel: "Formato de salida", lengthLabel: "Longitud", toneLabel: "Tono",
-    targetsLabel: "Modelos de destino", groupAssistants: "Asistentes de IA", groupEco: "Asistentes de ecosistema", groupOpen: "Modelos abiertos ",
-    modelsErr: "Selecciona al menos un modelo.", generateBtn: "Generar prompts",
+    contextLabel: "Contexto ",
+    contextPh: "Antecedentes, público, restricciones, ejemplos - todo lo que la IA deba saber",
+    taskLabel: "Tipo de tarea",
+    formatLabel: "Formato de salida",
+    lengthLabel: "Longitud",
+    toneLabel: "Tono",
+    targetsLabel: "Modelos de destino",
+    groupAssistants: "Asistentes de IA",
+    groupEco: "Asistentes de ecosistema",
+    groupOpen: "Modelos abiertos ",
+    modelsErr: "Selecciona al menos un modelo.",
+    generateBtn: "Generar prompts",
     emptyLead: "Tus prompts optimizados aparecerán aquí - una versión por modelo, más una recomendación del modelo que mejor encaja.",
-    step1: "Describe tu objetivo", step2: "Copia el prompt a medida de cada IA", step3: "Compara las respuestas e itera",
-    resultsTitle: "Prompts optimizados", toCompareBtn: "Comparar respuestas →",
-    optNone: "Sin preferencia", optProse: "Prosa simple", optMarkdown: "Markdown", optBullets: "Viñetas", optTable: "Tabla", optJson: "JSON", optCode: "Código",
-    optShort: "Corta", optMedium: "Media", optLong: "Larga y detallada",
-    optProfessional: "Profesional", optFriendly: "Cercano", optCasual: "Informal", optPersuasive: "Persuasivo", optAcademic: "Académico",
-    autoDetect: "Detección automática", detected: "Detectado:",
-    task_writing: "Escritura y contenido", task_coding: "Código y desarrollo", task_analysis: "Análisis y datos", task_research: "Investigación y síntesis",
-    task_brainstorming: "Lluvia de ideas", task_education: "Educación y explicación", task_business: "Negocios y marketing", task_general: "General / otro",
-    routerTitle: "¿Qué modelo para esta tarea?", bestPick: "Mejor opción:", benchLabel: "Benchmarks:",
-    fullRanking: "Clasificación completa, planes gratuitos y fuentes", freeTier: "Plan gratuito:", sourcesLabel: "Fuentes:",
-    whyPrefix: "Por qué este prompt está construido así para", copy: "Copiar", copied: "Copiado", copyPrompt: "Copiar prompt",
-    guideTitle: "Guía de modelos", guideSub: "Qué app de IA encaja con cada tipo de tarea - benchmarks públicos traducidos a lenguaje sencillo.",
-    catalogTitle: "Catálogo de modelos",
-    compareTitle: "Comparar respuestas",
-    compareSub: "Ejecuta el mismo prompt optimizado en cada app de IA, pega (o ejecuta automáticamente) las respuestas y puntúalas lado a lado. Todo se queda en tu navegador.",
-    compareEmptyText: "No hay comparación activa. Genera primero los prompts y pulsa \"Comparar respuestas\". ",
-    goGenerator: "Ir al Generador",
-    saveCmp: "Guardar comparación", newVersion: "Nueva versión", exportMd: "Exportar .md", savedCmps: "Comparaciones guardadas",
-    notScored: "Sin puntuar", winner: "Ganador", tied: "Empate", tie: "Empate", winnerPrefix: "Ganador:", openBtn: "Abrir", deleteBtn: "Eliminar",
-    chainsTitle: "Cadenas",
-    chainsSub: "Divide un objetivo complejo en pasos enlazados: cada paso tiene su prompt optimizado y la salida de un paso alimenta el siguiente. Ejecución automática donde tengas una clave gratuita; copiar y pegar en el resto.",
-    buildChain: "Construir cadena", saveChain: "Guardar cadena", savedChains: "Cadenas guardadas",
-    promptForStep: "Prompt de este paso", stepOutput: "Salida del paso",
-    settingsTitle: "Ajustes",
-    settingsSub: "Las claves API activan la ejecución automática. Se guardan solo en este navegador y se envían solo al proveedor que llamas - nunca a un servidor de WhichAI (no existe).",
-    saveSettings: "Guardar ajustes", prefsReset: "Restablecer preferencias",
-    footerText: "Funciona por completo en tu navegador: sin cuenta, sin servidor, tus claves y datos nunca salen de tu dispositivo."
+    resultsTitle: "Prompts optimizados",
+    optNone: "Sin preferencia",
+    optProse: "Prosa simple",
+    optMarkdown: "Markdown",
+    optBullets: "Viñetas",
+    optTable: "Tabla",
+    optJson: "JSON",
+    optCode: "Código",
+    optShort: "Corta",
+    optMedium: "Media",
+    optLong: "Larga y detallada",
+    optProfessional: "Profesional",
+    optFriendly: "Cercano",
+    optCasual: "Informal",
+    optPersuasive: "Persuasivo",
+    optAcademic: "Académico",
+    autoDetect: "Detección automática",
+    detected: "Detectado:",
+    task_writing: "Escritura y contenido",
+    task_coding: "Código y desarrollo",
+    task_analysis: "Análisis y datos",
+    task_research: "Investigación y síntesis",
+    task_brainstorming: "Lluvia de ideas",
+    task_education: "Educación y explicación",
+    task_business: "Negocios y marketing",
+    task_general: "General / otro",
+    routerTitle: "¿Qué modelo para esta tarea?",
+    bestPick: "Mejor opción:",
+    benchLabel: "Benchmarks:",
+    fullRanking: "Clasificación completa, planes gratuitos y fuentes",
+    freeTier: "Plan gratuito:",
+    sourcesLabel: "Fuentes:",
+    whyPrefix: "Por qué este prompt está construido así para",
+    copy: "Copiar",
+    copied: "Copiado",
+    copyPrompt: "Copiar prompt",
+    exportMd: "Exportar .md",
+    prefsReset: "Restablecer preferencias",
+    footerText: "Funciona en tu navegador: sin cuenta, sin rastreo. Tus objetivos y prompts nunca salen de tu dispositivo.",
+    dbNoResults: "Ningún modelo coincide con tu búsqueda.",
+    themeTip: "Cambiar entre tema claro y oscuro",
+    footFaq: "FAQ",
+    footSimilar: "Herramientas similares",
+    footContribute: "Contribuir",
+    footGlossary: "Glosario",
+    finderSub: "Responde unas preguntas rápidas: recibirás una recomendación con motivos, límites y precios. Sin necesidad de prompt.",
+    finderBack: "← Atrás",
+    finderNext: "Siguiente",
+    finderRestart: "Empezar de nuevo",
+    finderResults: "Nuestra recomendación",
+    finderAlt: "También a considerar",
+    finderWhy: "Por qué esta elección",
+    finderBestFor: "Ideal para:",
+    finderLimit: "Ten en cuenta:",
+    finderAccess: "Acceso:",
+    finderOpenGuide: "Detalles del modelo →",
+    finderUseGen: "Escribir un prompt para esta IA →",
+    finderSwitchGoal: "¿Prefieres describir tu objetivo? Escribe el prompt →",
+    finderTop: "Mejor opción",
+    glossTitle: "Glosario de IA",
+    glossSearchPh: "Buscar término…",
+    glossNoRes: "Ningún término coincide.",
+    glossCount: "términos",
+    mcAdd: "+ Añadir un tercer modelo",
+    mcRemove: "Quitar",
+    mcReleased: "Lanzamiento",
+    mcCtx: "Ventana de contexto",
+    mcModal: "Modalidades",
+    mcPrice: "Precio API $/1M (in / out)",
+    mcSpeed: "Velocidad",
+    mcAccess: "Acceso",
+    mcProfile: "Perfil por categoría",
+    mcStrengths: "Fortalezas",
+    mcReview: "En una línea",
+    mcFootnote: "n/a = no publicado o aún sin verificar. Los valores con ~ no son mediciones oficiales actuales: nunca tomes como real una pequeña diferencia entre uno de ellos y una puntuación medida.",
+    dataTitle: "Tus datos",
+    dataHint: "Todo lo que WhichAI guarda vive en este navegador: preferencias, tus modelos seguidos y los últimos datos que leyó. Exporta una copia antes de cambiar de dispositivo o borrar los datos del navegador.",
+    dataExport: "Exportar copia (.json)",
+    dataImport: "Importar copia",
+    dataWipe: "Eliminar todos los datos",
+    dataWipeAsk: "¿Eliminar TODOS los datos de WhichAI en este navegador? Se borrarán las preferencias, los modelos seguidos y los datos guardados.",
+    dataImportAsk: "¿Importar esta copia? Los datos existentes con el mismo nombre se sobrescribirán.",
+    dataImported: "Copia importada. Recargando.",
+    dataImportBad: "Archivo de copia no válido.",
+    updateReady: "Hay una nueva versión de WhichAI lista.",
+    updateReload: "Actualizar",
+    navStack: "Stack Optimizer",
+    navDoctor: "Prompt Doctor",
+    navStackSub: "Qué suscripciones mantener, qué usar gratis",
+    navDoctorSub: "Puntúa un prompt, mira la versión optimizada",
+    navGlossarySub: "Cada término de IA en una frase simple",
+    stackTitle: "AI Stack Optimizer",
+    stackSub: "Cuatro elecciones rápidas: qué suscripción merece la pena, qué usar gratis y qué cancelar. Todo en tu dispositivo.",
+    stackGo: "Crear mi stack",
+    stackPickOne: "Elige antes al menos una tarea.",
+    stackResult: "Tu stack recomendado",
+    stackNewCost: "coste mensual estimado del stack recomendado",
+    stackCurrentCost: "Ahora pagas:",
+    stackSaving: "ahorro estimado",
+    stackRedundant: "Quizá redundantes para tus tareas:",
+    stackFreeTier: "Nivel gratuito",
+    stackToFinder: "¿Solo necesitas una opción? Usa el finder",
+    doctorTitle: "Prompt Doctor",
+    doctorSub: "Pega un prompt: puntuación, lista de lo que falta y versión optimizada para el modelo elegido. Sin API.",
+    doctorPh: "Pega aquí tu prompt…",
+    doctorGo: "Analizar prompt",
+    doctorDetected: "Tarea detectada:",
+    doctorMissingLead: "Mayores carencias:",
+    doctorAllGood: "Prompt sólido: están todos los ingredientes básicos.",
+    doctorChecklist: "Checklist",
+    doctorOptimized: "Versión optimizada",
+    doctorBefore: "Tu prompt",
+    doctorAfter: "Optimizado para el modelo elegido",
+    doctorChanges: "Qué cambió y por qué",
+    doctorToGen: "Abrir en el Generator",
+    doctorNote: "Análisis estático basado en buenas prácticas de prompt engineering; la versión optimizada usa el mismo motor del Generator. Revisa antes de usar.",
+    officialOpen: "Abrir",
+    officialSite: "Abrir la app oficial",
+    navRadar: "Model Radar",
+    radarNew: "NUEVO",
+    radarUpcoming: "Próximamente",
+    radarAll: "Todo",
+    radarFollowing: "Siguiendo",
+    radarSince: "novedades desde tu última visita",
+    radarFollow: "Seguir",
+    radarUnfollow: "Siguiendo",
+    radarTypeNew: "Nuevos modelos",
+    radarTypePrice: "Precios",
+    radarTypeScore: "Puntuaciones",
+    radarTypeFree: "Niveles gratis",
+    radarEmpty: "Nada por aquí todavía. Sigue un modelo con la estrella para crear tu propio feed.",
+    shareBtn: "Compartir como imagen",
+    shareDone: "Imagen lista",
+    navTopics: "Debates de IA",
+    topicsTitle: "Debates de IA",
+    topicsCaseA: "La preocupación",
+    topicsCaseB: "El contraargumento",
+    topicsStatus: "Dónde estamos",
+    topicsDisclaimer: "Resúmenes curados de prensa e investigación públicas, actualizados con los datos. No es consejo financiero, laboral ni legal.",
+    footSupport: "Apóyanos ♥",
+    supportTitle: "Apoya WhichAI",
+    supportText: "WhichAI es gratis, sin anuncios ni patrocinadores: los únicos costes son el dominio y las horas que mantienen más de 100 modelos honestos y actualizados. Si te ahorró tiempo, una pequeña donación lo mantiene independiente.",
+    supportBtn: "Donar ♥",
+    visitsLabel: "visitas",
+    catalogShowLess: "Ver menos",
+    radarCheckClean: "Comprobacion de datos: todo coincide con las fuentes publicas",
+    radarCheckReview: "elemento(s) que revisar tras la comprobacion",
+    radarCheckBroken: "Comprobacion: una ruta gratuita incluida esta rota",
+    radarCheckSkipped: "Hoy no se pudo hacer la comprobacion",
+    journeyConfidence: "confianza",
+    livePill: "Datos en vivo",
+    liveDataLine: "Datos en vivo: puntuaciones oficiales de Artificial Analysis y precios de OpenRouter, leídos {when}; {n} modelos añadidos automáticamente.",
+    liveAutoChip: "añadido automáticamente",
+    liveAutoTitle: "Añadido automáticamente desde datos públicos en vivo (Artificial Analysis vía OpenRouter). Aún sin reseña editorial.",
+    skipLink: "Saltar al contenido",
+    langLabel: "Idioma",
+    railLabel: "Capítulos",
+    close: "Cerrar",
+    navRanking: "Ranking",
+    navMarket: "Mercado",
+    navTools: "Herramientas",
+    ch1Eyebrow: "El ranking",
+    ch1Title: "¿Cuál es la mejor IA ahora mismo?",
+    ch1Lede: "Todos los modelos con puntuación oficial de Artificial Analysis, clasificados en niveles automáticamente. Las nuevas mediciones llegan aquí solas, normalmente en menos de una hora.",
+    heroFind: "Encontrar la IA para mi tarea",
+    heroPrompt: "Escribir un prompt mejor",
+    kpiModels: "modelos seguidos",
+    kpiMeasured: "con puntuación oficial",
+    kpiLabs: "laboratorios en el ranking",
+    kpiNew: "nuevos en los últimos 30 días",
+    rankMetricLabel: "Ordenar por",
+    metricAA: "Inteligencia",
+    metricCoding: "Programación",
+    metricAgentic: "Agentes",
+    rankFilterLabel: "Mostrar",
+    fAll: "Todos",
+    fOpen: "Pesos abiertos",
+    fFree: "Ruta gratuita",
+    fCheap: "Menos de $1",
+    fLegacy: "Incluir antiguos",
+    rankSearchPh: "Buscar cualquier modelo…",
+    rankUnmeasured: "sin medir",
+    tierS: "Frontera",
+    tierA: "Casi frontera",
+    tierB: "Sólido",
+    tierC: "Capaz",
+    tierD: "Ligero",
+    tierMore: "+{n} más",
+    tierNote: "Los niveles se calculan, no se eligen: en el índice seleccionado, S agrupa el 5% superior de los modelos actuales, A el 15% siguiente, B el 20% siguiente, C el 25% siguiente y D el resto. Los empates comparten nivel. Las puntuaciones convertidas (~) y las no medidas nunca entran en el ranking.",
+    tierMissing: "{n} modelos actuales aún no tienen puntuación de {metric}.",
+    scatterTitle: "Precio vs inteligencia",
+    scatterNote: "Arriba y a la izquierda hay más inteligencia por dólar. El precio está en escala logarítmica, así que los modelos baratos ya no se amontonan en una esquina; la línea discontinua es la frontera de mejor relación calidad-precio.",
+    scatterX: "Precio de API combinado, $ por 1M de tokens (escala logarítmica)",
+    scatterY: "Índice de Inteligencia AA",
+    scatterFree: "Gratis",
+    scatterLegend: "Color del punto = nivel en el índice de Inteligencia. Pasa el cursor sobre un punto o una etiqueta para encontrarlo en la otra vista; haz clic para ver los detalles.",
+    bridge1: "¿Reñido en la cima? Pon a los dos líderes lado a lado.",
+    ch2Eyebrow: "Cara a cara",
+    ch2Title: "Compara dos modelos a tu elección",
+    ch2Lede: "Índices oficiales, precio, contexto y fortalezas, lado a lado. Se abre con los dos primeros de hoy y sigue el ranking hasta que elijas los tuyos; añade un tercero cuando quieras.",
+    cmpPick: "Modelo",
+    cmpSwap: "Intercambiar",
+    cmpReset: "Volver a los dos primeros",
+    cmpFollowing: "Siguiendo a los dos primeros en vivo",
+    cmpYourPick: "Tu selección",
+    cmpIndices: "Índices oficiales",
+    cmpIndicesNote: "Datos de Artificial Analysis, leídos automáticamente. Cada índice tiene su propia escala: compara dentro de una fila, no entre filas. El mejor valor de cada fila lleva una estrella.",
+    cmpCost: "Precio y especificaciones",
+    cmpPriceIn: "Entrada $ / 1M",
+    cmpPriceOut: "Salida $ / 1M",
+    cmpDaysAgo: "hace {n} días",
+    cmpPriceNote: "Precios de OpenRouter, en USD por millón de tokens; en los precios, la estrella es para el valor más bajo.",
+    cmpProfileNote: "Las puntuaciones por categoría (0-100) son valoraciones combinadas de WhichAI: orientativas, no mediciones oficiales.",
+    mcDetails: "Detalles",
+    bridge2: "Puede que ya haya salido algo más nuevo. Esto es lo que cambió esta semana.",
+    ch3Eyebrow: "Novedades",
+    ch3Title: "Radar de modelos: lanzamientos, precios, noticias",
+    ch3Lede: "Lanzamientos y cambios de precio del catálogo en vivo, junto a titulares de los laboratorios, la prensa, Hacker News y Hugging Face. Nadie tiene que publicar nada: se actualiza solo.",
+    radarLatest: "Último en llegar",
+    radarFeedTitle: "Lanzamientos y cambios",
+    newsTitle: "Últimas noticias",
+    newsAll: "Todas las fuentes",
+    newsLabs: "Laboratorios",
+    newsPress: "Prensa",
+    newsCommunity: "Comunidad",
+    newsOpen: "Código abierto",
+    newsLoading: "Leyendo las fuentes…",
+    newsDown: "Ahora mismo no se puede acceder a las fuentes de noticias. El feed de lanzamientos de al lado está completo sin ellas.",
+    newsUpdated: "actualizado {when}",
+    newsPoints: "puntos",
+    newsDiscuss: "Comentarios",
+    newsFoot: "Solo titulares y enlaces, de blogs oficiales de los laboratorios, TechCrunch AI, publicaciones de Hacker News con 100 puntos o más y Hugging Face. Se actualizan cada 30 minutos.",
+    newsSomeDown: "No disponibles ahora mismo: {list}.",
+    showMore: "Ver más",
+    bridge3: "Cada lanzamiento también mueve los precios. Esto es lo que cuesta hoy la inteligencia.",
+    ch4Eyebrow: "Cuánto cuesta",
+    ch4Title: "El mercado de la IA, en vivo",
+    ch4Lede: "Precios de API de OpenRouter, recalculados en cada visita: la forma más barata de entrar en cada nivel, la mejor relación calidad-precio, lo que es gratis ahora mismo y lo que te costaría un mes de tu propio uso.",
+    mkLeaderKicker: "El líder cuesta",
+    mkPer1M: "por 1M de tokens (entrada / salida)",
+    mkPer1MShort: "por 1M",
+    mkCheapS: "modelo más barato del nivel Frontera, precio combinado por 1M de tokens",
+    mkFreeNow: "rutas de API gratuitas ahora mismo",
+    mkFreeBest: "más potente: {name}",
+    mkMoves: "precios en vivo que difieren de nuestra última revisión",
+    mkLadderTitle: "La forma más barata de entrar en cada nivel",
+    mkLadderSub: "Precio combinado más bajo (3 partes de entrada por 1 de salida) entre los modelos de cada nivel en el índice de Inteligencia.",
+    mkValueTitle: "Mejor relación calidad-precio ahora mismo",
+    mkValueNote: "Puntos de inteligencia por dólar de precio combinado, entre los modelos con puntuación igual o superior a la mediana.",
+    mkPtsPerUsd: "pts por $",
+    mkCalcTitle: "¿Cuánto me costaría un mes?",
+    mkCalcMsgs: "Mensajes al día",
+    mkCalcLen: "Longitud del mensaje",
+    mkPickLeader: "El líder",
+    mkPickValue: "Mejor calidad-precio",
+    mkPickA: "Casi frontera más barato",
+    mkPickB: "Sólido más barato",
+    mkPickFree: "Una ruta gratuita",
+    mkPerMonth: "al mes",
+    mkRateLimited: "con límite de uso",
+    mkCalcNote: "Supone {in} tokens de entrada y {out} de salida por mensaje, 30 días al mes y precios de OpenRouter. Las suscripciones de chat son tarifas planas: consulta el Stack Optimizer más abajo.",
+    mkFreeTitle: "Gratis ahora mismo",
+    mkFreeNote: "Rutas de API a $0 en OpenRouter. Todas tienen límite de uso y algunas caducan.",
+    mkFreeNone: "Ahora mismo no hay ninguna ruta gratuita.",
+    mkUntil: "hasta",
+    mkAppsFree: "Planes gratuitos de las grandes apps",
+    mkMovesTitle: "Cambios de precio",
+    mkMovesNote: "Modelos cuyo precio en vivo en OpenRouter difiere del de nuestra última revisión editorial.",
+    mkMovesNone: "Ninguna diferencia por ahora.",
+    mkFoot: "Precios: OpenRouter, USD por 1M de tokens, leídos automáticamente (catálogo {when}). El precio de lista del propio proveedor puede ser distinto.",
+    bridge4: "Detrás de los precios: energía, empleo y una ola de inversión que se mide en cientos de miles de millones. Los debates, con las dos posturas.",
+    ch5Eyebrow: "El panorama general",
+    ch5Title: "Debates de IA: las dos posturas",
+    ch5Lede: "Energía, empleo, dinero, derechos de autor, regulación, pesos abiertos: el argumento más sólido de cada postura, las cifras con sus fechas y qué cambiaría el panorama.",
+    topicsReviewed: "Revisado",
+    topicsCount: "debates",
+    topicsReviewNote: "Cada cifra conserva su periodo original; estos resúmenes se revisan a mano, no son noticias en vivo.",
+    topicsEvidence: "Evidencia, con contexto",
+    topicsUncertainty: "Lo que sigue siendo incierto",
+    topicsWatch: "Qué cambiaría el panorama",
+    topicsDecision: "Elige tu próximo paso",
+    topicsChoose: "Selecciona tu situación",
+    topicsDecisionNote: "Orientación editorial práctica. Tu elección se queda en esta página; no hace falta cuenta ni llamar a ninguna IA.",
+    topicsReadSource: "Leer la fuente",
+    topicsReadPage: "Abrir página de lectura",
+    topicsEstimate: "Estimación",
+    topicsProjection: "Proyección",
+    topicsResearch: "Resultado de estudio",
+    topicsReported: "Dato de la empresa",
+    topicsGuidance: "Política o directriz",
+    topicsDefinition: "Definición",
+    topicsTagEnvironment: "Medio ambiente",
+    topicsTagWork: "Trabajo",
+    topicsTagEconomy: "Economía",
+    topicsTagLaw: "Derecho",
+    topicsTagPolicy: "Política",
+    topicsTagEcosystem: "Ecosistema",
+    topicsCompareModels: "Comparar modelos",
+    topicsFindAI: "Encontrar la IA adecuada",
+    topicsSeeMarket: "Ver cuánto cuesta la IA",
+    topicsImprovePrompt: "Mejorar un prompt",
+    topicsReviewStack: "Revisar mi stack de IA",
+    topicsExploreModels: "Explorar el ranking",
+    topicsLearnTerms: "Explorar el glosario",
+    complyTitle: "Tus propias obligaciones",
+    complyText: "Comprueba qué obligaciones del EU AI Act y del GDPR se aplican a tu organización, paso a paso, en ComplyAI.",
+    complyGo: "Abrir ComplyAI.wiki",
+    bridge5: "Basta de leer. ¿Qué necesitas hacer?",
+    ch6Eyebrow: "Manos a la obra",
+    ch6Title: "De la IA adecuada al prompt adecuado",
+    ch6Lede: "Cuatro herramientas en un solo camino: encuentra la IA para tu tarea, escribe el prompt al que mejor responde, revisa cualquier prompt y reduce lo que pagas.",
+    step1Title: "Encuentra tu IA",
+    step1Sub: "Una respuesta rápida por tarea, o cuatro preguntas para una elección personal. Sin necesidad de prompt.",
+    quickTitle: "Respuesta rápida: elige una tarea",
+    quickHint: "Aquí aparece la mejor app para la tarea, con sus motivos, el plan gratuito y las fuentes.",
+    quickBestFor: "Mejor opción para {task}",
+    quickWrite: "Escribir el prompt para {app}",
+    quickPersonal: "Personalízalo: 4 preguntas",
+    finderGuidedTitle: "Una elección personal en cuatro preguntas",
+    finderStart: "Empezar las cuatro preguntas →",
+    step2Title: "Escribe el prompt",
+    step2Sub: "Un objetivo, un prompt ajustado para cada familia de IA que elijas y la mejor opción para la tarea.",
+    genMore: "Contexto y opciones",
+    genReco: "Recomendado para esta tarea",
+    genToDoctor: "Revisar en el Doctor",
+    genWords: "palabras",
+    genChars: "caracteres",
+    chipPromptTarget: "en el generador de prompts",
+    drawerTitle: "Detalles del modelo",
+    drawerRankTip: "Posición en vivo entre los modelos actuales con puntuación oficial, calculada al momento y nunca escrita en el texto.",
+    drawerWas: "última revisión:",
+    drawerCatNote: "Las puntuaciones por categoría (0-100) son valoraciones combinadas de WhichAI: orientativas, no mediciones oficiales.",
+    drawerCompare: "Comparar ⇄",
+    drawerPrompt: "Escribir un prompt para este modelo",
+    drawerWiki: "Página del modelo",
+    snapshotLabel: "Instantánea",
+    footProjects: "Más del creador de WhichAI",
+    projComplyTag: "Cumplimiento",
+    projComply: "Herramientas para cumplir el EU AI Act, el GDPR y tus contratos, pensadas para pequeñas empresas. Gratis para empezar.",
+    projWarTag: "Geopolítica",
+    projWar: "Un mapa en vivo de guerras y crisis geopolíticas, con las últimas noticias, indicadores de mercado y escenarios.",
+    projVisit: "Visitar",
+    footAbout: "Acerca de WhichAI",
+    aboutDiff: "En qué se diferencia WhichAI de una tabla de clasificación",
+    aboutData: "Cómo se mantienen actualizados los datos",
+    aboutMethod: "Metodología",
+    aboutApi: "La API de WhichAI",
+    footModels: "Todos los modelos",
+    footBestFor: "Mejor IA para…",
+    footHeadToHeads: "Comparativas",
+    footDataset: "Datos abiertos",
+    prefsDone: "Preferencias restablecidas."
   };
 
   S.de = {
-    navGenerator: "Generator", navGuide: "Modell-Guide", navCompare: "Vergleichen", navChains: "Ketten", navSettings: "Einstellungen",
-    privacyPill: "Privat by Design",
-    privacyTip: "Läuft vollständig in deinem Browser. Kein Konto, kein Server, kein Tracking. API-Schlüssel bleiben auf deinem Gerät.",
-    trustLine: "Kein Konto · Kein Server · Nichts verlässt deinen Browser",
+    navCompare: "Vergleichen",
+    trustLine: "Kein Konto · Kein Tracking · Nichts, was du schreibst, verlässt den Browser",
     langNote: "Oberfläche auf Deutsch. Hinweis: Generierte Prompts, Benchmark-Notizen und die automatische Aufgabenerkennung sind für Englisch optimiert (alle KI-Modelle arbeiten mit englischen Anweisungen am besten). Dein Ziel kannst du in jeder Sprache schreiben - die KI antwortet in deiner Sprache.",
-    genTitle: "Beschreibe dein Ziel",
-    genSubtitle: "WhichAI macht daraus einen auf jedes KI-Modell zugeschnittenen Prompt - und sagt dir in einfachen Worten, welches Modell am besten passt.",
-    goalLabel: "Ziel ", optionalTag: "(optional)", tryExample: "Beispiel laden",
+    goalLabel: "Ziel ",
+    optionalTag: "(optional)",
+    tryExample: "Beispiel laden",
     goalPh: "z. B. Schreibe die Headline einer Landingpage für eine Budget-App für Freelancer",
     goalErr: "Beschreibe dein Ziel, um Prompts zu generieren.",
-    contextLabel: "Kontext ", contextPh: "Hintergrund, Zielgruppe, Einschränkungen, Beispiele - alles, was die KI wissen sollte",
-    taskLabel: "Aufgabentyp", formatLabel: "Ausgabeformat", lengthLabel: "Länge", toneLabel: "Ton",
-    targetsLabel: "Zielmodelle", groupAssistants: "KI-Assistenten", groupEco: "Ökosystem-Assistenten", groupOpen: "Offene Modelle ",
-    modelsErr: "Wähle mindestens ein Modell.", generateBtn: "Prompts generieren",
+    contextLabel: "Kontext ",
+    contextPh: "Hintergrund, Zielgruppe, Einschränkungen, Beispiele - alles, was die KI wissen sollte",
+    taskLabel: "Aufgabentyp",
+    formatLabel: "Ausgabeformat",
+    lengthLabel: "Länge",
+    toneLabel: "Ton",
+    targetsLabel: "Zielmodelle",
+    groupAssistants: "KI-Assistenten",
+    groupEco: "Ökosystem-Assistenten",
+    groupOpen: "Offene Modelle ",
+    modelsErr: "Wähle mindestens ein Modell.",
+    generateBtn: "Prompts generieren",
     emptyLead: "Deine optimierten Prompts erscheinen hier - eine Version pro Modell, plus eine Empfehlung, welches Modell am besten passt.",
-    step1: "Beschreibe dein Ziel", step2: "Kopiere den auf jede KI zugeschnittenen Prompt", step3: "Vergleiche die Antworten und iteriere",
-    resultsTitle: "Optimierte Prompts", toCompareBtn: "Antworten vergleichen →",
-    optNone: "Keine Präferenz", optProse: "Fließtext", optMarkdown: "Markdown", optBullets: "Stichpunkte", optTable: "Tabelle", optJson: "JSON", optCode: "Code",
-    optShort: "Kurz", optMedium: "Mittel", optLong: "Lang & detailliert",
-    optProfessional: "Professionell", optFriendly: "Freundlich", optCasual: "Locker", optPersuasive: "Überzeugend", optAcademic: "Akademisch",
-    autoDetect: "Automatisch erkennen", detected: "Erkannt:",
-    task_writing: "Schreiben & Inhalte", task_coding: "Code & Entwicklung", task_analysis: "Analyse & Daten", task_research: "Recherche & Zusammenfassung",
-    task_brainstorming: "Brainstorming & Ideen", task_education: "Bildung & Erklärung", task_business: "Business & Marketing", task_general: "Allgemein / Sonstiges",
-    routerTitle: "Welches Modell für diese Aufgabe?", bestPick: "Beste Wahl:", benchLabel: "Benchmarks:",
-    fullRanking: "Komplettes Ranking, Gratis-Angebote und Quellen", freeTier: "Gratis-Angebot:", sourcesLabel: "Quellen:",
-    whyPrefix: "Warum dieser Prompt so aufgebaut ist für", copy: "Kopieren", copied: "Kopiert", copyPrompt: "Prompt kopieren",
-    guideTitle: "Modell-Guide", guideSub: "Welche KI-App zu welcher Aufgabe passt - öffentliche Benchmarks in einfache Worte übersetzt.",
-    catalogTitle: "Modellkatalog",
-    compareTitle: "Antworten vergleichen",
-    compareSub: "Führe denselben optimierten Prompt in jeder KI-App aus, füge die Antworten ein (oder führe sie automatisch aus) und bewerte sie nebeneinander. Alles bleibt in deinem Browser.",
-    compareEmptyText: "Kein aktiver Vergleich. Generiere zuerst Prompts und klicke dann auf „Antworten vergleichen“. ",
-    goGenerator: "Zum Generator",
-    saveCmp: "Vergleich speichern", newVersion: "Neue Version", exportMd: ".md exportieren", savedCmps: "Gespeicherte Vergleiche",
-    notScored: "Nicht bewertet", winner: "Gewinner", tied: "Unentschieden", tie: "Unentschieden", winnerPrefix: "Gewinner:", openBtn: "Öffnen", deleteBtn: "Löschen",
-    chainsTitle: "Ketten",
-    chainsSub: "Zerlege ein komplexes Ziel in verknüpfte Schritte: Jeder Schritt bekommt seinen eigenen optimierten Prompt, und die Ausgabe eines Schritts speist den nächsten. Automatische Ausführung mit Gratis-Schlüssel; sonst Copy & Paste.",
-    buildChain: "Kette erstellen", saveChain: "Kette speichern", savedChains: "Gespeicherte Ketten",
-    promptForStep: "Prompt für diesen Schritt", stepOutput: "Schritt-Ausgabe",
-    settingsTitle: "Einstellungen",
-    settingsSub: "API-Schlüssel aktivieren die automatische Ausführung. Sie bleiben nur in diesem Browser und gehen nur an den aufgerufenen Anbieter - nie an einen WhichAI-Server (es gibt keinen).",
-    saveSettings: "Einstellungen speichern", prefsReset: "Einstellungen zurücksetzen",
-    footerText: "Läuft vollständig in deinem Browser: kein Konto, kein Server, deine Schlüssel und Daten verlassen nie dein Gerät."
+    resultsTitle: "Optimierte Prompts",
+    optNone: "Keine Präferenz",
+    optProse: "Fließtext",
+    optMarkdown: "Markdown",
+    optBullets: "Stichpunkte",
+    optTable: "Tabelle",
+    optJson: "JSON",
+    optCode: "Code",
+    optShort: "Kurz",
+    optMedium: "Mittel",
+    optLong: "Lang & detailliert",
+    optProfessional: "Professionell",
+    optFriendly: "Freundlich",
+    optCasual: "Locker",
+    optPersuasive: "Überzeugend",
+    optAcademic: "Akademisch",
+    autoDetect: "Automatisch erkennen",
+    detected: "Erkannt:",
+    task_writing: "Schreiben & Inhalte",
+    task_coding: "Code & Entwicklung",
+    task_analysis: "Analyse & Daten",
+    task_research: "Recherche & Zusammenfassung",
+    task_brainstorming: "Brainstorming & Ideen",
+    task_education: "Bildung & Erklärung",
+    task_business: "Business & Marketing",
+    task_general: "Allgemein / Sonstiges",
+    routerTitle: "Welches Modell für diese Aufgabe?",
+    bestPick: "Beste Wahl:",
+    benchLabel: "Benchmarks:",
+    fullRanking: "Komplettes Ranking, Gratis-Angebote und Quellen",
+    freeTier: "Gratis-Angebot:",
+    sourcesLabel: "Quellen:",
+    whyPrefix: "Warum dieser Prompt so aufgebaut ist für",
+    copy: "Kopieren",
+    copied: "Kopiert",
+    copyPrompt: "Prompt kopieren",
+    exportMd: ".md exportieren",
+    prefsReset: "Einstellungen zurücksetzen",
+    footerText: "Läuft in deinem Browser: kein Konto, kein Tracking. Deine Ziele und Prompts verlassen dein Gerät nie.",
+    dbNoResults: "Keine Modelle entsprechen deiner Suche.",
+    themeTip: "Zwischen hellem und dunklem Design wechseln",
+    footFaq: "FAQ",
+    footSimilar: "Ähnliche Tools",
+    footContribute: "Mitmachen",
+    footGlossary: "Glossar",
+    finderSub: "Beantworte ein paar kurze Fragen - du bekommst eine Empfehlung mit Gründen, Grenzen und Preisen. Ganz ohne Prompt.",
+    finderBack: "← Zurück",
+    finderNext: "Weiter",
+    finderRestart: "Neu starten",
+    finderResults: "Unsere Empfehlung",
+    finderAlt: "Auch eine Überlegung wert",
+    finderWhy: "Warum diese Wahl",
+    finderBestFor: "Ideal für:",
+    finderLimit: "Zu beachten:",
+    finderAccess: "Zugang:",
+    finderOpenGuide: "Modelldetails →",
+    finderUseGen: "Prompt für diese KI schreiben →",
+    finderSwitchGoal: "Lieber dein Ziel beschreiben? Schreib stattdessen den Prompt →",
+    finderTop: "Beste Wahl",
+    glossTitle: "KI-Glossar",
+    glossSearchPh: "Begriff suchen…",
+    glossNoRes: "Kein passender Begriff.",
+    glossCount: "Begriffe",
+    mcAdd: "+ Drittes Modell hinzufügen",
+    mcRemove: "Entfernen",
+    mcReleased: "Erschienen",
+    mcCtx: "Kontextfenster",
+    mcModal: "Modalitäten",
+    mcPrice: "API-Preis $/1M (in / out)",
+    mcSpeed: "Tempo",
+    mcAccess: "Zugang",
+    mcProfile: "Kategorienprofil",
+    mcStrengths: "Stärken",
+    mcReview: "In einer Zeile",
+    mcFootnote: "n/a = nicht veröffentlicht oder noch nicht verifiziert. Mit ~ markierte Werte sind keine aktuellen offiziellen Messungen: Ein kleiner Abstand zwischen einem solchen Wert und einem gemessenen Score ist nie aussagekräftig.",
+    dataTitle: "Deine Daten",
+    dataHint: "Alles, was WhichAI speichert, lebt in diesem Browser: Einstellungen, deine Merkliste und die zuletzt gelesenen Daten. Exportiere ein Backup, bevor du das Gerät wechselst oder den Browser leerst.",
+    dataExport: "Backup exportieren (.json)",
+    dataImport: "Backup importieren",
+    dataWipe: "Alle Daten löschen",
+    dataWipeAsk: "ALLE WhichAI-Daten in diesem Browser löschen? Einstellungen, Merkliste und gespeicherte Daten werden entfernt.",
+    dataImportAsk: "Dieses Backup importieren? Vorhandene Daten mit gleichem Namen werden überschrieben.",
+    dataImported: "Backup importiert. Neu laden.",
+    dataImportBad: "Ungültige Backup-Datei.",
+    updateReady: "Eine neue Version von WhichAI ist bereit.",
+    updateReload: "Aktualisieren",
+    navStack: "Stack Optimizer",
+    navDoctor: "Prompt Doctor",
+    navStackSub: "Welche Abos behalten, was gratis nutzen",
+    navDoctorSub: "Prompt bewerten, optimierte Version sehen",
+    navGlossarySub: "Jeder KI-Begriff in einem einfachen Satz",
+    stackTitle: "AI Stack Optimizer",
+    stackSub: "Vier schnelle Entscheidungen: welches Abo sich lohnt, was gratis geht, was du kündigen kannst. Alles auf deinem Gerät.",
+    stackGo: "Meinen Stack bauen",
+    stackPickOne: "Wähle zuerst mindestens eine Aufgabe.",
+    stackResult: "Dein empfohlener Stack",
+    stackNewCost: "geschätzte Monatskosten des empfohlenen Stacks",
+    stackCurrentCost: "Du zahlst aktuell:",
+    stackSaving: "geschätzte Ersparnis",
+    stackRedundant: "Für deine Aufgaben womöglich redundant:",
+    stackFreeTier: "Gratis-Stufe",
+    stackToFinder: "Reicht eine einzige Wahl? Nimm den Finder",
+    doctorTitle: "Prompt Doctor",
+    doctorSub: "Prompt einfügen: Punktzahl, Checkliste des Fehlenden und optimierte Version für dein Modell. Ohne API.",
+    doctorPh: "Prompt hier einfügen…",
+    doctorGo: "Prompt analysieren",
+    doctorDetected: "Erkannte Aufgabe:",
+    doctorMissingLead: "Größte Lücken:",
+    doctorAllGood: "Solider Prompt: alle Kernzutaten sind da.",
+    doctorChecklist: "Checkliste",
+    doctorOptimized: "Optimierte Version",
+    doctorBefore: "Dein Prompt",
+    doctorAfter: "Optimiert für das gewählte Modell",
+    doctorChanges: "Was sich geändert hat und warum",
+    doctorToGen: "Im Generator öffnen",
+    doctorNote: "Statische Analyse nach Prompt-Engineering-Best-Practices; die optimierte Version nutzt denselben Engine wie der Generator. Vor Gebrauch prüfen.",
+    officialOpen: "Öffnen",
+    officialSite: "Offizielle App öffnen",
+    navRadar: "Model Radar",
+    radarNew: "NEU",
+    radarUpcoming: "Demnächst",
+    radarAll: "Alles",
+    radarFollowing: "Gefolgt",
+    radarSince: "Neuigkeiten seit deinem letzten Besuch",
+    radarFollow: "Folgen",
+    radarUnfollow: "Gefolgt",
+    radarTypeNew: "Neue Modelle",
+    radarTypePrice: "Preise",
+    radarTypeScore: "Scores",
+    radarTypeFree: "Gratis-Stufen",
+    radarEmpty: "Hier ist noch nichts. Folge einem Modell mit dem Stern für deinen eigenen Feed.",
+    shareBtn: "Als Bild teilen",
+    shareDone: "Bild bereit",
+    navTopics: "KI-Debatten",
+    topicsTitle: "KI-Debatten",
+    topicsCaseA: "Die Sorge",
+    topicsCaseB: "Die Gegenposition",
+    topicsStatus: "Stand der Dinge",
+    topicsDisclaimer: "Kuratierte Zusammenfassungen öffentlicher Berichte und Forschung, mit den Daten-Refreshes aktualisiert. Keine Finanz-, Karriere- oder Rechtsberatung.",
+    footSupport: "Unterstützen ♥",
+    supportTitle: "WhichAI unterstützen",
+    supportText: "WhichAI ist kostenlos, ohne Werbung und ohne Sponsoren: die einzigen Kosten sind die Domain und die Stunden, die 100+ Modelle ehrlich und aktuell halten. Wenn es dir Zeit gespart hat, hält eine kleine Spende es unabhängig.",
+    supportBtn: "Spenden ♥",
+    visitsLabel: "Besuche",
+    catalogShowLess: "Weniger anzeigen",
+    radarCheckClean: "Datencheck: alles stimmt mit den offentlichen Quellen uberein",
+    radarCheckReview: "Punkt(e) aus dem Datencheck zu prufen",
+    radarCheckBroken: "Datencheck: eine ausgelieferte Gratis-Route ist kaputt",
+    radarCheckSkipped: "Der Datencheck war heute nicht moglich",
+    journeyConfidence: "Konfidenz",
+    livePill: "Live-Daten",
+    liveDataLine: "Live-Daten: offizielle Artificial-Analysis-Werte und OpenRouter-Preise, gelesen {when}; {n} Modelle automatisch hinzugefügt.",
+    liveAutoChip: "automatisch hinzugefügt",
+    liveAutoTitle: "Automatisch aus öffentlichen Live-Daten hinzugefügt (Artificial Analysis über OpenRouter). Noch keine redaktionelle Bewertung.",
+    skipLink: "Zum Inhalt springen",
+    langLabel: "Sprache",
+    railLabel: "Kapitel",
+    close: "Schließen",
+    navRanking: "Ranking",
+    navMarket: "Markt",
+    navTools: "Tools",
+    ch1Eyebrow: "Das Ranking",
+    ch1Title: "Welche KI ist gerade die beste?",
+    ch1Lede: "Jedes Modell mit offiziellem Score von Artificial Analysis, automatisch in Stufen eingeteilt. Neue Messungen landen hier von selbst, meist innerhalb einer Stunde.",
+    heroFind: "KI für meine Aufgabe finden",
+    heroPrompt: "Besseren Prompt schreiben",
+    kpiModels: "erfasste Modelle",
+    kpiMeasured: "mit offiziellem Score",
+    kpiLabs: "Labore im Ranking",
+    kpiNew: "neu in den letzten 30 Tagen",
+    rankMetricLabel: "Ranking nach",
+    metricAA: "Intelligenz",
+    metricCoding: "Coding",
+    metricAgentic: "Agenten",
+    rankFilterLabel: "Anzeigen",
+    fAll: "Alle",
+    fOpen: "Offene Gewichte",
+    fFree: "Gratis-Route",
+    fCheap: "Unter $1",
+    fLegacy: "Mit älteren Modellen",
+    rankSearchPh: "Beliebiges Modell finden…",
+    rankUnmeasured: "nicht gemessen",
+    tierS: "Spitze",
+    tierA: "Fast Spitze",
+    tierB: "Stark",
+    tierC: "Solide",
+    tierD: "Leicht",
+    tierMore: "+{n} weitere",
+    tierNote: "Die Stufen werden berechnet, nicht gewählt: Im ausgewählten Index bilden die besten 5% der aktuellen Modelle S, die nächsten 15% A, die nächsten 20% B, die nächsten 25% C und der Rest D. Bei Gleichstand gilt dieselbe Stufe. Umgerechnete (~) und nicht gemessene Scores werden nie gerankt.",
+    tierMissing: "{n} aktuelle Modelle haben noch keinen Score für {metric}.",
+    scatterTitle: "Preis vs. Intelligenz",
+    scatterNote: "Je weiter oben links, desto mehr Intelligenz pro Dollar. Der Preis ist logarithmisch skaliert, so landen günstige Modelle nicht mehr alle in einer Ecke; die gestrichelte Linie markiert die Grenze des besten Preis-Leistungs-Verhältnisses.",
+    scatterX: "API-Mischpreis, $ pro 1 Mio. Tokens (log. Skala)",
+    scatterY: "AA-Intelligenz-Index",
+    scatterFree: "Gratis",
+    scatterLegend: "Punktfarbe = Stufe im Intelligenz-Index. Zeige auf einen Punkt oder Chip, um ihn in der anderen Ansicht zu finden; klicke für Details.",
+    bridge1: "Eng an der Spitze? Stell die beiden Führenden nebeneinander.",
+    ch2Eyebrow: "Direktvergleich",
+    ch2Title: "Vergleiche zwei beliebige Modelle",
+    ch2Lede: "Offizielle Indizes, Preis, Kontext und Stärken im direkten Vergleich. Zu Beginn siehst du die aktuellen Top 2, und der Vergleich folgt dem Ranking, bis du selbst wählst; ein drittes Modell kannst du jederzeit hinzufügen.",
+    cmpPick: "Modell",
+    cmpSwap: "Tauschen",
+    cmpReset: "Zurück zu den Top 2",
+    cmpFollowing: "Folgt live den Top 2",
+    cmpYourPick: "Deine Auswahl",
+    cmpIndices: "Offizielle Indizes",
+    cmpIndicesNote: "Quelle: Artificial Analysis, automatisch ausgelesen. Jeder Index hat seine eigene Skala: Vergleiche innerhalb einer Zeile, nicht zwischen Zeilen. Der bessere Wert jeder Zeile ist mit einem Stern markiert.",
+    cmpCost: "Preis und Eckdaten",
+    cmpPriceIn: "Eingabe $ / 1M",
+    cmpPriceOut: "Ausgabe $ / 1M",
+    cmpDaysAgo: "vor {n} Tagen",
+    cmpPriceNote: "Preise von OpenRouter, in USD pro Million Tokens; bei Preisen bekommt der niedrigere Wert den Stern.",
+    cmpProfileNote: "Kategorie-Scores (0-100) sind gemischte Bewertungen von WhichAI: Orientierung, keine offiziellen Messungen.",
+    mcDetails: "Details",
+    bridge2: "Vielleicht ist schon etwas Neueres erschienen. Das hat sich diese Woche geändert.",
+    ch3Eyebrow: "Was ist neu",
+    ch3Title: "Modell-Radar: Neuheiten, Preise, News",
+    ch3Lede: "Neuheiten und Preisänderungen aus dem Live-Katalog, daneben Schlagzeilen von den Laboren, aus der Presse, von Hacker News und Hugging Face. Niemand muss etwas posten: Alles aktualisiert sich von selbst.",
+    radarLatest: "Neuester Zugang",
+    radarFeedTitle: "Neuheiten und Änderungen",
+    newsTitle: "Newsticker",
+    newsAll: "Alle Quellen",
+    newsLabs: "Labore",
+    newsPress: "Presse",
+    newsCommunity: "Community",
+    newsOpen: "Open Source",
+    newsLoading: "Quellen werden gelesen…",
+    newsDown: "Die Nachrichtenquellen sind gerade nicht erreichbar. Der Neuheiten-Feed daneben ist auch ohne sie vollständig.",
+    newsUpdated: "aktualisiert {when}",
+    newsPoints: "Punkte",
+    newsDiscuss: "Diskussion",
+    newsFoot: "Nur Schlagzeilen und Links: aus offiziellen Blogs der Labore, von TechCrunch AI, aus Beiträgen auf Hacker News mit 100+ Punkten und von Hugging Face. Alle 30 Minuten neu gelesen.",
+    newsSomeDown: "Gerade nicht erreichbar: {list}.",
+    showMore: "Mehr anzeigen",
+    bridge3: "Jede Neuerscheinung bewegt auch die Preise. So viel kostet Intelligenz heute.",
+    ch4Eyebrow: "Was es kostet",
+    ch4Title: "Der KI-Markt, live",
+    ch4Lede: "API-Preise von OpenRouter, bei jedem Besuch neu berechnet: der günstigste Einstieg in jede Stufe, die beste Preis-Leistung, was gerade gratis ist und was ein Monat deiner eigenen Nutzung kosten würde.",
+    mkLeaderKicker: "Der Spitzenreiter kostet",
+    mkPer1M: "pro 1 Mio. Tokens (Eingabe / Ausgabe)",
+    mkPer1MShort: "pro 1 Mio.",
+    mkCheapS: "günstigstes Modell der Stufe „Spitze“, Mischpreis pro 1 Mio. Tokens",
+    mkFreeNow: "kostenlose API-Routen derzeit",
+    mkFreeBest: "stärkste: {name}",
+    mkMoves: "Live-Preise weichen von unserer letzten Prüfung ab",
+    mkLadderTitle: "Der günstigste Einstieg in jede Stufe",
+    mkLadderSub: "Niedrigster Mischpreis (3 Teile Eingabe zu 1 Teil Ausgabe) unter den Modellen jeder Stufe im Intelligenz-Index.",
+    mkValueTitle: "Aktuell beste Preis-Leistung",
+    mkValueNote: "Intelligenzpunkte pro Dollar Mischpreis, unter Modellen mit mindestens dem Median-Score.",
+    mkPtsPerUsd: "Pkt. pro $",
+    mkCalcTitle: "Was würde mich ein Monat kosten?",
+    mkCalcMsgs: "Nachrichten pro Tag",
+    mkCalcLen: "Typische Nachricht",
+    mkPickLeader: "Der Spitzenreiter",
+    mkPickValue: "Beste Preis-Leistung",
+    mkPickA: "Günstigstes Modell „Fast Spitze“",
+    mkPickB: "Günstigstes Modell „Stark“",
+    mkPickFree: "Eine Gratis-Route",
+    mkPerMonth: "pro Monat",
+    mkRateLimited: "ratenbegrenzt",
+    mkCalcNote: "Annahme: {in} Eingabe- und {out} Ausgabe-Tokens pro Nachricht, 30 Tage im Monat, OpenRouter-Preise. Chat-Abos sind Pauschalpreise: siehe den Stack Optimizer weiter unten.",
+    mkFreeTitle: "Gerade gratis",
+    mkFreeNote: "API-Routen zum Preis von $0 auf OpenRouter. Alle sind ratenbegrenzt, manche laufen aus.",
+    mkFreeNone: "Gerade ist keine Gratis-Route gelistet.",
+    mkUntil: "bis",
+    mkAppsFree: "Gratis-Angebote der großen Apps",
+    mkMovesTitle: "Preisänderungen",
+    mkMovesNote: "Wo der Live-Preis bei OpenRouter vom Preis unserer letzten redaktionellen Prüfung abweicht.",
+    mkMovesNone: "Aktuell keine Abweichungen.",
+    mkFoot: "Preise: OpenRouter, USD pro 1 Mio. Tokens, automatisch ausgelesen (Katalog {when}). Der Listenpreis eines Anbieters kann abweichen.",
+    bridge4: "Hinter den Preisschildern: Energie, Jobs und Investitionen in Höhe von Hunderten Milliarden. Die Debatten, von beiden Seiten.",
+    ch5Eyebrow: "Das große Ganze",
+    ch5Title: "KI-Debatten: beide Seiten",
+    ch5Lede: "Energie, Jobs, Geld, Urheberrecht, Regulierung, offene Gewichte: das stärkste Argument jeder Seite, die Zahlen mit ihrem Datum und was das Bild ändern würde.",
+    topicsReviewed: "Geprüft",
+    topicsCount: "Debatten",
+    topicsReviewNote: "Jede Zahl behält ihren ursprünglichen Zeitraum; diese Zusammenfassungen werden von Hand geprüft und sind keine Live-News.",
+    topicsEvidence: "Belege mit Kontext",
+    topicsUncertainty: "Was unsicher bleibt",
+    topicsWatch: "Was das Bild ändern würde",
+    topicsDecision: "Wähle deinen nächsten Schritt",
+    topicsChoose: "Wähle deine Situation",
+    topicsDecisionNote: "Praktische redaktionelle Orientierung. Deine Auswahl bleibt auf dieser Seite; kein KI-Aufruf und kein Konto nötig.",
+    topicsReadSource: "Quelle lesen",
+    topicsReadPage: "Leseseite öffnen",
+    topicsEstimate: "Schätzung",
+    topicsProjection: "Prognose",
+    topicsResearch: "Studienergebnis",
+    topicsReported: "Unternehmensangabe",
+    topicsGuidance: "Richtlinie oder Leitfaden",
+    topicsDefinition: "Definition",
+    topicsTagEnvironment: "Umwelt",
+    topicsTagWork: "Arbeit",
+    topicsTagEconomy: "Wirtschaft",
+    topicsTagLaw: "Recht",
+    topicsTagPolicy: "Politik",
+    topicsTagEcosystem: "Ökosystem",
+    topicsCompareModels: "Modelle vergleichen",
+    topicsFindAI: "Die richtige KI finden",
+    topicsSeeMarket: "Sehen, was KI kostet",
+    topicsImprovePrompt: "Einen Prompt verbessern",
+    topicsReviewStack: "Meinen KI-Stack prüfen",
+    topicsExploreModels: "Ranking erkunden",
+    topicsLearnTerms: "Glossar erkunden",
+    complyTitle: "Deine eigenen Pflichten",
+    complyText: "Prüfe Schritt für Schritt auf ComplyAI, welche Pflichten aus EU AI Act und GDPR für deine Organisation gelten.",
+    complyGo: "ComplyAI.wiki öffnen",
+    bridge5: "Genug gelesen. Was musst du erledigen?",
+    ch6Eyebrow: "Ab in die Praxis",
+    ch6Title: "Von der richtigen KI zum richtigen Prompt",
+    ch6Lede: "Vier Tools auf einem Weg: Finde die KI für deine Aufgabe, schreibe den Prompt, auf den sie am besten reagiert, prüfe jeden beliebigen Prompt und kürze dann, wofür du zahlst.",
+    step1Title: "Finde deine KI",
+    step1Sub: "Eine schnelle Antwort nach Aufgabe oder vier Fragen für eine persönliche Wahl. Kein Prompt nötig.",
+    quickTitle: "Schnelle Antwort: Wähle eine Aufgabe",
+    quickHint: "Hier erscheint die beste App für die Aufgabe, mit Begründung, Gratis-Angebot und Quellen.",
+    quickBestFor: "Beste Wahl für {task}",
+    quickWrite: "Prompt für {app} schreiben",
+    quickPersonal: "Personalisieren: 4 Fragen",
+    finderGuidedTitle: "Persönliche Wahl in vier Fragen",
+    finderStart: "Die vier Fragen starten →",
+    step2Title: "Schreibe den Prompt",
+    step2Sub: "Ein Ziel, ein passender Prompt für jede gewählte KI-Familie und die beste Wahl für die Aufgabe.",
+    genMore: "Kontext und Optionen",
+    genReco: "Empfohlen für diese Aufgabe",
+    genToDoctor: "Im Prompt Doctor prüfen",
+    genWords: "Wörter",
+    genChars: "Zeichen",
+    chipPromptTarget: "im Prompt-Generator",
+    drawerTitle: "Modelldetails",
+    drawerRankTip: "Live-Platz unter den aktuellen Modellen mit offiziellem Score: jetzt berechnet und nie fest in den Text geschrieben.",
+    drawerWas: "letzte Prüfung:",
+    drawerCatNote: "Kategorie-Scores (0-100) sind gemischte Bewertungen von WhichAI: Orientierung, keine offiziellen Messungen.",
+    drawerCompare: "Vergleichen ⇄",
+    drawerPrompt: "Prompt dafür schreiben",
+    drawerWiki: "Modellseite",
+    snapshotLabel: "Stand",
+    footProjects: "Mehr vom Macher von WhichAI",
+    projComplyTag: "Compliance",
+    projComply: "Compliance-Tools für EU AI Act, GDPR und Verträge, gemacht für kleine Unternehmen. Kostenlos starten.",
+    projWarTag: "Geopolitik",
+    projWar: "Eine Live-Karte von Kriegen und geopolitischen Krisen, mit aktuellen News, Marktindikatoren und Szenarien.",
+    projVisit: "Besuchen",
+    footAbout: "Über WhichAI",
+    aboutDiff: "Was WhichAI von einem Leaderboard unterscheidet",
+    aboutData: "Wie die Daten aktuell bleiben",
+    aboutMethod: "Methodik",
+    aboutApi: "Die WhichAI-API",
+    footModels: "Alle Modelle",
+    footBestFor: "Beste KI für…",
+    footHeadToHeads: "Direktvergleiche",
+    footDataset: "Offener Datensatz",
+    prefsDone: "Gespeicherte Einstellungen gelöscht."
   };
 
   S.pt = {
-    navGenerator: "Gerador", navGuide: "Guia de modelos", navCompare: "Comparar", navChains: "Cadeias", navSettings: "Configurações",
-    privacyPill: "Privado por design",
-    privacyTip: "Funciona inteiramente no seu navegador. Sem conta, sem servidor, sem rastreamento. As chaves de API ficam no seu dispositivo.",
-    trustLine: "Sem conta · Sem servidor · Nada sai do seu navegador",
+    navCompare: "Comparar",
+    trustLine: "Sem conta · Sem rastreio · Nada do que escreve sai do navegador",
     langNote: "Interface em português. Nota: os prompts gerados, as notas de benchmark e a detecção automática do tipo de tarefa são otimizados para o inglês (todos os modelos de IA funcionam melhor com instruções em inglês). Você pode escrever seu objetivo em qualquer idioma: a IA responderá no seu idioma.",
-    genTitle: "Descreva seu objetivo",
-    genSubtitle: "O WhichAI o transforma em um prompt sob medida para cada modelo de IA - e diz qual modelo é o mais adequado, em linguagem simples.",
-    goalLabel: "Objetivo ", optionalTag: "(opcional)", tryExample: "Testar um exemplo",
+    goalLabel: "Objetivo ",
+    optionalTag: "(opcional)",
+    tryExample: "Testar um exemplo",
     goalPh: "ex.: Escreva o título de uma landing page para um app de orçamento para freelancers",
     goalErr: "Descreva seu objetivo para gerar os prompts.",
-    contextLabel: "Contexto ", contextPh: "Contexto, público, restrições, exemplos - tudo o que a IA deve saber",
-    taskLabel: "Tipo de tarefa", formatLabel: "Formato de saída", lengthLabel: "Comprimento", toneLabel: "Tom",
-    targetsLabel: "Modelos de destino", groupAssistants: "Assistentes de IA", groupEco: "Assistentes de ecossistema", groupOpen: "Modelos abertos ",
-    modelsErr: "Selecione pelo menos um modelo.", generateBtn: "Gerar prompts",
+    contextLabel: "Contexto ",
+    contextPh: "Contexto, público, restrições, exemplos - tudo o que a IA deve saber",
+    taskLabel: "Tipo de tarefa",
+    formatLabel: "Formato de saída",
+    lengthLabel: "Comprimento",
+    toneLabel: "Tom",
+    targetsLabel: "Modelos de destino",
+    groupAssistants: "Assistentes de IA",
+    groupEco: "Assistentes de ecossistema",
+    groupOpen: "Modelos abertos ",
+    modelsErr: "Selecione pelo menos um modelo.",
+    generateBtn: "Gerar prompts",
     emptyLead: "Seus prompts otimizados aparecerão aqui - uma versão por modelo, mais a recomendação do modelo mais adequado.",
-    step1: "Descreva seu objetivo", step2: "Copie o prompt sob medida para cada IA", step3: "Compare as respostas e itere",
-    resultsTitle: "Prompts otimizados", toCompareBtn: "Comparar respostas →",
-    optNone: "Sem preferência", optProse: "Prosa simples", optMarkdown: "Markdown", optBullets: "Tópicos", optTable: "Tabela", optJson: "JSON", optCode: "Código",
-    optShort: "Curto", optMedium: "Médio", optLong: "Longo e detalhado",
-    optProfessional: "Profissional", optFriendly: "Amigável", optCasual: "Informal", optPersuasive: "Persuasivo", optAcademic: "Acadêmico",
-    autoDetect: "Detecção automática", detected: "Detectado:",
-    task_writing: "Escrita e conteúdo", task_coding: "Código e desenvolvimento", task_analysis: "Análise e dados", task_research: "Pesquisa e síntese",
-    task_brainstorming: "Brainstorming e ideias", task_education: "Educação e explicação", task_business: "Negócios e marketing", task_general: "Geral / outro",
-    routerTitle: "Qual modelo para esta tarefa?", bestPick: "Melhor escolha:", benchLabel: "Benchmarks:",
-    fullRanking: "Classificação completa, planos gratuitos e fontes", freeTier: "Plano gratuito:", sourcesLabel: "Fontes:",
-    whyPrefix: "Por que este prompt é construído assim para", copy: "Copiar", copied: "Copiado", copyPrompt: "Copiar prompt",
-    guideTitle: "Guia de modelos", guideSub: "Qual app de IA combina com cada tipo de tarefa - benchmarks públicos traduzidos em linguagem simples.",
-    catalogTitle: "Catálogo de modelos",
-    compareTitle: "Comparar respostas",
-    compareSub: "Execute o mesmo prompt otimizado em cada app de IA, cole (ou execute automaticamente) as respostas e avalie-as lado a lado. Tudo fica no seu navegador.",
-    compareEmptyText: "Nenhuma comparação ativa. Gere os prompts primeiro e clique em \"Comparar respostas\". ",
-    goGenerator: "Ir para o Gerador",
-    saveCmp: "Salvar comparação", newVersion: "Nova versão", exportMd: "Exportar .md", savedCmps: "Comparações salvas",
-    notScored: "Sem nota", winner: "Vencedor", tied: "Empate", tie: "Empate", winnerPrefix: "Vencedor:", openBtn: "Abrir", deleteBtn: "Excluir",
-    chainsTitle: "Cadeias",
-    chainsSub: "Divida um objetivo complexo em etapas ligadas: cada etapa tem seu prompt otimizado e a saída de uma etapa alimenta a próxima. Execução automática onde houver chave gratuita; copiar e colar no resto.",
-    buildChain: "Construir cadeia", saveChain: "Salvar cadeia", savedChains: "Cadeias salvas",
-    promptForStep: "Prompt desta etapa", stepOutput: "Saída da etapa",
-    settingsTitle: "Configurações",
-    settingsSub: "As chaves de API ativam a execução automática. Ficam apenas neste navegador e são enviadas somente ao provedor chamado - nunca a um servidor do WhichAI (não existe).",
-    saveSettings: "Salvar configurações", prefsReset: "Redefinir preferências",
-    footerText: "Funciona inteiramente no seu navegador: sem conta, sem servidor, suas chaves e dados nunca saem do seu dispositivo."
+    resultsTitle: "Prompts otimizados",
+    optNone: "Sem preferência",
+    optProse: "Prosa simples",
+    optMarkdown: "Markdown",
+    optBullets: "Tópicos",
+    optTable: "Tabela",
+    optJson: "JSON",
+    optCode: "Código",
+    optShort: "Curto",
+    optMedium: "Médio",
+    optLong: "Longo e detalhado",
+    optProfessional: "Profissional",
+    optFriendly: "Amigável",
+    optCasual: "Informal",
+    optPersuasive: "Persuasivo",
+    optAcademic: "Acadêmico",
+    autoDetect: "Detecção automática",
+    detected: "Detectado:",
+    task_writing: "Escrita e conteúdo",
+    task_coding: "Código e desenvolvimento",
+    task_analysis: "Análise e dados",
+    task_research: "Pesquisa e síntese",
+    task_brainstorming: "Brainstorming e ideias",
+    task_education: "Educação e explicação",
+    task_business: "Negócios e marketing",
+    task_general: "Geral / outro",
+    routerTitle: "Qual modelo para esta tarefa?",
+    bestPick: "Melhor escolha:",
+    benchLabel: "Benchmarks:",
+    fullRanking: "Classificação completa, planos gratuitos e fontes",
+    freeTier: "Plano gratuito:",
+    sourcesLabel: "Fontes:",
+    whyPrefix: "Por que este prompt é construído assim para",
+    copy: "Copiar",
+    copied: "Copiado",
+    copyPrompt: "Copiar prompt",
+    exportMd: "Exportar .md",
+    prefsReset: "Redefinir preferências",
+    footerText: "Funciona no seu navegador: sem conta, sem rastreio. Seus objetivos e prompts nunca saem do seu dispositivo.",
+    dbNoResults: "Nenhum modelo corresponde à sua busca.",
+    themeTip: "Alternar entre tema claro e escuro",
+    footFaq: "FAQ",
+    footSimilar: "Ferramentas semelhantes",
+    footContribute: "Contribuir",
+    footGlossary: "Glossário",
+    finderSub: "Responda a algumas perguntas rápidas: receba uma recomendação com motivos, limites e preços. Sem precisar de prompt.",
+    finderBack: "← Voltar",
+    finderNext: "Avançar",
+    finderRestart: "Recomeçar",
+    finderResults: "Nossa recomendação",
+    finderAlt: "Também vale considerar",
+    finderWhy: "Por que esta escolha",
+    finderBestFor: "Ideal para:",
+    finderLimit: "Atenção:",
+    finderAccess: "Acesso:",
+    finderOpenGuide: "Detalhes do modelo →",
+    finderUseGen: "Escrever um prompt para esta IA →",
+    finderSwitchGoal: "Prefere descrever seu objetivo? Escreva o prompt →",
+    finderTop: "Melhor escolha",
+    glossTitle: "Glossário de IA",
+    glossSearchPh: "Pesquisar termo…",
+    glossNoRes: "Nenhum termo encontrado.",
+    glossCount: "termos",
+    mcAdd: "+ Adicionar um terceiro modelo",
+    mcRemove: "Remover",
+    mcReleased: "Lançamento",
+    mcCtx: "Janela de contexto",
+    mcModal: "Modalidades",
+    mcPrice: "Preço API $/1M (in / out)",
+    mcSpeed: "Velocidade",
+    mcAccess: "Acesso",
+    mcProfile: "Perfil por categoria",
+    mcStrengths: "Pontos fortes",
+    mcReview: "Em uma linha",
+    mcFootnote: "n/a = não publicado ou ainda não verificado. Valores com ~ não são medições oficiais atuais: nunca considere real uma pequena diferença entre um deles e uma pontuação medida.",
+    dataTitle: "Seus dados",
+    dataHint: "Tudo o que o WhichAI salva fica neste navegador: preferências, seus modelos seguidos e os últimos dados lidos. Exporte um backup antes de trocar de dispositivo ou limpar os dados do navegador.",
+    dataExport: "Exportar backup (.json)",
+    dataImport: "Importar backup",
+    dataWipe: "Excluir todos os dados",
+    dataWipeAsk: "Excluir TODOS os dados do WhichAI neste navegador? Preferências, modelos seguidos e dados salvos serão removidos.",
+    dataImportAsk: "Importar este backup? Dados existentes com o mesmo nome serão sobrescritos.",
+    dataImported: "Backup importado. Recarregando.",
+    dataImportBad: "Arquivo de backup inválido.",
+    updateReady: "Uma nova versão do WhichAI está pronta.",
+    updateReload: "Atualizar",
+    navStack: "Stack Optimizer",
+    navDoctor: "Prompt Doctor",
+    navStackSub: "Quais assinaturas manter, o que usar grátis",
+    navDoctorSub: "Avalie um prompt, veja a versão otimizada",
+    navGlossarySub: "Cada termo de IA em uma frase simples",
+    stackTitle: "AI Stack Optimizer",
+    stackSub: "Quatro escolhas rápidas: qual assinatura vale a pena, o que usar grátis e o que cancelar. Tudo no seu dispositivo.",
+    stackGo: "Montar meu stack",
+    stackPickOne: "Escolha antes pelo menos uma tarefa.",
+    stackResult: "Seu stack recomendado",
+    stackNewCost: "custo mensal estimado do stack recomendado",
+    stackCurrentCost: "Hoje você paga:",
+    stackSaving: "economia estimada",
+    stackRedundant: "Talvez redundantes para suas tarefas:",
+    stackFreeTier: "Nível grátis",
+    stackToFinder: "Precisa de uma única escolha? Use o finder",
+    doctorTitle: "Prompt Doctor",
+    doctorSub: "Cole um prompt: pontuação, lista do que falta e versão otimizada para o modelo escolhido. Sem API.",
+    doctorPh: "Cole seu prompt aqui…",
+    doctorGo: "Analisar prompt",
+    doctorDetected: "Tarefa detectada:",
+    doctorMissingLead: "Maiores lacunas:",
+    doctorAllGood: "Prompt sólido: todos os ingredientes básicos presentes.",
+    doctorChecklist: "Checklist",
+    doctorOptimized: "Versão otimizada",
+    doctorBefore: "Seu prompt",
+    doctorAfter: "Otimizado para o modelo escolhido",
+    doctorChanges: "O que mudou e por quê",
+    doctorToGen: "Abrir no Generator",
+    doctorNote: "Análise estática baseada em boas práticas de prompt engineering; a versão otimizada usa o mesmo motor do Generator. Revise antes de usar.",
+    officialOpen: "Abrir",
+    officialSite: "Abrir o app oficial",
+    navRadar: "Model Radar",
+    radarNew: "NOVO",
+    radarUpcoming: "Em breve",
+    radarAll: "Tudo",
+    radarFollowing: "Seguindo",
+    radarSince: "novidades desde sua última visita",
+    radarFollow: "Seguir",
+    radarUnfollow: "Seguindo",
+    radarTypeNew: "Novos modelos",
+    radarTypePrice: "Preços",
+    radarTypeScore: "Pontuações",
+    radarTypeFree: "Níveis grátis",
+    radarEmpty: "Nada por aqui ainda. Siga um modelo com a estrela para montar seu próprio feed.",
+    shareBtn: "Compartilhar como imagem",
+    shareDone: "Imagem pronta",
+    navTopics: "Debates de IA",
+    topicsTitle: "Debates de IA",
+    topicsCaseA: "A preocupação",
+    topicsCaseB: "O contraponto",
+    topicsStatus: "Onde estamos",
+    topicsDisclaimer: "Resumos curados de imprensa e pesquisa públicas, atualizados com os dados. Não é conselho financeiro, de carreira ou jurídico.",
+    footSupport: "Apoie ♥",
+    supportTitle: "Apoie o WhichAI",
+    supportText: "O WhichAI é gratuito, sem anúncios e sem patrocinadores: os únicos custos são o domínio e as horas que mantêm mais de 100 modelos honestos e atualizados. Se lhe poupou tempo, um pequeno donativo mantém-no independente.",
+    supportBtn: "Doar ♥",
+    visitsLabel: "visitas",
+    catalogShowLess: "Ver menos",
+    radarCheckClean: "Verificacao de dados: tudo corresponde as fontes publicas",
+    radarCheckReview: "item(ns) da verificacao a rever",
+    radarCheckBroken: "Verificacao: uma rota gratuita incluida esta partida",
+    radarCheckSkipped: "Hoje nao foi possivel fazer a verificacao",
+    journeyConfidence: "confianca",
+    livePill: "Dados ao vivo",
+    liveDataLine: "Dados ao vivo: pontuações oficiais da Artificial Analysis e preços da OpenRouter, lidos {when}; {n} modelos adicionados automaticamente.",
+    liveAutoChip: "adicionado automaticamente",
+    liveAutoTitle: "Adicionado automaticamente a partir de dados públicos ao vivo (Artificial Analysis via OpenRouter). Ainda sem análise editorial.",
+    skipLink: "Pular para o conteúdo",
+    langLabel: "Idioma",
+    railLabel: "Capítulos",
+    close: "Fechar",
+    navRanking: "Ranking",
+    navMarket: "Mercado",
+    navTools: "Ferramentas",
+    ch1Eyebrow: "O ranking",
+    ch1Title: "Qual é a melhor IA agora?",
+    ch1Lede: "Todos os modelos com pontuação oficial da Artificial Analysis, distribuídos em níveis automaticamente. Novas medições chegam aqui sozinhas, geralmente em menos de uma hora.",
+    heroFind: "Encontrar a IA para minha tarefa",
+    heroPrompt: "Escrever um prompt melhor",
+    kpiModels: "modelos monitorados",
+    kpiMeasured: "com pontuação oficial",
+    kpiLabs: "laboratórios no ranking",
+    kpiNew: "novos nos últimos 30 dias",
+    rankMetricLabel: "Ordenar por",
+    metricAA: "Inteligência",
+    metricCoding: "Programação",
+    metricAgentic: "Agentes",
+    rankFilterLabel: "Mostrar",
+    fAll: "Todos",
+    fOpen: "Pesos abertos",
+    fFree: "Rota gratuita",
+    fCheap: "Menos de $1",
+    fLegacy: "Incluir antigos",
+    rankSearchPh: "Buscar qualquer modelo…",
+    rankUnmeasured: "não medido",
+    tierS: "Fronteira",
+    tierA: "Quase fronteira",
+    tierB: "Forte",
+    tierC: "Capaz",
+    tierD: "Leve",
+    tierMore: "+{n} mais",
+    tierNote: "Os níveis são calculados, não escolhidos: no índice selecionado, S reúne os 5% melhores modelos atuais, A os 15% seguintes, B os 20% seguintes, C os 25% seguintes e D o restante. Empates ficam no mesmo nível. Pontuações convertidas (~) e não medidas nunca entram no ranking.",
+    tierMissing: "{n} modelos atuais ainda não têm pontuação de {metric}.",
+    scatterTitle: "Preço vs inteligência",
+    scatterNote: "Para cima e à esquerda, mais inteligência por dólar. O preço está em escala logarítmica, então os modelos baratos não ficam mais espremidos em um canto; a linha tracejada é a fronteira de melhor custo-benefício.",
+    scatterX: "Preço de API combinado, $ por 1M de tokens (escala logarítmica)",
+    scatterY: "Índice de Inteligência AA",
+    scatterFree: "Grátis",
+    scatterLegend: "Cor do ponto = nível no índice de Inteligência. Passe o mouse sobre um ponto ou uma etiqueta para encontrá-lo na outra visualização; clique para ver os detalhes.",
+    bridge1: "Disputa acirrada no topo? Coloque os dois líderes lado a lado.",
+    ch2Eyebrow: "Frente a frente",
+    ch2Title: "Compare dois modelos à sua escolha",
+    ch2Lede: "Índices oficiais, preço, contexto e pontos fortes, lado a lado. Abre com os dois primeiros de hoje e acompanha o ranking até você escolher os seus; adicione um terceiro quando quiser.",
+    cmpPick: "Modelo",
+    cmpSwap: "Inverter",
+    cmpReset: "Voltar aos dois primeiros",
+    cmpFollowing: "Acompanhando os dois primeiros ao vivo",
+    cmpYourPick: "Sua seleção",
+    cmpIndices: "Índices oficiais",
+    cmpIndicesNote: "Dados da Artificial Analysis, lidos automaticamente. Cada índice tem sua própria escala: compare dentro de uma linha, não entre linhas. O melhor valor de cada linha é marcado com uma estrela.",
+    cmpCost: "Preço e especificações",
+    cmpPriceIn: "Entrada $ / 1M",
+    cmpPriceOut: "Saída $ / 1M",
+    cmpDaysAgo: "há {n} dias",
+    cmpPriceNote: "Preços da OpenRouter, em USD por milhão de tokens; nos preços, a estrela vai para o menor valor.",
+    cmpProfileNote: "As pontuações por categoria (0-100) são avaliações combinadas do WhichAI: uma orientação, não medições oficiais.",
+    mcDetails: "Detalhes",
+    bridge2: "Talvez já tenha saído algo mais novo. Veja o que mudou esta semana.",
+    ch3Eyebrow: "Novidades",
+    ch3Title: "Radar de modelos: lançamentos, preços, notícias",
+    ch3Lede: "Lançamentos e mudanças de preço do catálogo ao vivo, ao lado de manchetes dos laboratórios, da imprensa, do Hacker News e do Hugging Face. Ninguém precisa publicar nada: tudo se atualiza sozinho.",
+    radarLatest: "Último a chegar",
+    radarFeedTitle: "Lançamentos e mudanças",
+    newsTitle: "Últimas notícias",
+    newsAll: "Todas as fontes",
+    newsLabs: "Laboratórios",
+    newsPress: "Imprensa",
+    newsCommunity: "Comunidade",
+    newsOpen: "Código aberto",
+    newsLoading: "Lendo as fontes…",
+    newsDown: "As fontes de notícias estão inacessíveis no momento. O feed de lançamentos ao lado está completo sem elas.",
+    newsUpdated: "atualizado {when}",
+    newsPoints: "pontos",
+    newsDiscuss: "Comentários",
+    newsFoot: "Apenas manchetes e links, de blogs oficiais dos laboratórios, TechCrunch AI, posts do Hacker News com 100 pontos ou mais e Hugging Face. Atualizadas a cada 30 minutos.",
+    newsSomeDown: "Indisponíveis no momento: {list}.",
+    showMore: "Ver mais",
+    bridge3: "Cada lançamento também mexe nos preços. Veja quanto custa a inteligência hoje.",
+    ch4Eyebrow: "Quanto custa",
+    ch4Title: "O mercado de IA, ao vivo",
+    ch4Lede: "Preços de API da OpenRouter, recalculados a cada visita: a forma mais barata de entrar em cada nível, o melhor custo-benefício, o que está grátis agora e quanto custaria um mês do seu próprio uso.",
+    mkLeaderKicker: "O líder custa",
+    mkPer1M: "por 1M de tokens (entrada / saída)",
+    mkPer1MShort: "por 1M",
+    mkCheapS: "modelo mais barato do nível Fronteira, preço combinado por 1M de tokens",
+    mkFreeNow: "rotas de API gratuitas agora",
+    mkFreeBest: "mais potente: {name}",
+    mkMoves: "preços ao vivo diferentes da nossa última revisão",
+    mkLadderTitle: "A forma mais barata de entrar em cada nível",
+    mkLadderSub: "Menor preço combinado (3 partes de entrada para 1 de saída) entre os modelos de cada nível no índice de Inteligência.",
+    mkValueTitle: "Melhor custo-benefício agora",
+    mkValueNote: "Pontos de inteligência por dólar de preço combinado, entre os modelos com pontuação igual ou superior à mediana.",
+    mkPtsPerUsd: "pts por $",
+    mkCalcTitle: "Quanto me custaria um mês?",
+    mkCalcMsgs: "Mensagens por dia",
+    mkCalcLen: "Tamanho da mensagem",
+    mkPickLeader: "O líder",
+    mkPickValue: "Melhor custo-benefício",
+    mkPickA: "Quase fronteira mais barato",
+    mkPickB: "Forte mais barato",
+    mkPickFree: "Uma rota gratuita",
+    mkPerMonth: "por mês",
+    mkRateLimited: "com limite de uso",
+    mkCalcNote: "Considera {in} tokens de entrada e {out} de saída por mensagem, 30 dias por mês e preços da OpenRouter. Assinaturas de chat têm preço fixo: veja o Stack Optimizer abaixo.",
+    mkFreeTitle: "Grátis agora",
+    mkFreeNote: "Rotas de API com preço de $0 na OpenRouter. Todas têm limite de uso e algumas expiram.",
+    mkFreeNone: "Nenhuma rota gratuita listada no momento.",
+    mkUntil: "até",
+    mkAppsFree: "Planos gratuitos dos grandes apps",
+    mkMovesTitle: "Mudanças de preço",
+    mkMovesNote: "Modelos cujo preço ao vivo na OpenRouter difere do preço da nossa última revisão editorial.",
+    mkMovesNone: "Nenhuma diferença no momento.",
+    mkFoot: "Preços: OpenRouter, USD por 1M de tokens, lidos automaticamente (catálogo {when}). O preço de tabela do próprio fornecedor pode ser diferente.",
+    bridge4: "Por trás dos preços: energia, empregos e uma onda de investimentos medida em centenas de bilhões. Os debates, dos dois lados.",
+    ch5Eyebrow: "O panorama geral",
+    ch5Title: "Debates de IA: os dois lados",
+    ch5Lede: "Energia, empregos, dinheiro, direitos autorais, regulação, pesos abertos: o argumento mais forte de cada lado, os números com suas datas e o que mudaria o cenário.",
+    topicsReviewed: "Revisado",
+    topicsCount: "debates",
+    topicsReviewNote: "Cada número mantém seu período original; estes resumos são revisados à mão, não são notícias ao vivo.",
+    topicsEvidence: "Evidências, com contexto",
+    topicsUncertainty: "O que ainda é incerto",
+    topicsWatch: "O que mudaria o cenário",
+    topicsDecision: "Escolha seu próximo passo",
+    topicsChoose: "Selecione sua situação",
+    topicsDecisionNote: "Orientação editorial prática. Sua escolha fica nesta página; não é preciso conta nem chamada a uma IA.",
+    topicsReadSource: "Ler a fonte",
+    topicsReadPage: "Abrir página de leitura",
+    topicsEstimate: "Estimativa",
+    topicsProjection: "Projeção",
+    topicsResearch: "Resultado de estudo",
+    topicsReported: "Dado da empresa",
+    topicsGuidance: "Política ou diretriz",
+    topicsDefinition: "Definição",
+    topicsTagEnvironment: "Meio ambiente",
+    topicsTagWork: "Trabalho",
+    topicsTagEconomy: "Economia",
+    topicsTagLaw: "Direito",
+    topicsTagPolicy: "Política",
+    topicsTagEcosystem: "Ecossistema",
+    topicsCompareModels: "Comparar modelos",
+    topicsFindAI: "Encontrar a IA certa",
+    topicsSeeMarket: "Ver quanto custa a IA",
+    topicsImprovePrompt: "Melhorar um prompt",
+    topicsReviewStack: "Revisar meu stack de IA",
+    topicsExploreModels: "Explorar o ranking",
+    topicsLearnTerms: "Explorar o glossário",
+    complyTitle: "Suas próprias obrigações",
+    complyText: "Verifique quais obrigações do EU AI Act e do GDPR se aplicam à sua organização, passo a passo, no ComplyAI.",
+    complyGo: "Abrir ComplyAI.wiki",
+    bridge5: "Chega de leitura. O que você precisa fazer?",
+    ch6Eyebrow: "Mãos à obra",
+    ch6Title: "Da IA certa ao prompt certo",
+    ch6Lede: "Quatro ferramentas em um só caminho: encontre a IA para sua tarefa, escreva o prompt que funciona melhor com ela, revise qualquer prompt e reduza o que você paga.",
+    step1Title: "Encontre sua IA",
+    step1Sub: "Uma resposta rápida por tarefa ou quatro perguntas para uma escolha personalizada. Sem precisar de prompt.",
+    quickTitle: "Resposta rápida: escolha uma tarefa",
+    quickHint: "O melhor app para a tarefa aparece aqui, com os motivos, o plano gratuito e as fontes.",
+    quickBestFor: "Melhor escolha para {task}",
+    quickWrite: "Escrever o prompt para {app}",
+    quickPersonal: "Personalize: 4 perguntas",
+    finderGuidedTitle: "Uma escolha personalizada em quatro perguntas",
+    finderStart: "Começar as quatro perguntas →",
+    step2Title: "Escreva o prompt",
+    step2Sub: "Um objetivo, um prompt ajustado para cada família de IA selecionada e a melhor opção para a tarefa.",
+    genMore: "Contexto e opções",
+    genReco: "Recomendado para esta tarefa",
+    genToDoctor: "Revisar no Doctor",
+    genWords: "palavras",
+    genChars: "caracteres",
+    chipPromptTarget: "no gerador de prompts",
+    drawerTitle: "Detalhes do modelo",
+    drawerRankTip: "Posição ao vivo entre os modelos atuais com pontuação oficial, calculada na hora e nunca escrita no texto.",
+    drawerWas: "última revisão:",
+    drawerCatNote: "As pontuações por categoria (0-100) são avaliações combinadas do WhichAI: uma orientação, não medições oficiais.",
+    drawerCompare: "Comparar ⇄",
+    drawerPrompt: "Escrever um prompt para este modelo",
+    drawerWiki: "Página do modelo",
+    snapshotLabel: "Instantâneo",
+    footProjects: "Mais do criador do WhichAI",
+    projComplyTag: "Conformidade",
+    projComply: "Ferramentas de conformidade com o EU AI Act, o GDPR e contratos, para pequenas empresas. Grátis para começar.",
+    projWarTag: "Geopolítica",
+    projWar: "Um mapa ao vivo de guerras e crises geopolíticas, com as últimas notícias, indicadores de mercado e cenários.",
+    projVisit: "Visitar",
+    footAbout: "Sobre o WhichAI",
+    aboutDiff: "Como o WhichAI se diferencia de uma tabela de classificação",
+    aboutData: "Como os dados se mantêm atualizados",
+    aboutMethod: "Metodologia",
+    aboutApi: "A API do WhichAI",
+    footModels: "Todos os modelos",
+    footBestFor: "Melhor IA para…",
+    footHeadToHeads: "Comparativos",
+    footDataset: "Dados abertos",
+    prefsDone: "Preferências redefinidas."
   };
 
   S.zh = {
-    navGenerator: "生成器", navGuide: "模型指南", navCompare: "对比", navChains: "任务链", navSettings: "设置",
-    privacyPill: "隐私优先设计",
-    privacyTip: "完全在您的浏览器中运行。无需账户、无服务器、无跟踪。API 密钥仅保存在您的设备上。",
-    trustLine: "无需账户 · 无服务器 · 数据不离开浏览器",
+    navCompare: "对比",
+    trustLine: "无需账户 · 不做追踪 · 你写的内容不会离开浏览器",
     langNote: "界面为中文。请注意：生成的提示词、基准测试说明和任务类型自动检测均针对英文优化（所有 AI 模型对英文指令的表现最佳）。您仍可用任何语言描述目标，AI 会用您的语言回答。",
-    genTitle: "描述您的目标",
-    genSubtitle: "WhichAI 将其转化为针对每个 AI 模型定制的提示词，并用通俗语言告诉您哪个模型最适合这项任务。",
-    goalLabel: "目标 ", optionalTag: "（可选）", tryExample: "试试示例",
+    goalLabel: "目标 ",
+    optionalTag: "（可选）",
+    tryExample: "试试示例",
     goalPh: "例如：为一款面向自由职业者的记账应用撰写落地页标题和副标题",
     goalErr: "请描述您的目标以生成提示词。",
-    contextLabel: "背景 ", contextPh: "背景、受众、限制、示例：任何 AI 应该知道的信息",
-    taskLabel: "任务类型", formatLabel: "输出格式", lengthLabel: "长度", toneLabel: "语气",
-    targetsLabel: "目标模型", groupAssistants: "AI 助手", groupEco: "生态系统助手", groupOpen: "开源模型 ",
-    modelsErr: "请至少选择一个模型。", generateBtn: "生成提示词",
+    contextLabel: "背景 ",
+    contextPh: "背景、受众、限制、示例：任何 AI 应该知道的信息",
+    taskLabel: "任务类型",
+    formatLabel: "输出格式",
+    lengthLabel: "长度",
+    toneLabel: "语气",
+    targetsLabel: "目标模型",
+    groupAssistants: "AI 助手",
+    groupEco: "生态系统助手",
+    groupOpen: "开源模型 ",
+    modelsErr: "请至少选择一个模型。",
+    generateBtn: "生成提示词",
     emptyLead: "优化后的提示词将显示在这里：每个模型一个版本，并推荐最适合此任务的模型。",
-    step1: "描述您的目标", step2: "复制为每个 AI 定制的提示词", step3: "对比回答并迭代",
-    resultsTitle: "优化的提示词", toCompareBtn: "对比输出 →",
-    optNone: "无偏好", optProse: "普通文本", optMarkdown: "Markdown", optBullets: "要点列表", optTable: "表格", optJson: "JSON", optCode: "代码",
-    optShort: "简短", optMedium: "中等", optLong: "详细",
-    optProfessional: "专业", optFriendly: "亲切", optCasual: "随意", optPersuasive: "有说服力", optAcademic: "学术",
-    autoDetect: "自动检测", detected: "检测到：",
-    task_writing: "写作与内容", task_coding: "编程与开发", task_analysis: "分析与数据", task_research: "研究与总结",
-    task_brainstorming: "头脑风暴", task_education: "教育与讲解", task_business: "商业与营销", task_general: "通用 / 其他",
-    routerTitle: "这项任务用哪个模型？", bestPick: "最佳选择：", benchLabel: "基准测试：",
-    fullRanking: "完整排名、免费方案与来源", freeTier: "免费方案：", sourcesLabel: "来源：",
-    whyPrefix: "为什么这样为其构建提示词：", copy: "复制", copied: "已复制", copyPrompt: "复制提示词",
-    guideTitle: "模型指南", guideSub: "哪个 AI 应用适合哪类任务：把公开基准测试翻译成通俗语言。",
-    catalogTitle: "模型目录",
-    compareTitle: "对比输出",
-    compareSub: "在每个 AI 应用中运行同一优化提示词，粘贴（或自动运行）回答并并排打分。一切都保存在您的浏览器中。",
-    compareEmptyText: "暂无进行中的对比。请先生成提示词，然后点击“对比输出”。 ",
-    goGenerator: "前往生成器",
-    saveCmp: "保存对比", newVersion: "新版本", exportMd: "导出 .md", savedCmps: "已保存的对比",
-    notScored: "未评分", winner: "胜者", tied: "并列", tie: "平局", winnerPrefix: "胜者：", openBtn: "打开", deleteBtn: "删除",
-    chainsTitle: "任务链",
-    chainsSub: "将复杂目标拆分为连贯的步骤：每一步都有专属优化提示词，上一步的输出会输入下一步。有免费密钥的模型可自动运行，其余复制粘贴即可。",
-    buildChain: "构建任务链", saveChain: "保存任务链", savedChains: "已保存的任务链",
-    promptForStep: "此步骤的提示词", stepOutput: "步骤输出",
-    settingsTitle: "设置",
-    settingsSub: "API 密钥用于自动运行。密钥仅保存在本浏览器中，只发送给您调用的提供商：绝不会发送到 WhichAI 服务器（根本不存在服务器）。",
-    saveSettings: "保存设置", prefsReset: "重置偏好设置",
-    footerText: "完全在您的浏览器中运行：无需账户、无服务器，您的密钥和数据绝不离开设备。"
+    resultsTitle: "优化的提示词",
+    optNone: "无偏好",
+    optProse: "普通文本",
+    optMarkdown: "Markdown",
+    optBullets: "要点列表",
+    optTable: "表格",
+    optJson: "JSON",
+    optCode: "代码",
+    optShort: "简短",
+    optMedium: "中等",
+    optLong: "详细",
+    optProfessional: "专业",
+    optFriendly: "亲切",
+    optCasual: "随意",
+    optPersuasive: "有说服力",
+    optAcademic: "学术",
+    autoDetect: "自动检测",
+    detected: "检测到：",
+    task_writing: "写作与内容",
+    task_coding: "编程与开发",
+    task_analysis: "分析与数据",
+    task_research: "研究与总结",
+    task_brainstorming: "头脑风暴",
+    task_education: "教育与讲解",
+    task_business: "商业与营销",
+    task_general: "通用 / 其他",
+    routerTitle: "这项任务用哪个模型？",
+    bestPick: "最佳选择：",
+    benchLabel: "基准测试：",
+    fullRanking: "完整排名、免费方案与来源",
+    freeTier: "免费方案：",
+    sourcesLabel: "来源：",
+    whyPrefix: "为什么这样为其构建提示词：",
+    copy: "复制",
+    copied: "已复制",
+    copyPrompt: "复制提示词",
+    exportMd: "导出 .md",
+    prefsReset: "重置偏好设置",
+    footerText: "在你的浏览器中运行：无需账户，不做追踪。你的目标和提示词从不离开设备。",
+    dbNoResults: "没有匹配的模型。",
+    themeTip: "切换浅色/深色主题",
+    footFaq: "常见问题",
+    footSimilar: "同类工具",
+    footContribute: "参与贡献",
+    footGlossary: "术语表",
+    finderSub: "回答几个简短问题，即可获得推荐，包含理由、限制与价格。无需编写提示词。",
+    finderBack: "← 返回",
+    finderNext: "下一步",
+    finderRestart: "重新开始",
+    finderResults: "我们的推荐",
+    finderAlt: "也值得考虑",
+    finderWhy: "推荐理由",
+    finderBestFor: "最适合：",
+    finderLimit: "注意：",
+    finderAccess: "访问方式：",
+    finderOpenGuide: "模型详情 →",
+    finderUseGen: "为它生成提示词 →",
+    finderSwitchGoal: "想自己描述目标？改为直接写提示词 →",
+    finderTop: "最佳匹配",
+    glossTitle: "AI 术语表",
+    glossSearchPh: "搜索术语…",
+    glossNoRes: "没有匹配的术语。",
+    glossCount: "个术语",
+    mcAdd: "+ 添加第三个模型",
+    mcRemove: "移除",
+    mcReleased: "发布时间",
+    mcCtx: "上下文窗口",
+    mcModal: "模态",
+    mcPrice: "API 价格 $/1M（输入/输出）",
+    mcSpeed: "速度",
+    mcAccess: "访问方式",
+    mcProfile: "分类能力",
+    mcStrengths: "优势",
+    mcReview: "一句话点评",
+    mcFootnote: "n/a = 未公布或尚未核实。带 ~ 的数值并非当前的官方测量结果：它们与实测分数之间的微小差距，切勿当作真实差异。",
+    dataTitle: "你的数据",
+    dataHint: "WhichAI 保存的一切都在此浏览器中：偏好设置、你的关注列表，以及最近一次读取的数据。换设备或清理浏览器前，请先导出备份。",
+    dataExport: "导出备份 (.json)",
+    dataImport: "导入备份",
+    dataWipe: "删除所有数据",
+    dataWipeAsk: "删除此浏览器中的全部 WhichAI 数据？偏好设置、关注列表和已保存的数据都将被移除。",
+    dataImportAsk: "导入此备份？同名的现有数据将被覆盖。",
+    dataImported: "备份已导入，正在刷新。",
+    dataImportBad: "备份文件无效。",
+    updateReady: "WhichAI 新版本已就绪。",
+    updateReload: "刷新",
+    navStack: "订阅优化器",
+    navDoctor: "提示词医生",
+    navStackSub: "该保留哪些订阅，什么可以免费用",
+    navDoctorSub: "为提示词打分，查看优化版本",
+    navGlossarySub: "每个 AI 术语一句话讲清",
+    stackTitle: "订阅优化器",
+    stackSub: "四个快速选择：哪个订阅值得保留、什么可以免费用、什么可以取消。全部在你的设备上完成。",
+    stackGo: "生成我的方案",
+    stackPickOne: "请先选择至少一项任务。",
+    stackResult: "推荐方案",
+    stackNewCost: "推荐方案的预计月成本",
+    stackCurrentCost: "你目前支付：",
+    stackSaving: "预计节省",
+    stackRedundant: "对你的任务可能多余：",
+    stackFreeTier: "免费档",
+    stackToFinder: "只需要一个选择？使用引导式选择",
+    doctorTitle: "提示词医生",
+    doctorSub: "粘贴提示词：获得评分、缺失项清单，以及针对所选模型的优化版本。无需 API。",
+    doctorPh: "在此粘贴你的提示词…",
+    doctorGo: "分析提示词",
+    doctorDetected: "检测到的任务：",
+    doctorMissingLead: "主要缺口：",
+    doctorAllGood: "提示词很扎实：核心要素齐全。",
+    doctorChecklist: "检查清单",
+    doctorOptimized: "优化版本",
+    doctorBefore: "你的提示词",
+    doctorAfter: "针对所选模型优化",
+    doctorChanges: "改了什么、为什么",
+    doctorToGen: "在生成器中打开",
+    doctorNote: "基于提示词工程最佳实践的静态分析；优化版本使用与生成器相同的引擎。使用前请检查。",
+    officialOpen: "打开",
+    officialSite: "打开官方应用",
+    navRadar: "模型雷达",
+    radarNew: "新",
+    radarUpcoming: "即将到来",
+    radarAll: "全部",
+    radarFollowing: "关注中",
+    radarSince: "条自上次访问以来的变化",
+    radarFollow: "关注",
+    radarUnfollow: "已关注",
+    radarTypeNew: "新模型",
+    radarTypePrice: "价格",
+    radarTypeScore: "分数",
+    radarTypeFree: "免费额度",
+    radarEmpty: "这里还没有内容。用星标关注一个模型来构建你的专属动态。",
+    shareBtn: "分享为图片",
+    shareDone: "图片已生成",
+    navTopics: "AI 议题",
+    topicsTitle: "AI 议题",
+    topicsCaseA: "担忧",
+    topicsCaseB: "反方观点",
+    topicsStatus: "当前进展",
+    topicsDisclaimer: "基于公开报道与研究的整理摘要，随数据更新刷新。不构成投资、职业或法律建议。",
+    footSupport: "支持我们 ♥",
+    supportTitle: "支持 WhichAI",
+    supportText: "WhichAI 免费、无广告、无赞助：唯一的成本是域名，以及让 100 多个模型保持诚实和最新所花的时间。如果它帮你省了时间，一点小额捐助能让它保持独立。",
+    supportBtn: "捐助 ♥",
+    visitsLabel: "次访问",
+    catalogShowLess: "收起",
+    radarCheckClean: "数据核对：与公开来源完全一致",
+    radarCheckReview: "项需要复核",
+    radarCheckBroken: "数据核对：内置的免费线路已失效",
+    radarCheckSkipped: "今天无法完成数据核对",
+    journeyConfidence: "置信度",
+    livePill: "实时数据",
+    liveDataLine: "实时数据：Artificial Analysis 官方评分与 OpenRouter 价格，读取于{when}；已自动添加 {n} 个模型。",
+    liveAutoChip: "自动添加",
+    liveAutoTitle: "根据实时公开数据自动添加（Artificial Analysis，经 OpenRouter）。尚无编辑评测。",
+    skipLink: "跳到主要内容",
+    langLabel: "语言",
+    railLabel: "章节",
+    close: "关闭",
+    navRanking: "排名",
+    navMarket: "市场",
+    navTools: "工具",
+    ch1Eyebrow: "排名",
+    ch1Title: "现在哪个 AI 最强？",
+    ch1Lede: "所有拥有 Artificial Analysis 官方评分的模型，都会自动分入各个梯队。新的测评结果会自动出现在这里，通常不超过一小时。",
+    heroFind: "为我的任务找到合适的 AI",
+    heroPrompt: "写出更好的提示词",
+    kpiModels: "已收录模型",
+    kpiMeasured: "有官方评分",
+    kpiLabs: "上榜实验室",
+    kpiNew: "近 30 天新增",
+    rankMetricLabel: "排名依据",
+    metricAA: "智能",
+    metricCoding: "编程",
+    metricAgentic: "智能体",
+    rankFilterLabel: "筛选",
+    fAll: "全部",
+    fOpen: "开放权重",
+    fFree: "免费路由",
+    fCheap: "低于 $1",
+    fLegacy: "包含旧模型",
+    rankSearchPh: "搜索任意模型…",
+    rankUnmeasured: "未测评",
+    tierS: "前沿",
+    tierA: "准前沿",
+    tierB: "强劲",
+    tierC: "实用",
+    tierD: "轻量",
+    tierMore: "还有 {n} 个",
+    tierNote: "梯队由计算得出，而非人为指定：在所选指数上，S 为当前模型中的前 5%，A 为接下来的 15%，B 为再往后的 20%，C 为再往后的 25%，D 为其余模型。分数相同者归入同一梯队。换算分数（~）和未测评的分数一律不参与排名。",
+    tierMissing: "有 {n} 个当前模型尚无“{metric}”分数。",
+    scatterTitle: "价格与智能",
+    scatterNote: "越靠左上，每美元换来的智能越多。价格采用对数刻度，便宜的模型不再挤在一个角落；虚线是最佳性价比边界。",
+    scatterX: "综合 API 价格（$ / 1M token，对数刻度）",
+    scatterY: "AA 智能指数",
+    scatterFree: "免费",
+    scatterLegend: "点的颜色：在智能指数上所属的梯队。悬停在点或标签上，可在另一个视图中找到它；点击查看详情。",
+    bridge1: "榜首难分高下？把前两名放在一起比一比。",
+    ch2Eyebrow: "正面对决",
+    ch2Title: "任选两个模型对比",
+    ch2Lede: "官方指数、价格、上下文和优势，并排呈现。默认显示今天的前两名，并随排名自动更新，直到你自己选择；随时可以加入第三个模型。",
+    cmpPick: "模型",
+    cmpSwap: "交换",
+    cmpReset: "重置为前两名",
+    cmpFollowing: "正在跟随实时前两名",
+    cmpYourPick: "你的选择",
+    cmpIndices: "官方指数",
+    cmpIndicesNote: "来自 Artificial Analysis，自动读取。每个指数都有各自的刻度：请在同一行内比较，不要跨行比较。每行中更优的数值以星标标出。",
+    cmpCost: "价格与规格",
+    cmpPriceIn: "输入 $ / 1M",
+    cmpPriceOut: "输出 $ / 1M",
+    cmpDaysAgo: "{n} 天前",
+    cmpPriceNote: "价格来自 OpenRouter，单位为美元/百万 token；价格一项中，数值较低者获得星标。",
+    cmpProfileNote: "分类分数（0-100）是 WhichAI 的综合评分：仅供参考，并非官方测量结果。",
+    mcDetails: "详情",
+    bridge2: "也许已经有更新的模型发布了。来看看本周有哪些变化。",
+    ch3Eyebrow: "最新动态",
+    ch3Title: "模型雷达：发布、价格、新闻",
+    ch3Lede: "实时目录中的新品发布与价格变动，旁边是各大实验室、媒体、Hacker News 和 Hugging Face 的头条。无需任何人手动发布：一切自动更新。",
+    radarLatest: "最新加入",
+    radarFeedTitle: "发布与变动",
+    newsTitle: "新闻快讯",
+    newsAll: "全部来源",
+    newsLabs: "实验室",
+    newsPress: "媒体",
+    newsCommunity: "社区",
+    newsOpen: "开源",
+    newsLoading: "正在读取来源…",
+    newsDown: "新闻来源暂时无法访问。旁边的发布动态不依赖它们，内容完整。",
+    newsUpdated: "{when}更新",
+    newsPoints: "分",
+    newsDiscuss: "讨论",
+    newsFoot: "仅提供标题和链接，来源包括各实验室官方博客、TechCrunch AI、100 分以上的 Hacker News 帖子以及 Hugging Face。每 30 分钟重新读取一次。",
+    newsSomeDown: "暂时无法访问：{list}。",
+    showMore: "显示更多",
+    bridge3: "每次发布也会牵动价格。来看看如今的智能要花多少钱。",
+    ch4Eyebrow: "费用一览",
+    ch4Title: "AI 市场实时行情",
+    ch4Lede: "来自 OpenRouter 的 API 价格，每次访问都会重新计算：进入各梯队的最低价格、最佳性价比、当前有哪些免费，以及你自己用一个月要花多少钱。",
+    mkLeaderKicker: "榜首模型价格",
+    mkPer1M: "每 1M token（输入 / 输出）",
+    mkPer1MShort: "/ 1M",
+    mkCheapS: "前沿梯队最便宜的模型，每 1M token 综合价格",
+    mkFreeNow: "当前免费 API 路由",
+    mkFreeBest: "最强：{name}",
+    mkMoves: "与上次审核不同的实时价格",
+    mkLadderTitle: "各梯队的最低入门价",
+    mkLadderSub: "在智能指数各梯队的模型中，最低的综合价格（输入与输出按 3:1 加权）。",
+    mkValueTitle: "当前最佳性价比",
+    mkValueNote: "在分数不低于中位数的模型中，每美元综合价格可换得的智能分数。",
+    mkPtsPerUsd: "分 / $",
+    mkCalcTitle: "我一个月要花多少钱？",
+    mkCalcMsgs: "每天消息数",
+    mkCalcLen: "典型消息长度",
+    mkPickLeader: "榜首",
+    mkPickValue: "最佳性价比",
+    mkPickA: "最便宜的准前沿模型",
+    mkPickB: "最便宜的强劲模型",
+    mkPickFree: "免费路由",
+    mkPerMonth: "/ 月",
+    mkRateLimited: "有速率限制",
+    mkCalcNote: "假设每条消息 {in} 个输入 token、{out} 个输出 token，每月 30 天，按 OpenRouter 价格计算。聊天订阅是固定费用：请看下方的 Stack Optimizer。",
+    mkFreeTitle: "当前免费",
+    mkFreeNote: "OpenRouter 上定价为 $0 的 API 路由。全部有速率限制，部分会到期下线。",
+    mkFreeNone: "目前没有列出任何免费路由。",
+    mkUntil: "有效至",
+    mkAppsFree: "主流应用的免费方案",
+    mkMovesTitle: "价格变动",
+    mkMovesNote: "OpenRouter 实时价格与我们上次编辑审核时的价格不一致的模型。",
+    mkMovesNone: "目前没有差异。",
+    mkFoot: "价格：OpenRouter，每 1M token 的美元价格，自动读取（目录更新于 {when}）。厂商自己的标价可能有所不同。",
+    bridge4: "价格背后，是能源、就业，以及数以千亿美元计的资本投入。来看这些争议的正反两面。",
+    ch5Eyebrow: "宏观视角",
+    ch5Title: "AI 争议：正反两面",
+    ch5Lede: "能源、就业、资金、版权、监管、开放权重：双方最有力的论点、注明日期的数据，以及哪些因素会改变局面。",
+    topicsReviewed: "审核于",
+    topicsCount: "个议题",
+    topicsReviewNote: "每个数字都保留其原始统计时期；这些摘要经人工审核，并非实时新闻。",
+    topicsEvidence: "证据与背景",
+    topicsUncertainty: "尚不确定之处",
+    topicsWatch: "什么会改变局面",
+    topicsDecision: "选择你的下一步",
+    topicsChoose: "选择你的情况",
+    topicsDecisionNote: "实用的编辑建议。你的选择只保留在本页面；无需调用 AI，也无需账户。",
+    topicsReadSource: "阅读来源",
+    topicsReadPage: "打开阅读页面",
+    topicsEstimate: "估算",
+    topicsProjection: "预测",
+    topicsResearch: "研究结果",
+    topicsReported: "公司披露",
+    topicsGuidance: "政策或指引",
+    topicsDefinition: "定义",
+    topicsTagEnvironment: "环境",
+    topicsTagWork: "工作",
+    topicsTagEconomy: "经济",
+    topicsTagLaw: "法律",
+    topicsTagPolicy: "政策",
+    topicsTagEcosystem: "生态",
+    topicsCompareModels: "对比模型",
+    topicsFindAI: "找到合适的 AI",
+    topicsSeeMarket: "查看 AI 价格",
+    topicsImprovePrompt: "改进提示词",
+    topicsReviewStack: "检查我的 AI 组合",
+    topicsExploreModels: "浏览排名",
+    topicsLearnTerms: "浏览术语表",
+    complyTitle: "你自己的合规义务",
+    complyText: "在 ComplyAI 上逐步检查哪些 EU AI Act 和 GDPR 义务适用于你的组织。",
+    complyGo: "打开 ComplyAI.wiki",
+    bridge5: "读得差不多了。你想完成什么？",
+    ch6Eyebrow: "付诸实践",
+    ch6Title: "从合适的 AI 到合适的提示词",
+    ch6Lede: "一条路径，四个工具：为任务找到合适的 AI，写出它最能理解的提示词，检查任意提示词，再精简你的付费订阅。",
+    step1Title: "找到你的 AI",
+    step1Sub: "按任务快速给出答案，或回答四个问题获得个性化推荐。无需提示词。",
+    quickTitle: "快速答案：选择一项任务",
+    quickHint: "最适合该任务的应用会显示在这里，并附上理由、免费方案和来源。",
+    quickBestFor: "{task}的最佳选择",
+    quickWrite: "为 {app} 写提示词",
+    quickPersonal: "个性化推荐：4 个问题",
+    finderGuidedTitle: "四个问题，获得个性化推荐",
+    finderStart: "开始四个问题 →",
+    step2Title: "写提示词",
+    step2Sub: "一个目标，为你选择的每个 AI 系列量身调整提示词，并给出该任务的最佳选择。",
+    genMore: "背景与选项",
+    genReco: "此任务推荐",
+    genToDoctor: "用 Prompt Doctor 检查",
+    genWords: "词",
+    genChars: "字符",
+    chipPromptTarget: "支持提示词生成器",
+    drawerTitle: "模型详情",
+    drawerRankTip: "在拥有官方评分的当前模型中的实时排名：即时计算，从不写死在文本里。",
+    drawerWas: "上次审核价",
+    drawerCatNote: "分类分数（0-100）是 WhichAI 的综合评分：仅供参考，并非官方测量结果。",
+    drawerCompare: "对比 ⇄",
+    drawerPrompt: "为它写提示词",
+    drawerWiki: "模型页面",
+    snapshotLabel: "数据快照",
+    footProjects: "WhichAI 作者的更多项目",
+    projComplyTag: "合规",
+    projComply: "面向小企业的 EU AI Act、GDPR 与合同合规工具。免费开始使用。",
+    projWarTag: "地缘政治",
+    projWar: "战争与地缘政治危机的实时地图，附最新新闻、市场指标和情景分析。",
+    projVisit: "访问",
+    footAbout: "关于 WhichAI",
+    aboutDiff: "WhichAI 与排行榜有何不同",
+    aboutData: "数据如何保持最新",
+    aboutMethod: "方法论",
+    aboutApi: "WhichAI API",
+    footModels: "所有模型",
+    footBestFor: "最适合…的 AI",
+    footHeadToHeads: "模型对决",
+    footDataset: "开放数据集",
+    prefsDone: "已清除记住的偏好设置。"
   };
 
   S.hi = {
-    navGenerator: "जनरेटर", navGuide: "मॉडल गाइड", navCompare: "तुलना", navChains: "चेन", navSettings: "सेटिंग्स",
-    privacyPill: "डिज़ाइन से निजी",
-    privacyTip: "पूरी तरह आपके ब्राउज़र में चलता है। कोई खाता नहीं, कोई सर्वर नहीं, कोई ट्रैकिंग नहीं। API कुंजियाँ आपके डिवाइस पर ही रहती हैं।",
-    trustLine: "कोई खाता नहीं · कोई सर्वर नहीं · कुछ भी ब्राउज़र से बाहर नहीं जाता",
+    navCompare: "तुलना",
+    trustLine: "कोई खाता नहीं · कोई ट्रैकिंग नहीं · आपका लिखा ब्राउज़र से बाहर नहीं जाता",
     langNote: "इंटरफ़ेस हिन्दी में है। ध्यान दें: जनरेट किए गए प्रॉम्प्ट, बेंचमार्क नोट्स और कार्य-प्रकार की स्वतः पहचान अंग्रेज़ी के लिए अनुकूलित हैं (सभी AI मॉडल अंग्रेज़ी निर्देशों पर सबसे अच्छा काम करते हैं)। आप अपना लक्ष्य किसी भी भाषा में लिख सकते हैं: AI आपकी भाषा में उत्तर देगा।",
-    genTitle: "अपना लक्ष्य बताइए",
-    genSubtitle: "WhichAI इसे हर AI मॉडल के लिए तैयार प्रॉम्प्ट में बदलता है - और सरल भाषा में बताता है कि कौन सा मॉडल सबसे उपयुक्त है।",
-    goalLabel: "लक्ष्य ", optionalTag: "(वैकल्पिक)", tryExample: "उदाहरण आज़माएँ",
+    goalLabel: "लक्ष्य ",
+    optionalTag: "(वैकल्पिक)",
+    tryExample: "उदाहरण आज़माएँ",
     goalPh: "जैसे: फ्रीलांसरों के लिए बजट ऐप की लैंडिंग पेज हेडलाइन लिखें",
     goalErr: "प्रॉम्प्ट बनाने के लिए अपना लक्ष्य बताइए।",
-    contextLabel: "संदर्भ ", contextPh: "पृष्ठभूमि, दर्शक, सीमाएँ, उदाहरण - जो कुछ AI को पता होना चाहिए",
-    taskLabel: "कार्य का प्रकार", formatLabel: "आउटपुट फ़ॉर्मेट", lengthLabel: "लंबाई", toneLabel: "लहजा",
-    targetsLabel: "लक्षित मॉडल", groupAssistants: "AI सहायक", groupEco: "इकोसिस्टम सहायक", groupOpen: "ओपन मॉडल ",
-    modelsErr: "कम से कम एक मॉडल चुनें।", generateBtn: "प्रॉम्प्ट बनाएँ",
+    contextLabel: "संदर्भ ",
+    contextPh: "पृष्ठभूमि, दर्शक, सीमाएँ, उदाहरण - जो कुछ AI को पता होना चाहिए",
+    taskLabel: "कार्य का प्रकार",
+    formatLabel: "आउटपुट फ़ॉर्मेट",
+    lengthLabel: "लंबाई",
+    toneLabel: "लहजा",
+    targetsLabel: "लक्षित मॉडल",
+    groupAssistants: "AI सहायक",
+    groupEco: "इकोसिस्टम सहायक",
+    groupOpen: "ओपन मॉडल ",
+    modelsErr: "कम से कम एक मॉडल चुनें।",
+    generateBtn: "प्रॉम्प्ट बनाएँ",
     emptyLead: "आपके अनुकूलित प्रॉम्प्ट यहाँ दिखेंगे - हर मॉडल के लिए एक संस्करण, साथ ही सबसे उपयुक्त मॉडल की सिफ़ारिश।",
-    step1: "अपना लक्ष्य बताइए", step2: "हर AI के लिए तैयार प्रॉम्प्ट कॉपी करें", step3: "उत्तरों की तुलना करें और सुधारें",
-    resultsTitle: "अनुकूलित प्रॉम्प्ट", toCompareBtn: "आउटपुट की तुलना करें →",
-    optNone: "कोई प्राथमिकता नहीं", optProse: "सादा गद्य", optMarkdown: "Markdown", optBullets: "बुलेट सूची", optTable: "तालिका", optJson: "JSON", optCode: "कोड",
-    optShort: "छोटा", optMedium: "मध्यम", optLong: "लंबा और विस्तृत",
-    optProfessional: "पेशेवर", optFriendly: "मैत्रीपूर्ण", optCasual: "अनौपचारिक", optPersuasive: "प्रेरक", optAcademic: "अकादमिक",
-    autoDetect: "स्वतः पहचान", detected: "पहचाना गया:",
-    task_writing: "लेखन और सामग्री", task_coding: "कोडिंग और विकास", task_analysis: "विश्लेषण और डेटा", task_research: "शोध और सारांश",
-    task_brainstorming: "विचार-मंथन", task_education: "शिक्षा और व्याख्या", task_business: "व्यवसाय और मार्केटिंग", task_general: "सामान्य / अन्य",
-    routerTitle: "इस कार्य के लिए कौन सा मॉडल?", bestPick: "सर्वश्रेष्ठ विकल्प:", benchLabel: "बेंचमार्क:",
-    fullRanking: "पूरी रैंकिंग, मुफ़्त प्लान और स्रोत", freeTier: "मुफ़्त प्लान:", sourcesLabel: "स्रोत:",
-    whyPrefix: "यह प्रॉम्प्ट इस तरह क्यों बनाया गया है:", copy: "कॉपी", copied: "कॉपी हो गया", copyPrompt: "प्रॉम्प्ट कॉपी करें",
-    guideTitle: "मॉडल गाइड", guideSub: "किस तरह के कार्य के लिए कौन सा AI ऐप उपयुक्त है - सार्वजनिक बेंचमार्क सरल भाषा में।",
-    catalogTitle: "मॉडल कैटलॉग",
-    compareTitle: "आउटपुट की तुलना करें",
-    compareSub: "हर AI ऐप में वही अनुकूलित प्रॉम्प्ट चलाएँ, उत्तर चिपकाएँ (या स्वतः चलाएँ) और साथ-साथ अंक दें। सब कुछ आपके ब्राउज़र में रहता है।",
-    compareEmptyText: "कोई सक्रिय तुलना नहीं। पहले प्रॉम्प्ट बनाएँ, फिर \"आउटपुट की तुलना करें\" दबाएँ। ",
-    goGenerator: "जनरेटर पर जाएँ",
-    saveCmp: "तुलना सहेजें", newVersion: "नया संस्करण", exportMd: ".md निर्यात करें", savedCmps: "सहेजी गई तुलनाएँ",
-    notScored: "अंक नहीं", winner: "विजेता", tied: "बराबर", tie: "बराबरी", winnerPrefix: "विजेता:", openBtn: "खोलें", deleteBtn: "हटाएँ",
-    chainsTitle: "चेन",
-    chainsSub: "जटिल लक्ष्य को जुड़े हुए चरणों में बाँटें: हर चरण का अपना अनुकूलित प्रॉम्प्ट होता है और एक चरण का आउटपुट अगले में जाता है। मुफ़्त कुंजी होने पर स्वतः चलाएँ; बाकी में कॉपी-पेस्ट करें।",
-    buildChain: "चेन बनाएँ", saveChain: "चेन सहेजें", savedChains: "सहेजी गई चेन",
-    promptForStep: "इस चरण का प्रॉम्प्ट", stepOutput: "चरण का आउटपुट",
-    settingsTitle: "सेटिंग्स",
-    settingsSub: "API कुंजियाँ स्वतः-चालन सक्षम करती हैं। ये केवल इस ब्राउज़र में रहती हैं और सिर्फ़ उसी प्रदाता को भेजी जाती हैं जिसे आप कॉल करते हैं - कभी किसी WhichAI सर्वर को नहीं (कोई सर्वर है ही नहीं)।",
-    saveSettings: "सेटिंग्स सहेजें", prefsReset: "प्राथमिकताएँ रीसेट करें",
-    footerText: "पूरी तरह आपके ब्राउज़र में चलता है: कोई खाता नहीं, कोई सर्वर नहीं, आपकी कुंजियाँ और डेटा कभी डिवाइस से बाहर नहीं जाते।"
+    resultsTitle: "अनुकूलित प्रॉम्प्ट",
+    optNone: "कोई प्राथमिकता नहीं",
+    optProse: "सादा गद्य",
+    optMarkdown: "Markdown",
+    optBullets: "बुलेट सूची",
+    optTable: "तालिका",
+    optJson: "JSON",
+    optCode: "कोड",
+    optShort: "छोटा",
+    optMedium: "मध्यम",
+    optLong: "लंबा और विस्तृत",
+    optProfessional: "पेशेवर",
+    optFriendly: "मैत्रीपूर्ण",
+    optCasual: "अनौपचारिक",
+    optPersuasive: "प्रेरक",
+    optAcademic: "अकादमिक",
+    autoDetect: "स्वतः पहचान",
+    detected: "पहचाना गया:",
+    task_writing: "लेखन और सामग्री",
+    task_coding: "कोडिंग और विकास",
+    task_analysis: "विश्लेषण और डेटा",
+    task_research: "शोध और सारांश",
+    task_brainstorming: "विचार-मंथन",
+    task_education: "शिक्षा और व्याख्या",
+    task_business: "व्यवसाय और मार्केटिंग",
+    task_general: "सामान्य / अन्य",
+    routerTitle: "इस कार्य के लिए कौन सा मॉडल?",
+    bestPick: "सर्वश्रेष्ठ विकल्प:",
+    benchLabel: "बेंचमार्क:",
+    fullRanking: "पूरी रैंकिंग, मुफ़्त प्लान और स्रोत",
+    freeTier: "मुफ़्त प्लान:",
+    sourcesLabel: "स्रोत:",
+    whyPrefix: "यह प्रॉम्प्ट इस तरह क्यों बनाया गया है:",
+    copy: "कॉपी",
+    copied: "कॉपी हो गया",
+    copyPrompt: "प्रॉम्प्ट कॉपी करें",
+    exportMd: ".md निर्यात करें",
+    prefsReset: "प्राथमिकताएँ रीसेट करें",
+    footerText: "आपके ब्राउज़र में चलता है: कोई खाता नहीं, कोई ट्रैकिंग नहीं। आपके लक्ष्य और प्रॉम्प्ट कभी आपके डिवाइस से बाहर नहीं जाते।",
+    dbNoResults: "आपकी खोज से कोई मॉडल मेल नहीं खाता।",
+    themeTip: "हल्की और गहरी थीम के बीच बदलें",
+    footFaq: "सामान्य प्रश्न",
+    footSimilar: "मिलते-जुलते टूल",
+    footContribute: "योगदान करें",
+    footGlossary: "शब्दावली",
+    finderSub: "कुछ छोटे सवालों के जवाब दें - कारण, सीमाएँ और कीमत के साथ सिफ़ारिश पाएं। प्रॉम्प्ट की ज़रूरत नहीं।",
+    finderBack: "← पीछे",
+    finderNext: "आगे",
+    finderRestart: "फिर से शुरू करें",
+    finderResults: "हमारी सिफ़ारिश",
+    finderAlt: "इन पर भी विचार करें",
+    finderWhy: "यह चुनाव क्यों",
+    finderBestFor: "सबसे उपयुक्त:",
+    finderLimit: "ध्यान रखें:",
+    finderAccess: "एक्सेस:",
+    finderOpenGuide: "मॉडल विवरण →",
+    finderUseGen: "इसके लिए प्रॉम्प्ट लिखें →",
+    finderSwitchGoal: "अपना लक्ष्य खुद बताना चाहते हैं? इसके बजाय प्रॉम्प्ट लिखें →",
+    finderTop: "सर्वश्रेष्ठ विकल्प",
+    glossTitle: "AI शब्दावली",
+    glossSearchPh: "शब्द खोजें…",
+    glossNoRes: "कोई शब्द नहीं मिला।",
+    glossCount: "शब्द",
+    mcAdd: "+ तीसरा मॉडल जोड़ें",
+    mcRemove: "हटाएँ",
+    mcReleased: "रिलीज़",
+    mcCtx: "कॉन्टेक्स्ट विंडो",
+    mcModal: "मोडैलिटी",
+    mcPrice: "API कीमत $/1M (इन/आउट)",
+    mcSpeed: "गति",
+    mcAccess: "एक्सेस",
+    mcProfile: "श्रेणी प्रोफ़ाइल",
+    mcStrengths: "ताकत",
+    mcReview: "एक पंक्ति में",
+    mcFootnote: "n/a = प्रकाशित नहीं या अभी सत्यापित नहीं। ~ वाले मान मौजूदा आधिकारिक माप नहीं हैं: इनमें से किसी एक और मापे गए स्कोर के बीच के छोटे अंतर को कभी वास्तविक न मानें।",
+    dataTitle: "आपका डेटा",
+    dataHint: "WhichAI जो कुछ सहेजता है वह इसी ब्राउज़र में रहता है: प्राथमिकताएँ, आपकी वॉचलिस्ट और पिछली बार पढ़ा गया डेटा। डिवाइस बदलने या ब्राउज़र साफ़ करने से पहले बैकअप निर्यात करें।",
+    dataExport: "बैकअप निर्यात करें (.json)",
+    dataImport: "बैकअप आयात करें",
+    dataWipe: "सारा डेटा हटाएँ",
+    dataWipeAsk: "इस ब्राउज़र से WhichAI का सारा डेटा हटाएँ? प्राथमिकताएँ, वॉचलिस्ट और सहेजा गया डेटा हट जाएगा।",
+    dataImportAsk: "यह बैकअप आयात करें? समान नाम का मौजूदा डेटा अधिलेखित होगा।",
+    dataImported: "बैकअप आयात हुआ। रीलोड हो रहा है।",
+    dataImportBad: "अमान्य बैकअप फ़ाइल।",
+    updateReady: "WhichAI का नया संस्करण तैयार है।",
+    updateReload: "रीफ़्रेश",
+    navStack: "Stack Optimizer",
+    navDoctor: "Prompt Doctor",
+    navStackSub: "कौन सी सदस्यता रखें, क्या मुफ़्त में चलेगा",
+    navDoctorSub: "प्रॉम्प्ट को स्कोर करें, बेहतर संस्करण देखें",
+    navGlossarySub: "हर AI शब्द एक सरल वाक्य में",
+    stackTitle: "AI Stack Optimizer",
+    stackSub: "चार त्वरित चुनाव: कौन सी सदस्यता रखने लायक है, क्या मुफ़्त चलेगा, क्या रद्द करें। सब आपके डिवाइस पर।",
+    stackGo: "मेरा स्टैक बनाएँ",
+    stackPickOne: "पहले कम से कम एक कार्य चुनें।",
+    stackResult: "आपका सुझाया स्टैक",
+    stackNewCost: "सुझाए स्टैक की अनुमानित मासिक लागत",
+    stackCurrentCost: "अभी आप देते हैं:",
+    stackSaving: "अनुमानित बचत",
+    stackRedundant: "आपके कार्यों के लिए शायद अनावश्यक:",
+    stackFreeTier: "मुफ़्त स्तर",
+    stackToFinder: "सिर्फ़ एक विकल्प चाहिए? फ़ाइंडर आज़माएँ",
+    doctorTitle: "Prompt Doctor",
+    doctorSub: "प्रॉम्प्ट चिपकाएँ: स्कोर, कमियों की सूची और चुने मॉडल के लिए बेहतर संस्करण। बिना API।",
+    doctorPh: "अपना प्रॉम्प्ट यहाँ चिपकाएँ…",
+    doctorGo: "प्रॉम्प्ट का विश्लेषण करें",
+    doctorDetected: "पहचाना गया कार्य:",
+    doctorMissingLead: "मुख्य कमियाँ:",
+    doctorAllGood: "मज़बूत प्रॉम्प्ट: सभी मूल तत्व मौजूद हैं।",
+    doctorChecklist: "चेकलिस्ट",
+    doctorOptimized: "बेहतर संस्करण",
+    doctorBefore: "आपका प्रॉम्प्ट",
+    doctorAfter: "चुने मॉडल के लिए अनुकूलित",
+    doctorChanges: "क्या बदला और क्यों",
+    doctorToGen: "Generator में खोलें",
+    doctorNote: "प्रॉम्प्ट इंजीनियरिंग की सर्वोत्तम प्रथाओं पर आधारित स्थैतिक विश्लेषण; बेहतर संस्करण वही इंजन उपयोग करता है। उपयोग से पहले जाँचें।",
+    officialOpen: "खोलें",
+    officialSite: "आधिकारिक ऐप खोलें",
+    navRadar: "मॉडल राडार",
+    radarNew: "नया",
+    radarUpcoming: "आने वाला",
+    radarAll: "सब",
+    radarFollowing: "फ़ॉलो किए",
+    radarSince: "आपकी पिछली विज़िट के बाद के बदलाव",
+    radarFollow: "फ़ॉलो करें",
+    radarUnfollow: "फ़ॉलो में",
+    radarTypeNew: "नए मॉडल",
+    radarTypePrice: "कीमतें",
+    radarTypeScore: "स्कोर",
+    radarTypeFree: "मुफ़्त स्तर",
+    radarEmpty: "यहाँ अभी कुछ नहीं है। अपना फ़ीड बनाने के लिए स्टार से किसी मॉडल को फ़ॉलो करें।",
+    shareBtn: "छवि के रूप में साझा करें",
+    shareDone: "छवि तैयार",
+    navTopics: "AI बहसें",
+    topicsTitle: "AI बहसें",
+    topicsCaseA: "चिंता",
+    topicsCaseB: "प्रति-तर्क",
+    topicsStatus: "स्थिति",
+    topicsDisclaimer: "सार्वजनिक रिपोर्टिंग और शोध के संकलित सारांश, डेटा अपडेट के साथ ताज़ा। यह वित्तीय, करियर या कानूनी सलाह नहीं है।",
+    footSupport: "सहयोग ♥",
+    supportTitle: "WhichAI का सहयोग करें",
+    supportText: "WhichAI मुफ़्त है, न विज्ञापन न प्रायोजक: एकमात्र खर्च डोमेन और वे घंटे हैं जो 100+ मॉडलों को ईमानदार और अद्यतन रखते हैं। अगर इसने आपका समय बचाया, तो छोटा दान इसे स्वतंत्र रखता है।",
+    supportBtn: "दान करें ♥",
+    visitsLabel: "विज़िट",
+    catalogShowLess: "कम दिखाएँ",
+    radarCheckClean: "डेटा जाँच: सब कुछ सार्वजनिक स्रोतों से मेल खाता है",
+    radarCheckReview: "मद जिनकी समीक्षा ज़रूरी है",
+    radarCheckBroken: "डेटा जाँच: भेजा गया मुफ़्त रूट काम नहीं कर रहा",
+    radarCheckSkipped: "आज डेटा जाँच नहीं हो सकी",
+    journeyConfidence: "विश्वास",
+    livePill: "लाइव डेटा",
+    liveDataLine: "लाइव डेटा: Artificial Analysis के आधिकारिक स्कोर और OpenRouter की कीमतें, {when} पढ़ी गईं; {n} मॉडल अपने आप जोड़े गए।",
+    liveAutoChip: "अपने आप जोड़ा गया",
+    liveAutoTitle: "लाइव सार्वजनिक डेटा से अपने आप जोड़ा गया (OpenRouter के ज़रिए Artificial Analysis)। अभी कोई संपादकीय समीक्षा नहीं।",
+    skipLink: "सामग्री पर जाएँ",
+    langLabel: "भाषा",
+    railLabel: "अध्याय",
+    close: "बंद करें",
+    navRanking: "रैंकिंग",
+    navMarket: "बाज़ार",
+    navTools: "टूल",
+    ch1Eyebrow: "रैंकिंग",
+    ch1Title: "अभी सबसे अच्छा AI कौन सा है?",
+    ch1Lede: "Artificial Analysis के आधिकारिक स्कोर वाला हर मॉडल, अपने आप टियर में बँटा हुआ। नए माप यहाँ अपने आप आ जाते हैं, आमतौर पर एक घंटे के भीतर।",
+    heroFind: "मेरे काम के लिए AI खोजें",
+    heroPrompt: "बेहतर प्रॉम्प्ट लिखें",
+    kpiModels: "ट्रैक किए गए मॉडल",
+    kpiMeasured: "आधिकारिक स्कोर के साथ",
+    kpiLabs: "रैंकिंग में शामिल लैब",
+    kpiNew: "पिछले 30 दिनों में नए",
+    rankMetricLabel: "रैंकिंग का आधार",
+    metricAA: "इंटेलिजेंस",
+    metricCoding: "कोडिंग",
+    metricAgentic: "एजेंटिक",
+    rankFilterLabel: "दिखाएँ",
+    fAll: "सभी",
+    fOpen: "ओपन वेट्स",
+    fFree: "मुफ़्त रूट",
+    fCheap: "$1 से कम",
+    fLegacy: "पुराने मॉडल शामिल करें",
+    rankSearchPh: "कोई भी मॉडल खोजें…",
+    rankUnmeasured: "मापा नहीं गया",
+    tierS: "अग्रणी",
+    tierA: "लगभग अग्रणी",
+    tierB: "मज़बूत",
+    tierC: "सक्षम",
+    tierD: "हल्का",
+    tierMore: "+{n} और",
+    tierNote: "टियर गणना से तय होते हैं, चुने नहीं जाते: चुने गए इंडेक्स पर S मौजूदा मॉडलों के शीर्ष 5% हैं, A अगले 15%, B अगले 20%, C अगले 25%, D बाकी। बराबर स्कोर वाले मॉडल एक ही टियर में आते हैं। रूपांतरित (~) और बिना मापे स्कोर कभी रैंक नहीं किए जाते।",
+    tierMissing: "{n} मौजूदा मॉडलों का अभी कोई {metric} स्कोर नहीं है।",
+    scatterTitle: "कीमत बनाम इंटेलिजेंस",
+    scatterNote: "ऊपर और बाईं ओर का मतलब है प्रति डॉलर ज़्यादा इंटेलिजेंस। कीमत लॉग स्केल पर है, इसलिए सस्ते मॉडल अब एक कोने में नहीं सिमटते; डैश वाली रेखा सबसे अच्छी वैल्यू की सीमा है।",
+    scatterX: "मिश्रित API कीमत, $ प्रति 1M टोकन (लॉग स्केल)",
+    scatterY: "AA इंटेलिजेंस इंडेक्स",
+    scatterFree: "मुफ़्त",
+    scatterLegend: "बिंदु का रंग = इंटेलिजेंस इंडेक्स पर टियर। किसी बिंदु या चिप पर होवर करें ताकि वह दूसरे व्यू में दिखे; विवरण के लिए क्लिक करें।",
+    bridge1: "शीर्ष पर कड़ी टक्कर? दोनों अगुआ मॉडलों को साथ-साथ रखें।",
+    ch2Eyebrow: "आमने-सामने",
+    ch2Title: "किन्हीं भी दो मॉडलों की तुलना करें",
+    ch2Lede: "आधिकारिक इंडेक्स, कीमत, कॉन्टेक्स्ट और ताकतें, साथ-साथ। यह आज के शीर्ष दो मॉडलों से खुलता है और जब तक आप खुद न चुनें, रैंकिंग के साथ बदलता रहता है; जब चाहें तीसरा मॉडल जोड़ें।",
+    cmpPick: "मॉडल",
+    cmpSwap: "अदला-बदली",
+    cmpReset: "शीर्ष दो पर लौटें",
+    cmpFollowing: "लाइव शीर्ष दो को फ़ॉलो कर रहा है",
+    cmpYourPick: "आपका चयन",
+    cmpIndices: "आधिकारिक इंडेक्स",
+    cmpIndicesNote: "Artificial Analysis से, अपने आप पढ़े गए। हर इंडेक्स का अपना पैमाना है: एक ही पंक्ति के भीतर तुलना करें, पंक्तियों के बीच नहीं। हर पंक्ति में बेहतर मान पर स्टार लगा है।",
+    cmpCost: "कीमत और स्पेक्स",
+    cmpPriceIn: "इनपुट $ / 1M",
+    cmpPriceOut: "आउटपुट $ / 1M",
+    cmpDaysAgo: "{n} दिन पहले",
+    cmpPriceNote: "कीमतें OpenRouter की हैं, USD में प्रति मिलियन टोकन; कीमतों में कम मान को स्टार मिलता है।",
+    cmpProfileNote: "श्रेणी स्कोर (0-100) WhichAI की मिश्रित रेटिंग हैं: मार्गदर्शन के लिए, आधिकारिक माप नहीं।",
+    mcDetails: "विवरण",
+    bridge2: "हो सकता है कुछ नया पहले ही आ चुका हो। देखिए इस हफ़्ते क्या बदला।",
+    ch3Eyebrow: "नया क्या है",
+    ch3Title: "मॉडल राडार: लॉन्च, कीमतें, ख़बरें",
+    ch3Lede: "लाइव कैटलॉग से लॉन्च और कीमतों के बदलाव, साथ में लैब, प्रेस, Hacker News और Hugging Face की सुर्ख़ियाँ। किसी को कुछ पोस्ट नहीं करना पड़ता: यह अपने आप अपडेट होता है।",
+    radarLatest: "सबसे नया आगमन",
+    radarFeedTitle: "लॉन्च और बदलाव",
+    newsTitle: "समाचार फ़ीड",
+    newsAll: "सभी स्रोत",
+    newsLabs: "लैब",
+    newsPress: "प्रेस",
+    newsCommunity: "समुदाय",
+    newsOpen: "ओपन सोर्स",
+    newsLoading: "स्रोत पढ़े जा रहे हैं…",
+    newsDown: "समाचार स्रोत अभी उपलब्ध नहीं हैं। बगल की लॉन्च फ़ीड इनके बिना भी पूरी है।",
+    newsUpdated: "{when} अपडेट हुआ",
+    newsPoints: "पॉइंट",
+    newsDiscuss: "चर्चा",
+    newsFoot: "सिर्फ़ सुर्ख़ियाँ और लिंक: आधिकारिक लैब ब्लॉग, TechCrunch AI, 100+ पॉइंट वाली Hacker News स्टोरीज़ और Hugging Face से। हर 30 मिनट में दोबारा पढ़ा जाता है।",
+    newsSomeDown: "अभी उपलब्ध नहीं: {list}।",
+    showMore: "और दिखाएँ",
+    bridge3: "हर लॉन्च कीमतें भी बदलता है। देखिए आज इंटेलिजेंस की कीमत क्या है।",
+    ch4Eyebrow: "कितना खर्च आता है",
+    ch4Title: "AI बाज़ार, लाइव",
+    ch4Lede: "OpenRouter की API कीमतें, हर विज़िट पर दोबारा गणना: हर टियर तक पहुँचने का सबसे सस्ता रास्ता, सबसे अच्छी वैल्यू, अभी क्या मुफ़्त है, और आपके अपने एक महीने के उपयोग का खर्च।",
+    mkLeaderKicker: "लीडर की कीमत",
+    mkPer1M: "प्रति 1M टोकन (इनपुट / आउटपुट)",
+    mkPer1MShort: "प्रति 1M",
+    mkCheapS: "अग्रणी टियर का सबसे सस्ता मॉडल, मिश्रित कीमत प्रति 1M टोकन",
+    mkFreeNow: "मुफ़्त API रूट अभी उपलब्ध",
+    mkFreeBest: "सबसे मज़बूत: {name}",
+    mkMoves: "लाइव कीमतें जो हमारी पिछली समीक्षा से अलग हैं",
+    mkLadderTitle: "हर टियर तक पहुँचने का सबसे सस्ता रास्ता",
+    mkLadderSub: "इंटेलिजेंस इंडेक्स पर हर टियर के मॉडलों में सबसे कम मिश्रित कीमत (3 भाग इनपुट, 1 भाग आउटपुट)।",
+    mkValueTitle: "अभी सबसे अच्छी वैल्यू",
+    mkValueNote: "मिश्रित कीमत के हर डॉलर पर इंटेलिजेंस अंक, उन मॉडलों में जिनका स्कोर मीडियन के बराबर या उससे ऊपर है।",
+    mkPtsPerUsd: "अंक प्रति $",
+    mkCalcTitle: "मेरा एक महीने का खर्च कितना होगा?",
+    mkCalcMsgs: "प्रतिदिन संदेश",
+    mkCalcLen: "आम संदेश की लंबाई",
+    mkPickLeader: "लीडर",
+    mkPickValue: "सबसे अच्छी वैल्यू",
+    mkPickA: "लगभग अग्रणी में सबसे सस्ता",
+    mkPickB: "मज़बूत में सबसे सस्ता",
+    mkPickFree: "एक मुफ़्त रूट",
+    mkPerMonth: "प्रति माह",
+    mkRateLimited: "उपयोग सीमित",
+    mkCalcNote: "यह मानकर: हर संदेश में {in} इनपुट और {out} आउटपुट टोकन, महीने में 30 दिन, OpenRouter की कीमतें। चैट सदस्यताएँ तय शुल्क वाली होती हैं: नीचे Stack Optimizer देखें।",
+    mkFreeTitle: "अभी मुफ़्त",
+    mkFreeNote: "OpenRouter पर $0 कीमत वाले API रूट। सभी की उपयोग सीमा है और कुछ की अवधि ख़त्म हो जाती है।",
+    mkFreeNone: "अभी कोई मुफ़्त रूट सूचीबद्ध नहीं है।",
+    mkUntil: "अंतिम तिथि",
+    mkAppsFree: "बड़े ऐप्स के मुफ़्त प्लान",
+    mkMovesTitle: "कीमतों में बदलाव",
+    mkMovesNote: "जहाँ OpenRouter की लाइव कीमत हमारी पिछली संपादकीय समीक्षा की कीमत से अलग है।",
+    mkMovesNone: "अभी कोई अंतर नहीं।",
+    mkFoot: "कीमतें: OpenRouter, USD प्रति 1M टोकन, अपने आप पढ़ी गईं (कैटलॉग {when})। किसी कंपनी की अपनी सूची कीमत अलग हो सकती है।",
+    bridge4: "कीमतों के पीछे: ऊर्जा, नौकरियाँ और सैकड़ों अरब डॉलर का पूँजी निवेश। बहसें, दोनों पक्ष।",
+    ch5Eyebrow: "बड़ी तस्वीर",
+    ch5Title: "AI बहसें, दोनों पक्ष",
+    ch5Lede: "ऊर्जा, नौकरियाँ, पैसा, कॉपीराइट, नियमन, ओपन वेट्स: हर पक्ष का सबसे मज़बूत तर्क, तारीख़ों के साथ आँकड़े, और क्या तस्वीर बदल सकता है।",
+    topicsReviewed: "समीक्षा:",
+    topicsCount: "बहसें",
+    topicsReviewNote: "हर आँकड़ा अपनी मूल अवधि के साथ है; ये सारांश हाथ से जाँचे जाते हैं, ये लाइव ख़बरें नहीं हैं।",
+    topicsEvidence: "प्रमाण, संदर्भ के साथ",
+    topicsUncertainty: "क्या अब भी अनिश्चित है",
+    topicsWatch: "क्या तस्वीर बदल सकता है",
+    topicsDecision: "अपना अगला कदम चुनें",
+    topicsChoose: "अपनी स्थिति चुनें",
+    topicsDecisionNote: "व्यावहारिक संपादकीय मार्गदर्शन। आपका चुनाव इसी पेज पर रहता है; किसी AI कॉल या खाते की ज़रूरत नहीं।",
+    topicsReadSource: "स्रोत पढ़ें",
+    topicsReadPage: "पढ़ने वाला पेज खोलें",
+    topicsEstimate: "अनुमान",
+    topicsProjection: "पूर्वानुमान",
+    topicsResearch: "अध्ययन का नतीजा",
+    topicsReported: "कंपनी का खुलासा",
+    topicsGuidance: "नीति या दिशानिर्देश",
+    topicsDefinition: "परिभाषा",
+    topicsTagEnvironment: "पर्यावरण",
+    topicsTagWork: "काम",
+    topicsTagEconomy: "अर्थव्यवस्था",
+    topicsTagLaw: "क़ानून",
+    topicsTagPolicy: "नीति",
+    topicsTagEcosystem: "इकोसिस्टम",
+    topicsCompareModels: "मॉडलों की तुलना करें",
+    topicsFindAI: "सही AI चुनें",
+    topicsSeeMarket: "AI की लागत देखें",
+    topicsImprovePrompt: "प्रॉम्प्ट बेहतर बनाएँ",
+    topicsReviewStack: "मेरा AI स्टैक जाँचें",
+    topicsExploreModels: "रैंकिंग देखें",
+    topicsLearnTerms: "शब्दावली देखें",
+    complyTitle: "आपके अपने दायित्व",
+    complyText: "ComplyAI पर कदम-दर-कदम जाँचें कि EU AI Act और GDPR के कौन से दायित्व आपके संगठन पर लागू होते हैं।",
+    complyGo: "ComplyAI.wiki खोलें",
+    bridge5: "बहुत पढ़ लिया। अब आपको क्या करना है?",
+    ch6Eyebrow: "अब काम पर",
+    ch6Title: "सही AI से सही प्रॉम्प्ट तक",
+    ch6Lede: "एक ही राह पर चार टूल: अपने काम के लिए AI खोजें, वह प्रॉम्प्ट लिखें जिस पर वह सबसे अच्छा जवाब दे, कोई भी प्रॉम्प्ट जाँचें, फिर अपना खर्च घटाएँ।",
+    step1Title: "अपना AI खोजें",
+    step1Sub: "काम के हिसाब से झटपट जवाब, या निजी चुनाव के लिए चार सवाल। प्रॉम्प्ट की ज़रूरत नहीं।",
+    quickTitle: "झटपट जवाब: एक काम चुनें",
+    quickHint: "काम के लिए सबसे अच्छा ऐप यहाँ दिखेगा, उसके कारणों, मुफ़्त प्लान और स्रोतों के साथ।",
+    quickBestFor: "{task} के लिए सबसे अच्छा विकल्प",
+    quickWrite: "{app} के लिए प्रॉम्प्ट लिखें",
+    quickPersonal: "अपने हिसाब से चुनें: 4 सवाल",
+    finderGuidedTitle: "चार सवालों में आपका निजी चुनाव",
+    finderStart: "चार सवाल शुरू करें →",
+    step2Title: "प्रॉम्प्ट लिखें",
+    step2Sub: "एक लक्ष्य, आपके चुने हर AI परिवार के लिए ढाला गया प्रॉम्प्ट, और काम के लिए सबसे अच्छा विकल्प।",
+    genMore: "संदर्भ और विकल्प",
+    genReco: "इस काम के लिए सुझाया गया",
+    genToDoctor: "Prompt Doctor में जाँचें",
+    genWords: "शब्द",
+    genChars: "अक्षर",
+    chipPromptTarget: "प्रॉम्प्ट जनरेटर में",
+    drawerTitle: "मॉडल विवरण",
+    drawerRankTip: "आधिकारिक स्कोर वाले मौजूदा मॉडलों में लाइव स्थान, अभी गणना किया गया और टेक्स्ट में कभी लिखा नहीं जाता।",
+    drawerWas: "पिछली समीक्षा:",
+    drawerCatNote: "श्रेणी स्कोर (0-100) WhichAI की मिश्रित रेटिंग हैं: मार्गदर्शन के लिए, आधिकारिक माप नहीं।",
+    drawerCompare: "तुलना करें ⇄",
+    drawerPrompt: "इसके लिए प्रॉम्प्ट लिखें",
+    drawerWiki: "मॉडल पेज",
+    snapshotLabel: "स्नैपशॉट",
+    footProjects: "WhichAI के निर्माता के और प्रोजेक्ट",
+    projComplyTag: "अनुपालन",
+    projComply: "छोटे व्यवसायों के लिए EU AI Act, GDPR और अनुबंध अनुपालन के टूल। शुरुआत मुफ़्त।",
+    projWarTag: "भू-राजनीति",
+    projWar: "युद्धों और भू-राजनीतिक संकटों का लाइव नक्शा, ताज़ा ख़बरों, बाज़ार संकेतकों और परिदृश्यों के साथ।",
+    projVisit: "देखें",
+    footAbout: "WhichAI के बारे में",
+    aboutDiff: "WhichAI किसी लीडरबोर्ड से कैसे अलग है",
+    aboutData: "डेटा कैसे अद्यतन रहता है",
+    aboutMethod: "कार्यप्रणाली",
+    aboutApi: "WhichAI का API",
+    footModels: "सभी मॉडल",
+    footBestFor: "…के लिए सबसे अच्छा AI",
+    footHeadToHeads: "आमने-सामने मुक़ाबले",
+    footDataset: "ओपन डेटासेट",
+    prefsDone: "सहेजी गई प्राथमिकताएँ हटा दी गईं।"
   };
 
-
-  S.en.dbTitle = "Model database"; S.en.dbSub = "Every notable AI model we track - including private and preview models, listed for information. Estimated scores are marked."; S.en.dbSearchPh = "Search models, vendors, tags…"; S.en.dbNoResults = "No models match your search.";
-  S.it.dbTitle = "Database dei modelli"; S.it.dbSub = "Tutti i modelli AI rilevanti che seguiamo - inclusi quelli privati e in anteprima, presenti a scopo informativo. I punteggi stimati sono contrassegnati."; S.it.dbSearchPh = "Cerca modelli, produttori, tag…"; S.it.dbNoResults = "Nessun modello corrisponde alla ricerca.";
-  S.fr.dbTitle = "Base de données des modèles"; S.fr.dbSub = "Tous les modèles d'IA notables que nous suivons - y compris privés et en préversion, à titre informatif. Les scores estimés sont signalés."; S.fr.dbSearchPh = "Rechercher modèles, éditeurs, tags…"; S.fr.dbNoResults = "Aucun modèle ne correspond à votre recherche.";
-  S.es.dbTitle = "Base de datos de modelos"; S.es.dbSub = "Todos los modelos de IA relevantes que seguimos - incluidos privados y en vista previa, con fines informativos. Las puntuaciones estimadas están marcadas."; S.es.dbSearchPh = "Buscar modelos, proveedores, etiquetas…"; S.es.dbNoResults = "Ningún modelo coincide con tu búsqueda.";
-  S.de.dbTitle = "Modell-Datenbank"; S.de.dbSub = "Alle relevanten KI-Modelle, die wir verfolgen - einschließlich privater und Preview-Modelle, zur Information. Geschätzte Werte sind markiert."; S.de.dbSearchPh = "Modelle, Anbieter, Tags suchen…"; S.de.dbNoResults = "Keine Modelle entsprechen deiner Suche.";
-  S.pt.dbTitle = "Banco de dados de modelos"; S.pt.dbSub = "Todos os modelos de IA relevantes que acompanhamos - incluindo privados e em prévia, para fins informativos. Pontuações estimadas estão marcadas."; S.pt.dbSearchPh = "Buscar modelos, fornecedores, tags…"; S.pt.dbNoResults = "Nenhum modelo corresponde à sua busca.";
-  S.zh.dbTitle = "模型数据库"; S.zh.dbSub = "我们追踪的所有重要 AI 模型：包括私有和预览模型，仅供参考。估算分数已标注。"; S.zh.dbSearchPh = "搜索模型、厂商、标签…"; S.zh.dbNoResults = "没有匹配的模型。";
-  S.hi.dbTitle = "मॉडल डेटाबेस"; S.hi.dbSub = "हम जिन सभी उल्लेखनीय AI मॉडलों पर नज़र रखते हैं - निजी और पूर्वावलोकन मॉडल सहित, केवल जानकारी के लिए। अनुमानित स्कोर चिह्नित हैं।"; S.hi.dbSearchPh = "मॉडल, विक्रेता, टैग खोजें…"; S.hi.dbNoResults = "आपकी खोज से कोई मॉडल मेल नहीं खाता।";
-
-
   S.ru = {
-    navGenerator: "Генератор",
-    navGuide: "Гид по моделям",
     navCompare: "Сравнение",
-    navChains: "Цепочки",
-    navSettings: "Настройки",
-    privacyPill: "Приватность по умолчанию",
-    privacyTip: "Работает полностью в вашем браузере. Без аккаунта, без сервера, без трекинга. API-ключи остаются на вашем устройстве.",
-    trustLine: "Без аккаунта · Без сервера · Ничего не покидает ваш браузер",
+    trustLine: "Без аккаунта · Без отслеживания · Ничего написанного не покидает браузер",
     langNote: "Интерфейс на русском. Примечание: сгенерированные промпты, заметки о бенчмарках и автоопределение типа задачи оптимизированы для английского (все ИИ-модели работают лучше с англоязычными инструкциями). Цель можно писать на любом языке - ИИ ответит на вашем языке.",
-    genTitle: "Опишите вашу цель",
-    genSubtitle: "WhichAI превратит её в промпт, адаптированный под каждую ИИ-модель, и простым языком подскажет, какая модель лучше подходит для задачи.",
     goalLabel: "Цель ",
     optionalTag: "(необязательно)",
     tryExample: "Показать пример",
@@ -425,11 +3093,7 @@
     modelsErr: "Выберите хотя бы одну модель.",
     generateBtn: "Сгенерировать промпты",
     emptyLead: "Здесь появятся ваши оптимизированные промпты - по версии на модель, плюс рекомендация, какая модель лучше подходит.",
-    step1: "Опишите цель",
-    step2: "Скопируйте промпт под каждую ИИ",
-    step3: "Сравните ответы и улучшайте",
     resultsTitle: "Оптимизированные промпты",
-    toCompareBtn: "Сравнить ответы →",
     optNone: "Не важно",
     optProse: "Обычный текст",
     optMarkdown: "Markdown",
@@ -465,56 +3129,328 @@
     copy: "Копировать",
     copied: "Скопировано",
     copyPrompt: "Копировать промпт",
-    guideTitle: "Гид по моделям",
-    guideSub: "Какая ИИ подходит для каждого типа задач - публичные бенчмарки простым языком.",
-    catalogTitle: "Каталог моделей",
-    compareTitle: "Сравнение ответов",
-    compareSub: "Запустите один и тот же промпт в каждой ИИ, вставьте (или запустите автоматически) ответы и оцените их рядом. Всё остаётся в вашем браузере.",
-    compareEmptyText: "Нет активного сравнения. Сначала сгенерируйте промпты и нажмите «Сравнить ответы». ",
-    goGenerator: "К генератору",
-    saveCmp: "Сохранить сравнение",
-    newVersion: "Новая версия",
     exportMd: "Экспорт .md",
-    savedCmps: "Сохранённые сравнения",
-    notScored: "Без оценки",
-    winner: "Победитель",
-    tied: "Ничья",
-    tie: "Ничья",
-    winnerPrefix: "Победитель:",
-    openBtn: "Открыть",
-    deleteBtn: "Удалить",
-    chainsTitle: "Цепочки",
-    chainsSub: "Разбейте сложную цель на связанные шаги: каждый шаг получает свой промпт, а результат одного шага питает следующий. Автозапуск там, где есть бесплатный ключ; в остальных - копипаст.",
-    buildChain: "Построить цепочку",
-    saveChain: "Сохранить цепочку",
-    savedChains: "Сохранённые цепочки",
-    promptForStep: "Промпт для этого шага",
-    stepOutput: "Результат шага",
-    settingsTitle: "Настройки",
-    settingsSub: "API-ключи включают автозапуск в Сравнении. Ключи хранятся только в этом браузере и отправляются только выбранному провайдеру - никогда на сервер WhichAI (его нет).",
-    saveSettings: "Сохранить настройки",
     prefsReset: "Сбросить запомненные предпочтения",
-    footerText: "Работает полностью в вашем браузере: без аккаунта, без сервера, ключи и данные не покидают устройство.",
-    dbTitle: "База моделей",
-    dbSub: "Все значимые ИИ-модели, которые мы отслеживаем, включая приватные и превью - для информации. Оценочные баллы помечены.",
-    dbSearchPh: "Поиск моделей, вендоров, тегов…",
+    footerText: "Работает в вашем браузере: без аккаунта и без отслеживания. Ваши цели и промпты не покидают ваше устройство.",
     dbNoResults: "Ничего не найдено.",
-    navAbout: "О проекте",
-    dbHint: "моделей в базе - начните вводить (частичные имена работают)."
+    themeTip: "Переключить светлую и тёмную тему",
+    footFaq: "FAQ",
+    footSimilar: "Похожие инструменты",
+    footContribute: "Внести вклад",
+    footGlossary: "Глоссарий",
+    finderSub: "Ответьте на несколько коротких вопросов - получите рекомендацию с причинами, ограничениями и ценами. Промпт не нужен.",
+    finderBack: "← Назад",
+    finderNext: "Далее",
+    finderRestart: "Начать заново",
+    finderResults: "Наша рекомендация",
+    finderAlt: "Также стоит рассмотреть",
+    finderWhy: "Почему этот выбор",
+    finderBestFor: "Лучше всего для:",
+    finderLimit: "Имейте в виду:",
+    finderAccess: "Доступ:",
+    finderOpenGuide: "Подробнее о модели →",
+    finderUseGen: "Написать промпт для него →",
+    finderSwitchGoal: "Хотите описать цель? Напишите промпт →",
+    finderTop: "Лучший вариант",
+    glossTitle: "Глоссарий ИИ",
+    glossSearchPh: "Поиск термина…",
+    glossNoRes: "Термин не найден.",
+    glossCount: "терминов",
+    mcAdd: "+ Добавить третью модель",
+    mcRemove: "Убрать",
+    mcReleased: "Выпуск",
+    mcCtx: "Контекстное окно",
+    mcModal: "Модальности",
+    mcPrice: "Цена API $/1M (вход / выход)",
+    mcSpeed: "Скорость",
+    mcAccess: "Доступ",
+    mcProfile: "Профиль по категориям",
+    mcStrengths: "Сильные стороны",
+    mcReview: "Одной строкой",
+    mcFootnote: "н/д = не опубликовано или ещё не проверено. Значения с ~ не являются текущими официальными измерениями: небольшую разницу между таким значением и измеренной оценкой не стоит считать реальной.",
+    dataTitle: "Ваши данные",
+    dataHint: "Всё, что сохраняет WhichAI, хранится в этом браузере: настройки, отслеживаемые модели и последние прочитанные данные. Экспортируйте резервную копию перед сменой устройства или очисткой браузера.",
+    dataExport: "Экспорт копии (.json)",
+    dataImport: "Импорт копии",
+    dataWipe: "Удалить все данные",
+    dataWipeAsk: "Удалить ВСЕ данные WhichAI в этом браузере? Настройки, отслеживаемые модели и сохранённые данные будут удалены.",
+    dataImportAsk: "Импортировать эту копию? Существующие данные с теми же именами будут перезаписаны.",
+    dataImported: "Копия импортирована. Перезагрузка.",
+    dataImportBad: "Недопустимый файл копии.",
+    updateReady: "Новая версия WhichAI готова.",
+    updateReload: "Обновить",
+    navStack: "Stack Optimizer",
+    navDoctor: "Prompt Doctor",
+    navStackSub: "Какие подписки оставить, что использовать бесплатно",
+    navDoctorSub: "Оцените промпт, посмотрите улучшенную версию",
+    navGlossarySub: "Каждый термин ИИ одним простым предложением",
+    stackTitle: "AI Stack Optimizer",
+    stackSub: "Четыре быстрых выбора: какую подписку оставить, что использовать бесплатно, что отменить. Всё на вашем устройстве.",
+    stackGo: "Собрать мой стек",
+    stackPickOne: "Сначала выберите хотя бы одну задачу.",
+    stackResult: "Рекомендованный стек",
+    stackNewCost: "оценочная месячная стоимость рекомендованного стека",
+    stackCurrentCost: "Сейчас вы платите:",
+    stackSaving: "оценочная экономия",
+    stackRedundant: "Возможно, лишнее для ваших задач:",
+    stackFreeTier: "Бесплатный уровень",
+    stackToFinder: "Нужен один вариант? Пройдите финдер",
+    doctorTitle: "Prompt Doctor",
+    doctorSub: "Вставьте промпт: оценка, список недостающего и улучшенная версия для выбранной модели. Без API.",
+    doctorPh: "Вставьте промпт сюда…",
+    doctorGo: "Проанализировать промпт",
+    doctorDetected: "Определённая задача:",
+    doctorMissingLead: "Главные пробелы:",
+    doctorAllGood: "Крепкий промпт: все ключевые элементы на месте.",
+    doctorChecklist: "Чек-лист",
+    doctorOptimized: "Улучшенная версия",
+    doctorBefore: "Ваш промпт",
+    doctorAfter: "Оптимизировано под выбранную модель",
+    doctorChanges: "Что изменилось и почему",
+    doctorToGen: "Открыть в Generator",
+    doctorNote: "Статический анализ по лучшим практикам промпт-инжиниринга; улучшенная версия использует тот же движок, что и Generator. Проверьте перед использованием.",
+    officialOpen: "Открыть",
+    officialSite: "Открыть официальное приложение",
+    navRadar: "Радар моделей",
+    radarNew: "НОВОЕ",
+    radarUpcoming: "Скоро",
+    radarAll: "Все",
+    radarFollowing: "Отслеживаемые",
+    radarSince: "изменений с вашего последнего визита",
+    radarFollow: "Следить",
+    radarUnfollow: "Отслеживается",
+    radarTypeNew: "Новые модели",
+    radarTypePrice: "Цены",
+    radarTypeScore: "Оценки",
+    radarTypeFree: "Бесплатные уровни",
+    radarEmpty: "Пока пусто. Отметьте модель звездой, чтобы собрать свой канал.",
+    shareBtn: "Поделиться картинкой",
+    shareDone: "Картинка готова",
+    navTopics: "Дебаты об ИИ",
+    topicsTitle: "Дебаты об ИИ",
+    topicsCaseA: "Опасение",
+    topicsCaseB: "Контраргумент",
+    topicsStatus: "Положение дел",
+    topicsDisclaimer: "Кураторские сводки публичных материалов и исследований, обновляются вместе с данными. Не финансовый, карьерный или юридический совет.",
+    footSupport: "Поддержать ♥",
+    supportTitle: "Поддержать WhichAI",
+    supportText: "WhichAI бесплатен, без рекламы и спонсоров: единственные расходы это домен и часы, которые держат 100+ моделей честными и актуальными. Если он сэкономил вам время, небольшое пожертвование сохранит его независимость.",
+    supportBtn: "Пожертвовать ♥",
+    visitsLabel: "визитов",
+    catalogShowLess: "Показать меньше",
+    radarCheckClean: "Проверка данных: всё совпадает с публичными источниками",
+    radarCheckReview: "пункт(ов) требуют проверки",
+    radarCheckBroken: "Проверка данных: встроенный бесплатный маршрут не работает",
+    radarCheckSkipped: "Сегодня проверку выполнить не удалось",
+    journeyConfidence: "уверенность",
+    livePill: "Живые данные",
+    liveDataLine: "Живые данные: официальные оценки Artificial Analysis и цены OpenRouter, получены {when}; автоматически добавлено моделей: {n}.",
+    liveAutoChip: "добавлено автоматически",
+    liveAutoTitle: "Добавлено автоматически из живых публичных данных (Artificial Analysis через OpenRouter). Редакционного обзора пока нет.",
+    skipLink: "Перейти к содержанию",
+    langLabel: "Язык",
+    railLabel: "Главы",
+    close: "Закрыть",
+    navRanking: "Рейтинг",
+    navMarket: "Рынок",
+    navTools: "Инструменты",
+    ch1Eyebrow: "Рейтинг",
+    ch1Title: "Какой ИИ лучший прямо сейчас?",
+    ch1Lede: "Все модели с официальной оценкой Artificial Analysis, сами распределённые по уровням. Новые измерения появляются здесь автоматически, обычно в течение часа.",
+    heroFind: "Подобрать ИИ под мою задачу",
+    heroPrompt: "Написать промпт лучше",
+    kpiModels: "моделей отслеживается",
+    kpiMeasured: "с официальной оценкой",
+    kpiLabs: "лабораторий в рейтинге",
+    kpiNew: "новых за последние 30 дней",
+    rankMetricLabel: "Сортировать по",
+    metricAA: "Интеллект",
+    metricCoding: "Код",
+    metricAgentic: "Агентность",
+    rankFilterLabel: "Показать",
+    fAll: "Все",
+    fOpen: "Открытые веса",
+    fFree: "Бесплатный маршрут",
+    fCheap: "Дешевле $1",
+    fLegacy: "Включая устаревшие",
+    rankSearchPh: "Найти модель…",
+    rankUnmeasured: "не измерена",
+    tierS: "Передовые",
+    tierA: "Почти передовые",
+    tierB: "Сильные",
+    tierC: "Способные",
+    tierD: "Лёгкие",
+    tierMore: "ещё {n}",
+    tierNote: "Уровни вычисляются, а не назначаются: по выбранному индексу S это лучшие 5% актуальных моделей, A следующие 15%, B следующие 20%, C следующие 25%, D остальные. Модели с равными баллами попадают на один уровень. Пересчитанные (~) и неизмеренные оценки никогда не ранжируются.",
+    tierMissing: "У {n} актуальных моделей пока нет оценки «{metric}».",
+    scatterTitle: "Цена и интеллект",
+    scatterNote: "Выше и левее значит больше интеллекта за каждый доллар. Цена показана в логарифмической шкале, поэтому дешёвые модели больше не сжаты в углу; пунктир отмечает границу лучшего соотношения цены и качества.",
+    scatterX: "Смешанная цена API, $ за 1 млн токенов (лог. шкала)",
+    scatterY: "Индекс интеллекта AA",
+    scatterFree: "Бесплатно",
+    scatterLegend: "Цвет точки = уровень по индексу интеллекта. Наведите на точку или модель, чтобы найти её в другом виде; нажмите, чтобы открыть подробности.",
+    bridge1: "Лидеры идут вровень? Поставьте двух первых рядом.",
+    ch2Eyebrow: "Лицом к лицу",
+    ch2Title: "Сравните любые две модели",
+    ch2Lede: "Официальные индексы, цена, контекст и сильные стороны, бок о бок. Открывается на двух лидерах дня и следует за рейтингом, пока вы не выберете свои; третью можно добавить в любой момент.",
+    cmpPick: "Модель",
+    cmpSwap: "Поменять местами",
+    cmpReset: "Вернуть двух лидеров",
+    cmpFollowing: "Следует за двумя лидерами в реальном времени",
+    cmpYourPick: "Ваш выбор",
+    cmpIndices: "Официальные индексы",
+    cmpIndicesNote: "Artificial Analysis, считывается автоматически. У каждого индекса своя шкала: сравнивайте внутри строки, а не между строками. Лучшее значение в каждой строке отмечено звёздочкой.",
+    cmpCost: "Цена и характеристики",
+    cmpPriceIn: "Вход $ / 1 млн",
+    cmpPriceOut: "Выход $ / 1 млн",
+    cmpDaysAgo: "{n} дн. назад",
+    cmpPriceNote: "Цены OpenRouter в долларах за миллион токенов; для цен звёздочка достаётся меньшему значению.",
+    cmpProfileNote: "Оценки по категориям (0-100) это сводные рейтинги WhichAI: ориентир, а не официальные измерения.",
+    mcDetails: "Подробнее",
+    bridge2: "Возможно, уже вышло что-то новее. Вот что изменилось на этой неделе.",
+    ch3Eyebrow: "Что нового",
+    ch3Title: "Радар моделей: запуски, цены, новости",
+    ch3Lede: "Запуски и изменения цен из живого каталога рядом с заголовками лабораторий, прессы, Hacker News и Hugging Face. Никому не нужно ничего публиковать: всё обновляется само.",
+    radarLatest: "Последнее поступление",
+    radarFeedTitle: "Запуски и изменения",
+    newsTitle: "Лента новостей",
+    newsAll: "Все источники",
+    newsLabs: "Лаборатории",
+    newsPress: "Пресса",
+    newsCommunity: "Сообщество",
+    newsOpen: "Открытый код",
+    newsLoading: "Читаем источники…",
+    newsDown: "Источники новостей сейчас недоступны. Лента запусков рядом полна и без них.",
+    newsUpdated: "обновлено {when}",
+    newsPoints: "баллов",
+    newsDiscuss: "Обсуждение",
+    newsFoot: "Только заголовки и ссылки: официальные блоги лабораторий, TechCrunch AI, истории Hacker News с рейтингом 100+ и Hugging Face. Перечитываются каждые 30 минут.",
+    newsSomeDown: "Сейчас недоступны: {list}.",
+    showMore: "Показать ещё",
+    bridge3: "Каждый запуск сдвигает и цены. Вот сколько сегодня стоит интеллект.",
+    ch4Eyebrow: "Сколько стоит",
+    ch4Title: "Рынок ИИ в реальном времени",
+    ch4Lede: "Цены API от OpenRouter, пересчитываемые при каждом визите: самый дешёвый путь на каждый уровень, лучшее соотношение цены и качества, что бесплатно прямо сейчас и сколько стоил бы месяц вашего использования.",
+    mkLeaderKicker: "Лидер стоит",
+    mkPer1M: "за 1 млн токенов (вход / выход)",
+    mkPer1MShort: "за 1 млн",
+    mkCheapS: "самая дешёвая модель уровня «Передовые», смешанная цена за 1 млн токенов",
+    mkFreeNow: "бесплатных маршрутов API сейчас",
+    mkFreeBest: "самый сильный: {name}",
+    mkMoves: "живых цен отличаются от нашего последнего обзора",
+    mkLadderTitle: "Самый дешёвый путь на каждый уровень",
+    mkLadderSub: "Самая низкая смешанная цена (3 части входа на 1 часть выхода) среди моделей каждого уровня по индексу интеллекта.",
+    mkValueTitle: "Лучшее соотношение цены и качества сейчас",
+    mkValueNote: "Баллы интеллекта на доллар смешанной цены среди моделей с оценкой не ниже медианы.",
+    mkPtsPerUsd: "баллов за $",
+    mkCalcTitle: "Сколько будет стоить месяц?",
+    mkCalcMsgs: "Сообщений в день",
+    mkCalcLen: "Типичное сообщение",
+    mkPickLeader: "Лидер",
+    mkPickValue: "Лучшее соотношение",
+    mkPickA: "Самая дешёвая «Почти передовая»",
+    mkPickB: "Самая дешёвая «Сильная»",
+    mkPickFree: "Бесплатный маршрут",
+    mkPerMonth: "в месяц",
+    mkRateLimited: "с лимитами",
+    mkCalcNote: "Расчёт: {in} входных и {out} выходных токенов на сообщение, 30 дней в месяце, цены OpenRouter. Подписки на чат-ботов фиксированные: см. Stack Optimizer ниже.",
+    mkFreeTitle: "Бесплатно сейчас",
+    mkFreeNote: "Маршруты API с ценой $0 на OpenRouter. У всех есть лимиты, некоторые истекают.",
+    mkFreeNone: "Сейчас бесплатных маршрутов нет.",
+    mkUntil: "до",
+    mkAppsFree: "Бесплатные тарифы крупных приложений",
+    mkMovesTitle: "Изменения цен",
+    mkMovesNote: "Где живая цена OpenRouter отличается от цены в нашем последнем редакционном обзоре.",
+    mkMovesNone: "Сейчас различий нет.",
+    mkFoot: "Цены: OpenRouter, доллары за 1 млн токенов, считываются автоматически (каталог {when}). Прайс самого разработчика может отличаться.",
+    bridge4: "За ценниками: энергия, рабочие места и инвестиции на сотни миллиардов. Дебаты с обеих сторон.",
+    ch5Eyebrow: "Общая картина",
+    ch5Title: "Дебаты об ИИ: обе стороны",
+    ch5Lede: "Энергия, работа, деньги, авторское право, регулирование, открытые веса: сильнейший аргумент каждой стороны, цифры с датами и то, что могло бы изменить картину.",
+    topicsReviewed: "Проверено",
+    topicsCount: "дебатов",
+    topicsReviewNote: "Каждая цифра сохраняет исходный период; эти обзоры проверяются вручную и не являются новостями в реальном времени.",
+    topicsEvidence: "Факты в контексте",
+    topicsUncertainty: "Что остаётся неясным",
+    topicsWatch: "Что изменило бы картину",
+    topicsDecision: "Выберите следующий шаг",
+    topicsChoose: "Выберите свою ситуацию",
+    topicsDecisionNote: "Практические редакционные советы. Ваш выбор остаётся на этой странице; не нужны ни запросы к ИИ, ни аккаунт.",
+    topicsReadSource: "Читать источник",
+    topicsReadPage: "Открыть страницу для чтения",
+    topicsEstimate: "Оценка",
+    topicsProjection: "Прогноз",
+    topicsResearch: "Результат исследования",
+    topicsReported: "Данные компании",
+    topicsGuidance: "Регулирование или рекомендации",
+    topicsDefinition: "Определение",
+    topicsTagEnvironment: "Экология",
+    topicsTagWork: "Работа",
+    topicsTagEconomy: "Экономика",
+    topicsTagLaw: "Право",
+    topicsTagPolicy: "Регулирование",
+    topicsTagEcosystem: "Экосистема",
+    topicsCompareModels: "Сравнить модели",
+    topicsFindAI: "Подобрать ИИ",
+    topicsSeeMarket: "Узнать, сколько стоит ИИ",
+    topicsImprovePrompt: "Улучшить промпт",
+    topicsReviewStack: "Пересмотреть мои подписки на ИИ",
+    topicsExploreModels: "Открыть рейтинг",
+    topicsLearnTerms: "Открыть глоссарий",
+    complyTitle: "Ваши собственные обязанности",
+    complyText: "Пошагово проверьте на ComplyAI, какие требования EU AI Act и GDPR касаются вашей организации.",
+    complyGo: "Открыть ComplyAI.wiki",
+    bridge5: "Хватит читать. Что вам нужно сделать?",
+    ch6Eyebrow: "За работу",
+    ch6Title: "От подходящего ИИ к подходящему промпту",
+    ch6Lede: "Четыре инструмента на одном пути: подберите ИИ под задачу, напишите промпт, на который он отвечает лучше всего, проверьте любой промпт и сократите то, за что платите.",
+    step1Title: "Подберите свой ИИ",
+    step1Sub: "Быстрый ответ по типу задачи или четыре вопроса для личного выбора. Промпт не нужен.",
+    quickTitle: "Быстрый ответ: выберите задачу",
+    quickHint: "Здесь появится лучшее приложение для задачи с обоснованием, бесплатным тарифом и источниками.",
+    quickBestFor: "Лучший выбор для: {task}",
+    quickWrite: "Написать промпт для {app}",
+    quickPersonal: "Персонализировать: 4 вопроса",
+    finderGuidedTitle: "Личный выбор за четыре вопроса",
+    finderStart: "Начать четыре вопроса →",
+    step2Title: "Напишите промпт",
+    step2Sub: "Одна цель, промпт под каждое выбранное семейство ИИ и лучший выбор для задачи.",
+    genMore: "Контекст и параметры",
+    genReco: "Рекомендуется для этой задачи",
+    genToDoctor: "Проверить в Doctor",
+    genWords: "слов",
+    genChars: "символов",
+    chipPromptTarget: "в генераторе промптов",
+    drawerTitle: "Подробнее о модели",
+    drawerRankTip: "Текущее место среди актуальных моделей с официальной оценкой; вычисляется сейчас и никогда не записывается в текст.",
+    drawerWas: "в последнем обзоре:",
+    drawerCatNote: "Оценки по категориям (0-100) это сводные рейтинги WhichAI: ориентир, а не официальные измерения.",
+    drawerCompare: "Сравнить ⇄",
+    drawerPrompt: "Написать для неё промпт",
+    drawerWiki: "Страница модели",
+    snapshotLabel: "Снимок данных",
+    footProjects: "Другие проекты автора WhichAI",
+    projComplyTag: "Комплаенс",
+    projComply: "Инструменты соответствия EU AI Act, GDPR и проверки договоров для малого бизнеса. Начать можно бесплатно.",
+    projWarTag: "Геополитика",
+    projWar: "Живая карта войн и геополитических кризисов с последними новостями, рыночными индикаторами и сценариями.",
+    projVisit: "Открыть",
+    footAbout: "О WhichAI",
+    aboutDiff: "Чем WhichAI отличается от рейтинга",
+    aboutData: "Как данные остаются актуальными",
+    aboutMethod: "Методология",
+    aboutApi: "API WhichAI",
+    footModels: "Все модели",
+    footBestFor: "Лучший ИИ для…",
+    footHeadToHeads: "Сравнения один на один",
+    footDataset: "Открытый набор данных",
+    prefsDone: "Сохранённые настройки сброшены."
   };
 
   S.ja = {
-    navGenerator: "ジェネレーター",
-    navGuide: "モデルガイド",
     navCompare: "比較",
-    navChains: "チェーン",
-    navSettings: "設定",
-    privacyPill: "プライバシー第一",
-    privacyTip: "すべてブラウザ内で動作。アカウント不要、サーバーなし、トラッキングなし。APIキーは端末内に保存されます。",
-    trustLine: "アカウント不要 · サーバーなし · データはブラウザの外に出ません",
+    trustLine: "アカウント不要 · 追跡なし · 書いた内容はブラウザから出ません",
     langNote: "インターフェースは日本語です。注: 生成されるプロンプト、ベンチマークの注記、タスク自動判定は英語向けに最適化されています（どのAIモデルも英語の指示で最高の性能を発揮します）。目標はどの言語で書いてもかまいません - AIはあなたの言語で回答します。",
-    genTitle: "目標を記述してください",
-    genSubtitle: "WhichAIがそれを各AIモデルに合わせたプロンプトに変換し、どのモデルが最適かをわかりやすく提案します。",
     goalLabel: "目標 ",
     optionalTag: "（任意）",
     tryExample: "例を試す",
@@ -533,11 +3469,7 @@
     modelsErr: "対象モデルを1つ以上選択してください。",
     generateBtn: "プロンプトを生成",
     emptyLead: "最適化されたプロンプトがここに表示されます - モデルごとに1つ、さらに最適モデルの推薦付き。",
-    step1: "目標を記述",
-    step2: "各AI向けのプロンプトをコピー",
-    step3: "回答を比較して改善",
     resultsTitle: "最適化されたプロンプト",
-    toCompareBtn: "出力を比較 →",
     optNone: "指定なし",
     optProse: "通常の文章",
     optMarkdown: "Markdown",
@@ -573,56 +3505,328 @@
     copy: "コピー",
     copied: "コピー済み",
     copyPrompt: "プロンプトをコピー",
-    guideTitle: "モデルガイド",
-    guideSub: "タスクごとに最適なAIアプリ - 公開ベンチマークをわかりやすく翻訳。",
-    catalogTitle: "モデルカタログ",
-    compareTitle: "出力を比較",
-    compareSub: "同じプロンプトを各AIで実行し、回答を貼り付け（または自動実行）して並べて採点。すべてブラウザ内に保存されます。",
-    compareEmptyText: "アクティブな比較はありません。まずプロンプトを生成し、「出力を比較」をクリックしてください。 ",
-    goGenerator: "ジェネレーターへ",
-    saveCmp: "比較を保存",
-    newVersion: "新バージョン",
     exportMd: ".mdエクスポート",
-    savedCmps: "保存済みの比較",
-    notScored: "未採点",
-    winner: "勝者",
-    tied: "同点",
-    tie: "引き分け",
-    winnerPrefix: "勝者:",
-    openBtn: "開く",
-    deleteBtn: "削除",
-    chainsTitle: "チェーン",
-    chainsSub: "複雑な目標を連結ステップに分解: 各ステップが専用プロンプトを持ち、前の出力が次の入力になります。無料キーがあれば自動実行、なければコピペで。",
-    buildChain: "チェーンを作成",
-    saveChain: "チェーンを保存",
-    savedChains: "保存済みチェーン",
-    promptForStep: "このステップのプロンプト",
-    stepOutput: "ステップの出力",
-    settingsTitle: "設定",
-    settingsSub: "APIキーで比較の自動実行が有効になります。キーはこのブラウザにのみ保存され、呼び出すプロバイダーだけに送信されます - WhichAIのサーバーには送信されません（存在しません）。",
-    saveSettings: "設定を保存",
     prefsReset: "記憶した設定をリセット",
-    footerText: "すべてブラウザ内で動作: アカウント不要、サーバーなし、キーとデータは端末から出ません。",
-    dbTitle: "モデルデータベース",
-    dbSub: "追跡中の注目AIモデルすべて - 非公開・プレビュー版も情報として掲載。推定スコアには印が付いています。",
-    dbSearchPh: "モデル・ベンダー・タグを検索…",
+    footerText: "ブラウザ内で動作します。アカウント不要、追跡なし。目標もプロンプトも端末から出ません。",
     dbNoResults: "該当するモデルがありません。",
-    navAbout: "概要",
-    dbHint: "件のモデルを収録 - 入力して検索（部分一致OK）。"
+    themeTip: "ライト／ダークテーマを切り替え",
+    footFaq: "よくある質問",
+    footSimilar: "類似ツール",
+    footContribute: "貢献する",
+    footGlossary: "用語集",
+    finderSub: "いくつかの簡単な質問に答えるだけで、理由・制限・価格つきのおすすめが得られます。プロンプトは不要です。",
+    finderBack: "← 戻る",
+    finderNext: "次へ",
+    finderRestart: "最初からやり直す",
+    finderResults: "おすすめ",
+    finderAlt: "こちらも検討",
+    finderWhy: "選んだ理由",
+    finderBestFor: "最適な用途：",
+    finderLimit: "注意点：",
+    finderAccess: "利用方法：",
+    finderOpenGuide: "モデルの詳細 →",
+    finderUseGen: "このAI用のプロンプトを作る →",
+    finderSwitchGoal: "目標を書きたい場合は、プロンプト作成へ →",
+    finderTop: "ベストマッチ",
+    glossTitle: "AI用語集",
+    glossSearchPh: "用語を検索…",
+    glossNoRes: "該当する用語がありません。",
+    glossCount: "件の用語",
+    mcAdd: "+ 3つ目のモデルを追加",
+    mcRemove: "削除",
+    mcReleased: "リリース",
+    mcCtx: "コンテキストウィンドウ",
+    mcModal: "モダリティ",
+    mcPrice: "API価格 $/1M（入力/出力）",
+    mcSpeed: "速度",
+    mcAccess: "利用方法",
+    mcProfile: "カテゴリ別プロフィール",
+    mcStrengths: "強み",
+    mcReview: "ひとことで",
+    mcFootnote: "n/a = 未公表または未検証。~ 付きの値は現在の公式測定値ではありません。これらと実測スコアとのわずかな差を、実際の差と読まないでください。",
+    dataTitle: "あなたのデータ",
+    dataHint: "WhichAI が保存するものはすべてこのブラウザ内にあります：設定、ウォッチリスト、最後に取得したデータ。端末を変えたりブラウザのデータを消去したりする前に、バックアップを書き出してください。",
+    dataExport: "バックアップを書き出す (.json)",
+    dataImport: "バックアップを読み込む",
+    dataWipe: "すべてのデータを削除",
+    dataWipeAsk: "このブラウザの WhichAI データをすべて削除しますか？設定、ウォッチリスト、保存データが削除されます。",
+    dataImportAsk: "このバックアップを読み込みますか？同名の既存データは上書きされます。",
+    dataImported: "バックアップを読み込みました。再読み込みします。",
+    dataImportBad: "無効なバックアップファイルです。",
+    updateReady: "WhichAIの新しいバージョンが利用できます。",
+    updateReload: "更新",
+    navStack: "Stack Optimizer",
+    navDoctor: "Prompt Doctor",
+    navStackSub: "残すべきサブスク、無料で済むもの",
+    navDoctorSub: "プロンプトを採点し、最適化版を見る",
+    navGlossarySub: "AI用語を1文でやさしく",
+    stackTitle: "AI Stack Optimizer",
+    stackSub: "4つの簡単な選択で、残す価値のあるサブスク・無料で済むもの・解約できるものが分かります。すべて端末内で完結。",
+    stackGo: "スタックを作る",
+    stackPickOne: "まずタスクを1つ以上選んでください。",
+    stackResult: "おすすめスタック",
+    stackNewCost: "おすすめスタックの推定月額",
+    stackCurrentCost: "現在の支払い：",
+    stackSaving: "推定節約額",
+    stackRedundant: "あなたのタスクには不要かも：",
+    stackFreeTier: "無料プラン",
+    stackToFinder: "1つだけ選びたい？ファインダーへ",
+    doctorTitle: "Prompt Doctor",
+    doctorSub: "プロンプトを貼るだけ：採点、足りない要素のリスト、選んだモデル向けの最適化版。APIは不要です。",
+    doctorPh: "ここにプロンプトを貼り付け…",
+    doctorGo: "プロンプトを分析",
+    doctorDetected: "検出タスク：",
+    doctorMissingLead: "主な不足：",
+    doctorAllGood: "しっかりしたプロンプトです。主要な要素はすべて揃っています。",
+    doctorChecklist: "チェックリスト",
+    doctorOptimized: "最適化版",
+    doctorBefore: "あなたのプロンプト",
+    doctorAfter: "選択モデル向けに最適化",
+    doctorChanges: "変更点と理由",
+    doctorToGen: "Generatorで開く",
+    doctorNote: "プロンプトエンジニアリングのベストプラクティスに基づく静的分析。最適化版はGeneratorと同じエンジンを使用します。使用前に確認してください。",
+    officialOpen: "開く",
+    officialSite: "公式アプリを開く",
+    navRadar: "モデルレーダー",
+    radarNew: "新着",
+    radarUpcoming: "近日",
+    radarAll: "すべて",
+    radarFollowing: "フォロー中",
+    radarSince: "件、前回の訪問以降の変更",
+    radarFollow: "フォロー",
+    radarUnfollow: "フォロー中",
+    radarTypeNew: "新モデル",
+    radarTypePrice: "価格",
+    radarTypeScore: "スコア",
+    radarTypeFree: "無料枠",
+    radarEmpty: "まだ何もありません。星でモデルをフォローして自分のフィードを作りましょう。",
+    shareBtn: "画像でシェア",
+    shareDone: "画像を作成しました",
+    navTopics: "AI論争",
+    topicsTitle: "AI論争",
+    topicsCaseA: "懸念",
+    topicsCaseB: "反論",
+    topicsStatus: "現状",
+    topicsDisclaimer: "公開報道と研究のキュレーション要約で、データ更新とともに刷新。投資・キャリア・法律の助言ではありません。",
+    footSupport: "支援する ♥",
+    supportTitle: "WhichAIを支援",
+    supportText: "WhichAI は無料で、広告もスポンサーもありません。かかるのはドメイン代と、100 以上のモデルを正確かつ最新に保つ時間だけです。時間の節約になったなら、少額の寄付が独立性を守ります。",
+    supportBtn: "寄付する ♥",
+    visitsLabel: "回の訪問",
+    catalogShowLess: "表示を減らす",
+    radarCheckClean: "データ照合：公開ソースとすべて一致",
+    radarCheckReview: "件の確認が必要です",
+    radarCheckBroken: "データ照合：同梱の無料ルートが機能していません",
+    radarCheckSkipped: "本日はデータ照合を実行できませんでした",
+    journeyConfidence: "確度",
+    livePill: "ライブデータ",
+    liveDataLine: "ライブデータ：Artificial Analysis の公式スコアと OpenRouter の価格（{when}取得）。{n} モデルを自動追加。",
+    liveAutoChip: "自動追加",
+    liveAutoTitle: "公開ライブデータから自動追加（OpenRouter 経由の Artificial Analysis）。編集レビューはまだありません。",
+    skipLink: "本文へスキップ",
+    langLabel: "言語",
+    railLabel: "チャプター",
+    close: "閉じる",
+    navRanking: "ランキング",
+    navMarket: "市場",
+    navTools: "ツール",
+    ch1Eyebrow: "ランキング",
+    ch1Title: "いま最強のAIはどれ？",
+    ch1Lede: "Artificial Analysis の公式スコアを持つすべてのモデルを、自動でティアに分類。新しい測定結果は自動で反映され、たいてい1時間以内に表示されます。",
+    heroFind: "タスクに合うAIを探す",
+    heroPrompt: "より良いプロンプトを書く",
+    kpiModels: "収録モデル",
+    kpiMeasured: "公式スコアあり",
+    kpiLabs: "ランクインした開発元",
+    kpiNew: "直近30日の新着",
+    rankMetricLabel: "ランキング基準",
+    metricAA: "知能",
+    metricCoding: "コーディング",
+    metricAgentic: "エージェント",
+    rankFilterLabel: "絞り込み",
+    fAll: "すべて",
+    fOpen: "オープンウェイト",
+    fFree: "無料ルート",
+    fCheap: "$1未満",
+    fLegacy: "旧モデルも表示",
+    rankSearchPh: "モデルを検索…",
+    rankUnmeasured: "未測定",
+    tierS: "フロンティア",
+    tierA: "準フロンティア",
+    tierB: "高性能",
+    tierC: "実用",
+    tierD: "軽量",
+    tierMore: "ほか{n}件",
+    tierNote: "ティアは人が選ぶのではなく、計算で決まります。選択した指数で、S は現行モデルの上位5%、A は次の15%、B は次の20%、C は次の25%、D は残りです。同点のモデルは同じティアになります。換算値（~）と未測定のスコアはランク付けされません。",
+    tierMissing: "現行モデルのうち{n}件は、まだ{metric}のスコアがありません。",
+    scatterTitle: "価格 vs 知能",
+    scatterNote: "左上ほど、1ドルあたりの知能が高くなります。価格は対数目盛なので、安いモデルが片隅に押し込まれることはありません。破線はコスパが最も良いモデルを結んだ境界線です。",
+    scatterX: "APIブレンド価格（$／100万トークン、対数目盛）",
+    scatterY: "AA知能指数",
+    scatterFree: "無料",
+    scatterLegend: "点の色：知能指数でのティア。点やチップにカーソルを合わせると、もう一方の表示でも位置がわかります。クリックで詳細を表示。",
+    bridge1: "トップは接戦？上位2モデルを並べて比べてみましょう。",
+    ch2Eyebrow: "直接対決",
+    ch2Title: "好きな2モデルを比較",
+    ch2Lede: "公式指数、価格、コンテキスト、強みを並べて表示。最初は今日の上位2モデルが表示され、自分で選ぶまではランキングに連動します。3つ目のモデルもいつでも追加できます。",
+    cmpPick: "モデル",
+    cmpSwap: "入れ替え",
+    cmpReset: "上位2モデルに戻す",
+    cmpFollowing: "最新の上位2モデルに連動中",
+    cmpYourPick: "あなたの選択",
+    cmpIndices: "公式指数",
+    cmpIndicesNote: "Artificial Analysis から自動取得。指数ごとにスケールが異なるため、行をまたがず同じ行の中で比較してください。各行で優れた値には星印が付きます。",
+    cmpCost: "価格とスペック",
+    cmpPriceIn: "入力 $ / 1M",
+    cmpPriceOut: "出力 $ / 1M",
+    cmpDaysAgo: "{n}日前",
+    cmpPriceNote: "価格は OpenRouter のもので、100万トークンあたりの米ドルです。価格は低いほうに星印が付きます。",
+    cmpProfileNote: "カテゴリ別スコア（0-100）は WhichAI による総合評価です。目安であり、公式の測定値ではありません。",
+    mcDetails: "詳細",
+    bridge2: "もっと新しいモデルがもう出ているかもしれません。今週の変化をチェックしましょう。",
+    ch3Eyebrow: "新着情報",
+    ch3Title: "モデルレーダー：リリース、価格、ニュース",
+    ch3Lede: "ライブカタログのリリースと価格変動を、開発元・メディア・Hacker News・Hugging Face のヘッドラインと並べて表示。誰かが投稿する必要はなく、自動で更新されます。",
+    radarLatest: "最新モデル",
+    radarFeedTitle: "リリースと変更",
+    newsTitle: "ニュースフィード",
+    newsAll: "すべてのソース",
+    newsLabs: "開発元",
+    newsPress: "メディア",
+    newsCommunity: "コミュニティ",
+    newsOpen: "オープンソース",
+    newsLoading: "ソースを読み込み中…",
+    newsDown: "ニュースソースに現在アクセスできません。隣のリリースフィードは、それらがなくても完結しています。",
+    newsUpdated: "{when}に更新",
+    newsPoints: "ポイント",
+    newsDiscuss: "ディスカッション",
+    newsFoot: "見出しとリンクのみ掲載。出典は開発元の公式ブログ、TechCrunch AI、100ポイント以上の Hacker News 記事、Hugging Face です。30分ごとに再取得します。",
+    newsSomeDown: "現在アクセスできません：{list}。",
+    showMore: "もっと見る",
+    bridge3: "新モデルが出るたびに価格も動きます。いま知能にかかるコストを見てみましょう。",
+    ch4Eyebrow: "コスト",
+    ch4Title: "AI市場をライブで",
+    ch4Lede: "OpenRouter のAPI価格を訪問のたびに再計算：各ティアに最安で入る方法、ベストバリュー、いま無料のもの、そしてあなたの1か月分の利用料。",
+    mkLeaderKicker: "トップモデルの価格",
+    mkPer1M: "100万トークンあたり（入力 / 出力）",
+    mkPer1MShort: "/ 1M",
+    mkCheapS: "フロンティア級で最安のモデル（100万トークンあたりのブレンド価格）",
+    mkFreeNow: "現在の無料APIルート",
+    mkFreeBest: "最強：{name}",
+    mkMoves: "前回レビュー時と異なるライブ価格",
+    mkLadderTitle: "各ティアの最安エントリー",
+    mkLadderSub: "知能指数の各ティアに属するモデルのうち、最も安いブレンド価格（入力3：出力1で加重）。",
+    mkValueTitle: "いまのベストバリュー",
+    mkValueNote: "スコアが中央値以上のモデルのうち、ブレンド価格1ドルあたりの知能ポイント。",
+    mkPtsPerUsd: "pt / $",
+    mkCalcTitle: "1か月でいくらかかる？",
+    mkCalcMsgs: "1日のメッセージ数",
+    mkCalcLen: "メッセージの長さ（目安）",
+    mkPickLeader: "トップモデル",
+    mkPickValue: "ベストバリュー",
+    mkPickA: "準フロンティアで最安",
+    mkPickB: "高性能で最安",
+    mkPickFree: "無料ルート",
+    mkPerMonth: "/ 月",
+    mkRateLimited: "レート制限あり",
+    mkCalcNote: "1メッセージあたり入力{in}トークン・出力{out}トークン、月30日、OpenRouter の価格で計算しています。チャットのサブスクは定額制です。下の Stack Optimizer をご覧ください。",
+    mkFreeTitle: "いま無料",
+    mkFreeNote: "OpenRouter で $0 のAPIルート。すべてレート制限があり、期限切れになるものもあります。",
+    mkFreeNone: "現在、掲載中の無料ルートはありません。",
+    mkUntil: "期限",
+    mkAppsFree: "主要アプリの無料プラン",
+    mkMovesTitle: "価格変動",
+    mkMovesNote: "OpenRouter のライブ価格が、前回の編集レビュー時の価格と異なるもの。",
+    mkMovesNone: "現在、差異はありません。",
+    mkFoot: "価格：OpenRouter、100万トークンあたりの米ドル、自動取得（カタログ：{when}）。ベンダー自身の定価とは異なる場合があります。",
+    bridge4: "値札の裏には、エネルギー、雇用、そして数千億ドル規模の設備投資があります。論争を両側から見てみましょう。",
+    ch5Eyebrow: "全体像",
+    ch5Title: "AI論争を両面から",
+    ch5Lede: "エネルギー、雇用、お金、著作権、規制、オープンウェイト：それぞれの立場の最も強い主張、日付つきの数字、そして状況を変えうるもの。",
+    topicsReviewed: "最終レビュー",
+    topicsCount: "件の論争",
+    topicsReviewNote: "各数値は元の対象期間のままです。これらの要約は人の手でレビューしたもので、リアルタイムのニュースではありません。",
+    topicsEvidence: "根拠と背景",
+    topicsUncertainty: "まだ不確かな点",
+    topicsWatch: "状況を変えうるもの",
+    topicsDecision: "次の一歩を選ぶ",
+    topicsChoose: "あなたの状況を選択",
+    topicsDecisionNote: "編集部による実践的なガイドです。選択はこのページ内にとどまり、AIの呼び出しもアカウントも不要です。",
+    topicsReadSource: "出典を読む",
+    topicsReadPage: "閲覧ページを開く",
+    topicsEstimate: "推計",
+    topicsProjection: "予測",
+    topicsResearch: "研究結果",
+    topicsReported: "企業の開示",
+    topicsGuidance: "政策・ガイダンス",
+    topicsDefinition: "定義",
+    topicsTagEnvironment: "環境",
+    topicsTagWork: "仕事",
+    topicsTagEconomy: "経済",
+    topicsTagLaw: "法律",
+    topicsTagPolicy: "政策",
+    topicsTagEcosystem: "エコシステム",
+    topicsCompareModels: "モデルを比較",
+    topicsFindAI: "最適なAIを見つける",
+    topicsSeeMarket: "AIのコストを見る",
+    topicsImprovePrompt: "プロンプトを改善",
+    topicsReviewStack: "AIスタックを見直す",
+    topicsExploreModels: "ランキングを見る",
+    topicsLearnTerms: "用語集を見る",
+    complyTitle: "あなた自身の義務",
+    complyText: "EU AI Act と GDPR のどの義務があなたの組織に当てはまるかを、ComplyAI でステップごとに確認できます。",
+    complyGo: "ComplyAI.wiki を開く",
+    bridge5: "読むのはここまで。何を片付けたいですか？",
+    ch6Eyebrow: "実践",
+    ch6Title: "最適なAIから、最適なプロンプトへ",
+    ch6Lede: "ひとつの流れに4つのツール：タスクに合うAIを見つけ、そのAIがよく応えるプロンプトを書き、どんなプロンプトもチェックし、最後に支払いを見直します。",
+    step1Title: "あなたのAIを見つける",
+    step1Sub: "タスク別のクイック回答か、4つの質問であなた向けの提案。プロンプトは不要です。",
+    quickTitle: "クイック回答：タスクを選択",
+    quickHint: "タスクに最適なアプリが、理由・無料枠・出典とともにここに表示されます。",
+    quickBestFor: "{task}のベストチョイス",
+    quickWrite: "{app} 用のプロンプトを書く",
+    quickPersonal: "パーソナライズ：4つの質問",
+    finderGuidedTitle: "4つの質問であなた向けの提案",
+    finderStart: "4つの質問を始める →",
+    step2Title: "プロンプトを書く",
+    step2Sub: "目標はひとつ。選んだAIファミリーごとに調整したプロンプトと、タスクに最適なモデルを提示します。",
+    genMore: "コンテキストとオプション",
+    genReco: "このタスクにおすすめ",
+    genToDoctor: "Prompt Doctor でチェック",
+    genWords: "語",
+    genChars: "文字",
+    chipPromptTarget: "プロンプト生成に対応",
+    drawerTitle: "モデルの詳細",
+    drawerRankTip: "公式スコアのある現行モデルの中でのリアルタイム順位。その場で計算され、本文に書き込まれることはありません。",
+    drawerWas: "前回レビュー時",
+    drawerCatNote: "カテゴリ別スコア（0-100）は WhichAI による総合評価です。目安であり、公式の測定値ではありません。",
+    drawerCompare: "比較 ⇄",
+    drawerPrompt: "このモデル用のプロンプトを書く",
+    drawerWiki: "モデルページ",
+    snapshotLabel: "スナップショット",
+    footProjects: "WhichAI 制作者のほかのプロジェクト",
+    projComplyTag: "コンプライアンス",
+    projComply: "中小企業向けの EU AI Act、GDPR、契約コンプライアンスのツール。無料で始められます。",
+    projWarTag: "地政学",
+    projWar: "戦争と地政学的危機のライブマップ。最新ニュース、市場指標、シナリオつき。",
+    projVisit: "サイトを見る",
+    footAbout: "WhichAI について",
+    aboutDiff: "WhichAI とリーダーボードの違い",
+    aboutData: "データを最新に保つ仕組み",
+    aboutMethod: "方法論",
+    aboutApi: "WhichAI API",
+    footModels: "すべてのモデル",
+    footBestFor: "…に最適なAI",
+    footHeadToHeads: "直接対決",
+    footDataset: "オープンデータセット",
+    prefsDone: "記憶した設定を消去しました。"
   };
 
   S.ar = {
-    navGenerator: "المولّد",
-    navGuide: "دليل النماذج",
     navCompare: "مقارنة",
-    navChains: "السلاسل",
-    navSettings: "الإعدادات",
-    privacyPill: "خصوصية بالتصميم",
-    privacyTip: "يعمل بالكامل في متصفحك. بلا حساب، بلا خادم، بلا تتبّع. مفاتيح API تبقى على جهازك.",
-    trustLine: "بلا حساب · بلا خادم · لا شيء يغادر متصفحك",
+    trustLine: "بلا حساب · بلا تتبّع · لا شيء مما تكتبه يغادر متصفحك",
     langNote: "الواجهة بالعربية. ملاحظة: البرومبتات المولّدة وملاحظات المعايير والكشف التلقائي لنوع المهمة مُحسّنة للإنجليزية (كل النماذج تعمل بأفضل أداء مع تعليمات إنجليزية). يمكنك كتابة هدفك بأي لغة - وسيجيب الذكاء الاصطناعي بلغتك.",
-    genTitle: "صِف هدفك",
-    genSubtitle: "يحوّله WhichAI إلى برومبت مُخصّص لكل نموذج ذكاء اصطناعي - ويخبرك بلغة بسيطة أي نموذج هو الأنسب للمهمة.",
     goalLabel: "الهدف ",
     optionalTag: "(اختياري)",
     tryExample: "جرّب مثالاً",
@@ -641,11 +3845,7 @@
     modelsErr: "اختر نموذجاً واحداً على الأقل.",
     generateBtn: "ولّد البرومبتات",
     emptyLead: "ستظهر برومبتاتك المُحسّنة هنا - نسخة لكل نموذج، مع توصية بالنموذج الأنسب لهذه المهمة.",
-    step1: "صِف هدفك",
-    step2: "انسخ البرومبت المخصص لكل ذكاء اصطناعي",
-    step3: "قارن الإجابات وحسّن",
     resultsTitle: "برومبتات محسّنة",
-    toCompareBtn: "قارن المخرجات ←",
     optNone: "بلا تفضيل",
     optProse: "نص عادي",
     optMarkdown: "Markdown",
@@ -681,2799 +3881,323 @@
     copy: "نسخ",
     copied: "تم النسخ",
     copyPrompt: "انسخ البرومبت",
-    guideTitle: "دليل النماذج",
-    guideSub: "أي تطبيق ذكاء اصطناعي يناسب كل نوع مهمة - معايير عامة مترجمة بلغة بسيطة.",
-    catalogTitle: "كتالوج النماذج",
-    compareTitle: "قارن المخرجات",
-    compareSub: "شغّل البرومبت المُحسّن نفسه في كل تطبيق، الصق الإجابات (أو شغّلها تلقائياً) وقيّمها جنباً إلى جنب. كل شيء يبقى في متصفحك.",
-    compareEmptyText: "لا توجد مقارنة نشطة. ولّد البرومبتات أولاً ثم اضغط «قارن المخرجات». ",
-    goGenerator: "إلى المولّد",
-    saveCmp: "احفظ المقارنة",
-    newVersion: "نسخة جديدة",
     exportMd: "تصدير .md",
-    savedCmps: "مقارنات محفوظة",
-    notScored: "بدون تقييم",
-    winner: "الفائز",
-    tied: "تعادل",
-    tie: "تعادل",
-    winnerPrefix: "الفائز:",
-    openBtn: "افتح",
-    deleteBtn: "احذف",
-    chainsTitle: "السلاسل",
-    chainsSub: "قسّم هدفاً معقداً إلى خطوات مترابطة: لكل خطوة برومبت خاص، ومخرجات كل خطوة تغذّي التالية. تشغيل تلقائي حيث لديك مفتاح مجاني؛ ونسخ ولصق في الباقي.",
-    buildChain: "ابنِ السلسلة",
-    saveChain: "احفظ السلسلة",
-    savedChains: "سلاسل محفوظة",
-    promptForStep: "برومبت هذه الخطوة",
-    stepOutput: "مخرجات الخطوة",
-    settingsTitle: "الإعدادات",
-    settingsSub: "مفاتيح API تتيح التشغيل التلقائي في المقارنة. تُحفظ المفاتيح في هذا المتصفح فقط وتُرسل فقط إلى المزوّد الذي تستدعيه - أبداً إلى خادم WhichAI (لا يوجد أصلاً).",
-    saveSettings: "احفظ الإعدادات",
     prefsReset: "إعادة ضبط التفضيلات المحفوظة",
-    footerText: "يعمل بالكامل في متصفحك: بلا حساب، بلا خادم، مفاتيحك وبياناتك لا تغادر جهازك.",
-    dbTitle: "قاعدة النماذج",
-    dbSub: "كل نموذج ذكاء اصطناعي مهم نتتبعه - بما في ذلك الخاصة والتجريبية، للمعلومة. الدرجات التقديرية مُعلّمة.",
-    dbSearchPh: "ابحث في النماذج والشركات والوسوم…",
+    footerText: "يعمل في متصفحك: بلا حساب وبلا تتبّع. أهدافك وموجّهاتك لا تغادر جهازك أبدًا.",
     dbNoResults: "لا نماذج تطابق بحثك.",
-    navAbout: "حول",
-    dbHint: "نموذجاً في القاعدة - ابدأ الكتابة للبحث (الأسماء الجزئية تعمل)."
+    themeTip: "التبديل بين المظهر الفاتح والداكن",
+    footFaq: "الأسئلة الشائعة",
+    footSimilar: "أدوات مشابهة",
+    footContribute: "ساهم",
+    footGlossary: "المسرد",
+    finderSub: "أجب عن بضعة أسئلة سريعة لتحصل على توصية مع الأسباب والحدود والأسعار. لا حاجة إلى موجّه.",
+    finderBack: "رجوع",
+    finderNext: "التالي",
+    finderRestart: "ابدأ من جديد",
+    finderResults: "توصيتنا",
+    finderAlt: "خيارات أخرى جديرة بالنظر",
+    finderWhy: "لماذا هذا الاختيار",
+    finderBestFor: "الأفضل لـ:",
+    finderLimit: "ضع في اعتبارك:",
+    finderAccess: "الوصول:",
+    finderOpenGuide: "تفاصيل النموذج ←",
+    finderUseGen: "اكتب موجّهًا له",
+    finderSwitchGoal: "تفضّل وصف هدفك؟ اكتب الموجّه مباشرةً ←",
+    finderTop: "الخيار الأفضل",
+    glossTitle: "مسرد الذكاء الاصطناعي",
+    glossSearchPh: "ابحث عن مصطلح…",
+    glossNoRes: "لا يوجد مصطلح مطابق.",
+    glossCount: "مصطلحًا",
+    mcAdd: "+ أضف نموذجًا ثالثًا",
+    mcRemove: "إزالة",
+    mcReleased: "الإصدار",
+    mcCtx: "نافذة السياق",
+    mcModal: "الوسائط",
+    mcPrice: "سعر API $/1M (إدخال/إخراج)",
+    mcSpeed: "السرعة",
+    mcAccess: "الوصول",
+    mcProfile: "الملف حسب الفئة",
+    mcStrengths: "نقاط القوة",
+    mcReview: "في سطر واحد",
+    mcFootnote: "غ/م = غير منشور أو لم يُتحقق منه بعد. القيم المعلَّمة بـ ~ ليست قياسات رسمية حالية: لا تعتبر الفرق الصغير بينها وبين درجة مقاسة فرقًا حقيقيًا.",
+    dataTitle: "بياناتك",
+    dataHint: "كل ما يحفظه WhichAI يبقى في هذا المتصفح: التفضيلات والنماذج التي تتابعها وآخر البيانات المقروءة. صدّر نسخة احتياطية قبل تغيير الجهاز أو مسح بيانات المتصفح.",
+    dataExport: "تصدير نسخة احتياطية (.json)",
+    dataImport: "استيراد نسخة احتياطية",
+    dataWipe: "احذف كل البيانات",
+    dataWipeAsk: "حذف كل بيانات WhichAI في هذا المتصفح؟ ستُزال التفضيلات والنماذج المتابَعة والبيانات المحفوظة.",
+    dataImportAsk: "استيراد هذه النسخة؟ ستُستبدل البيانات الحالية التي تحمل الأسماء نفسها.",
+    dataImported: "تم استيراد النسخة. جارٍ التحديث.",
+    dataImportBad: "ملف نسخة احتياطية غير صالح.",
+    updateReady: "نسخة جديدة من WhichAI جاهزة.",
+    updateReload: "تحديث",
+    navStack: "محسّن الاشتراكات",
+    navDoctor: "طبيب الموجّهات",
+    navStackSub: "أي اشتراك تُبقيه وما يمكن استخدامه مجانًا",
+    navDoctorSub: "قيّم موجّهًا وشاهد النسخة المحسّنة",
+    navGlossarySub: "كل مصطلح ذكاء اصطناعي في جملة بسيطة",
+    stackTitle: "محسّن الاشتراكات",
+    stackSub: "أربعة اختيارات سريعة: أي اشتراك يستحق البقاء، وما يمكن استخدامه مجانًا، وما يمكنك إلغاؤه. كل ذلك على جهازك.",
+    stackGo: "ابنِ حزمتي",
+    stackPickOne: "اختر مهمة واحدة على الأقل أولًا.",
+    stackResult: "حزمتك الموصى بها",
+    stackNewCost: "التكلفة الشهرية التقديرية للحزمة الموصى بها",
+    stackCurrentCost: "تدفع حاليًا:",
+    stackSaving: "توفير تقديري",
+    stackRedundant: "ربما زائدة عن حاجتك:",
+    stackFreeTier: "الخطة المجانية",
+    stackToFinder: "تحتاج خيارًا واحدًا فقط؟ جرّب المرشد",
+    doctorTitle: "طبيب الموجّهات",
+    doctorSub: "الصق موجّهًا: درجة، قائمة بما ينقصه، ونسخة محسّنة للنموذج الذي تختاره. دون API.",
+    doctorPh: "الصق موجّهك هنا…",
+    doctorGo: "حلّل الموجّه",
+    doctorDetected: "المهمة المكتشفة:",
+    doctorMissingLead: "أكبر الثغرات:",
+    doctorAllGood: "موجّه متين: كل المكوّنات الأساسية موجودة.",
+    doctorChecklist: "قائمة التحقق",
+    doctorOptimized: "النسخة المحسّنة",
+    doctorBefore: "موجّهك",
+    doctorAfter: "محسّن للنموذج المختار",
+    doctorChanges: "ما الذي تغيّر ولماذا",
+    doctorToGen: "افتح في المولّد",
+    doctorNote: "تحليل ثابت مبني على أفضل ممارسات هندسة الموجّهات؛ النسخة المحسّنة تستخدم محرك المولّد نفسه. راجعها قبل الاستخدام.",
+    officialOpen: "افتح",
+    officialSite: "افتح التطبيق الرسمي",
+    navRadar: "رادار النماذج",
+    radarNew: "جديد",
+    radarUpcoming: "قريبًا",
+    radarAll: "الكل",
+    radarFollowing: "المتابَعة",
+    radarSince: "تغييرات منذ زيارتك الأخيرة",
+    radarFollow: "تابِع",
+    radarUnfollow: "مُتابَع",
+    radarTypeNew: "نماذج جديدة",
+    radarTypePrice: "الأسعار",
+    radarTypeScore: "الدرجات",
+    radarTypeFree: "الخطط المجانية",
+    radarEmpty: "لا شيء هنا بعد. تابع نموذجًا بالنجمة لبناء موجزك الخاص.",
+    shareBtn: "شارك كصورة",
+    shareDone: "الصورة جاهزة",
+    navTopics: "نقاشات الذكاء الاصطناعي",
+    topicsTitle: "نقاشات الذكاء الاصطناعي",
+    topicsCaseA: "القلق",
+    topicsCaseB: "الرأي المقابل",
+    topicsStatus: "أين وصلنا",
+    topicsDisclaimer: "ملخصات منسّقة من تقارير وأبحاث عامة، تُحدَّث مع تحديثات البيانات. ليست نصيحة مالية أو مهنية أو قانونية.",
+    footSupport: "ادعمنا ♥",
+    supportTitle: "ادعم WhichAI",
+    supportText: "WhichAI مجاني، بلا إعلانات ولا رعاة: التكلفة الوحيدة هي النطاق والساعات التي تُبقي أكثر من 100 نموذج صادقة ومحدثة. إن وفّر عليك وقتًا، فتبرّع صغير يبقيه مستقلًا.",
+    supportBtn: "تبرّع ♥",
+    visitsLabel: "زيارة",
+    catalogShowLess: "عرض أقل",
+    radarCheckClean: "فحص البيانات: كل شيء يطابق المصادر العامة",
+    radarCheckReview: "عنصر/عناصر تحتاج مراجعة",
+    radarCheckBroken: "فحص البيانات: مسار مجاني مضمّن لا يعمل",
+    radarCheckSkipped: "تعذّر إجراء فحص البيانات اليوم",
+    journeyConfidence: "الثقة",
+    livePill: "بيانات مباشرة",
+    liveDataLine: "بيانات مباشرة: درجات Artificial Analysis الرسمية وأسعار OpenRouter، قُرئت {when}؛ أُضيف {n} نموذجًا تلقائيًا.",
+    liveAutoChip: "أُضيف تلقائيًا",
+    liveAutoTitle: "أُضيف تلقائيًا من البيانات العامة المباشرة (Artificial Analysis عبر OpenRouter). لا توجد مراجعة تحريرية بعد.",
+    skipLink: "انتقل إلى المحتوى",
+    langLabel: "اللغة",
+    railLabel: "الفصول",
+    close: "إغلاق",
+    navRanking: "الترتيب",
+    navMarket: "السوق",
+    navTools: "الأدوات",
+    ch1Eyebrow: "الترتيب",
+    ch1Title: "أي ذكاء اصطناعي هو الأفضل الآن؟",
+    ch1Lede: "كل نموذج لديه درجة رسمية من Artificial Analysis، موزّع على مستويات تلقائيًا. تصل القياسات الجديدة إلى هنا وحدها، عادةً خلال ساعة.",
+    heroFind: "اعثر على الذكاء الاصطناعي المناسب لمهمتي",
+    heroPrompt: "اكتب موجّهًا أفضل",
+    kpiModels: "نموذجًا متابَعًا",
+    kpiMeasured: "بدرجة رسمية",
+    kpiLabs: "مختبرًا في الترتيب",
+    kpiNew: "جديدًا خلال آخر 30 يومًا",
+    rankMetricLabel: "رتّب حسب",
+    metricAA: "الذكاء",
+    metricCoding: "البرمجة",
+    metricAgentic: "الوكالة",
+    rankFilterLabel: "اعرض",
+    fAll: "الكل",
+    fOpen: "أوزان مفتوحة",
+    fFree: "مسار مجاني",
+    fCheap: "أقل من 1 $",
+    fLegacy: "تضمين القديمة",
+    rankSearchPh: "ابحث عن أي نموذج…",
+    rankUnmeasured: "غير مقاس",
+    tierS: "الطليعة",
+    tierA: "قرب الطليعة",
+    tierB: "قوي",
+    tierC: "كفء",
+    tierD: "خفيف",
+    tierMore: "+{n} أخرى",
+    tierNote: "المستويات محسوبة لا مختارة: على المؤشر المحدد، S هو أفضل 5% من النماذج الحالية، وA الـ 15% التالية، وB الـ 20% التالية، وC الـ 25% التالية، وD الباقي. النماذج المتساوية تتشارك المستوى نفسه. الدرجات المحوّلة (~) وغير المقاسة لا تدخل الترتيب أبدًا.",
+    tierMissing: "{n} من النماذج الحالية ليست لديها بعد درجة في مؤشر {metric}.",
+    scatterTitle: "السعر مقابل الذكاء",
+    scatterNote: "الأعلى والأقرب إلى اليسار يعني ذكاءً أكثر لكل دولار. السعر على مقياس لوغاريتمي، فلا تُحشر النماذج الرخيصة في زاوية واحدة؛ والخط المتقطع هو حدّ أفضل قيمة مقابل السعر.",
+    scatterX: "سعر API المركّب، $ لكل مليون رمز (مقياس لوغاريتمي)",
+    scatterY: "مؤشر الذكاء AA",
+    scatterFree: "مجاني",
+    scatterLegend: "لون النقطة = المستوى على مؤشر الذكاء. مرّر فوق نقطة أو نموذج لتجده في العرض الآخر، وانقر لعرض التفاصيل.",
+    bridge1: "المنافسة متقاربة في القمة؟ ضع المتصدرَين جنبًا إلى جنب.",
+    ch2Eyebrow: "وجهًا لوجه",
+    ch2Title: "قارن بين أي نموذجين",
+    ch2Lede: "المؤشرات الرسمية والسعر والسياق ونقاط القوة، جنبًا إلى جنب. يبدأ بأول نموذجين اليوم ويتبع الترتيب حتى تختار بنفسك؛ وأضف نموذجًا ثالثًا متى شئت.",
+    cmpPick: "النموذج",
+    cmpSwap: "تبديل",
+    cmpReset: "العودة إلى أول اثنين",
+    cmpFollowing: "يتبع أول اثنين مباشرةً",
+    cmpYourPick: "اختيارك",
+    cmpIndices: "المؤشرات الرسمية",
+    cmpIndicesNote: "من Artificial Analysis، تُقرأ تلقائيًا. لكل مؤشر مقياسه الخاص: قارن داخل الصف الواحد لا بين الصفوف. أفضل قيمة في كل صف مُعلَّمة بنجمة.",
+    cmpCost: "السعر والمواصفات",
+    cmpPriceIn: "الإدخال $ / مليون",
+    cmpPriceOut: "الإخراج $ / مليون",
+    cmpDaysAgo: "منذ {n} يومًا",
+    cmpPriceNote: "الأسعار من OpenRouter بالدولار لكل مليون رمز؛ في الأسعار تذهب النجمة إلى القيمة الأقل.",
+    cmpProfileNote: "درجات الفئات (0-100) تقييمات مركّبة من WhichAI: إرشاد لا قياسات رسمية.",
+    mcDetails: "التفاصيل",
+    bridge2: "ربما صدر ما هو أحدث بالفعل. إليك ما تغيّر هذا الأسبوع.",
+    ch3Eyebrow: "الجديد",
+    ch3Title: "رادار النماذج: إطلاقات وأسعار وأخبار",
+    ch3Lede: "الإطلاقات وتغيّرات الأسعار من الكتالوج المباشر، بجانب عناوين المختبرات والصحافة وHacker News وHugging Face. لا أحد يحتاج إلى نشر شيء: يتحدّث وحده.",
+    radarLatest: "أحدث وافد",
+    radarFeedTitle: "الإطلاقات والتغييرات",
+    newsTitle: "شريط الأخبار",
+    newsAll: "كل المصادر",
+    newsLabs: "المختبرات",
+    newsPress: "الصحافة",
+    newsCommunity: "المجتمع",
+    newsOpen: "المصدر المفتوح",
+    newsLoading: "جارٍ قراءة المصادر…",
+    newsDown: "مصادر الأخبار غير متاحة الآن. موجز الإطلاقات بجانبها مكتمل من دونها.",
+    newsUpdated: "حُدِّث {when}",
+    newsPoints: "نقطة",
+    newsDiscuss: "النقاش",
+    newsFoot: "عناوين وروابط فقط: المدونات الرسمية للمختبرات، وTechCrunch AI، وقصص Hacker News التي تتجاوز 100 نقطة، وHugging Face. تُقرأ من جديد كل 30 دقيقة.",
+    newsSomeDown: "غير متاحة الآن: {list}.",
+    showMore: "عرض المزيد",
+    bridge3: "كل إطلاق يحرّك الأسعار أيضًا. إليك كم يكلّف الذكاء اليوم.",
+    ch4Eyebrow: "كم يكلّف",
+    ch4Title: "سوق الذكاء الاصطناعي مباشرةً",
+    ch4Lede: "أسعار API من OpenRouter، يُعاد حسابها في كل زيارة: أرخص طريق إلى كل مستوى، وأفضل قيمة، وما هو مجاني الآن، وكم سيكلّف شهر من استخدامك.",
+    mkLeaderKicker: "المتصدر يكلّف",
+    mkPer1M: "لكل مليون رمز (إدخال / إخراج)",
+    mkPer1MShort: "لكل مليون",
+    mkCheapS: "أرخص نموذج في مستوى الطليعة، السعر المركّب لكل مليون رمز",
+    mkFreeNow: "مسارات API مجانية الآن",
+    mkFreeBest: "الأقوى: {name}",
+    mkMoves: "أسعار مباشرة تختلف عن مراجعتنا الأخيرة",
+    mkLadderTitle: "أرخص طريق إلى كل مستوى",
+    mkLadderSub: "أقل سعر مركّب (3 أجزاء إدخال مقابل جزء إخراج) بين نماذج كل مستوى على مؤشر الذكاء.",
+    mkValueTitle: "أفضل قيمة الآن",
+    mkValueNote: "نقاط الذكاء لكل دولار من السعر المركّب، بين النماذج التي تساوي درجتها الوسيط أو تتجاوزه.",
+    mkPtsPerUsd: "نقطة لكل $",
+    mkCalcTitle: "كم سيكلّفني شهر؟",
+    mkCalcMsgs: "الرسائل في اليوم",
+    mkCalcLen: "الرسالة المعتادة",
+    mkPickLeader: "المتصدر",
+    mkPickValue: "أفضل قيمة",
+    mkPickA: "الأرخص قرب الطليعة",
+    mkPickB: "الأرخص بين الأقوياء",
+    mkPickFree: "مسار مجاني",
+    mkPerMonth: "شهريًا",
+    mkRateLimited: "بحدود استخدام",
+    mkCalcNote: "الافتراض: {in} رمز إدخال و{out} رمز إخراج لكل رسالة، 30 يومًا في الشهر، بأسعار OpenRouter. اشتراكات تطبيقات الدردشة رسوم ثابتة: راجع Stack Optimizer في الأسفل.",
+    mkFreeTitle: "مجاني الآن",
+    mkFreeNote: "مسارات API بسعر 0 $ على OpenRouter. جميعها بحدود استخدام وبعضها ينتهي.",
+    mkFreeNone: "لا يوجد مسار مجاني مدرج الآن.",
+    mkUntil: "حتى",
+    mkAppsFree: "الخطط المجانية للتطبيقات الكبرى",
+    mkMovesTitle: "تحركات الأسعار",
+    mkMovesNote: "حيث يختلف السعر المباشر على OpenRouter عن السعر في مراجعتنا التحريرية الأخيرة.",
+    mkMovesNone: "لا توجد فروق الآن.",
+    mkFoot: "الأسعار: OpenRouter، بالدولار لكل مليون رمز، تُقرأ تلقائيًا (الكتالوج {when}). قد تختلف قائمة أسعار المطوّر نفسه.",
+    bridge4: "خلف الأسعار: الطاقة والوظائف واستثمارات بمئات المليارات. النقاشات من الجانبين.",
+    ch5Eyebrow: "الصورة الأشمل",
+    ch5Title: "نقاشات الذكاء الاصطناعي من الجانبين",
+    ch5Lede: "الطاقة والعمل والمال وحقوق النشر والتنظيم والأوزان المفتوحة: أقوى حجة لكل جانب، والأرقام مع تواريخها، وما الذي قد يغيّر الصورة.",
+    topicsReviewed: "رُوجع في",
+    topicsCount: "نقاشات",
+    topicsReviewNote: "يحتفظ كل رقم بفترته الأصلية؛ هذه الملخصات تُراجع يدويًا وليست أخبارًا مباشرة.",
+    topicsEvidence: "الأدلة مع سياقها",
+    topicsUncertainty: "ما يبقى غير مؤكد",
+    topicsWatch: "ما الذي قد يغيّر الصورة",
+    topicsDecision: "اختر خطوتك التالية",
+    topicsChoose: "اختر وضعك",
+    topicsDecisionNote: "إرشادات تحريرية عملية. يبقى اختيارك في هذه الصفحة؛ لا حاجة إلى استدعاء ذكاء اصطناعي ولا إلى حساب.",
+    topicsReadSource: "اقرأ المصدر",
+    topicsReadPage: "افتح صفحة القراءة",
+    topicsEstimate: "تقدير",
+    topicsProjection: "توقّع",
+    topicsResearch: "نتيجة دراسة",
+    topicsReported: "إفصاح شركة",
+    topicsGuidance: "سياسة أو إرشادات",
+    topicsDefinition: "تعريف",
+    topicsTagEnvironment: "البيئة",
+    topicsTagWork: "العمل",
+    topicsTagEconomy: "الاقتصاد",
+    topicsTagLaw: "القانون",
+    topicsTagPolicy: "التنظيم",
+    topicsTagEcosystem: "المنظومة",
+    topicsCompareModels: "قارن النماذج",
+    topicsFindAI: "اعثر على الذكاء الاصطناعي المناسب",
+    topicsSeeMarket: "اعرف كم يكلّف الذكاء الاصطناعي",
+    topicsImprovePrompt: "حسّن موجّهًا",
+    topicsReviewStack: "راجع اشتراكاتي في الذكاء الاصطناعي",
+    topicsExploreModels: "استكشف الترتيب",
+    topicsLearnTerms: "استكشف المسرد",
+    complyTitle: "التزاماتك أنت",
+    complyText: "تحقّق خطوة بخطوة على ComplyAI من التزامات EU AI Act وGDPR التي تنطبق على مؤسستك.",
+    complyGo: "افتح ComplyAI.wiki",
+    bridge5: "كفى قراءة. ما الذي تحتاج إلى إنجازه؟",
+    ch6Eyebrow: "إلى العمل",
+    ch6Title: "من الذكاء الاصطناعي المناسب إلى الموجّه المناسب",
+    ch6Lede: "أربع أدوات على مسار واحد: اعثر على الذكاء الاصطناعي المناسب لمهمتك، واكتب الموجّه الذي يستجيب له أفضل، وافحص أي موجّه، ثم قلّص ما تدفعه.",
+    step1Title: "اعثر على ذكائك الاصطناعي",
+    step1Sub: "إجابة سريعة حسب المهمة، أو أربعة أسئلة لاختيار شخصي. لا حاجة إلى موجّه.",
+    quickTitle: "إجابة سريعة: اختر مهمة",
+    quickHint: "يظهر هنا أفضل تطبيق للمهمة، مع أسبابه وخطته المجانية ومصادره.",
+    quickBestFor: "أفضل اختيار لـ {task}",
+    quickWrite: "اكتب الموجّه لـ {app}",
+    quickPersonal: "خصّصه: 4 أسئلة",
+    finderGuidedTitle: "اختيار شخصي في أربعة أسئلة",
+    finderStart: "ابدأ الأسئلة الأربعة ←",
+    step2Title: "اكتب الموجّه",
+    step2Sub: "هدف واحد، وموجّه مضبوط لكل عائلة ذكاء اصطناعي تختارها، وأفضل اختيار للمهمة.",
+    genMore: "السياق والخيارات",
+    genReco: "مُوصى به لهذه المهمة",
+    genToDoctor: "افحصه مع Doctor",
+    genWords: "كلمة",
+    genChars: "حرفًا",
+    chipPromptTarget: "في مولّد الموجّهات",
+    drawerTitle: "تفاصيل النموذج",
+    drawerRankTip: "الموقع الحالي بين النماذج الحالية ذات الدرجة الرسمية، يُحسب الآن ولا يُكتب أبدًا في النص.",
+    drawerWas: "في آخر مراجعة:",
+    drawerCatNote: "درجات الفئات (0-100) تقييمات مركّبة من WhichAI: إرشاد لا قياسات رسمية.",
+    drawerCompare: "قارن ⇄",
+    drawerPrompt: "اكتب موجّهًا له",
+    drawerWiki: "صفحة النموذج",
+    snapshotLabel: "لقطة البيانات",
+    footProjects: "مشاريع أخرى من صانع WhichAI",
+    projComplyTag: "الامتثال",
+    projComply: "أدوات للامتثال لـ EU AI Act وGDPR والعقود، مصممة للشركات الصغيرة. البدء مجاني.",
+    projWarTag: "الجغرافيا السياسية",
+    projWar: "خريطة مباشرة للحروب والأزمات الجيوسياسية، مع آخر الأخبار ومؤشرات الأسواق والسيناريوهات.",
+    projVisit: "زيارة",
+    footAbout: "عن WhichAI",
+    aboutDiff: "كيف يختلف WhichAI عن لوحة الترتيب",
+    aboutData: "كيف تبقى البيانات محدّثة",
+    aboutMethod: "المنهجية",
+    aboutApi: "واجهة WhichAI البرمجية",
+    footModels: "كل النماذج",
+    footBestFor: "أفضل ذكاء اصطناعي لـ…",
+    footHeadToHeads: "مقارنات مباشرة",
+    footDataset: "مجموعة بيانات مفتوحة",
+    prefsDone: "تم مسح التفضيلات المحفوظة."
   };
-
-  S.en.navAbout = "About"; S.en.dbHint = "models tracked - start typing to search (partial names work).";
-  S.it.navAbout = "Info"; S.it.dbHint = "modelli censiti - inizia a digitare per cercare (valgono anche nomi parziali).";
-  S.fr.navAbout = "À propos"; S.fr.dbHint = "modèles suivis - tapez pour rechercher (noms partiels acceptés).";
-  S.es.navAbout = "Acerca de"; S.es.dbHint = "modelos registrados - escribe para buscar (valen nombres parciales).";
-  S.de.navAbout = "Über"; S.de.dbHint = "Modelle erfasst - tippe, um zu suchen (Teilnamen genügen).";
-  S.pt.navAbout = "Sobre"; S.pt.dbHint = "modelos registrados - digite para buscar (nomes parciais funcionam).";
-  S.zh.navAbout = "关于"; S.zh.dbHint = "个模型已收录：输入即可搜索（支持部分名称）。";
-  S.hi.navAbout = "परिचय"; S.hi.dbHint = "मॉडल दर्ज हैं - खोजने के लिए टाइप करें (आंशिक नाम भी चलेंगे)।";
-
-
-  /* ---------- v0.21: settings tests, AI refine, merge studio, themes ---------- */
-
-  S.en.setGuideTitle = "How to get free API keys";
-  S.en.setTestBtn = "Test key";
-  S.en.setTesting = "Testing…";
-  S.en.setKeyOk = "Key works";
-  S.en.setKeyFail = "Key check failed:";
-  S.en.setKeyMissing = "Paste a key first";
-  S.en.themeTip = "Theme: light → dark → sepia";
-  S.en.refineBtn = "Refine with AI";
-  S.en.refineHint = "Uses your free API key to make the goal clearer and more complete - you review before applying.";
-  S.en.refineApply = "Use this version";
-  S.en.refineDiscard = "Keep mine";
-  S.en.refineNeedKey = "Add a free API key in Settings first (Gemini, Groq or OpenRouter).";
-  S.en.refineWorking = "Refining…";
-  S.en.refineErr = "Could not refine:";
-  S.en.refineLabel = "Suggested goal (editable):";
-  S.en.mergeOpenBtn = "Merge studio →";
-  S.en.mergeTitle = "Merge studio";
-  S.en.mergeSub = "Read every answer side by side and hand-pick the best parts into one final draft. Nothing is automatic - you stay the editor.";
-  S.en.mergeBase = "Use as base";
-  S.en.mergeAddSel = "Add selection";
-  S.en.mergeAddAll = "Append all";
-  S.en.mergeHighlight = "Highlight sentences shared by 2+ models";
-  S.en.mergeDraftLabel = "Your merged draft";
-  S.en.mergeDraftPh = "Pick a base output or add selections from the sources…";
-  S.en.mergeCopy = "Copy draft";
-  S.en.mergeClear = "Clear";
-  S.en.mergeWords = "words";
-  S.en.mergeEmpty = "No outputs yet - run or paste answers in Compare first.";
-  S.en.mergeBack = "← Back to Compare";
-  S.en.mergeAddSource = "Add another output";
-  S.en.mergeSourceName = "Label (e.g. GPT-5.6)";
-  S.en.mergeSourcePh = "Paste an output you got elsewhere…";
-  S.en.mergeSourceAdd = "Add source";
-
-  S.it.setGuideTitle = "Come ottenere chiavi API gratuite";
-  S.it.setTestBtn = "Prova chiave";
-  S.it.setTesting = "Verifica…";
-  S.it.setKeyOk = "La chiave funziona";
-  S.it.setKeyFail = "Verifica fallita:";
-  S.it.setKeyMissing = "Prima incolla una chiave";
-  S.it.themeTip = "Tema: chiaro → scuro → seppia";
-  S.it.refineBtn = "Rifinisci con l'AI";
-  S.it.refineHint = "Usa la tua chiave API gratuita per rendere l'obiettivo più chiaro e completo - lo rivedi prima di applicarlo.";
-  S.it.refineApply = "Usa questa versione";
-  S.it.refineDiscard = "Tieni il mio";
-  S.it.refineNeedKey = "Aggiungi prima una chiave API gratuita nelle Impostazioni (Gemini, Groq o OpenRouter).";
-  S.it.refineWorking = "Rifinitura…";
-  S.it.refineErr = "Rifinitura non riuscita:";
-  S.it.refineLabel = "Obiettivo suggerito (modificabile):";
-  S.it.mergeOpenBtn = "Merge studio →";
-  S.it.mergeTitle = "Merge studio";
-  S.it.mergeSub = "Leggi tutte le risposte fianco a fianco e scegli a mano le parti migliori per un'unica bozza finale. Niente è automatico: l'editor sei tu.";
-  S.it.mergeBase = "Usa come base";
-  S.it.mergeAddSel = "Aggiungi selezione";
-  S.it.mergeAddAll = "Aggiungi tutto";
-  S.it.mergeHighlight = "Evidenzia frasi comuni a 2+ modelli";
-  S.it.mergeDraftLabel = "La tua bozza unificata";
-  S.it.mergeDraftPh = "Scegli una base o aggiungi selezioni dalle fonti…";
-  S.it.mergeCopy = "Copia bozza";
-  S.it.mergeClear = "Svuota";
-  S.it.mergeWords = "parole";
-  S.it.mergeEmpty = "Nessun output - esegui o incolla le risposte in Confronta prima.";
-  S.it.mergeBack = "← Torna a Confronta";
-  S.it.mergeAddSource = "Aggiungi un altro output";
-  S.it.mergeSourceName = "Etichetta (es. GPT-5.6)";
-  S.it.mergeSourcePh = "Incolla un output ottenuto altrove…";
-  S.it.mergeSourceAdd = "Aggiungi fonte";
-
-  S.fr.setGuideTitle = "Comment obtenir des clés API gratuites";
-  S.fr.setTestBtn = "Tester la clé";
-  S.fr.setTesting = "Vérification…";
-  S.fr.setKeyOk = "La clé fonctionne";
-  S.fr.setKeyFail = "Échec de la vérification :";
-  S.fr.setKeyMissing = "Collez d'abord une clé";
-  S.fr.themeTip = "Thème : clair → sombre → sépia";
-  S.fr.refineBtn = "Affiner avec l'IA";
-  S.fr.refineHint = "Utilise votre clé API gratuite pour clarifier et compléter l'objectif - vous validez avant d'appliquer.";
-  S.fr.refineApply = "Utiliser cette version";
-  S.fr.refineDiscard = "Garder le mien";
-  S.fr.refineNeedKey = "Ajoutez d'abord une clé API gratuite dans les Réglages (Gemini, Groq ou OpenRouter).";
-  S.fr.refineWorking = "Affinage…";
-  S.fr.refineErr = "Affinage impossible :";
-  S.fr.refineLabel = "Objectif suggéré (modifiable) :";
-  S.fr.mergeOpenBtn = "Studio de fusion →";
-  S.fr.mergeTitle = "Studio de fusion";
-  S.fr.mergeSub = "Lisez toutes les réponses côte à côte et composez à la main la meilleure version finale. Rien n'est automatique : l'éditeur, c'est vous.";
-  S.fr.mergeBase = "Utiliser comme base";
-  S.fr.mergeAddSel = "Ajouter la sélection";
-  S.fr.mergeAddAll = "Tout ajouter";
-  S.fr.mergeHighlight = "Surligner les phrases communes à 2+ modèles";
-  S.fr.mergeDraftLabel = "Votre brouillon fusionné";
-  S.fr.mergeDraftPh = "Choisissez une base ou ajoutez des sélections depuis les sources…";
-  S.fr.mergeCopy = "Copier le brouillon";
-  S.fr.mergeClear = "Vider";
-  S.fr.mergeWords = "mots";
-  S.fr.mergeEmpty = "Aucune sortie - exécutez ou collez d'abord des réponses dans Comparer.";
-  S.fr.mergeBack = "← Retour à Comparer";
-  S.fr.mergeAddSource = "Ajouter une autre sortie";
-  S.fr.mergeSourceName = "Étiquette (ex. GPT-5.6)";
-  S.fr.mergeSourcePh = "Collez une sortie obtenue ailleurs…";
-  S.fr.mergeSourceAdd = "Ajouter la source";
-
-  S.es.setGuideTitle = "Cómo obtener claves API gratis";
-  S.es.setTestBtn = "Probar clave";
-  S.es.setTesting = "Comprobando…";
-  S.es.setKeyOk = "La clave funciona";
-  S.es.setKeyFail = "Comprobación fallida:";
-  S.es.setKeyMissing = "Pega primero una clave";
-  S.es.themeTip = "Tema: claro → oscuro → sepia";
-  S.es.refineBtn = "Refinar con IA";
-  S.es.refineHint = "Usa tu clave API gratuita para hacer el objetivo más claro y completo - lo revisas antes de aplicarlo.";
-  S.es.refineApply = "Usar esta versión";
-  S.es.refineDiscard = "Mantener el mío";
-  S.es.refineNeedKey = "Añade primero una clave API gratuita en Ajustes (Gemini, Groq u OpenRouter).";
-  S.es.refineWorking = "Refinando…";
-  S.es.refineErr = "No se pudo refinar:";
-  S.es.refineLabel = "Objetivo sugerido (editable):";
-  S.es.mergeOpenBtn = "Estudio de fusión →";
-  S.es.mergeTitle = "Estudio de fusión";
-  S.es.mergeSub = "Lee todas las respuestas lado a lado y elige a mano lo mejor para un borrador final. Nada es automático: el editor eres tú.";
-  S.es.mergeBase = "Usar como base";
-  S.es.mergeAddSel = "Añadir selección";
-  S.es.mergeAddAll = "Añadir todo";
-  S.es.mergeHighlight = "Resaltar frases comunes a 2+ modelos";
-  S.es.mergeDraftLabel = "Tu borrador fusionado";
-  S.es.mergeDraftPh = "Elige una base o añade selecciones desde las fuentes…";
-  S.es.mergeCopy = "Copiar borrador";
-  S.es.mergeClear = "Vaciar";
-  S.es.mergeWords = "palabras";
-  S.es.mergeEmpty = "Sin salidas - ejecuta o pega respuestas en Comparar primero.";
-  S.es.mergeBack = "← Volver a Comparar";
-  S.es.mergeAddSource = "Añadir otra salida";
-  S.es.mergeSourceName = "Etiqueta (p. ej. GPT-5.6)";
-  S.es.mergeSourcePh = "Pega una salida obtenida en otro sitio…";
-  S.es.mergeSourceAdd = "Añadir fuente";
-
-  S.de.setGuideTitle = "So bekommst du kostenlose API-Schlüssel";
-  S.de.setTestBtn = "Schlüssel testen";
-  S.de.setTesting = "Prüfe…";
-  S.de.setKeyOk = "Schlüssel funktioniert";
-  S.de.setKeyFail = "Prüfung fehlgeschlagen:";
-  S.de.setKeyMissing = "Zuerst einen Schlüssel einfügen";
-  S.de.themeTip = "Design: hell → dunkel → sepia";
-  S.de.refineBtn = "Mit KI verfeinern";
-  S.de.refineHint = "Nutzt deinen kostenlosen API-Schlüssel, um das Ziel klarer und vollständiger zu machen - du prüfst vor dem Übernehmen.";
-  S.de.refineApply = "Diese Version verwenden";
-  S.de.refineDiscard = "Meins behalten";
-  S.de.refineNeedKey = "Füge zuerst einen kostenlosen API-Schlüssel in den Einstellungen hinzu (Gemini, Groq oder OpenRouter).";
-  S.de.refineWorking = "Verfeinere…";
-  S.de.refineErr = "Verfeinern fehlgeschlagen:";
-  S.de.refineLabel = "Vorgeschlagenes Ziel (bearbeitbar):";
-  S.de.mergeOpenBtn = "Merge-Studio →";
-  S.de.mergeTitle = "Merge-Studio";
-  S.de.mergeSub = "Lies alle Antworten nebeneinander und stelle die besten Teile von Hand zu einem finalen Entwurf zusammen. Nichts ist automatisch - du bleibst der Redakteur.";
-  S.de.mergeBase = "Als Basis verwenden";
-  S.de.mergeAddSel = "Auswahl hinzufügen";
-  S.de.mergeAddAll = "Alles anhängen";
-  S.de.mergeHighlight = "Sätze markieren, die 2+ Modelle teilen";
-  S.de.mergeDraftLabel = "Dein zusammengeführter Entwurf";
-  S.de.mergeDraftPh = "Wähle eine Basis oder füge Auswahlen aus den Quellen hinzu…";
-  S.de.mergeCopy = "Entwurf kopieren";
-  S.de.mergeClear = "Leeren";
-  S.de.mergeWords = "Wörter";
-  S.de.mergeEmpty = "Noch keine Ausgaben - führe erst Antworten in Vergleichen aus oder füge sie ein.";
-  S.de.mergeBack = "← Zurück zu Vergleichen";
-  S.de.mergeAddSource = "Weitere Ausgabe hinzufügen";
-  S.de.mergeSourceName = "Bezeichnung (z. B. GPT-5.6)";
-  S.de.mergeSourcePh = "Füge eine anderswo erhaltene Ausgabe ein…";
-  S.de.mergeSourceAdd = "Quelle hinzufügen";
-
-  S.pt.setGuideTitle = "Como obter chaves de API gratuitas";
-  S.pt.setTestBtn = "Testar chave";
-  S.pt.setTesting = "Verificando…";
-  S.pt.setKeyOk = "A chave funciona";
-  S.pt.setKeyFail = "Falha na verificação:";
-  S.pt.setKeyMissing = "Cole uma chave primeiro";
-  S.pt.themeTip = "Tema: claro → escuro → sépia";
-  S.pt.refineBtn = "Refinar com IA";
-  S.pt.refineHint = "Usa sua chave de API gratuita para tornar o objetivo mais claro e completo - você revisa antes de aplicar.";
-  S.pt.refineApply = "Usar esta versão";
-  S.pt.refineDiscard = "Manter o meu";
-  S.pt.refineNeedKey = "Adicione primeiro uma chave de API gratuita em Configurações (Gemini, Groq ou OpenRouter).";
-  S.pt.refineWorking = "Refinando…";
-  S.pt.refineErr = "Não foi possível refinar:";
-  S.pt.refineLabel = "Objetivo sugerido (editável):";
-  S.pt.mergeOpenBtn = "Estúdio de fusão →";
-  S.pt.mergeTitle = "Estúdio de fusão";
-  S.pt.mergeSub = "Leia todas as respostas lado a lado e escolha a dedo as melhores partes para um rascunho final. Nada é automático - o editor é você.";
-  S.pt.mergeBase = "Usar como base";
-  S.pt.mergeAddSel = "Adicionar seleção";
-  S.pt.mergeAddAll = "Anexar tudo";
-  S.pt.mergeHighlight = "Destacar frases comuns a 2+ modelos";
-  S.pt.mergeDraftLabel = "Seu rascunho unificado";
-  S.pt.mergeDraftPh = "Escolha uma base ou adicione seleções das fontes…";
-  S.pt.mergeCopy = "Copiar rascunho";
-  S.pt.mergeClear = "Limpar";
-  S.pt.mergeWords = "palavras";
-  S.pt.mergeEmpty = "Sem saídas - execute ou cole respostas em Comparar primeiro.";
-  S.pt.mergeBack = "← Voltar a Comparar";
-  S.pt.mergeAddSource = "Adicionar outra saída";
-  S.pt.mergeSourceName = "Rótulo (ex.: GPT-5.6)";
-  S.pt.mergeSourcePh = "Cole uma saída obtida em outro lugar…";
-  S.pt.mergeSourceAdd = "Adicionar fonte";
-
-  S.zh.setGuideTitle = "如何获取免费 API 密钥";
-  S.zh.setTestBtn = "测试密钥";
-  S.zh.setTesting = "正在检测…";
-  S.zh.setKeyOk = "密钥可用";
-  S.zh.setKeyFail = "检测失败：";
-  S.zh.setKeyMissing = "请先粘贴密钥";
-  S.zh.themeTip = "主题：浅色 → 深色 → 棕褐";
-  S.zh.refineBtn = "用 AI 优化";
-  S.zh.refineHint = "使用你的免费 API 密钥，让目标更清晰完整：应用前由你审核。";
-  S.zh.refineApply = "使用此版本";
-  S.zh.refineDiscard = "保留我的";
-  S.zh.refineNeedKey = "请先在设置中添加免费 API 密钥（Gemini、Groq 或 OpenRouter）。";
-  S.zh.refineWorking = "优化中…";
-  S.zh.refineErr = "优化失败：";
-  S.zh.refineLabel = "建议的目标（可编辑）：";
-  S.zh.mergeOpenBtn = "合并工作台 →";
-  S.zh.mergeTitle = "合并工作台";
-  S.zh.mergeSub = "并排阅读所有回答，手动挑选最佳部分，合成最终草稿。没有任何自动操作：编辑权在你。";
-  S.zh.mergeBase = "设为底稿";
-  S.zh.mergeAddSel = "添加所选";
-  S.zh.mergeAddAll = "全部追加";
-  S.zh.mergeHighlight = "高亮 2 个以上模型共有的句子";
-  S.zh.mergeDraftLabel = "你的合并草稿";
-  S.zh.mergeDraftPh = "选择一个底稿，或从来源中添加所选内容…";
-  S.zh.mergeCopy = "复制草稿";
-  S.zh.mergeClear = "清空";
-  S.zh.mergeWords = "词";
-  S.zh.mergeEmpty = "还没有输出：请先在对比页运行或粘贴回答。";
-  S.zh.mergeBack = "← 返回对比";
-  S.zh.mergeAddSource = "添加其他输出";
-  S.zh.mergeSourceName = "标签（如 GPT-5.6）";
-  S.zh.mergeSourcePh = "粘贴你在别处获得的输出…";
-  S.zh.mergeSourceAdd = "添加来源";
-
-  S.hi.setGuideTitle = "मुफ़्त API कुंजियाँ कैसे पाएँ";
-  S.hi.setTestBtn = "कुंजी जाँचें";
-  S.hi.setTesting = "जाँच हो रही है…";
-  S.hi.setKeyOk = "कुंजी काम करती है";
-  S.hi.setKeyFail = "जाँच विफल:";
-  S.hi.setKeyMissing = "पहले कुंजी चिपकाएँ";
-  S.hi.themeTip = "थीम: हल्की → गहरी → सीपिया";
-  S.hi.refineBtn = "AI से निखारें";
-  S.hi.refineHint = "आपकी मुफ़्त API कुंजी से लक्ष्य को स्पष्ट और पूर्ण बनाता है - लागू करने से पहले आप समीक्षा करते हैं।";
-  S.hi.refineApply = "यह संस्करण उपयोग करें";
-  S.hi.refineDiscard = "मेरा ही रखें";
-  S.hi.refineNeedKey = "पहले सेटिंग्स में एक मुफ़्त API कुंजी जोड़ें (Gemini, Groq या OpenRouter)।";
-  S.hi.refineWorking = "निखार जारी…";
-  S.hi.refineErr = "निखार विफल:";
-  S.hi.refineLabel = "सुझाया गया लक्ष्य (संपादन योग्य):";
-  S.hi.mergeOpenBtn = "मर्ज स्टूडियो →";
-  S.hi.mergeTitle = "मर्ज स्टूडियो";
-  S.hi.mergeSub = "सभी उत्तर साथ-साथ पढ़ें और सर्वश्रेष्ठ हिस्से चुनकर एक अंतिम मसौदा बनाएँ। कुछ भी स्वचालित नहीं - संपादक आप हैं।";
-  S.hi.mergeBase = "आधार बनाएँ";
-  S.hi.mergeAddSel = "चयन जोड़ें";
-  S.hi.mergeAddAll = "सब जोड़ें";
-  S.hi.mergeHighlight = "2+ मॉडलों में साझा वाक्य हाइलाइट करें";
-  S.hi.mergeDraftLabel = "आपका मर्ज किया मसौदा";
-  S.hi.mergeDraftPh = "एक आधार चुनें या स्रोतों से चयन जोड़ें…";
-  S.hi.mergeCopy = "मसौदा कॉपी करें";
-  S.hi.mergeClear = "खाली करें";
-  S.hi.mergeWords = "शब्द";
-  S.hi.mergeEmpty = "अभी कोई आउटपुट नहीं - पहले तुलना में उत्तर चलाएँ या चिपकाएँ।";
-  S.hi.mergeBack = "← तुलना पर लौटें";
-  S.hi.mergeAddSource = "एक और आउटपुट जोड़ें";
-  S.hi.mergeSourceName = "लेबल (जैसे GPT-5.6)";
-  S.hi.mergeSourcePh = "कहीं और मिला आउटपुट चिपकाएँ…";
-  S.hi.mergeSourceAdd = "स्रोत जोड़ें";
-
-  S.ru.setGuideTitle = "Как получить бесплатные API-ключи";
-  S.ru.setTestBtn = "Проверить ключ";
-  S.ru.setTesting = "Проверка…";
-  S.ru.setKeyOk = "Ключ работает";
-  S.ru.setKeyFail = "Проверка не удалась:";
-  S.ru.setKeyMissing = "Сначала вставьте ключ";
-  S.ru.themeTip = "Тема: светлая → тёмная → сепия";
-  S.ru.refineBtn = "Улучшить с ИИ";
-  S.ru.refineHint = "Использует ваш бесплатный API-ключ, чтобы сделать цель яснее и полнее - вы проверяете перед применением.";
-  S.ru.refineApply = "Использовать эту версию";
-  S.ru.refineDiscard = "Оставить мою";
-  S.ru.refineNeedKey = "Сначала добавьте бесплатный API-ключ в настройках (Gemini, Groq или OpenRouter).";
-  S.ru.refineWorking = "Улучшение…";
-  S.ru.refineErr = "Не удалось улучшить:";
-  S.ru.refineLabel = "Предложенная цель (можно править):";
-  S.ru.mergeOpenBtn = "Студия слияния →";
-  S.ru.mergeTitle = "Студия слияния";
-  S.ru.mergeSub = "Читайте все ответы рядом и вручную собирайте лучшее в один финальный черновик. Ничего автоматического - редактор здесь вы.";
-  S.ru.mergeBase = "Взять за основу";
-  S.ru.mergeAddSel = "Добавить выделенное";
-  S.ru.mergeAddAll = "Добавить всё";
-  S.ru.mergeHighlight = "Подсветить фразы, общие для 2+ моделей";
-  S.ru.mergeDraftLabel = "Ваш объединённый черновик";
-  S.ru.mergeDraftPh = "Выберите основу или добавляйте выделенное из источников…";
-  S.ru.mergeCopy = "Копировать черновик";
-  S.ru.mergeClear = "Очистить";
-  S.ru.mergeWords = "слов";
-  S.ru.mergeEmpty = "Пока нет ответов - сначала запустите или вставьте их в «Сравнить».";
-  S.ru.mergeBack = "← Назад к сравнению";
-  S.ru.mergeAddSource = "Добавить ещё один ответ";
-  S.ru.mergeSourceName = "Метка (напр. GPT-5.6)";
-  S.ru.mergeSourcePh = "Вставьте ответ, полученный в другом месте…";
-  S.ru.mergeSourceAdd = "Добавить источник";
-
-  S.ja.setGuideTitle = "無料APIキーの入手方法";
-  S.ja.setTestBtn = "キーをテスト";
-  S.ja.setTesting = "確認中…";
-  S.ja.setKeyOk = "キーは有効です";
-  S.ja.setKeyFail = "確認に失敗：";
-  S.ja.setKeyMissing = "先にキーを貼り付けてください";
-  S.ja.themeTip = "テーマ：ライト → ダーク → セピア";
-  S.ja.refineBtn = "AIで磨き上げる";
-  S.ja.refineHint = "無料のAPIキーを使って目標をより明確で完全にします。適用前にあなたが確認します。";
-  S.ja.refineApply = "この案を使う";
-  S.ja.refineDiscard = "自分の案を残す";
-  S.ja.refineNeedKey = "先に設定で無料APIキーを追加してください（Gemini、Groq、OpenRouter）。";
-  S.ja.refineWorking = "調整中…";
-  S.ja.refineErr = "調整できませんでした：";
-  S.ja.refineLabel = "提案された目標（編集可）：";
-  S.ja.mergeOpenBtn = "マージスタジオ →";
-  S.ja.mergeTitle = "マージスタジオ";
-  S.ja.mergeSub = "すべての回答を並べて読み、良い部分を手作業で選んで最終ドラフトに。自動処理は一切なし。編集者はあなたです。";
-  S.ja.mergeBase = "ベースにする";
-  S.ja.mergeAddSel = "選択部分を追加";
-  S.ja.mergeAddAll = "全文を追加";
-  S.ja.mergeHighlight = "2つ以上のモデルに共通する文をハイライト";
-  S.ja.mergeDraftLabel = "統合ドラフト";
-  S.ja.mergeDraftPh = "ベースを選ぶか、ソースから選択部分を追加…";
-  S.ja.mergeCopy = "ドラフトをコピー";
-  S.ja.mergeClear = "クリア";
-  S.ja.mergeWords = "語";
-  S.ja.mergeEmpty = "まだ出力がありません。先に比較で回答を実行または貼り付けてください。";
-  S.ja.mergeBack = "← 比較に戻る";
-  S.ja.mergeAddSource = "別の出力を追加";
-  S.ja.mergeSourceName = "ラベル（例：GPT-5.6）";
-  S.ja.mergeSourcePh = "他所で得た出力を貼り付け…";
-  S.ja.mergeSourceAdd = "ソースを追加";
-
-  S.ar.setGuideTitle = "كيفية الحصول على مفاتيح API مجانية";
-  S.ar.setTestBtn = "اختبار المفتاح";
-  S.ar.setTesting = "جارٍ الفحص…";
-  S.ar.setKeyOk = "المفتاح يعمل";
-  S.ar.setKeyFail = "فشل الفحص:";
-  S.ar.setKeyMissing = "الصق مفتاحًا أولًا";
-  S.ar.themeTip = "السمة: فاتح → داكن → بُنّي";
-  S.ar.refineBtn = "تحسين بالذكاء الاصطناعي";
-  S.ar.refineHint = "يستخدم مفتاح API المجاني الخاص بك لجعل الهدف أوضح وأكمل - أنت تراجع قبل التطبيق.";
-  S.ar.refineApply = "استخدم هذه النسخة";
-  S.ar.refineDiscard = "احتفظ بنسختي";
-  S.ar.refineNeedKey = "أضف أولًا مفتاح API مجانيًا في الإعدادات (Gemini أو Groq أو OpenRouter).";
-  S.ar.refineWorking = "جارٍ التحسين…";
-  S.ar.refineErr = "تعذّر التحسين:";
-  S.ar.refineLabel = "الهدف المقترح (قابل للتعديل):";
-  S.ar.mergeOpenBtn = "استوديو الدمج ←";
-  S.ar.mergeTitle = "استوديو الدمج";
-  S.ar.mergeSub = "اقرأ كل الإجابات جنبًا إلى جنب واختر يدويًا أفضل الأجزاء في مسودة نهائية واحدة. لا شيء تلقائي - أنت المحرر.";
-  S.ar.mergeBase = "اجعله الأساس";
-  S.ar.mergeAddSel = "أضف التحديد";
-  S.ar.mergeAddAll = "أضف الكل";
-  S.ar.mergeHighlight = "إبراز الجمل المشتركة بين نموذجين أو أكثر";
-  S.ar.mergeDraftLabel = "مسودتك المدمجة";
-  S.ar.mergeDraftPh = "اختر أساسًا أو أضف تحديدات من المصادر…";
-  S.ar.mergeCopy = "انسخ المسودة";
-  S.ar.mergeClear = "مسح";
-  S.ar.mergeWords = "كلمات";
-  S.ar.mergeEmpty = "لا مخرجات بعد - شغّل أو الصق الإجابات في «قارن» أولًا.";
-  S.ar.mergeBack = "← الرجوع إلى المقارنة";
-  S.ar.mergeAddSource = "أضف مخرجًا آخر";
-  S.ar.mergeSourceName = "تسمية (مثل GPT-5.6)";
-  S.ar.mergeSourcePh = "الصق مخرجًا حصلت عليه في مكان آخر…";
-  S.ar.mergeSourceAdd = "أضف المصدر";
-
-
-  /* ---------------- v0.22: finder, glossary, model compare, footer, roadmap ---------------- */
-
-  S.en.footFaq = "FAQ";
-  S.en.footSimilar = "Similar tools";
-  S.en.footContribute = "Contribute";
-  S.en.footGlossary = "Glossary";
-  S.en.modeGoal = "Describe a goal";
-  S.en.modeFinder = "Guided finder";
-  S.en.finderTitle = "Find the right AI";
-  S.en.finderSub = "Answer a few quick questions - get a recommendation with reasons, limits and pricing. No prompt needed.";
-  S.en.finderBack = "← Back";
-  S.en.finderNext = "Next";
-  S.en.finderRestart = "Start over";
-  S.en.finderResults = "Our recommendation";
-  S.en.finderAlt = "Also worth considering";
-  S.en.finderWhy = "Why this pick";
-  S.en.finderBestFor = "Best for:";
-  S.en.finderLimit = "Keep in mind:";
-  S.en.finderAccess = "Access:";
-  S.en.finderOpenGuide = "Open in Model guide →";
-  S.en.finderUseGen = "Write a prompt for it →";
-  S.en.finderSwitchGoal = "Prefer to describe your goal? Switch to prompt mode →";
-  S.en.finderTop = "Top match";
-  S.en.glossTitle = "AI glossary";
-  S.en.glossSub = "Every AI term in plain words - one sentence each, examples included.";
-  S.en.glossSearchPh = "Search terms…";
-  S.en.glossNoRes = "No matching term.";
-  S.en.glossCount = "terms";
-  S.en.cmpTabOutputs = "Output comparison";
-  S.en.cmpTabSpecs = "Model comparison";
-  S.en.mcTitle = "Compare models on paper";
-  S.en.mcSub = "Pick two or three models and compare scores, context, price and strengths - no API calls needed.";
-  S.en.mcAdd = "+ Add a third model";
-  S.en.mcRemove = "Remove";
-  S.en.mcOpenGuide = "Open in guide →";
-  S.en.mcProvider = "Provider";
-  S.en.mcStatus = "Status";
-  S.en.mcScore = "AA index";
-  S.en.mcReleased = "Released";
-  S.en.mcCtx = "Context window";
-  S.en.mcModal = "Modalities";
-  S.en.mcPrice = "API price $/1M (in / out)";
-  S.en.mcSpeed = "Speed";
-  S.en.mcAccess = "Access";
-  S.en.mcProfile = "Category profile";
-  S.en.mcStrengths = "Strengths";
-  S.en.mcReview = "In one line";
-  S.en.mcFootnote = "n/a = not published or not yet verified (checked July 19, 2026). Scores marked ~ are WhichAI estimates - never read small differences between an estimate and a measured score as real.";
-  S.en.insightsTitle = "Market at a glance";
-  S.en.chartTopTitle = "Top models - intelligence index";
-  S.en.chartPpTitle = "Price vs performance";
-  S.en.chainMapTitle = "Workflow roadmap";
-  S.en.chainAddStep = "+ Add step";
-  S.en.chainMoveUp = "Move step up";
-  S.en.chainMoveDown = "Move step down";
-  S.en.chainRemoveStep = "Remove step";
-  S.en.specCompareBtn = "Compare →";
-  S.en.compareSub = "Two ways to compare: run the models' real outputs side by side, or compare models on paper from the database.";
-
-  S.it.footFaq = "FAQ";
-  S.it.footSimilar = "Strumenti simili";
-  S.it.footContribute = "Contribuisci";
-  S.it.footGlossary = "Glossario";
-  S.it.modeGoal = "Descrivi un obiettivo";
-  S.it.modeFinder = "Percorso guidato";
-  S.it.finderTitle = "Trova l'AI giusta";
-  S.it.finderSub = "Rispondi a poche domande rapide: ottieni un consiglio con motivi, limiti e prezzi. Nessun prompt necessario.";
-  S.it.finderBack = "← Indietro";
-  S.it.finderNext = "Avanti";
-  S.it.finderRestart = "Ricomincia";
-  S.it.finderResults = "Il nostro consiglio";
-  S.it.finderAlt = "Da considerare anche";
-  S.it.finderWhy = "Perché questa scelta";
-  S.it.finderBestFor = "Ideale per:";
-  S.it.finderLimit = "Da sapere:";
-  S.it.finderAccess = "Accesso:";
-  S.it.finderOpenGuide = "Apri nella Model guide →";
-  S.it.finderUseGen = "Scrivi un prompt per questa AI →";
-  S.it.finderSwitchGoal = "Preferisci descrivere l'obiettivo? Passa alla modalità prompt →";
-  S.it.finderTop = "Scelta migliore";
-  S.it.glossTitle = "Glossario AI";
-  S.it.glossSub = "Ogni termine AI in parole semplici: una frase ciascuno, con esempi.";
-  S.it.glossSearchPh = "Cerca un termine…";
-  S.it.glossNoRes = "Nessun termine trovato.";
-  S.it.glossCount = "termini";
-  S.it.cmpTabOutputs = "Confronto output";
-  S.it.cmpTabSpecs = "Confronto modelli";
-  S.it.mcTitle = "Confronta i modelli sulla carta";
-  S.it.mcSub = "Scegli due o tre modelli e confronta punteggi, contesto, prezzi e punti di forza - senza chiamate API.";
-  S.it.mcAdd = "+ Aggiungi un terzo modello";
-  S.it.mcRemove = "Rimuovi";
-  S.it.mcOpenGuide = "Apri nella guida →";
-  S.it.mcProvider = "Fornitore";
-  S.it.mcStatus = "Stato";
-  S.it.mcScore = "Indice AA";
-  S.it.mcReleased = "Uscita";
-  S.it.mcCtx = "Finestra di contesto";
-  S.it.mcModal = "Modalità";
-  S.it.mcPrice = "Prezzo API $/1M (in / out)";
-  S.it.mcSpeed = "Velocità";
-  S.it.mcAccess = "Accesso";
-  S.it.mcProfile = "Profilo per categoria";
-  S.it.mcStrengths = "Punti di forza";
-  S.it.mcReview = "In una riga";
-  S.it.mcFootnote = "n/a = non pubblicato o non ancora verificato (controllo del 19 luglio 2026). I punteggi con ~ sono stime WhichAI: mai leggere piccole differenze tra una stima e un punteggio misurato come reali.";
-  S.it.insightsTitle = "Il mercato a colpo d'occhio";
-  S.it.chartTopTitle = "Modelli top - indice di intelligenza";
-  S.it.chartPpTitle = "Prezzo vs prestazioni";
-  S.it.chainMapTitle = "Roadmap del flusso";
-  S.it.chainAddStep = "+ Aggiungi step";
-  S.it.chainMoveUp = "Sposta su";
-  S.it.chainMoveDown = "Sposta giù";
-  S.it.chainRemoveStep = "Rimuovi step";
-  S.it.specCompareBtn = "Confronta →";
-  S.it.compareSub = "Due modi di confrontare: esegui gli output reali dei modelli fianco a fianco, oppure confronta i modelli sulla carta dal database.";
-
-  S.fr.footFaq = "FAQ";
-  S.fr.footSimilar = "Outils similaires";
-  S.fr.footContribute = "Contribuer";
-  S.fr.footGlossary = "Glossaire";
-  S.fr.modeGoal = "Décrire un objectif";
-  S.fr.modeFinder = "Parcours guidé";
-  S.fr.finderTitle = "Trouvez la bonne IA";
-  S.fr.finderSub = "Répondez à quelques questions rapides : une recommandation avec raisons, limites et prix. Aucun prompt requis.";
-  S.fr.finderBack = "← Retour";
-  S.fr.finderNext = "Suivant";
-  S.fr.finderRestart = "Recommencer";
-  S.fr.finderResults = "Notre recommandation";
-  S.fr.finderAlt = "À considérer aussi";
-  S.fr.finderWhy = "Pourquoi ce choix";
-  S.fr.finderBestFor = "Idéal pour :";
-  S.fr.finderLimit = "À savoir :";
-  S.fr.finderAccess = "Accès :";
-  S.fr.finderOpenGuide = "Ouvrir dans le Model guide →";
-  S.fr.finderUseGen = "Écrire un prompt pour cette IA →";
-  S.fr.finderSwitchGoal = "Vous préférez décrire votre objectif ? Passez en mode prompt →";
-  S.fr.finderTop = "Meilleur choix";
-  S.fr.glossTitle = "Glossaire IA";
-  S.fr.glossSub = "Chaque terme IA en mots simples : une phrase chacun, avec exemples.";
-  S.fr.glossSearchPh = "Rechercher un terme…";
-  S.fr.glossNoRes = "Aucun terme trouvé.";
-  S.fr.glossCount = "termes";
-  S.fr.cmpTabOutputs = "Comparaison des réponses";
-  S.fr.cmpTabSpecs = "Comparaison des modèles";
-  S.fr.mcTitle = "Comparer les modèles sur le papier";
-  S.fr.mcSub = "Choisissez deux ou trois modèles et comparez scores, contexte, prix et forces - sans appel API.";
-  S.fr.mcAdd = "+ Ajouter un troisième modèle";
-  S.fr.mcRemove = "Retirer";
-  S.fr.mcOpenGuide = "Ouvrir dans le guide →";
-  S.fr.mcProvider = "Fournisseur";
-  S.fr.mcStatus = "Statut";
-  S.fr.mcScore = "Indice AA";
-  S.fr.mcReleased = "Sortie";
-  S.fr.mcCtx = "Fenêtre de contexte";
-  S.fr.mcModal = "Modalités";
-  S.fr.mcPrice = "Prix API $/1M (in / out)";
-  S.fr.mcSpeed = "Vitesse";
-  S.fr.mcAccess = "Accès";
-  S.fr.mcProfile = "Profil par catégorie";
-  S.fr.mcStrengths = "Points forts";
-  S.fr.mcReview = "En une ligne";
-  S.fr.mcFootnote = "n/a = non publié ou non vérifié (contrôle du 19 juillet 2026). Les scores marqués ~ sont des estimations WhichAI : ne lisez jamais de petits écarts entre une estimation et un score mesuré comme réels.";
-  S.fr.insightsTitle = "Le marché en un coup d'œil";
-  S.fr.chartTopTitle = "Meilleurs modèles - indice d'intelligence";
-  S.fr.chartPpTitle = "Prix vs performance";
-  S.fr.chainMapTitle = "Feuille de route du flux";
-  S.fr.chainAddStep = "+ Ajouter une étape";
-  S.fr.chainMoveUp = "Monter l'étape";
-  S.fr.chainMoveDown = "Descendre l'étape";
-  S.fr.chainRemoveStep = "Supprimer l'étape";
-  S.fr.specCompareBtn = "Comparer →";
-  S.fr.compareSub = "Deux façons de comparer : exécutez les réponses réelles côte à côte, ou comparez les modèles sur le papier depuis la base.";
-
-  S.es.footFaq = "FAQ";
-  S.es.footSimilar = "Herramientas similares";
-  S.es.footContribute = "Contribuir";
-  S.es.footGlossary = "Glosario";
-  S.es.modeGoal = "Describir un objetivo";
-  S.es.modeFinder = "Asistente guiado";
-  S.es.finderTitle = "Encuentra la IA adecuada";
-  S.es.finderSub = "Responde unas preguntas rápidas: recibirás una recomendación con motivos, límites y precios. Sin necesidad de prompt.";
-  S.es.finderBack = "← Atrás";
-  S.es.finderNext = "Siguiente";
-  S.es.finderRestart = "Empezar de nuevo";
-  S.es.finderResults = "Nuestra recomendación";
-  S.es.finderAlt = "También a considerar";
-  S.es.finderWhy = "Por qué esta elección";
-  S.es.finderBestFor = "Ideal para:";
-  S.es.finderLimit = "Ten en cuenta:";
-  S.es.finderAccess = "Acceso:";
-  S.es.finderOpenGuide = "Abrir en la Model guide →";
-  S.es.finderUseGen = "Escribir un prompt para esta IA →";
-  S.es.finderSwitchGoal = "¿Prefieres describir tu objetivo? Cambia al modo prompt →";
-  S.es.finderTop = "Mejor opción";
-  S.es.glossTitle = "Glosario de IA";
-  S.es.glossSub = "Cada término de IA en palabras sencillas: una frase cada uno, con ejemplos.";
-  S.es.glossSearchPh = "Buscar término…";
-  S.es.glossNoRes = "Ningún término coincide.";
-  S.es.glossCount = "términos";
-  S.es.cmpTabOutputs = "Comparar respuestas";
-  S.es.cmpTabSpecs = "Comparar modelos";
-  S.es.mcTitle = "Compara modelos sobre el papel";
-  S.es.mcSub = "Elige dos o tres modelos y compara puntuaciones, contexto, precios y fortalezas - sin llamadas a la API.";
-  S.es.mcAdd = "+ Añadir un tercer modelo";
-  S.es.mcRemove = "Quitar";
-  S.es.mcOpenGuide = "Abrir en la guía →";
-  S.es.mcProvider = "Proveedor";
-  S.es.mcStatus = "Estado";
-  S.es.mcScore = "Índice AA";
-  S.es.mcReleased = "Lanzamiento";
-  S.es.mcCtx = "Ventana de contexto";
-  S.es.mcModal = "Modalidades";
-  S.es.mcPrice = "Precio API $/1M (in / out)";
-  S.es.mcSpeed = "Velocidad";
-  S.es.mcAccess = "Acceso";
-  S.es.mcProfile = "Perfil por categoría";
-  S.es.mcStrengths = "Fortalezas";
-  S.es.mcReview = "En una línea";
-  S.es.mcFootnote = "n/a = no publicado o sin verificar (comprobado el 19 de julio de 2026). Las puntuaciones con ~ son estimaciones de WhichAI: nunca tomes pequeñas diferencias entre una estimación y una medición como reales.";
-  S.es.insightsTitle = "El mercado de un vistazo";
-  S.es.chartTopTitle = "Mejores modelos - índice de inteligencia";
-  S.es.chartPpTitle = "Precio vs rendimiento";
-  S.es.chainMapTitle = "Hoja de ruta del flujo";
-  S.es.chainAddStep = "+ Añadir paso";
-  S.es.chainMoveUp = "Subir paso";
-  S.es.chainMoveDown = "Bajar paso";
-  S.es.chainRemoveStep = "Eliminar paso";
-  S.es.specCompareBtn = "Comparar →";
-  S.es.compareSub = "Dos formas de comparar: ejecuta las respuestas reales lado a lado, o compara los modelos sobre el papel desde la base de datos.";
-
-  S.de.footFaq = "FAQ";
-  S.de.footSimilar = "Ähnliche Tools";
-  S.de.footContribute = "Mitmachen";
-  S.de.footGlossary = "Glossar";
-  S.de.modeGoal = "Ziel beschreiben";
-  S.de.modeFinder = "Geführte Suche";
-  S.de.finderTitle = "Finde die richtige KI";
-  S.de.finderSub = "Beantworte ein paar kurze Fragen - du bekommst eine Empfehlung mit Gründen, Grenzen und Preisen. Ganz ohne Prompt.";
-  S.de.finderBack = "← Zurück";
-  S.de.finderNext = "Weiter";
-  S.de.finderRestart = "Neu starten";
-  S.de.finderResults = "Unsere Empfehlung";
-  S.de.finderAlt = "Auch eine Überlegung wert";
-  S.de.finderWhy = "Warum diese Wahl";
-  S.de.finderBestFor = "Ideal für:";
-  S.de.finderLimit = "Zu beachten:";
-  S.de.finderAccess = "Zugang:";
-  S.de.finderOpenGuide = "Im Model guide öffnen →";
-  S.de.finderUseGen = "Prompt für diese KI schreiben →";
-  S.de.finderSwitchGoal = "Lieber das Ziel selbst beschreiben? Zum Prompt-Modus wechseln →";
-  S.de.finderTop = "Beste Wahl";
-  S.de.glossTitle = "KI-Glossar";
-  S.de.glossSub = "Jeder KI-Begriff in einfachen Worten: je ein Satz, mit Beispielen.";
-  S.de.glossSearchPh = "Begriff suchen…";
-  S.de.glossNoRes = "Kein passender Begriff.";
-  S.de.glossCount = "Begriffe";
-  S.de.cmpTabOutputs = "Antworten vergleichen";
-  S.de.cmpTabSpecs = "Modelle vergleichen";
-  S.de.mcTitle = "Modelle auf dem Papier vergleichen";
-  S.de.mcSub = "Wähle zwei oder drei Modelle und vergleiche Scores, Kontext, Preise und Stärken - ganz ohne API-Aufrufe.";
-  S.de.mcAdd = "+ Drittes Modell hinzufügen";
-  S.de.mcRemove = "Entfernen";
-  S.de.mcOpenGuide = "Im Guide öffnen →";
-  S.de.mcProvider = "Anbieter";
-  S.de.mcStatus = "Status";
-  S.de.mcScore = "AA-Index";
-  S.de.mcReleased = "Erschienen";
-  S.de.mcCtx = "Kontextfenster";
-  S.de.mcModal = "Modalitäten";
-  S.de.mcPrice = "API-Preis $/1M (in / out)";
-  S.de.mcSpeed = "Tempo";
-  S.de.mcAccess = "Zugang";
-  S.de.mcProfile = "Kategorienprofil";
-  S.de.mcStrengths = "Stärken";
-  S.de.mcReview = "In einer Zeile";
-  S.de.mcFootnote = "n/a = nicht veröffentlicht oder noch nicht verifiziert (Stand 19. Juli 2026). Scores mit ~ sind WhichAI-Schätzungen: kleine Unterschiede zwischen Schätzung und Messung nie als real lesen.";
-  S.de.insightsTitle = "Der Markt auf einen Blick";
-  S.de.chartTopTitle = "Top-Modelle - Intelligenz-Index";
-  S.de.chartPpTitle = "Preis vs. Leistung";
-  S.de.chainMapTitle = "Workflow-Roadmap";
-  S.de.chainAddStep = "+ Schritt hinzufügen";
-  S.de.chainMoveUp = "Schritt nach oben";
-  S.de.chainMoveDown = "Schritt nach unten";
-  S.de.chainRemoveStep = "Schritt entfernen";
-  S.de.specCompareBtn = "Vergleichen →";
-  S.de.compareSub = "Zwei Wege zu vergleichen: echte Antworten nebeneinander ausführen - oder Modelle auf dem Papier aus der Datenbank vergleichen.";
-
-  S.pt.footFaq = "FAQ";
-  S.pt.footSimilar = "Ferramentas semelhantes";
-  S.pt.footContribute = "Contribuir";
-  S.pt.footGlossary = "Glossário";
-  S.pt.modeGoal = "Descrever um objetivo";
-  S.pt.modeFinder = "Assistente guiado";
-  S.pt.finderTitle = "Encontre a IA certa";
-  S.pt.finderSub = "Responda a algumas perguntas rápidas: receba uma recomendação com motivos, limites e preços. Sem precisar de prompt.";
-  S.pt.finderBack = "← Voltar";
-  S.pt.finderNext = "Avançar";
-  S.pt.finderRestart = "Recomeçar";
-  S.pt.finderResults = "Nossa recomendação";
-  S.pt.finderAlt = "Também vale considerar";
-  S.pt.finderWhy = "Por que esta escolha";
-  S.pt.finderBestFor = "Ideal para:";
-  S.pt.finderLimit = "Atenção:";
-  S.pt.finderAccess = "Acesso:";
-  S.pt.finderOpenGuide = "Abrir no Model guide →";
-  S.pt.finderUseGen = "Escrever um prompt para esta IA →";
-  S.pt.finderSwitchGoal = "Prefere descrever seu objetivo? Mude para o modo prompt →";
-  S.pt.finderTop = "Melhor escolha";
-  S.pt.glossTitle = "Glossário de IA";
-  S.pt.glossSub = "Cada termo de IA em palavras simples: uma frase cada, com exemplos.";
-  S.pt.glossSearchPh = "Pesquisar termo…";
-  S.pt.glossNoRes = "Nenhum termo encontrado.";
-  S.pt.glossCount = "termos";
-  S.pt.cmpTabOutputs = "Comparar respostas";
-  S.pt.cmpTabSpecs = "Comparar modelos";
-  S.pt.mcTitle = "Compare modelos no papel";
-  S.pt.mcSub = "Escolha dois ou três modelos e compare pontuações, contexto, preços e pontos fortes - sem chamadas de API.";
-  S.pt.mcAdd = "+ Adicionar um terceiro modelo";
-  S.pt.mcRemove = "Remover";
-  S.pt.mcOpenGuide = "Abrir no guia →";
-  S.pt.mcProvider = "Fornecedor";
-  S.pt.mcStatus = "Status";
-  S.pt.mcScore = "Índice AA";
-  S.pt.mcReleased = "Lançamento";
-  S.pt.mcCtx = "Janela de contexto";
-  S.pt.mcModal = "Modalidades";
-  S.pt.mcPrice = "Preço API $/1M (in / out)";
-  S.pt.mcSpeed = "Velocidade";
-  S.pt.mcAccess = "Acesso";
-  S.pt.mcProfile = "Perfil por categoria";
-  S.pt.mcStrengths = "Pontos fortes";
-  S.pt.mcReview = "Em uma linha";
-  S.pt.mcFootnote = "n/a = não publicado ou ainda não verificado (checado em 19 de julho de 2026). Pontuações com ~ são estimativas do WhichAI: nunca leia pequenas diferenças entre estimativa e medição como reais.";
-  S.pt.insightsTitle = "O mercado num relance";
-  S.pt.chartTopTitle = "Melhores modelos - índice de inteligência";
-  S.pt.chartPpTitle = "Preço vs desempenho";
-  S.pt.chainMapTitle = "Roteiro do fluxo";
-  S.pt.chainAddStep = "+ Adicionar etapa";
-  S.pt.chainMoveUp = "Subir etapa";
-  S.pt.chainMoveDown = "Descer etapa";
-  S.pt.chainRemoveStep = "Remover etapa";
-  S.pt.specCompareBtn = "Comparar →";
-  S.pt.compareSub = "Duas formas de comparar: execute as respostas reais lado a lado, ou compare os modelos no papel a partir do banco de dados.";
-
-  S.zh.footFaq = "常见问题";
-  S.zh.footSimilar = "同类工具";
-  S.zh.footContribute = "参与贡献";
-  S.zh.footGlossary = "术语表";
-  S.zh.modeGoal = "描述目标";
-  S.zh.modeFinder = "引导式选择";
-  S.zh.finderTitle = "找到合适的 AI";
-  S.zh.finderSub = "回答几个简短问题，即可获得推荐，包含理由、限制与价格。无需编写提示词。";
-  S.zh.finderBack = "← 返回";
-  S.zh.finderNext = "下一步";
-  S.zh.finderRestart = "重新开始";
-  S.zh.finderResults = "我们的推荐";
-  S.zh.finderAlt = "也值得考虑";
-  S.zh.finderWhy = "推荐理由";
-  S.zh.finderBestFor = "最适合：";
-  S.zh.finderLimit = "注意：";
-  S.zh.finderAccess = "访问方式：";
-  S.zh.finderOpenGuide = "在模型指南中打开 →";
-  S.zh.finderUseGen = "为它生成提示词 →";
-  S.zh.finderSwitchGoal = "想自己描述目标？切换到提示词模式 →";
-  S.zh.finderTop = "最佳匹配";
-  S.zh.glossTitle = "AI 术语表";
-  S.zh.glossSub = "用最简单的话解释每个 AI 术语：每条一句话，附示例。";
-  S.zh.glossSearchPh = "搜索术语…";
-  S.zh.glossNoRes = "没有匹配的术语。";
-  S.zh.glossCount = "个术语";
-  S.zh.cmpTabOutputs = "输出对比";
-  S.zh.cmpTabSpecs = "模型对比";
-  S.zh.mcTitle = "纸面对比模型";
-  S.zh.mcSub = "选择两到三个模型，对比分数、上下文、价格与优势：无需调用 API。";
-  S.zh.mcAdd = "+ 添加第三个模型";
-  S.zh.mcRemove = "移除";
-  S.zh.mcOpenGuide = "在指南中打开 →";
-  S.zh.mcProvider = "提供商";
-  S.zh.mcStatus = "状态";
-  S.zh.mcScore = "AA 指数";
-  S.zh.mcReleased = "发布时间";
-  S.zh.mcCtx = "上下文窗口";
-  S.zh.mcModal = "模态";
-  S.zh.mcPrice = "API 价格 $/1M（输入/输出）";
-  S.zh.mcSpeed = "速度";
-  S.zh.mcAccess = "访问方式";
-  S.zh.mcProfile = "分类能力";
-  S.zh.mcStrengths = "优势";
-  S.zh.mcReview = "一句话点评";
-  S.zh.mcFootnote = "n/a = 未公布或尚未核实（2026 年 7 月 19 日检查）。带 ~ 的分数为 WhichAI 估计值：不要把估计值与实测分数之间的细微差异当作真实差距。";
-  S.zh.insightsTitle = "市场一览";
-  S.zh.chartTopTitle = "顶级模型：智能指数";
-  S.zh.chartPpTitle = "价格与性能";
-  S.zh.chainMapTitle = "工作流路线图";
-  S.zh.chainAddStep = "+ 添加步骤";
-  S.zh.chainMoveUp = "上移步骤";
-  S.zh.chainMoveDown = "下移步骤";
-  S.zh.chainRemoveStep = "删除步骤";
-  S.zh.specCompareBtn = "对比 →";
-  S.zh.compareSub = "两种对比方式：并排运行模型的真实输出，或基于数据库进行纸面对比。";
-
-  S.hi.footFaq = "सामान्य प्रश्न";
-  S.hi.footSimilar = "मिलते-जुलते टूल";
-  S.hi.footContribute = "योगदान करें";
-  S.hi.footGlossary = "शब्दावली";
-  S.hi.modeGoal = "लक्ष्य बताएं";
-  S.hi.modeFinder = "गाइडेड फ़ाइंडर";
-  S.hi.finderTitle = "सही AI चुनें";
-  S.hi.finderSub = "कुछ छोटे सवालों के जवाब दें - कारण, सीमाएँ और कीमत के साथ सिफ़ारिश पाएं। प्रॉम्प्ट की ज़रूरत नहीं।";
-  S.hi.finderBack = "← पीछे";
-  S.hi.finderNext = "आगे";
-  S.hi.finderRestart = "फिर से शुरू करें";
-  S.hi.finderResults = "हमारी सिफ़ारिश";
-  S.hi.finderAlt = "इन पर भी विचार करें";
-  S.hi.finderWhy = "यह चुनाव क्यों";
-  S.hi.finderBestFor = "सबसे उपयुक्त:";
-  S.hi.finderLimit = "ध्यान रखें:";
-  S.hi.finderAccess = "एक्सेस:";
-  S.hi.finderOpenGuide = "Model guide में खोलें →";
-  S.hi.finderUseGen = "इसके लिए प्रॉम्प्ट लिखें →";
-  S.hi.finderSwitchGoal = "खुद लक्ष्य लिखना चाहते हैं? प्रॉम्प्ट मोड पर जाएँ →";
-  S.hi.finderTop = "सर्वश्रेष्ठ विकल्प";
-  S.hi.glossTitle = "AI शब्दावली";
-  S.hi.glossSub = "हर AI शब्द आसान भाषा में - एक-एक वाक्य, उदाहरण सहित।";
-  S.hi.glossSearchPh = "शब्द खोजें…";
-  S.hi.glossNoRes = "कोई शब्द नहीं मिला।";
-  S.hi.glossCount = "शब्द";
-  S.hi.cmpTabOutputs = "आउटपुट तुलना";
-  S.hi.cmpTabSpecs = "मॉडल तुलना";
-  S.hi.mcTitle = "कागज़ पर मॉडलों की तुलना";
-  S.hi.mcSub = "दो या तीन मॉडल चुनें और स्कोर, कॉन्टेक्स्ट, कीमत और ताकत की तुलना करें - बिना API कॉल के।";
-  S.hi.mcAdd = "+ तीसरा मॉडल जोड़ें";
-  S.hi.mcRemove = "हटाएँ";
-  S.hi.mcOpenGuide = "गाइड में खोलें →";
-  S.hi.mcProvider = "प्रदाता";
-  S.hi.mcStatus = "स्थिति";
-  S.hi.mcScore = "AA सूचकांक";
-  S.hi.mcReleased = "रिलीज़";
-  S.hi.mcCtx = "कॉन्टेक्स्ट विंडो";
-  S.hi.mcModal = "मोडैलिटी";
-  S.hi.mcPrice = "API कीमत $/1M (इन/आउट)";
-  S.hi.mcSpeed = "गति";
-  S.hi.mcAccess = "एक्सेस";
-  S.hi.mcProfile = "श्रेणी प्रोफ़ाइल";
-  S.hi.mcStrengths = "ताकत";
-  S.hi.mcReview = "एक पंक्ति में";
-  S.hi.mcFootnote = "n/a = प्रकाशित नहीं या अभी सत्यापित नहीं (19 जुलाई 2026 को जाँचा गया)। ~ वाले स्कोर WhichAI के अनुमान हैं: अनुमान और मापे गए स्कोर के छोटे अंतर को वास्तविक न मानें।";
-  S.hi.insightsTitle = "बाज़ार एक नज़र में";
-  S.hi.chartTopTitle = "शीर्ष मॉडल - इंटेलिजेंस इंडेक्स";
-  S.hi.chartPpTitle = "कीमत बनाम प्रदर्शन";
-  S.hi.chainMapTitle = "वर्कफ़्लो रोडमैप";
-  S.hi.chainAddStep = "+ स्टेप जोड़ें";
-  S.hi.chainMoveUp = "स्टेप ऊपर करें";
-  S.hi.chainMoveDown = "स्टेप नीचे करें";
-  S.hi.chainRemoveStep = "स्टेप हटाएँ";
-  S.hi.specCompareBtn = "तुलना करें →";
-  S.hi.compareSub = "तुलना के दो तरीके: मॉडलों के असली आउटपुट साथ-साथ चलाएँ, या डेटाबेस से कागज़ पर मॉडलों की तुलना करें।";
-
-  S.ru.footFaq = "FAQ";
-  S.ru.footSimilar = "Похожие инструменты";
-  S.ru.footContribute = "Внести вклад";
-  S.ru.footGlossary = "Глоссарий";
-  S.ru.modeGoal = "Описать цель";
-  S.ru.modeFinder = "Подбор по вопросам";
-  S.ru.finderTitle = "Найдите подходящий ИИ";
-  S.ru.finderSub = "Ответьте на несколько коротких вопросов - получите рекомендацию с причинами, ограничениями и ценами. Промпт не нужен.";
-  S.ru.finderBack = "← Назад";
-  S.ru.finderNext = "Далее";
-  S.ru.finderRestart = "Начать заново";
-  S.ru.finderResults = "Наша рекомендация";
-  S.ru.finderAlt = "Также стоит рассмотреть";
-  S.ru.finderWhy = "Почему этот выбор";
-  S.ru.finderBestFor = "Лучше всего для:";
-  S.ru.finderLimit = "Имейте в виду:";
-  S.ru.finderAccess = "Доступ:";
-  S.ru.finderOpenGuide = "Открыть в Model guide →";
-  S.ru.finderUseGen = "Написать промпт для него →";
-  S.ru.finderSwitchGoal = "Хотите описать цель сами? Перейти в режим промпта →";
-  S.ru.finderTop = "Лучший вариант";
-  S.ru.glossTitle = "Глоссарий ИИ";
-  S.ru.glossSub = "Каждый термин ИИ простыми словами: по одному предложению, с примерами.";
-  S.ru.glossSearchPh = "Поиск термина…";
-  S.ru.glossNoRes = "Термин не найден.";
-  S.ru.glossCount = "терминов";
-  S.ru.cmpTabOutputs = "Сравнение ответов";
-  S.ru.cmpTabSpecs = "Сравнение моделей";
-  S.ru.mcTitle = "Сравните модели на бумаге";
-  S.ru.mcSub = "Выберите две-три модели и сравните оценки, контекст, цены и сильные стороны - без вызовов API.";
-  S.ru.mcAdd = "+ Добавить третью модель";
-  S.ru.mcRemove = "Убрать";
-  S.ru.mcOpenGuide = "Открыть в гиде →";
-  S.ru.mcProvider = "Провайдер";
-  S.ru.mcStatus = "Статус";
-  S.ru.mcScore = "Индекс AA";
-  S.ru.mcReleased = "Выпуск";
-  S.ru.mcCtx = "Контекстное окно";
-  S.ru.mcModal = "Модальности";
-  S.ru.mcPrice = "Цена API $/1M (вход / выход)";
-  S.ru.mcSpeed = "Скорость";
-  S.ru.mcAccess = "Доступ";
-  S.ru.mcProfile = "Профиль по категориям";
-  S.ru.mcStrengths = "Сильные стороны";
-  S.ru.mcReview = "Одной строкой";
-  S.ru.mcFootnote = "n/a = не опубликовано или ещё не проверено (проверка 19 июля 2026). Оценки с ~ - это оценки WhichAI: не принимайте малые различия между оценкой и измерением за реальные.";
-  S.ru.insightsTitle = "Рынок одним взглядом";
-  S.ru.chartTopTitle = "Лучшие модели - индекс интеллекта";
-  S.ru.chartPpTitle = "Цена и производительность";
-  S.ru.chainMapTitle = "Дорожная карта процесса";
-  S.ru.chainAddStep = "+ Добавить шаг";
-  S.ru.chainMoveUp = "Шаг выше";
-  S.ru.chainMoveDown = "Шаг ниже";
-  S.ru.chainRemoveStep = "Удалить шаг";
-  S.ru.specCompareBtn = "Сравнить →";
-  S.ru.compareSub = "Два способа сравнения: запустите реальные ответы моделей бок о бок или сравните модели на бумаге по базе данных.";
-
-  S.ja.footFaq = "よくある質問";
-  S.ja.footSimilar = "類似ツール";
-  S.ja.footContribute = "貢献する";
-  S.ja.footGlossary = "用語集";
-  S.ja.modeGoal = "目標を書く";
-  S.ja.modeFinder = "ガイド付き診断";
-  S.ja.finderTitle = "最適なAIを見つける";
-  S.ja.finderSub = "いくつかの簡単な質問に答えるだけで、理由・制限・価格つきのおすすめが得られます。プロンプトは不要です。";
-  S.ja.finderBack = "← 戻る";
-  S.ja.finderNext = "次へ";
-  S.ja.finderRestart = "最初からやり直す";
-  S.ja.finderResults = "おすすめ";
-  S.ja.finderAlt = "こちらも検討";
-  S.ja.finderWhy = "選んだ理由";
-  S.ja.finderBestFor = "最適な用途：";
-  S.ja.finderLimit = "注意点：";
-  S.ja.finderAccess = "利用方法：";
-  S.ja.finderOpenGuide = "Model guideで開く →";
-  S.ja.finderUseGen = "このAI用のプロンプトを作る →";
-  S.ja.finderSwitchGoal = "自分で目標を書きたい場合は、プロンプトモードへ →";
-  S.ja.finderTop = "ベストマッチ";
-  S.ja.glossTitle = "AI用語集";
-  S.ja.glossSub = "AI用語をやさしい言葉で。各用語1文＋例つき。";
-  S.ja.glossSearchPh = "用語を検索…";
-  S.ja.glossNoRes = "該当する用語がありません。";
-  S.ja.glossCount = "件の用語";
-  S.ja.cmpTabOutputs = "出力の比較";
-  S.ja.cmpTabSpecs = "モデルの比較";
-  S.ja.mcTitle = "スペックでモデルを比較";
-  S.ja.mcSub = "2〜3個のモデルを選んで、スコア・コンテキスト・価格・強みを比較。API呼び出しは不要です。";
-  S.ja.mcAdd = "+ 3つ目のモデルを追加";
-  S.ja.mcRemove = "削除";
-  S.ja.mcOpenGuide = "ガイドで開く →";
-  S.ja.mcProvider = "提供元";
-  S.ja.mcStatus = "ステータス";
-  S.ja.mcScore = "AA指数";
-  S.ja.mcReleased = "リリース";
-  S.ja.mcCtx = "コンテキストウィンドウ";
-  S.ja.mcModal = "モダリティ";
-  S.ja.mcPrice = "API価格 $/1M（入力/出力）";
-  S.ja.mcSpeed = "速度";
-  S.ja.mcAccess = "利用方法";
-  S.ja.mcProfile = "カテゴリ別プロフィール";
-  S.ja.mcStrengths = "強み";
-  S.ja.mcReview = "ひとことで";
-  S.ja.mcFootnote = "n/a = 未公表または未検証（2026年7月19日確認）。~付きスコアはWhichAIの推定値です。推定値と実測値のわずかな差を実際の差と読まないでください。";
-  S.ja.insightsTitle = "市場をひと目で";
-  S.ja.chartTopTitle = "トップモデル - 知能指数";
-  S.ja.chartPpTitle = "価格 vs 性能";
-  S.ja.chainMapTitle = "ワークフロー・ロードマップ";
-  S.ja.chainAddStep = "+ ステップを追加";
-  S.ja.chainMoveUp = "上へ移動";
-  S.ja.chainMoveDown = "下へ移動";
-  S.ja.chainRemoveStep = "ステップを削除";
-  S.ja.specCompareBtn = "比較 →";
-  S.ja.compareSub = "比較は2通り：モデルの実際の出力を並べて実行するか、データベースからスペックで比較するか。";
-
-  S.ar.footFaq = "الأسئلة الشائعة";
-  S.ar.footSimilar = "أدوات مشابهة";
-  S.ar.footContribute = "ساهم";
-  S.ar.footGlossary = "المسرد";
-  S.ar.modeGoal = "صف هدفك";
-  S.ar.modeFinder = "مرشد موجَّه";
-  S.ar.finderTitle = "اعثر على الذكاء الاصطناعي المناسب";
-  S.ar.finderSub = "أجب عن بضعة أسئلة سريعة لتحصل على توصية مع الأسباب والحدود والأسعار. لا حاجة إلى موجّه.";
-  S.ar.finderBack = "رجوع";
-  S.ar.finderNext = "التالي";
-  S.ar.finderRestart = "ابدأ من جديد";
-  S.ar.finderResults = "توصيتنا";
-  S.ar.finderAlt = "خيارات أخرى جديرة بالنظر";
-  S.ar.finderWhy = "لماذا هذا الاختيار";
-  S.ar.finderBestFor = "الأفضل لـ:";
-  S.ar.finderLimit = "ضع في اعتبارك:";
-  S.ar.finderAccess = "الوصول:";
-  S.ar.finderOpenGuide = "افتح في دليل النماذج";
-  S.ar.finderUseGen = "اكتب موجّهًا له";
-  S.ar.finderSwitchGoal = "تفضّل وصف هدفك بنفسك؟ انتقل إلى وضع الموجّه";
-  S.ar.finderTop = "الخيار الأفضل";
-  S.ar.glossTitle = "مسرد الذكاء الاصطناعي";
-  S.ar.glossSub = "كل مصطلح بكلمات بسيطة: جملة واحدة لكل مصطلح، مع أمثلة.";
-  S.ar.glossSearchPh = "ابحث عن مصطلح…";
-  S.ar.glossNoRes = "لا يوجد مصطلح مطابق.";
-  S.ar.glossCount = "مصطلحًا";
-  S.ar.cmpTabOutputs = "مقارنة المخرجات";
-  S.ar.cmpTabSpecs = "مقارنة النماذج";
-  S.ar.mcTitle = "قارن النماذج على الورق";
-  S.ar.mcSub = "اختر نموذجين أو ثلاثة وقارن الدرجات والسياق والأسعار ونقاط القوة - دون استدعاءات API.";
-  S.ar.mcAdd = "+ أضف نموذجًا ثالثًا";
-  S.ar.mcRemove = "إزالة";
-  S.ar.mcOpenGuide = "افتح في الدليل";
-  S.ar.mcProvider = "المزوّد";
-  S.ar.mcStatus = "الحالة";
-  S.ar.mcScore = "مؤشر AA";
-  S.ar.mcReleased = "الإصدار";
-  S.ar.mcCtx = "نافذة السياق";
-  S.ar.mcModal = "الوسائط";
-  S.ar.mcPrice = "سعر API $/1M (إدخال/إخراج)";
-  S.ar.mcSpeed = "السرعة";
-  S.ar.mcAccess = "الوصول";
-  S.ar.mcProfile = "الملف حسب الفئة";
-  S.ar.mcStrengths = "نقاط القوة";
-  S.ar.mcReview = "في سطر واحد";
-  S.ar.mcFootnote = "n/a = غير منشور أو لم يُتحقق منه بعد (فُحص في 19 يوليو 2026). الدرجات المميزة بـ ~ تقديرات من WhichAI: لا تقرأ الفروق الصغيرة بين تقدير وقياس فعلي على أنها حقيقية.";
-  S.ar.insightsTitle = "السوق في لمحة";
-  S.ar.chartTopTitle = "أفضل النماذج - مؤشر الذكاء";
-  S.ar.chartPpTitle = "السعر مقابل الأداء";
-  S.ar.chainMapTitle = "خارطة سير العمل";
-  S.ar.chainAddStep = "+ أضف خطوة";
-  S.ar.chainMoveUp = "انقل الخطوة لأعلى";
-  S.ar.chainMoveDown = "انقل الخطوة لأسفل";
-  S.ar.chainRemoveStep = "احذف الخطوة";
-  S.ar.specCompareBtn = "قارن";
-  S.ar.compareSub = "طريقتان للمقارنة: شغّل المخرجات الفعلية للنماذج جنبًا إلى جنب، أو قارن النماذج على الورق من قاعدة البيانات.";
-
-  S.en.compareTitle = "Compare";
-  S.it.compareTitle = "Confronta";
-  S.fr.compareTitle = "Comparer";
-  S.es.compareTitle = "Comparar";
-  S.de.compareTitle = "Vergleichen";
-  S.pt.compareTitle = "Comparar";
-  S.zh.compareTitle = "对比";
-  S.hi.compareTitle = "तुलना";
-  S.ru.compareTitle = "Сравнение";
-  S.ja.compareTitle = "比較";
-  S.ar.compareTitle = "المقارنة";
-
-
-  /* ---------------- v0.23: key storage, data backup, update toast ---------------- */
-
-  S.en.keymodeLabel = "Where to keep API keys";
-  S.en.keymodeSession = "This session only (safer)";
-  S.en.keymodeLocal = "Saved on this device";
-  S.en.keymodeHint = "Keys never reach any WhichAI server (there is none). Session-only forgets them when the browser closes; saving on this device uses browser storage, which any script on this page could read, so it stays opt-in.";
-  S.en.keysClear = "Clear all API keys";
-  S.en.keysCleared = "Keys removed from this browser.";
-  S.en.dataTitle = "Your data";
-  S.en.dataHint = "Everything WhichAI saves lives in this browser: preferences, comparisons, chains, merge drafts and (if you chose so) API keys. Export a backup before switching device or clearing the browser.";
-  S.en.dataExport = "Export backup (.json)";
-  S.en.dataImport = "Import backup";
-  S.en.dataWipe = "Delete all data";
-  S.en.dataWipeAsk = "Delete ALL WhichAI data in this browser? Comparisons, chains, preferences and keys will be removed.";
-  S.en.dataImportAsk = "Import this backup? Existing data with the same names will be overwritten.";
-  S.en.dataImported = "Backup imported. Reloading.";
-  S.en.dataImportBad = "Invalid backup file.";
-  S.en.updateReady = "A new version of WhichAI is ready.";
-  S.en.updateReload = "Refresh";
-
-  S.it.keymodeLabel = "Dove tenere le chiavi API";
-  S.it.keymodeSession = "Solo questa sessione (più sicuro)";
-  S.it.keymodeLocal = "Salvate su questo dispositivo";
-  S.it.keymodeHint = "Le chiavi non raggiungono mai un server WhichAI (non esiste). Con la modalità sessione si cancellano alla chiusura del browser; salvarle sul dispositivo usa lo storage del browser, leggibile da qualsiasi script su questa pagina, quindi resta una scelta esplicita.";
-  S.it.keysClear = "Cancella tutte le chiavi API";
-  S.it.keysCleared = "Chiavi rimosse da questo browser.";
-  S.it.dataTitle = "I tuoi dati";
-  S.it.dataHint = "Tutto ciò che WhichAI salva vive in questo browser: preferenze, confronti, catene, bozze e (se lo hai scelto) chiavi API. Esporta un backup prima di cambiare dispositivo o pulire il browser.";
-  S.it.dataExport = "Esporta backup (.json)";
-  S.it.dataImport = "Importa backup";
-  S.it.dataWipe = "Elimina tutti i dati";
-  S.it.dataWipeAsk = "Eliminare TUTTI i dati WhichAI in questo browser? Confronti, catene, preferenze e chiavi verranno rimossi.";
-  S.it.dataImportAsk = "Importare questo backup? I dati esistenti con lo stesso nome verranno sovrascritti.";
-  S.it.dataImported = "Backup importato. Ricarico.";
-  S.it.dataImportBad = "File di backup non valido.";
-  S.it.updateReady = "È pronta una nuova versione di WhichAI.";
-  S.it.updateReload = "Aggiorna";
-
-  S.fr.keymodeLabel = "Où conserver les clés API";
-  S.fr.keymodeSession = "Cette session seulement (plus sûr)";
-  S.fr.keymodeLocal = "Enregistrées sur cet appareil";
-  S.fr.keymodeHint = "Les clés n'atteignent jamais un serveur WhichAI (il n'y en a pas). En mode session, elles disparaissent à la fermeture du navigateur ; l'enregistrement sur l'appareil utilise le stockage du navigateur, lisible par tout script de cette page, donc il reste optionnel.";
-  S.fr.keysClear = "Effacer toutes les clés API";
-  S.fr.keysCleared = "Clés supprimées de ce navigateur.";
-  S.fr.dataTitle = "Vos données";
-  S.fr.dataHint = "Tout ce que WhichAI enregistre vit dans ce navigateur : préférences, comparaisons, chaînes, brouillons et (si vous l'avez choisi) clés API. Exportez une sauvegarde avant de changer d'appareil.";
-  S.fr.dataExport = "Exporter la sauvegarde (.json)";
-  S.fr.dataImport = "Importer une sauvegarde";
-  S.fr.dataWipe = "Supprimer toutes les données";
-  S.fr.dataWipeAsk = "Supprimer TOUTES les données WhichAI de ce navigateur ? Comparaisons, chaînes, préférences et clés seront effacées.";
-  S.fr.dataImportAsk = "Importer cette sauvegarde ? Les données existantes portant le même nom seront écrasées.";
-  S.fr.dataImported = "Sauvegarde importée. Rechargement.";
-  S.fr.dataImportBad = "Fichier de sauvegarde invalide.";
-  S.fr.updateReady = "Une nouvelle version de WhichAI est prête.";
-  S.fr.updateReload = "Actualiser";
-
-  S.es.keymodeLabel = "Dónde guardar las claves API";
-  S.es.keymodeSession = "Solo esta sesión (más seguro)";
-  S.es.keymodeLocal = "Guardadas en este dispositivo";
-  S.es.keymodeHint = "Las claves nunca llegan a un servidor de WhichAI (no existe). En modo sesión se borran al cerrar el navegador; guardarlas en el dispositivo usa el almacenamiento del navegador, legible por cualquier script de esta página, así que es una elección explícita.";
-  S.es.keysClear = "Borrar todas las claves API";
-  S.es.keysCleared = "Claves eliminadas de este navegador.";
-  S.es.dataTitle = "Tus datos";
-  S.es.dataHint = "Todo lo que WhichAI guarda vive en este navegador: preferencias, comparaciones, cadenas, borradores y (si lo elegiste) claves API. Exporta una copia antes de cambiar de dispositivo.";
-  S.es.dataExport = "Exportar copia (.json)";
-  S.es.dataImport = "Importar copia";
-  S.es.dataWipe = "Eliminar todos los datos";
-  S.es.dataWipeAsk = "¿Eliminar TODOS los datos de WhichAI en este navegador? Se borrarán comparaciones, cadenas, preferencias y claves.";
-  S.es.dataImportAsk = "¿Importar esta copia? Los datos existentes con el mismo nombre se sobrescribirán.";
-  S.es.dataImported = "Copia importada. Recargando.";
-  S.es.dataImportBad = "Archivo de copia no válido.";
-  S.es.updateReady = "Hay una nueva versión de WhichAI lista.";
-  S.es.updateReload = "Actualizar";
-
-  S.de.keymodeLabel = "Wo API-Schlüssel liegen sollen";
-  S.de.keymodeSession = "Nur diese Sitzung (sicherer)";
-  S.de.keymodeLocal = "Auf diesem Gerät gespeichert";
-  S.de.keymodeHint = "Schlüssel erreichen nie einen WhichAI-Server (es gibt keinen). Im Sitzungsmodus verschwinden sie beim Schließen des Browsers; das Speichern auf dem Gerät nutzt den Browser-Speicher, den jedes Skript dieser Seite lesen könnte, deshalb bleibt es Opt-in.";
-  S.de.keysClear = "Alle API-Schlüssel löschen";
-  S.de.keysCleared = "Schlüssel aus diesem Browser entfernt.";
-  S.de.dataTitle = "Deine Daten";
-  S.de.dataHint = "Alles, was WhichAI speichert, lebt in diesem Browser: Einstellungen, Vergleiche, Chains, Entwürfe und (falls gewählt) API-Schlüssel. Exportiere ein Backup, bevor du das Gerät wechselst.";
-  S.de.dataExport = "Backup exportieren (.json)";
-  S.de.dataImport = "Backup importieren";
-  S.de.dataWipe = "Alle Daten löschen";
-  S.de.dataWipeAsk = "ALLE WhichAI-Daten in diesem Browser löschen? Vergleiche, Chains, Einstellungen und Schlüssel werden entfernt.";
-  S.de.dataImportAsk = "Dieses Backup importieren? Vorhandene Daten mit gleichem Namen werden überschrieben.";
-  S.de.dataImported = "Backup importiert. Neu laden.";
-  S.de.dataImportBad = "Ungültige Backup-Datei.";
-  S.de.updateReady = "Eine neue Version von WhichAI ist bereit.";
-  S.de.updateReload = "Aktualisieren";
-
-  S.pt.keymodeLabel = "Onde guardar as chaves API";
-  S.pt.keymodeSession = "Só esta sessão (mais seguro)";
-  S.pt.keymodeLocal = "Salvas neste dispositivo";
-  S.pt.keymodeHint = "As chaves nunca chegam a um servidor do WhichAI (não existe). No modo sessão, somem ao fechar o navegador; salvá-las no dispositivo usa o armazenamento do navegador, legível por qualquer script desta página, então é uma escolha explícita.";
-  S.pt.keysClear = "Apagar todas as chaves API";
-  S.pt.keysCleared = "Chaves removidas deste navegador.";
-  S.pt.dataTitle = "Seus dados";
-  S.pt.dataHint = "Tudo o que o WhichAI salva vive neste navegador: preferências, comparações, cadeias, rascunhos e (se você escolheu) chaves API. Exporte um backup antes de trocar de dispositivo.";
-  S.pt.dataExport = "Exportar backup (.json)";
-  S.pt.dataImport = "Importar backup";
-  S.pt.dataWipe = "Excluir todos os dados";
-  S.pt.dataWipeAsk = "Excluir TODOS os dados do WhichAI neste navegador? Comparações, cadeias, preferências e chaves serão removidas.";
-  S.pt.dataImportAsk = "Importar este backup? Dados existentes com o mesmo nome serão sobrescritos.";
-  S.pt.dataImported = "Backup importado. Recarregando.";
-  S.pt.dataImportBad = "Arquivo de backup inválido.";
-  S.pt.updateReady = "Uma nova versão do WhichAI está pronta.";
-  S.pt.updateReload = "Atualizar";
-
-  S.zh.keymodeLabel = "API 密钥保存位置";
-  S.zh.keymodeSession = "仅本次会话（更安全）";
-  S.zh.keymodeLocal = "保存在此设备上";
-  S.zh.keymodeHint = "密钥绝不会发送到 WhichAI 服务器（根本没有服务器）。会话模式下关闭浏览器即清除；保存在设备上会使用浏览器存储，本页面的任何脚本都可能读取，因此需要你主动选择。";
-  S.zh.keysClear = "清除所有 API 密钥";
-  S.zh.keysCleared = "已从此浏览器移除密钥。";
-  S.zh.dataTitle = "你的数据";
-  S.zh.dataHint = "WhichAI 保存的一切都在此浏览器中：偏好、对比、链、草稿以及（如你选择）API 密钥。换设备或清理浏览器前请先导出备份。";
-  S.zh.dataExport = "导出备份 (.json)";
-  S.zh.dataImport = "导入备份";
-  S.zh.dataWipe = "删除所有数据";
-  S.zh.dataWipeAsk = "删除此浏览器中的全部 WhichAI 数据？对比、链、偏好和密钥都将被移除。";
-  S.zh.dataImportAsk = "导入此备份？同名的现有数据将被覆盖。";
-  S.zh.dataImported = "备份已导入，正在刷新。";
-  S.zh.dataImportBad = "备份文件无效。";
-  S.zh.updateReady = "WhichAI 新版本已就绪。";
-  S.zh.updateReload = "刷新";
-
-  S.hi.keymodeLabel = "API कुंजियाँ कहाँ रखें";
-  S.hi.keymodeSession = "केवल इस सत्र में (अधिक सुरक्षित)";
-  S.hi.keymodeLocal = "इस डिवाइस पर सहेजें";
-  S.hi.keymodeHint = "कुंजियाँ कभी किसी WhichAI सर्वर तक नहीं जातीं (सर्वर है ही नहीं)। सत्र मोड में ब्राउज़र बंद करते ही मिट जाती हैं; डिवाइस पर सहेजना ब्राउज़र स्टोरेज उपयोग करता है, जिसे इस पेज की कोई भी स्क्रिप्ट पढ़ सकती है, इसलिए यह आपकी स्पष्ट पसंद पर है।";
-  S.hi.keysClear = "सभी API कुंजियाँ हटाएँ";
-  S.hi.keysCleared = "कुंजियाँ इस ब्राउज़र से हटा दी गईं।";
-  S.hi.dataTitle = "आपका डेटा";
-  S.hi.dataHint = "WhichAI जो कुछ सहेजता है वह इसी ब्राउज़र में रहता है: प्राथमिकताएँ, तुलनाएँ, चेन, ड्राफ़्ट और (यदि चुना हो) API कुंजियाँ। डिवाइस बदलने से पहले बैकअप निर्यात करें।";
-  S.hi.dataExport = "बैकअप निर्यात करें (.json)";
-  S.hi.dataImport = "बैकअप आयात करें";
-  S.hi.dataWipe = "सारा डेटा हटाएँ";
-  S.hi.dataWipeAsk = "इस ब्राउज़र का सारा WhichAI डेटा हटाएँ? तुलनाएँ, चेन, प्राथमिकताएँ और कुंजियाँ हट जाएँगी।";
-  S.hi.dataImportAsk = "यह बैकअप आयात करें? समान नाम का मौजूदा डेटा अधिलेखित होगा।";
-  S.hi.dataImported = "बैकअप आयात हुआ। रीलोड हो रहा है।";
-  S.hi.dataImportBad = "अमान्य बैकअप फ़ाइल।";
-  S.hi.updateReady = "WhichAI का नया संस्करण तैयार है।";
-  S.hi.updateReload = "रीफ़्रेश";
-
-  S.ru.keymodeLabel = "Где хранить API-ключи";
-  S.ru.keymodeSession = "Только эта сессия (безопаснее)";
-  S.ru.keymodeLocal = "Сохранить на этом устройстве";
-  S.ru.keymodeHint = "Ключи никогда не попадают на сервер WhichAI (его нет). В режиме сессии они исчезают при закрытии браузера; сохранение на устройстве использует хранилище браузера, доступное любому скрипту этой страницы, поэтому это осознанный выбор.";
-  S.ru.keysClear = "Удалить все API-ключи";
-  S.ru.keysCleared = "Ключи удалены из этого браузера.";
-  S.ru.dataTitle = "Ваши данные";
-  S.ru.dataHint = "Всё, что сохраняет WhichAI, живёт в этом браузере: настройки, сравнения, цепочки, черновики и (если вы выбрали) API-ключи. Экспортируйте резервную копию перед сменой устройства.";
-  S.ru.dataExport = "Экспорт копии (.json)";
-  S.ru.dataImport = "Импорт копии";
-  S.ru.dataWipe = "Удалить все данные";
-  S.ru.dataWipeAsk = "Удалить ВСЕ данные WhichAI в этом браузере? Сравнения, цепочки, настройки и ключи будут удалены.";
-  S.ru.dataImportAsk = "Импортировать эту копию? Существующие данные с теми же именами будут перезаписаны.";
-  S.ru.dataImported = "Копия импортирована. Перезагрузка.";
-  S.ru.dataImportBad = "Недопустимый файл копии.";
-  S.ru.updateReady = "Новая версия WhichAI готова.";
-  S.ru.updateReload = "Обновить";
-
-  S.ja.keymodeLabel = "APIキーの保存場所";
-  S.ja.keymodeSession = "このセッションのみ（より安全）";
-  S.ja.keymodeLocal = "この端末に保存";
-  S.ja.keymodeHint = "キーがWhichAIのサーバーに送られることはありません（サーバー自体がありません）。セッションのみの場合、ブラウザを閉じると消えます。端末への保存はブラウザのストレージを使い、このページのスクリプトから読める可能性があるため、明示的な選択制です。";
-  S.ja.keysClear = "すべてのAPIキーを削除";
-  S.ja.keysCleared = "このブラウザからキーを削除しました。";
-  S.ja.dataTitle = "あなたのデータ";
-  S.ja.dataHint = "WhichAIが保存するものはすべてこのブラウザ内にあります：設定、比較、チェーン、下書き、（選択した場合）APIキー。端末を変える前にバックアップを書き出してください。";
-  S.ja.dataExport = "バックアップを書き出す (.json)";
-  S.ja.dataImport = "バックアップを読み込む";
-  S.ja.dataWipe = "すべてのデータを削除";
-  S.ja.dataWipeAsk = "このブラウザのWhichAIデータをすべて削除しますか？比較、チェーン、設定、キーが削除されます。";
-  S.ja.dataImportAsk = "このバックアップを読み込みますか？同名の既存データは上書きされます。";
-  S.ja.dataImported = "バックアップを読み込みました。再読み込みします。";
-  S.ja.dataImportBad = "無効なバックアップファイルです。";
-  S.ja.updateReady = "WhichAIの新しいバージョンが利用できます。";
-  S.ja.updateReload = "更新";
-
-  S.ar.keymodeLabel = "أين تُحفظ مفاتيح API";
-  S.ar.keymodeSession = "هذه الجلسة فقط (أكثر أمانًا)";
-  S.ar.keymodeLocal = "محفوظة على هذا الجهاز";
-  S.ar.keymodeHint = "المفاتيح لا تصل أبدًا إلى خادم WhichAI (لا يوجد خادم أصلًا). في وضع الجلسة تُمحى عند إغلاق المتصفح؛ الحفظ على الجهاز يستخدم تخزين المتصفح الذي يمكن لأي سكربت في هذه الصفحة قراءته، لذا يبقى خيارًا صريحًا.";
-  S.ar.keysClear = "امسح كل مفاتيح API";
-  S.ar.keysCleared = "أُزيلت المفاتيح من هذا المتصفح.";
-  S.ar.dataTitle = "بياناتك";
-  S.ar.dataHint = "كل ما يحفظه WhichAI يعيش في هذا المتصفح: التفضيلات والمقارنات والسلاسل والمسودات و(إن اخترت) مفاتيح API. صدّر نسخة احتياطية قبل تغيير الجهاز.";
-  S.ar.dataExport = "تصدير نسخة احتياطية (.json)";
-  S.ar.dataImport = "استيراد نسخة احتياطية";
-  S.ar.dataWipe = "احذف كل البيانات";
-  S.ar.dataWipeAsk = "حذف كل بيانات WhichAI في هذا المتصفح؟ ستُزال المقارنات والسلاسل والتفضيلات والمفاتيح.";
-  S.ar.dataImportAsk = "استيراد هذه النسخة؟ ستُستبدل البيانات الحالية التي تحمل الأسماء نفسها.";
-  S.ar.dataImported = "تم استيراد النسخة. جارٍ التحديث.";
-  S.ar.dataImportBad = "ملف نسخة احتياطية غير صالح.";
-  S.ar.updateReady = "نسخة جديدة من WhichAI جاهزة.";
-  S.ar.updateReload = "تحديث";
-
-
-  /* ---------------- v0.24: More menu, demo, stack optimizer, prompt doctor ---------------- */
-
-  S.en.navMore = "More ▾";
-  S.en.navStack = "Stack Optimizer";
-  S.en.navDoctor = "Prompt Doctor";
-  S.en.navChainsSub = "Multi-step workflows, one model per step";
-  S.en.navStackSub = "Which subscriptions to keep, what to use free";
-  S.en.navDoctorSub = "Score a prompt, see the optimized version";
-  S.en.navGlossarySub = "Every AI term in one plain sentence";
-  S.en.navAboutSub = "FAQ, methodology, similar tools";
-  S.en.navSettingsSub = "Free API keys, your data, backup";
-  S.en.demoTitle = "Example result";
-  S.en.demoBest = "Best pick:";
-  S.en.demoAlt = "Free alternative:";
-  S.en.demoTry = "Try this example";
-  S.en.demoYours = "Get yours in 30 seconds";
-  S.en.stackTitle = "AI Stack Optimizer";
-  S.en.stackSub = "Four quick choices: which subscription is worth keeping, what to use free, and what you can cancel. All on your device.";
-  S.en.stackGo = "Build my stack";
-  S.en.stackPickOne = "Pick at least one task first.";
-  S.en.stackResult = "Your recommended stack";
-  S.en.stackNewCost = "estimated monthly cost of the recommended stack";
-  S.en.stackCurrentCost = "You currently pay:";
-  S.en.stackSaving = "estimated saving";
-  S.en.stackRedundant = "Possibly redundant for your tasks:";
-  S.en.stackFreeTier = "Free tier";
-  S.en.stackToFinder = "Need a single pick instead? Take the finder";
-  S.en.doctorTitle = "Prompt Doctor";
-  S.en.doctorSub = "Paste a prompt: get a score, a checklist of what is missing, and an optimized version for the model you choose. No API needed.";
-  S.en.doctorPh = "Paste your prompt here…";
-  S.en.doctorGo = "Analyze prompt";
-  S.en.doctorDetected = "Detected task:";
-  S.en.doctorMissingLead = "Biggest gaps:";
-  S.en.doctorAllGood = "Solid prompt: all core ingredients are present.";
-  S.en.doctorChecklist = "Checklist";
-  S.en.doctorOptimized = "Optimized version";
-  S.en.doctorBefore = "Your prompt";
-  S.en.doctorAfter = "Optimized for the selected model";
-  S.en.doctorChanges = "What changed and why";
-  S.en.doctorToGen = "Open in Generator";
-  S.en.doctorNote = "Static analysis based on prompt-engineering best practices; the optimized version uses the same engine as the Generator. Review before using.";
-
-  S.it.navMore = "Altro ▾";
-  S.it.navStack = "Stack Optimizer";
-  S.it.navDoctor = "Prompt Doctor";
-  S.it.navChainsSub = "Flussi multi-step, un modello per passo";
-  S.it.navStackSub = "Quali abbonamenti tenere, cosa usare gratis";
-  S.it.navDoctorSub = "Valuta un prompt, vedi la versione ottimizzata";
-  S.it.navGlossarySub = "Ogni termine AI in una frase semplice";
-  S.it.navAboutSub = "FAQ, metodologia, strumenti simili";
-  S.it.navSettingsSub = "Chiavi API gratuite, dati, backup";
-  S.it.demoTitle = "Risultato di esempio";
-  S.it.demoBest = "Scelta migliore:";
-  S.it.demoAlt = "Alternativa gratuita:";
-  S.it.demoTry = "Prova questo esempio";
-  S.it.demoYours = "Il tuo in 30 secondi";
-  S.it.stackTitle = "AI Stack Optimizer";
-  S.it.stackSub = "Quattro scelte rapide: quale abbonamento vale la pena, cosa usare gratis e cosa puoi disdire. Tutto sul tuo dispositivo.";
-  S.it.stackGo = "Costruisci il mio stack";
-  S.it.stackPickOne = "Scegli prima almeno un'attività.";
-  S.it.stackResult = "Il tuo stack consigliato";
-  S.it.stackNewCost = "costo mensile stimato dello stack consigliato";
-  S.it.stackCurrentCost = "Oggi paghi:";
-  S.it.stackSaving = "risparmio stimato";
-  S.it.stackRedundant = "Forse ridondanti per le tue attività:";
-  S.it.stackFreeTier = "Piano gratuito";
-  S.it.stackToFinder = "Ti serve una sola scelta? Usa il finder";
-  S.it.doctorTitle = "Prompt Doctor";
-  S.it.doctorSub = "Incolla un prompt: ottieni un punteggio, la lista di cosa manca e una versione ottimizzata per il modello che scegli. Senza API.";
-  S.it.doctorPh = "Incolla qui il tuo prompt…";
-  S.it.doctorGo = "Analizza il prompt";
-  S.it.doctorDetected = "Attività rilevata:";
-  S.it.doctorMissingLead = "Lacune principali:";
-  S.it.doctorAllGood = "Prompt solido: ci sono tutti gli ingredienti fondamentali.";
-  S.it.doctorChecklist = "Checklist";
-  S.it.doctorOptimized = "Versione ottimizzata";
-  S.it.doctorBefore = "Il tuo prompt";
-  S.it.doctorAfter = "Ottimizzato per il modello scelto";
-  S.it.doctorChanges = "Cosa è cambiato e perché";
-  S.it.doctorToGen = "Apri nel Generator";
-  S.it.doctorNote = "Analisi statica basata sulle best practice di prompt engineering; la versione ottimizzata usa lo stesso engine del Generator. Rivedi prima di usare.";
-
-  S.fr.navMore = "Plus ▾";
-  S.fr.navStack = "Stack Optimizer";
-  S.fr.navDoctor = "Prompt Doctor";
-  S.fr.navChainsSub = "Flux multi-étapes, un modèle par étape";
-  S.fr.navStackSub = "Quels abonnements garder, quoi utiliser gratuitement";
-  S.fr.navDoctorSub = "Notez un prompt, voyez la version optimisée";
-  S.fr.navGlossarySub = "Chaque terme IA en une phrase simple";
-  S.fr.navAboutSub = "FAQ, méthodologie, outils similaires";
-  S.fr.navSettingsSub = "Clés API gratuites, données, sauvegarde";
-  S.fr.demoTitle = "Résultat d'exemple";
-  S.fr.demoBest = "Meilleur choix :";
-  S.fr.demoAlt = "Alternative gratuite :";
-  S.fr.demoTry = "Essayer cet exemple";
-  S.fr.demoYours = "Le vôtre en 30 secondes";
-  S.fr.stackTitle = "AI Stack Optimizer";
-  S.fr.stackSub = "Quatre choix rapides : quel abonnement garder, quoi utiliser gratuitement, quoi résilier. Tout sur votre appareil.";
-  S.fr.stackGo = "Construire mon stack";
-  S.fr.stackPickOne = "Choisissez d'abord au moins une tâche.";
-  S.fr.stackResult = "Votre stack recommandé";
-  S.fr.stackNewCost = "coût mensuel estimé du stack recommandé";
-  S.fr.stackCurrentCost = "Vous payez actuellement :";
-  S.fr.stackSaving = "économie estimée";
-  S.fr.stackRedundant = "Peut-être redondants pour vos tâches :";
-  S.fr.stackFreeTier = "Offre gratuite";
-  S.fr.stackToFinder = "Un seul choix suffit ? Utilisez le finder";
-  S.fr.doctorTitle = "Prompt Doctor";
-  S.fr.doctorSub = "Collez un prompt : score, liste de ce qui manque et version optimisée pour le modèle choisi. Sans API.";
-  S.fr.doctorPh = "Collez votre prompt ici…";
-  S.fr.doctorGo = "Analyser le prompt";
-  S.fr.doctorDetected = "Tâche détectée :";
-  S.fr.doctorMissingLead = "Principales lacunes :";
-  S.fr.doctorAllGood = "Prompt solide : tous les ingrédients essentiels sont là.";
-  S.fr.doctorChecklist = "Checklist";
-  S.fr.doctorOptimized = "Version optimisée";
-  S.fr.doctorBefore = "Votre prompt";
-  S.fr.doctorAfter = "Optimisé pour le modèle choisi";
-  S.fr.doctorChanges = "Ce qui a changé et pourquoi";
-  S.fr.doctorToGen = "Ouvrir dans le Generator";
-  S.fr.doctorNote = "Analyse statique fondée sur les bonnes pratiques de prompt engineering ; la version optimisée utilise le même moteur que le Generator. Relisez avant usage.";
-
-  S.es.navMore = "Más ▾";
-  S.es.navStack = "Stack Optimizer";
-  S.es.navDoctor = "Prompt Doctor";
-  S.es.navChainsSub = "Flujos multi-paso, un modelo por paso";
-  S.es.navStackSub = "Qué suscripciones mantener, qué usar gratis";
-  S.es.navDoctorSub = "Puntúa un prompt, mira la versión optimizada";
-  S.es.navGlossarySub = "Cada término de IA en una frase simple";
-  S.es.navAboutSub = "FAQ, metodología, herramientas similares";
-  S.es.navSettingsSub = "Claves API gratis, tus datos, copia";
-  S.es.demoTitle = "Resultado de ejemplo";
-  S.es.demoBest = "Mejor opción:";
-  S.es.demoAlt = "Alternativa gratis:";
-  S.es.demoTry = "Probar este ejemplo";
-  S.es.demoYours = "El tuyo en 30 segundos";
-  S.es.stackTitle = "AI Stack Optimizer";
-  S.es.stackSub = "Cuatro elecciones rápidas: qué suscripción merece la pena, qué usar gratis y qué cancelar. Todo en tu dispositivo.";
-  S.es.stackGo = "Crear mi stack";
-  S.es.stackPickOne = "Elige antes al menos una tarea.";
-  S.es.stackResult = "Tu stack recomendado";
-  S.es.stackNewCost = "coste mensual estimado del stack recomendado";
-  S.es.stackCurrentCost = "Ahora pagas:";
-  S.es.stackSaving = "ahorro estimado";
-  S.es.stackRedundant = "Quizá redundantes para tus tareas:";
-  S.es.stackFreeTier = "Nivel gratuito";
-  S.es.stackToFinder = "¿Solo necesitas una opción? Usa el finder";
-  S.es.doctorTitle = "Prompt Doctor";
-  S.es.doctorSub = "Pega un prompt: puntuación, lista de lo que falta y versión optimizada para el modelo elegido. Sin API.";
-  S.es.doctorPh = "Pega aquí tu prompt…";
-  S.es.doctorGo = "Analizar prompt";
-  S.es.doctorDetected = "Tarea detectada:";
-  S.es.doctorMissingLead = "Mayores carencias:";
-  S.es.doctorAllGood = "Prompt sólido: están todos los ingredientes básicos.";
-  S.es.doctorChecklist = "Checklist";
-  S.es.doctorOptimized = "Versión optimizada";
-  S.es.doctorBefore = "Tu prompt";
-  S.es.doctorAfter = "Optimizado para el modelo elegido";
-  S.es.doctorChanges = "Qué cambió y por qué";
-  S.es.doctorToGen = "Abrir en el Generator";
-  S.es.doctorNote = "Análisis estático basado en buenas prácticas de prompt engineering; la versión optimizada usa el mismo motor del Generator. Revisa antes de usar.";
-
-  S.de.navMore = "Mehr ▾";
-  S.de.navStack = "Stack Optimizer";
-  S.de.navDoctor = "Prompt Doctor";
-  S.de.navChainsSub = "Mehrstufige Workflows, ein Modell pro Schritt";
-  S.de.navStackSub = "Welche Abos behalten, was gratis nutzen";
-  S.de.navDoctorSub = "Prompt bewerten, optimierte Version sehen";
-  S.de.navGlossarySub = "Jeder KI-Begriff in einem einfachen Satz";
-  S.de.navAboutSub = "FAQ, Methodik, ähnliche Tools";
-  S.de.navSettingsSub = "Gratis-API-Schlüssel, Daten, Backup";
-  S.de.demoTitle = "Beispielergebnis";
-  S.de.demoBest = "Beste Wahl:";
-  S.de.demoAlt = "Gratis-Alternative:";
-  S.de.demoTry = "Beispiel ausprobieren";
-  S.de.demoYours = "Deins in 30 Sekunden";
-  S.de.stackTitle = "AI Stack Optimizer";
-  S.de.stackSub = "Vier schnelle Entscheidungen: welches Abo sich lohnt, was gratis geht, was du kündigen kannst. Alles auf deinem Gerät.";
-  S.de.stackGo = "Meinen Stack bauen";
-  S.de.stackPickOne = "Wähle zuerst mindestens eine Aufgabe.";
-  S.de.stackResult = "Dein empfohlener Stack";
-  S.de.stackNewCost = "geschätzte Monatskosten des empfohlenen Stacks";
-  S.de.stackCurrentCost = "Du zahlst aktuell:";
-  S.de.stackSaving = "geschätzte Ersparnis";
-  S.de.stackRedundant = "Für deine Aufgaben womöglich redundant:";
-  S.de.stackFreeTier = "Gratis-Stufe";
-  S.de.stackToFinder = "Reicht eine einzige Wahl? Nimm den Finder";
-  S.de.doctorTitle = "Prompt Doctor";
-  S.de.doctorSub = "Prompt einfügen: Punktzahl, Checkliste des Fehlenden und optimierte Version für dein Modell. Ohne API.";
-  S.de.doctorPh = "Prompt hier einfügen…";
-  S.de.doctorGo = "Prompt analysieren";
-  S.de.doctorDetected = "Erkannte Aufgabe:";
-  S.de.doctorMissingLead = "Größte Lücken:";
-  S.de.doctorAllGood = "Solider Prompt: alle Kernzutaten sind da.";
-  S.de.doctorChecklist = "Checkliste";
-  S.de.doctorOptimized = "Optimierte Version";
-  S.de.doctorBefore = "Dein Prompt";
-  S.de.doctorAfter = "Optimiert für das gewählte Modell";
-  S.de.doctorChanges = "Was sich geändert hat und warum";
-  S.de.doctorToGen = "Im Generator öffnen";
-  S.de.doctorNote = "Statische Analyse nach Prompt-Engineering-Best-Practices; die optimierte Version nutzt denselben Engine wie der Generator. Vor Gebrauch prüfen.";
-
-  S.pt.navMore = "Mais ▾";
-  S.pt.navStack = "Stack Optimizer";
-  S.pt.navDoctor = "Prompt Doctor";
-  S.pt.navChainsSub = "Fluxos multi-etapas, um modelo por etapa";
-  S.pt.navStackSub = "Quais assinaturas manter, o que usar grátis";
-  S.pt.navDoctorSub = "Avalie um prompt, veja a versão otimizada";
-  S.pt.navGlossarySub = "Cada termo de IA em uma frase simples";
-  S.pt.navAboutSub = "FAQ, metodologia, ferramentas semelhantes";
-  S.pt.navSettingsSub = "Chaves API grátis, seus dados, backup";
-  S.pt.demoTitle = "Resultado de exemplo";
-  S.pt.demoBest = "Melhor escolha:";
-  S.pt.demoAlt = "Alternativa grátis:";
-  S.pt.demoTry = "Testar este exemplo";
-  S.pt.demoYours = "O seu em 30 segundos";
-  S.pt.stackTitle = "AI Stack Optimizer";
-  S.pt.stackSub = "Quatro escolhas rápidas: qual assinatura vale a pena, o que usar grátis e o que cancelar. Tudo no seu dispositivo.";
-  S.pt.stackGo = "Montar meu stack";
-  S.pt.stackPickOne = "Escolha antes pelo menos uma tarefa.";
-  S.pt.stackResult = "Seu stack recomendado";
-  S.pt.stackNewCost = "custo mensal estimado do stack recomendado";
-  S.pt.stackCurrentCost = "Hoje você paga:";
-  S.pt.stackSaving = "economia estimada";
-  S.pt.stackRedundant = "Talvez redundantes para suas tarefas:";
-  S.pt.stackFreeTier = "Nível grátis";
-  S.pt.stackToFinder = "Precisa de uma única escolha? Use o finder";
-  S.pt.doctorTitle = "Prompt Doctor";
-  S.pt.doctorSub = "Cole um prompt: pontuação, lista do que falta e versão otimizada para o modelo escolhido. Sem API.";
-  S.pt.doctorPh = "Cole seu prompt aqui…";
-  S.pt.doctorGo = "Analisar prompt";
-  S.pt.doctorDetected = "Tarefa detectada:";
-  S.pt.doctorMissingLead = "Maiores lacunas:";
-  S.pt.doctorAllGood = "Prompt sólido: todos os ingredientes básicos presentes.";
-  S.pt.doctorChecklist = "Checklist";
-  S.pt.doctorOptimized = "Versão otimizada";
-  S.pt.doctorBefore = "Seu prompt";
-  S.pt.doctorAfter = "Otimizado para o modelo escolhido";
-  S.pt.doctorChanges = "O que mudou e por quê";
-  S.pt.doctorToGen = "Abrir no Generator";
-  S.pt.doctorNote = "Análise estática baseada em boas práticas de prompt engineering; a versão otimizada usa o mesmo motor do Generator. Revise antes de usar.";
-
-  S.zh.navMore = "更多 ▾";
-  S.zh.navStack = "订阅优化器";
-  S.zh.navDoctor = "提示词医生";
-  S.zh.navChainsSub = "多步骤工作流，每步一个模型";
-  S.zh.navStackSub = "该保留哪些订阅，什么可以免费用";
-  S.zh.navDoctorSub = "为提示词打分，查看优化版本";
-  S.zh.navGlossarySub = "每个 AI 术语一句话讲清";
-  S.zh.navAboutSub = "常见问题、方法论、同类工具";
-  S.zh.navSettingsSub = "免费 API 密钥、数据、备份";
-  S.zh.demoTitle = "示例结果";
-  S.zh.demoBest = "最佳选择：";
-  S.zh.demoAlt = "免费替代：";
-  S.zh.demoTry = "试试这个示例";
-  S.zh.demoYours = "30 秒获得你的结果";
-  S.zh.stackTitle = "订阅优化器";
-  S.zh.stackSub = "四个快速选择：哪个订阅值得保留、什么可以免费用、什么可以取消。全部在你的设备上完成。";
-  S.zh.stackGo = "生成我的方案";
-  S.zh.stackPickOne = "请先选择至少一项任务。";
-  S.zh.stackResult = "推荐方案";
-  S.zh.stackNewCost = "推荐方案的预计月成本";
-  S.zh.stackCurrentCost = "你目前支付：";
-  S.zh.stackSaving = "预计节省";
-  S.zh.stackRedundant = "对你的任务可能多余：";
-  S.zh.stackFreeTier = "免费档";
-  S.zh.stackToFinder = "只需要一个选择？使用引导式选择";
-  S.zh.doctorTitle = "提示词医生";
-  S.zh.doctorSub = "粘贴提示词：获得评分、缺失项清单，以及针对所选模型的优化版本。无需 API。";
-  S.zh.doctorPh = "在此粘贴你的提示词…";
-  S.zh.doctorGo = "分析提示词";
-  S.zh.doctorDetected = "检测到的任务：";
-  S.zh.doctorMissingLead = "主要缺口：";
-  S.zh.doctorAllGood = "提示词很扎实：核心要素齐全。";
-  S.zh.doctorChecklist = "检查清单";
-  S.zh.doctorOptimized = "优化版本";
-  S.zh.doctorBefore = "你的提示词";
-  S.zh.doctorAfter = "针对所选模型优化";
-  S.zh.doctorChanges = "改了什么、为什么";
-  S.zh.doctorToGen = "在生成器中打开";
-  S.zh.doctorNote = "基于提示词工程最佳实践的静态分析；优化版本使用与生成器相同的引擎。使用前请检查。";
-
-  S.hi.navMore = "और ▾";
-  S.hi.navStack = "Stack Optimizer";
-  S.hi.navDoctor = "Prompt Doctor";
-  S.hi.navChainsSub = "मल्टी-स्टेप वर्कफ़्लो, हर स्टेप का अपना मॉडल";
-  S.hi.navStackSub = "कौन सी सदस्यता रखें, क्या मुफ़्त में चलेगा";
-  S.hi.navDoctorSub = "प्रॉम्प्ट को स्कोर करें, बेहतर संस्करण देखें";
-  S.hi.navGlossarySub = "हर AI शब्द एक सरल वाक्य में";
-  S.hi.navAboutSub = "FAQ, कार्यप्रणाली, मिलते-जुलते टूल";
-  S.hi.navSettingsSub = "मुफ़्त API कुंजियाँ, डेटा, बैकअप";
-  S.hi.demoTitle = "उदाहरण परिणाम";
-  S.hi.demoBest = "सबसे अच्छा विकल्प:";
-  S.hi.demoAlt = "मुफ़्त विकल्प:";
-  S.hi.demoTry = "यह उदाहरण आज़माएँ";
-  S.hi.demoYours = "30 सेकंड में अपना पाएँ";
-  S.hi.stackTitle = "AI Stack Optimizer";
-  S.hi.stackSub = "चार त्वरित चुनाव: कौन सी सदस्यता रखने लायक है, क्या मुफ़्त चलेगा, क्या रद्द करें। सब आपके डिवाइस पर।";
-  S.hi.stackGo = "मेरा स्टैक बनाएँ";
-  S.hi.stackPickOne = "पहले कम से कम एक कार्य चुनें।";
-  S.hi.stackResult = "आपका सुझाया स्टैक";
-  S.hi.stackNewCost = "सुझाए स्टैक की अनुमानित मासिक लागत";
-  S.hi.stackCurrentCost = "अभी आप देते हैं:";
-  S.hi.stackSaving = "अनुमानित बचत";
-  S.hi.stackRedundant = "आपके कार्यों के लिए शायद अनावश्यक:";
-  S.hi.stackFreeTier = "मुफ़्त स्तर";
-  S.hi.stackToFinder = "सिर्फ़ एक विकल्प चाहिए? फ़ाइंडर आज़माएँ";
-  S.hi.doctorTitle = "Prompt Doctor";
-  S.hi.doctorSub = "प्रॉम्प्ट चिपकाएँ: स्कोर, कमियों की सूची और चुने मॉडल के लिए बेहतर संस्करण। बिना API।";
-  S.hi.doctorPh = "अपना प्रॉम्प्ट यहाँ चिपकाएँ…";
-  S.hi.doctorGo = "प्रॉम्प्ट का विश्लेषण करें";
-  S.hi.doctorDetected = "पहचाना गया कार्य:";
-  S.hi.doctorMissingLead = "मुख्य कमियाँ:";
-  S.hi.doctorAllGood = "मज़बूत प्रॉम्प्ट: सभी मूल तत्व मौजूद हैं।";
-  S.hi.doctorChecklist = "चेकलिस्ट";
-  S.hi.doctorOptimized = "बेहतर संस्करण";
-  S.hi.doctorBefore = "आपका प्रॉम्प्ट";
-  S.hi.doctorAfter = "चुने मॉडल के लिए अनुकूलित";
-  S.hi.doctorChanges = "क्या बदला और क्यों";
-  S.hi.doctorToGen = "Generator में खोलें";
-  S.hi.doctorNote = "प्रॉम्प्ट इंजीनियरिंग की सर्वोत्तम प्रथाओं पर आधारित स्थैतिक विश्लेषण; बेहतर संस्करण वही इंजन उपयोग करता है। उपयोग से पहले जाँचें।";
-
-  S.ru.navMore = "Ещё ▾";
-  S.ru.navStack = "Stack Optimizer";
-  S.ru.navDoctor = "Prompt Doctor";
-  S.ru.navChainsSub = "Многошаговые процессы, модель на каждый шаг";
-  S.ru.navStackSub = "Какие подписки оставить, что использовать бесплатно";
-  S.ru.navDoctorSub = "Оцените промпт, посмотрите улучшенную версию";
-  S.ru.navGlossarySub = "Каждый термин ИИ одним простым предложением";
-  S.ru.navAboutSub = "FAQ, методология, похожие инструменты";
-  S.ru.navSettingsSub = "Бесплатные API-ключи, данные, резервная копия";
-  S.ru.demoTitle = "Пример результата";
-  S.ru.demoBest = "Лучший выбор:";
-  S.ru.demoAlt = "Бесплатная альтернатива:";
-  S.ru.demoTry = "Попробовать пример";
-  S.ru.demoYours = "Ваш за 30 секунд";
-  S.ru.stackTitle = "AI Stack Optimizer";
-  S.ru.stackSub = "Четыре быстрых выбора: какую подписку оставить, что использовать бесплатно, что отменить. Всё на вашем устройстве.";
-  S.ru.stackGo = "Собрать мой стек";
-  S.ru.stackPickOne = "Сначала выберите хотя бы одну задачу.";
-  S.ru.stackResult = "Рекомендованный стек";
-  S.ru.stackNewCost = "оценочная месячная стоимость рекомендованного стека";
-  S.ru.stackCurrentCost = "Сейчас вы платите:";
-  S.ru.stackSaving = "оценочная экономия";
-  S.ru.stackRedundant = "Возможно, лишнее для ваших задач:";
-  S.ru.stackFreeTier = "Бесплатный уровень";
-  S.ru.stackToFinder = "Нужен один вариант? Пройдите финдер";
-  S.ru.doctorTitle = "Prompt Doctor";
-  S.ru.doctorSub = "Вставьте промпт: оценка, список недостающего и улучшенная версия для выбранной модели. Без API.";
-  S.ru.doctorPh = "Вставьте промпт сюда…";
-  S.ru.doctorGo = "Проанализировать промпт";
-  S.ru.doctorDetected = "Определённая задача:";
-  S.ru.doctorMissingLead = "Главные пробелы:";
-  S.ru.doctorAllGood = "Крепкий промпт: все ключевые элементы на месте.";
-  S.ru.doctorChecklist = "Чек-лист";
-  S.ru.doctorOptimized = "Улучшенная версия";
-  S.ru.doctorBefore = "Ваш промпт";
-  S.ru.doctorAfter = "Оптимизировано под выбранную модель";
-  S.ru.doctorChanges = "Что изменилось и почему";
-  S.ru.doctorToGen = "Открыть в Generator";
-  S.ru.doctorNote = "Статический анализ по лучшим практикам промпт-инжиниринга; улучшенная версия использует тот же движок, что и Generator. Проверьте перед использованием.";
-
-  S.ja.navMore = "その他 ▾";
-  S.ja.navStack = "Stack Optimizer";
-  S.ja.navDoctor = "Prompt Doctor";
-  S.ja.navChainsSub = "マルチステップのワークフロー、各ステップに最適モデル";
-  S.ja.navStackSub = "残すべきサブスク、無料で済むもの";
-  S.ja.navDoctorSub = "プロンプトを採点し、最適化版を見る";
-  S.ja.navGlossarySub = "AI用語を1文でやさしく";
-  S.ja.navAboutSub = "FAQ・方法論・類似ツール";
-  S.ja.navSettingsSub = "無料APIキー、データ、バックアップ";
-  S.ja.demoTitle = "結果の例";
-  S.ja.demoBest = "ベストな選択：";
-  S.ja.demoAlt = "無料の代替：";
-  S.ja.demoTry = "この例を試す";
-  S.ja.demoYours = "30秒であなたの結果を";
-  S.ja.stackTitle = "AI Stack Optimizer";
-  S.ja.stackSub = "4つの簡単な選択で、残す価値のあるサブスク・無料で済むもの・解約できるものが分かります。すべて端末内で完結。";
-  S.ja.stackGo = "スタックを作る";
-  S.ja.stackPickOne = "まずタスクを1つ以上選んでください。";
-  S.ja.stackResult = "おすすめスタック";
-  S.ja.stackNewCost = "おすすめスタックの推定月額";
-  S.ja.stackCurrentCost = "現在の支払い：";
-  S.ja.stackSaving = "推定節約額";
-  S.ja.stackRedundant = "あなたのタスクには不要かも：";
-  S.ja.stackFreeTier = "無料プラン";
-  S.ja.stackToFinder = "1つだけ選びたい？ファインダーへ";
-  S.ja.doctorTitle = "Prompt Doctor";
-  S.ja.doctorSub = "プロンプトを貼るだけ：採点、足りない要素のリスト、選んだモデル向けの最適化版。APIは不要です。";
-  S.ja.doctorPh = "ここにプロンプトを貼り付け…";
-  S.ja.doctorGo = "プロンプトを分析";
-  S.ja.doctorDetected = "検出タスク：";
-  S.ja.doctorMissingLead = "主な不足：";
-  S.ja.doctorAllGood = "しっかりしたプロンプトです。主要な要素はすべて揃っています。";
-  S.ja.doctorChecklist = "チェックリスト";
-  S.ja.doctorOptimized = "最適化版";
-  S.ja.doctorBefore = "あなたのプロンプト";
-  S.ja.doctorAfter = "選択モデル向けに最適化";
-  S.ja.doctorChanges = "変更点と理由";
-  S.ja.doctorToGen = "Generatorで開く";
-  S.ja.doctorNote = "プロンプトエンジニアリングのベストプラクティスに基づく静的分析。最適化版はGeneratorと同じエンジンを使用します。使用前に確認してください。";
-
-  S.ar.navMore = "المزيد ▾";
-  S.ar.navStack = "محسّن الاشتراكات";
-  S.ar.navDoctor = "طبيب الموجّهات";
-  S.ar.navChainsSub = "مسارات متعددة الخطوات، نموذج لكل خطوة";
-  S.ar.navStackSub = "أي اشتراك تُبقيه وما يمكن استخدامه مجانًا";
-  S.ar.navDoctorSub = "قيّم موجّهًا وشاهد النسخة المحسّنة";
-  S.ar.navGlossarySub = "كل مصطلح ذكاء اصطناعي في جملة بسيطة";
-  S.ar.navAboutSub = "الأسئلة الشائعة، المنهجية، أدوات مشابهة";
-  S.ar.navSettingsSub = "مفاتيح API مجانية، بياناتك، نسخ احتياطي";
-  S.ar.demoTitle = "نتيجة مثال";
-  S.ar.demoBest = "أفضل خيار:";
-  S.ar.demoAlt = "بديل مجاني:";
-  S.ar.demoTry = "جرّب هذا المثال";
-  S.ar.demoYours = "نتيجتك في 30 ثانية";
-  S.ar.stackTitle = "محسّن الاشتراكات";
-  S.ar.stackSub = "أربعة اختيارات سريعة: أي اشتراك يستحق البقاء، وما يمكن استخدامه مجانًا، وما يمكنك إلغاؤه. كل ذلك على جهازك.";
-  S.ar.stackGo = "ابنِ حزمتي";
-  S.ar.stackPickOne = "اختر مهمة واحدة على الأقل أولًا.";
-  S.ar.stackResult = "حزمتك الموصى بها";
-  S.ar.stackNewCost = "التكلفة الشهرية التقديرية للحزمة الموصى بها";
-  S.ar.stackCurrentCost = "تدفع حاليًا:";
-  S.ar.stackSaving = "توفير تقديري";
-  S.ar.stackRedundant = "ربما زائدة عن حاجتك:";
-  S.ar.stackFreeTier = "الخطة المجانية";
-  S.ar.stackToFinder = "تحتاج خيارًا واحدًا فقط؟ جرّب المرشد";
-  S.ar.doctorTitle = "طبيب الموجّهات";
-  S.ar.doctorSub = "الصق موجّهًا: درجة، قائمة بما ينقصه، ونسخة محسّنة للنموذج الذي تختاره. دون API.";
-  S.ar.doctorPh = "الصق موجّهك هنا…";
-  S.ar.doctorGo = "حلّل الموجّه";
-  S.ar.doctorDetected = "المهمة المكتشفة:";
-  S.ar.doctorMissingLead = "أكبر الثغرات:";
-  S.ar.doctorAllGood = "موجّه متين: كل المكوّنات الأساسية موجودة.";
-  S.ar.doctorChecklist = "قائمة التحقق";
-  S.ar.doctorOptimized = "النسخة المحسّنة";
-  S.ar.doctorBefore = "موجّهك";
-  S.ar.doctorAfter = "محسّن للنموذج المختار";
-  S.ar.doctorChanges = "ما الذي تغيّر ولماذا";
-  S.ar.doctorToGen = "افتح في المولّد";
-  S.ar.doctorNote = "تحليل ثابت مبني على أفضل ممارسات هندسة الموجّهات؛ النسخة المحسّنة تستخدم محرك المولّد نفسه. راجعها قبل الاستخدام.";
-
-
-  /* ---------------- v0.25: official links, model radar, share cards ---------------- */
-
-  S.en.officialOpen = "Open";
-  S.en.officialSite = "Open the official app";
-  S.en.navRadar = "Model Radar";
-  S.en.navRadarSub = "What changed: new models, prices, free tiers";
-  S.en.radarTitle = "Model Radar";
-  S.en.radarSub = "New models, prices, scores and free tiers: arrivals appear automatically, with curated notes on what matters.";
-  S.en.radarNew = "NEW";
-  S.en.radarUpcoming = "Coming up";
-  S.en.radarAll = "All";
-  S.en.radarFollowing = "Following";
-  S.en.radarSince = "changes since your last visit";
-  S.en.radarFollow = "Follow";
-  S.en.radarUnfollow = "Following";
-  S.en.radarTypeNew = "New models";
-  S.en.radarTypePrice = "Prices";
-  S.en.radarTypeScore = "Scores";
-  S.en.radarTypeFree = "Free tiers";
-  S.en.radarEmpty = "Nothing here yet. Follow a model with the star to build your own feed.";
-  S.en.shareBtn = "Share as image";
-  S.en.shareDone = "Image ready";
-
-  S.it.officialOpen = "Apri";
-  S.it.officialSite = "Apri l'app ufficiale";
-  S.it.navRadar = "Model Radar";
-  S.it.navRadarSub = "Cosa è cambiato: nuovi modelli, prezzi, piani gratuiti";
-  S.it.radarTitle = "Model Radar";
-  S.it.radarSub = "Nuovi modelli, prezzi, punteggi e piani gratuiti: gli arrivi compaiono in automatico, con note curate su ciò che conta.";
-  S.it.radarNew = "NUOVO";
-  S.it.radarUpcoming = "In arrivo";
-  S.it.radarAll = "Tutto";
-  S.it.radarFollowing = "Seguiti";
-  S.it.radarSince = "novità dalla tua ultima visita";
-  S.it.radarFollow = "Segui";
-  S.it.radarUnfollow = "Seguito";
-  S.it.radarTypeNew = "Nuovi modelli";
-  S.it.radarTypePrice = "Prezzi";
-  S.it.radarTypeScore = "Punteggi";
-  S.it.radarTypeFree = "Piani gratuiti";
-  S.it.radarEmpty = "Ancora niente qui. Segui un modello con la stella per costruire il tuo feed.";
-  S.it.shareBtn = "Condividi come immagine";
-  S.it.shareDone = "Immagine pronta";
-
-  S.fr.officialOpen = "Ouvrir";
-  S.fr.officialSite = "Ouvrir l'app officielle";
-  S.fr.navRadar = "Model Radar";
-  S.fr.navRadarSub = "Ce qui a changé : nouveaux modèles, prix, offres gratuites";
-  S.fr.radarTitle = "Model Radar";
-  S.fr.radarSub = "Nouveaux modèles, prix, scores et offres gratuites : les arrivées apparaissent automatiquement, avec des notes sur ce qui compte.";
-  S.fr.radarNew = "NOUVEAU";
-  S.fr.radarUpcoming = "À venir";
-  S.fr.radarAll = "Tout";
-  S.fr.radarFollowing = "Suivis";
-  S.fr.radarSince = "nouveautés depuis votre dernière visite";
-  S.fr.radarFollow = "Suivre";
-  S.fr.radarUnfollow = "Suivi";
-  S.fr.radarTypeNew = "Nouveaux modèles";
-  S.fr.radarTypePrice = "Prix";
-  S.fr.radarTypeScore = "Scores";
-  S.fr.radarTypeFree = "Offres gratuites";
-  S.fr.radarEmpty = "Rien ici pour l'instant. Suivez un modèle avec l'étoile pour créer votre propre flux.";
-  S.fr.shareBtn = "Partager en image";
-  S.fr.shareDone = "Image prête";
-
-  S.es.officialOpen = "Abrir";
-  S.es.officialSite = "Abrir la app oficial";
-  S.es.navRadar = "Model Radar";
-  S.es.navRadarSub = "Qué cambió: nuevos modelos, precios, niveles gratis";
-  S.es.radarTitle = "Model Radar";
-  S.es.radarSub = "Nuevos modelos, precios, puntuaciones y planes gratuitos: las novedades aparecen solas, con notas sobre lo que importa.";
-  S.es.radarNew = "NUEVO";
-  S.es.radarUpcoming = "Próximamente";
-  S.es.radarAll = "Todo";
-  S.es.radarFollowing = "Siguiendo";
-  S.es.radarSince = "novedades desde tu última visita";
-  S.es.radarFollow = "Seguir";
-  S.es.radarUnfollow = "Siguiendo";
-  S.es.radarTypeNew = "Nuevos modelos";
-  S.es.radarTypePrice = "Precios";
-  S.es.radarTypeScore = "Puntuaciones";
-  S.es.radarTypeFree = "Niveles gratis";
-  S.es.radarEmpty = "Nada por aquí todavía. Sigue un modelo con la estrella para crear tu propio feed.";
-  S.es.shareBtn = "Compartir como imagen";
-  S.es.shareDone = "Imagen lista";
-
-  S.de.officialOpen = "Öffnen";
-  S.de.officialSite = "Offizielle App öffnen";
-  S.de.navRadar = "Model Radar";
-  S.de.navRadarSub = "Was sich geändert hat: neue Modelle, Preise, Gratis-Stufen";
-  S.de.radarTitle = "Model Radar";
-  S.de.radarSub = "Neue Modelle, Preise, Werte und Gratis-Stufen: Neuzugänge erscheinen automatisch, mit Notizen zu dem, was zählt.";
-  S.de.radarNew = "NEU";
-  S.de.radarUpcoming = "Demnächst";
-  S.de.radarAll = "Alles";
-  S.de.radarFollowing = "Gefolgt";
-  S.de.radarSince = "Neuigkeiten seit deinem letzten Besuch";
-  S.de.radarFollow = "Folgen";
-  S.de.radarUnfollow = "Gefolgt";
-  S.de.radarTypeNew = "Neue Modelle";
-  S.de.radarTypePrice = "Preise";
-  S.de.radarTypeScore = "Scores";
-  S.de.radarTypeFree = "Gratis-Stufen";
-  S.de.radarEmpty = "Hier ist noch nichts. Folge einem Modell mit dem Stern für deinen eigenen Feed.";
-  S.de.shareBtn = "Als Bild teilen";
-  S.de.shareDone = "Bild bereit";
-
-  S.pt.officialOpen = "Abrir";
-  S.pt.officialSite = "Abrir o app oficial";
-  S.pt.navRadar = "Model Radar";
-  S.pt.navRadarSub = "O que mudou: novos modelos, preços, níveis grátis";
-  S.pt.radarTitle = "Model Radar";
-  S.pt.radarSub = "Novos modelos, preços, pontuações e planos grátis: as novidades aparecem sozinhas, com notas sobre o que importa.";
-  S.pt.radarNew = "NOVO";
-  S.pt.radarUpcoming = "Em breve";
-  S.pt.radarAll = "Tudo";
-  S.pt.radarFollowing = "Seguindo";
-  S.pt.radarSince = "novidades desde sua última visita";
-  S.pt.radarFollow = "Seguir";
-  S.pt.radarUnfollow = "Seguindo";
-  S.pt.radarTypeNew = "Novos modelos";
-  S.pt.radarTypePrice = "Preços";
-  S.pt.radarTypeScore = "Pontuações";
-  S.pt.radarTypeFree = "Níveis grátis";
-  S.pt.radarEmpty = "Nada por aqui ainda. Siga um modelo com a estrela para montar seu próprio feed.";
-  S.pt.shareBtn = "Compartilhar como imagem";
-  S.pt.shareDone = "Imagem pronta";
-
-  S.zh.officialOpen = "打开";
-  S.zh.officialSite = "打开官方应用";
-  S.zh.navRadar = "模型雷达";
-  S.zh.navRadarSub = "最新变化：新模型、价格、免费额度";
-  S.zh.radarTitle = "模型雷达";
-  S.zh.radarSub = "新模型、价格、评分与免费额度：新模型自动出现，并附有重点说明。";
-  S.zh.radarNew = "新";
-  S.zh.radarUpcoming = "即将到来";
-  S.zh.radarAll = "全部";
-  S.zh.radarFollowing = "关注中";
-  S.zh.radarSince = "条自上次访问以来的变化";
-  S.zh.radarFollow = "关注";
-  S.zh.radarUnfollow = "已关注";
-  S.zh.radarTypeNew = "新模型";
-  S.zh.radarTypePrice = "价格";
-  S.zh.radarTypeScore = "分数";
-  S.zh.radarTypeFree = "免费额度";
-  S.zh.radarEmpty = "这里还没有内容。用星标关注一个模型来构建你的专属动态。";
-  S.zh.shareBtn = "分享为图片";
-  S.zh.shareDone = "图片已生成";
-
-  S.hi.officialOpen = "खोलें";
-  S.hi.officialSite = "आधिकारिक ऐप खोलें";
-  S.hi.navRadar = "मॉडल राडार";
-  S.hi.navRadarSub = "क्या बदला: नए मॉडल, कीमतें, मुफ़्त स्तर";
-  S.hi.radarTitle = "मॉडल राडार";
-  S.hi.radarSub = "नए मॉडल, कीमतें, स्कोर और मुफ़्त स्तर: नए आगमन अपने आप दिखते हैं, ज़रूरी बातों पर नोट्स के साथ।";
-  S.hi.radarNew = "नया";
-  S.hi.radarUpcoming = "आने वाला";
-  S.hi.radarAll = "सब";
-  S.hi.radarFollowing = "फ़ॉलो किए";
-  S.hi.radarSince = "आपकी पिछली विज़िट के बाद के बदलाव";
-  S.hi.radarFollow = "फ़ॉलो करें";
-  S.hi.radarUnfollow = "फ़ॉलो में";
-  S.hi.radarTypeNew = "नए मॉडल";
-  S.hi.radarTypePrice = "कीमतें";
-  S.hi.radarTypeScore = "स्कोर";
-  S.hi.radarTypeFree = "मुफ़्त स्तर";
-  S.hi.radarEmpty = "यहाँ अभी कुछ नहीं है। अपना फ़ीड बनाने के लिए स्टार से किसी मॉडल को फ़ॉलो करें।";
-  S.hi.shareBtn = "छवि के रूप में साझा करें";
-  S.hi.shareDone = "छवि तैयार";
-
-  S.ru.officialOpen = "Открыть";
-  S.ru.officialSite = "Открыть официальное приложение";
-  S.ru.navRadar = "Радар моделей";
-  S.ru.navRadarSub = "Что изменилось: новые модели, цены, бесплатные уровни";
-  S.ru.radarTitle = "Радар моделей";
-  S.ru.radarSub = "Новые модели, цены, оценки и бесплатные тарифы: новинки появляются автоматически, с заметками о главном.";
-  S.ru.radarNew = "НОВОЕ";
-  S.ru.radarUpcoming = "Скоро";
-  S.ru.radarAll = "Все";
-  S.ru.radarFollowing = "Отслеживаемые";
-  S.ru.radarSince = "изменений с вашего последнего визита";
-  S.ru.radarFollow = "Следить";
-  S.ru.radarUnfollow = "Отслеживается";
-  S.ru.radarTypeNew = "Новые модели";
-  S.ru.radarTypePrice = "Цены";
-  S.ru.radarTypeScore = "Оценки";
-  S.ru.radarTypeFree = "Бесплатные уровни";
-  S.ru.radarEmpty = "Пока пусто. Отметьте модель звездой, чтобы собрать свой канал.";
-  S.ru.shareBtn = "Поделиться картинкой";
-  S.ru.shareDone = "Картинка готова";
-
-  S.ja.officialOpen = "開く";
-  S.ja.officialSite = "公式アプリを開く";
-  S.ja.navRadar = "モデルレーダー";
-  S.ja.navRadarSub = "変更点：新モデル、価格、無料枠";
-  S.ja.radarTitle = "モデルレーダー";
-  S.ja.radarSub = "新モデル、価格、スコア、無料枠：新着は自動で表示され、重要な点には解説が付きます。";
-  S.ja.radarNew = "新着";
-  S.ja.radarUpcoming = "近日";
-  S.ja.radarAll = "すべて";
-  S.ja.radarFollowing = "フォロー中";
-  S.ja.radarSince = "件、前回の訪問以降の変更";
-  S.ja.radarFollow = "フォロー";
-  S.ja.radarUnfollow = "フォロー中";
-  S.ja.radarTypeNew = "新モデル";
-  S.ja.radarTypePrice = "価格";
-  S.ja.radarTypeScore = "スコア";
-  S.ja.radarTypeFree = "無料枠";
-  S.ja.radarEmpty = "まだ何もありません。星でモデルをフォローして自分のフィードを作りましょう。";
-  S.ja.shareBtn = "画像でシェア";
-  S.ja.shareDone = "画像を作成しました";
-
-  S.ar.officialOpen = "افتح";
-  S.ar.officialSite = "افتح التطبيق الرسمي";
-  S.ar.navRadar = "رادار النماذج";
-  S.ar.navRadarSub = "ما الذي تغيّر: نماذج جديدة، أسعار، خطط مجانية";
-  S.ar.radarTitle = "رادار النماذج";
-  S.ar.radarSub = "نماذج جديدة وأسعار ودرجات وخطط مجانية: تظهر الإضافات تلقائيًا، مع ملاحظات حول ما يهم.";
-  S.ar.radarNew = "جديد";
-  S.ar.radarUpcoming = "قريبًا";
-  S.ar.radarAll = "الكل";
-  S.ar.radarFollowing = "المتابَعة";
-  S.ar.radarSince = "تغييرات منذ زيارتك الأخيرة";
-  S.ar.radarFollow = "تابِع";
-  S.ar.radarUnfollow = "مُتابَع";
-  S.ar.radarTypeNew = "نماذج جديدة";
-  S.ar.radarTypePrice = "الأسعار";
-  S.ar.radarTypeScore = "الدرجات";
-  S.ar.radarTypeFree = "الخطط المجانية";
-  S.ar.radarEmpty = "لا شيء هنا بعد. تابع نموذجًا بالنجمة لبناء موجزك الخاص.";
-  S.ar.shareBtn = "شارك كصورة";
-  S.ar.shareDone = "الصورة جاهزة";
-
-  /* v0.26: minimalist welcome screen */
-  var WELCOME = {
-    en: ["The right AI for the job. The right prompt for it.", "Create a prompt", "Choose an AI", "Compare models", "Explore all tools", "Start with WhichAI"],
-    it: ["L'AI giusta per ogni lavoro. Il prompt giusto per usarla.", "Crea un prompt", "Scegli un'AI", "Confronta i modelli", "Esplora tutti gli strumenti", "Inizia con WhichAI"],
-    fr: ["La bonne IA pour chaque tâche. Le bon prompt pour l'utiliser.", "Créer un prompt", "Choisir une IA", "Comparer les modèles", "Explorer tous les outils", "Commencer avec WhichAI"],
-    es: ["La IA adecuada para cada tarea. El prompt adecuado para usarla.", "Crear un prompt", "Elegir una IA", "Comparar modelos", "Explorar todas las herramientas", "Empezar con WhichAI"],
-    de: ["Die richtige KI für jede Aufgabe. Der richtige Prompt dafür.", "Prompt erstellen", "KI auswählen", "Modelle vergleichen", "Alle Werkzeuge entdecken", "Mit WhichAI starten"],
-    pt: ["A IA certa para cada tarefa. O prompt certo para usá-la.", "Criar um prompt", "Escolher uma IA", "Comparar modelos", "Explorar todas as ferramentas", "Começar com o WhichAI"],
-    zh: ["为每项任务选择合适的 AI，并获得合适的提示词。", "创建提示词", "选择 AI", "比较模型", "探索所有工具", "开始使用 WhichAI"],
-    hi: ["हर काम के लिए सही AI। उसे चलाने के लिए सही प्रॉम्प्ट।", "प्रॉम्प्ट बनाएँ", "AI चुनें", "मॉडल की तुलना करें", "सभी टूल देखें", "WhichAI के साथ शुरू करें"],
-    ru: ["Подходящий ИИ для каждой задачи. Подходящий промпт для него.", "Создать промпт", "Выбрать ИИ", "Сравнить модели", "Все инструменты", "Начать с WhichAI"],
-    ja: ["仕事に最適なAIを。使いこなすための最適なプロンプトを。", "プロンプトを作成", "AIを選ぶ", "モデルを比較", "すべてのツールを見る", "WhichAIを始める"],
-    ar: ["الذكاء الاصطناعي المناسب لكل مهمة، والموجّه المناسب لاستخدامه.", "أنشئ موجّهًا", "اختر ذكاءً اصطناعيًا", "قارن النماذج", "استكشف كل الأدوات", "ابدأ مع WhichAI"]
-  };
-  Object.keys(WELCOME).forEach(function (lang) {
-    var v = WELCOME[lang];
-    S[lang].welcomeValue = v[0];
-    S[lang].welcomeGenerator = v[1];
-    S[lang].welcomeGuide = v[2];
-    S[lang].welcomeCompare = v[3];
-    S[lang].welcomeExplore = v[4];
-    S[lang].welcomeNavLabel = v[5];
-  });
-
-
-  /* ---------------- v0.28: blind arena ---------------- */
-
-  S.en.navArena = "Blind Arena";
-  S.en.navArenaSub = "Blind A/B rounds on your prompts, personal Elo";
-  S.en.arenaTitle = "Blind Arena";
-  S.en.arenaSub = "Two anonymous answers to YOUR prompt. Pick the better one; names are revealed after you vote and your personal Elo updates. Runs only on models your free keys can call.";
-  S.en.arenaPool = "Your arena pool:";
-  S.en.arenaPh = "Type a real task you care about…";
-  S.en.arenaGo = "Run a blind round";
-  S.en.arenaNext = "Run another round";
-  S.en.arenaNeedKeys = "The arena needs at least two auto-run models. Add free API keys (Google AI Studio, Groq, OpenRouter) in Settings to unlock it.";
-  S.en.arenaModel = "Model";
-  S.en.arenaBetter = "is better";
-  S.en.arenaRunning = "Generating…";
-  S.en.arenaRoundErr = "One side failed, so this round is not counted. Run another round.";
-  S.en.arenaReveal = "Revealed:";
-  S.en.arenaBoard = "Your personal leaderboard";
-  S.en.arenaGames = "rounds";
-  S.en.arenaReset = "Reset my arena history";
-  S.en.arenaNote = "This is YOUR preference on YOUR prompts, measured blind. It is not a global quality ranking; the pool only includes models your keys can run.";
-
-  S.it.navArena = "Blind Arena";
-  S.it.navArenaSub = "Sfide A/B alla cieca sui tuoi prompt, Elo personale";
-  S.it.arenaTitle = "Blind Arena";
-  S.it.arenaSub = "Due risposte anonime al TUO prompt. Scegli la migliore; i nomi si rivelano dopo il voto e il tuo Elo personale si aggiorna. Gira solo sui modelli che le tue chiavi gratuite possono chiamare.";
-  S.it.arenaPool = "Il tuo pool:";
-  S.it.arenaPh = "Scrivi un compito reale che ti interessa…";
-  S.it.arenaGo = "Lancia una sfida alla cieca";
-  S.it.arenaNext = "Un'altra sfida";
-  S.it.arenaNeedKeys = "L'arena richiede almeno due modelli auto-run. Aggiungi chiavi API gratuite (Google AI Studio, Groq, OpenRouter) in Settings per sbloccarla.";
-  S.it.arenaModel = "Modello";
-  S.it.arenaBetter = "è migliore";
-  S.it.arenaRunning = "Sto generando…";
-  S.it.arenaRoundErr = "Una risposta è fallita, quindi la sfida non conta. Lanciane un'altra.";
-  S.it.arenaReveal = "Rivelato:";
-  S.it.arenaBoard = "La tua classifica personale";
-  S.it.arenaGames = "sfide";
-  S.it.arenaReset = "Azzera la mia cronologia arena";
-  S.it.arenaNote = "È la TUA preferenza sui TUOI prompt, misurata alla cieca. Non è una classifica globale di qualità; il pool include solo i modelli che le tue chiavi possono eseguire.";
-
-  S.fr.navArena = "Blind Arena";
-  S.fr.navArenaSub = "Duels A/B à l'aveugle sur vos prompts, Elo personnel";
-  S.fr.arenaTitle = "Blind Arena";
-  S.fr.arenaSub = "Deux réponses anonymes à VOTRE prompt. Choisissez la meilleure ; les noms se révèlent après le vote et votre Elo personnel se met à jour. Fonctionne uniquement avec les modèles que vos clés gratuites peuvent appeler.";
-  S.fr.arenaPool = "Votre pool :";
-  S.fr.arenaPh = "Écrivez une tâche réelle qui compte pour vous…";
-  S.fr.arenaGo = "Lancer un duel à l'aveugle";
-  S.fr.arenaNext = "Un autre duel";
-  S.fr.arenaNeedKeys = "L'arène demande au moins deux modèles auto-run. Ajoutez des clés API gratuites (Google AI Studio, Groq, OpenRouter) dans Settings.";
-  S.fr.arenaModel = "Modèle";
-  S.fr.arenaBetter = "est meilleur";
-  S.fr.arenaRunning = "Génération…";
-  S.fr.arenaRoundErr = "Une réponse a échoué, ce duel ne compte pas. Relancez-en un.";
-  S.fr.arenaReveal = "Révélé :";
-  S.fr.arenaBoard = "Votre classement personnel";
-  S.fr.arenaGames = "duels";
-  S.fr.arenaReset = "Réinitialiser mon historique";
-  S.fr.arenaNote = "C'est VOTRE préférence sur VOS prompts, mesurée à l'aveugle. Ce n'est pas un classement global ; le pool ne contient que les modèles que vos clés peuvent exécuter.";
-
-  S.es.navArena = "Blind Arena";
-  S.es.navArenaSub = "Duelos A/B a ciegas con tus prompts, Elo personal";
-  S.es.arenaTitle = "Blind Arena";
-  S.es.arenaSub = "Dos respuestas anónimas a TU prompt. Elige la mejor; los nombres se revelan tras votar y tu Elo personal se actualiza. Solo funciona con los modelos que tus claves gratis pueden llamar.";
-  S.es.arenaPool = "Tu pool:";
-  S.es.arenaPh = "Escribe una tarea real que te importe…";
-  S.es.arenaGo = "Lanzar duelo a ciegas";
-  S.es.arenaNext = "Otro duelo";
-  S.es.arenaNeedKeys = "La arena necesita al menos dos modelos auto-run. Añade claves API gratis (Google AI Studio, Groq, OpenRouter) en Settings.";
-  S.es.arenaModel = "Modelo";
-  S.es.arenaBetter = "es mejor";
-  S.es.arenaRunning = "Generando…";
-  S.es.arenaRoundErr = "Una respuesta falló, así que este duelo no cuenta. Lanza otro.";
-  S.es.arenaReveal = "Revelado:";
-  S.es.arenaBoard = "Tu clasificación personal";
-  S.es.arenaGames = "duelos";
-  S.es.arenaReset = "Restablecer mi historial";
-  S.es.arenaNote = "Es TU preferencia con TUS prompts, medida a ciegas. No es un ranking global; el pool solo incluye modelos que tus claves pueden ejecutar.";
-
-  S.de.navArena = "Blind Arena";
-  S.de.navArenaSub = "Blinde A/B-Duelle mit deinen Prompts, persönliches Elo";
-  S.de.arenaTitle = "Blind Arena";
-  S.de.arenaSub = "Zwei anonyme Antworten auf DEINEN Prompt. Wähle die bessere; die Namen erscheinen nach dem Voting und dein persönliches Elo wird aktualisiert. Läuft nur mit Modellen, die deine Gratis-Schlüssel aufrufen können.";
-  S.de.arenaPool = "Dein Pool:";
-  S.de.arenaPh = "Schreibe eine echte Aufgabe, die dir wichtig ist…";
-  S.de.arenaGo = "Blindes Duell starten";
-  S.de.arenaNext = "Noch ein Duell";
-  S.de.arenaNeedKeys = "Die Arena braucht mindestens zwei Auto-Run-Modelle. Füge in den Settings Gratis-API-Schlüssel hinzu (Google AI Studio, Groq, OpenRouter).";
-  S.de.arenaModel = "Modell";
-  S.de.arenaBetter = "ist besser";
-  S.de.arenaRunning = "Generiere…";
-  S.de.arenaRoundErr = "Eine Antwort ist fehlgeschlagen, dieses Duell zählt nicht. Starte ein neues.";
-  S.de.arenaReveal = "Aufgedeckt:";
-  S.de.arenaBoard = "Deine persönliche Rangliste";
-  S.de.arenaGames = "Duelle";
-  S.de.arenaReset = "Arena-Verlauf zurücksetzen";
-  S.de.arenaNote = "Das ist DEINE Präferenz auf DEINEN Prompts, blind gemessen. Kein globales Qualitätsranking; der Pool enthält nur Modelle, die deine Schlüssel ausführen können.";
-
-  S.pt.navArena = "Blind Arena";
-  S.pt.navArenaSub = "Duelos A/B às cegas com seus prompts, Elo pessoal";
-  S.pt.arenaTitle = "Blind Arena";
-  S.pt.arenaSub = "Duas respostas anônimas ao SEU prompt. Escolha a melhor; os nomes aparecem após o voto e seu Elo pessoal é atualizado. Funciona só com modelos que suas chaves grátis podem chamar.";
-  S.pt.arenaPool = "Seu pool:";
-  S.pt.arenaPh = "Escreva uma tarefa real que importa para você…";
-  S.pt.arenaGo = "Iniciar duelo às cegas";
-  S.pt.arenaNext = "Outro duelo";
-  S.pt.arenaNeedKeys = "A arena precisa de pelo menos dois modelos auto-run. Adicione chaves API grátis (Google AI Studio, Groq, OpenRouter) em Settings.";
-  S.pt.arenaModel = "Modelo";
-  S.pt.arenaBetter = "é melhor";
-  S.pt.arenaRunning = "Gerando…";
-  S.pt.arenaRoundErr = "Uma resposta falhou, então este duelo não conta. Inicie outro.";
-  S.pt.arenaReveal = "Revelado:";
-  S.pt.arenaBoard = "Sua classificação pessoal";
-  S.pt.arenaGames = "duelos";
-  S.pt.arenaReset = "Zerar meu histórico";
-  S.pt.arenaNote = "É a SUA preferência nos SEUS prompts, medida às cegas. Não é um ranking global; o pool inclui só modelos que suas chaves podem executar.";
-
-  S.zh.navArena = "盲测竞技场";
-  S.zh.navArenaSub = "用你的提示词盲测 A/B，个人 Elo";
-  S.zh.arenaTitle = "盲测竞技场";
-  S.zh.arenaSub = "针对你的提示词给出两个匿名回答。选出更好的那个；投票后揭晓名字，并更新你的个人 Elo。仅在你的免费密钥可调用的模型间进行。";
-  S.zh.arenaPool = "你的模型池：";
-  S.zh.arenaPh = "输入一个你真正关心的任务…";
-  S.zh.arenaGo = "开始盲测";
-  S.zh.arenaNext = "再来一轮";
-  S.zh.arenaNeedKeys = "竞技场至少需要两个可自动运行的模型。请在设置中添加免费 API 密钥（Google AI Studio、Groq、OpenRouter）。";
-  S.zh.arenaModel = "模型";
-  S.zh.arenaBetter = "更好";
-  S.zh.arenaRunning = "生成中…";
-  S.zh.arenaRoundErr = "有一方失败，本轮不计分。请再来一轮。";
-  S.zh.arenaReveal = "揭晓：";
-  S.zh.arenaBoard = "你的个人排行榜";
-  S.zh.arenaGames = "轮";
-  S.zh.arenaReset = "重置我的竞技场记录";
-  S.zh.arenaNote = "这是你在自己提示词上的盲测偏好，不是全球质量排名；模型池仅包含你的密钥可运行的模型。";
-
-  S.hi.navArena = "ब्लाइंड एरीना";
-  S.hi.navArenaSub = "आपके प्रॉम्प्ट पर अंधाधुंध A/B, निजी Elo";
-  S.hi.arenaTitle = "ब्लाइंड एरीना";
-  S.hi.arenaSub = "आपके प्रॉम्प्ट के दो गुमनाम जवाब। बेहतर चुनें; वोट के बाद नाम खुलते हैं और आपका निजी Elo अपडेट होता है। केवल उन्हीं मॉडलों पर चलता है जिन्हें आपकी मुफ़्त कुंजियाँ चला सकती हैं।";
-  S.hi.arenaPool = "आपका पूल:";
-  S.hi.arenaPh = "कोई असली काम लिखें जो आपके लिए मायने रखता है…";
-  S.hi.arenaGo = "ब्लाइंड राउंड चलाएँ";
-  S.hi.arenaNext = "एक और राउंड";
-  S.hi.arenaNeedKeys = "एरीना को कम से कम दो auto-run मॉडल चाहिए। Settings में मुफ़्त API कुंजियाँ (Google AI Studio, Groq, OpenRouter) जोड़ें।";
-  S.hi.arenaModel = "मॉडल";
-  S.hi.arenaBetter = "बेहतर है";
-  S.hi.arenaRunning = "बना रहा है…";
-  S.hi.arenaRoundErr = "एक जवाब विफल रहा, यह राउंड गिना नहीं जाएगा। दूसरा चलाएँ।";
-  S.hi.arenaReveal = "खुलासा:";
-  S.hi.arenaBoard = "आपकी निजी रैंकिंग";
-  S.hi.arenaGames = "राउंड";
-  S.hi.arenaReset = "मेरा एरीना इतिहास मिटाएँ";
-  S.hi.arenaNote = "यह आपके प्रॉम्प्ट पर आपकी पसंद है, अंधे परीक्षण से मापी गई। यह वैश्विक रैंकिंग नहीं है; पूल में केवल वही मॉडल हैं जो आपकी कुंजियाँ चला सकती हैं।";
-
-  S.ru.navArena = "Слепая арена";
-  S.ru.navArenaSub = "Слепые A/B-раунды на ваших промптах, личный Elo";
-  S.ru.arenaTitle = "Слепая арена";
-  S.ru.arenaSub = "Два анонимных ответа на ВАШ промпт. Выберите лучший; имена раскрываются после голосования, личный Elo обновляется. Работает только с моделями, которые могут вызвать ваши бесплатные ключи.";
-  S.ru.arenaPool = "Ваш пул:";
-  S.ru.arenaPh = "Опишите реальную задачу, которая вам важна…";
-  S.ru.arenaGo = "Запустить слепой раунд";
-  S.ru.arenaNext = "Ещё раунд";
-  S.ru.arenaNeedKeys = "Арене нужны минимум две auto-run модели. Добавьте бесплатные API-ключи (Google AI Studio, Groq, OpenRouter) в настройках.";
-  S.ru.arenaModel = "Модель";
-  S.ru.arenaBetter = "лучше";
-  S.ru.arenaRunning = "Генерация…";
-  S.ru.arenaRoundErr = "Одна сторона не ответила, раунд не засчитан. Запустите ещё один.";
-  S.ru.arenaReveal = "Раскрыто:";
-  S.ru.arenaBoard = "Ваш личный рейтинг";
-  S.ru.arenaGames = "раундов";
-  S.ru.arenaReset = "Сбросить историю арены";
-  S.ru.arenaNote = "Это ВАШЕ предпочтение на ВАШИХ промптах, измеренное вслепую. Это не глобальный рейтинг; в пуле только модели, доступные вашим ключам.";
-
-  S.ja.navArena = "ブラインドアリーナ";
-  S.ja.navArenaSub = "あなたのプロンプトで匿名A/B対戦、パーソナルElo";
-  S.ja.arenaTitle = "ブラインドアリーナ";
-  S.ja.arenaSub = "あなたのプロンプトへの匿名回答2つ。良い方を選ぶと名前が明かされ、あなた専用のEloが更新されます。無料キーで呼べるモデル同士でのみ実行されます。";
-  S.ja.arenaPool = "あなたのプール：";
-  S.ja.arenaPh = "本当に気になるタスクを入力…";
-  S.ja.arenaGo = "ブラインド対戦を実行";
-  S.ja.arenaNext = "もう一戦";
-  S.ja.arenaNeedKeys = "アリーナには自動実行できるモデルが2つ以上必要です。設定で無料APIキー（Google AI Studio、Groq、OpenRouter）を追加してください。";
-  S.ja.arenaModel = "モデル";
-  S.ja.arenaBetter = "が良い";
-  S.ja.arenaRunning = "生成中…";
-  S.ja.arenaRoundErr = "片方が失敗したため、この対戦はカウントされません。もう一度実行してください。";
-  S.ja.arenaReveal = "正体：";
-  S.ja.arenaBoard = "あなたのランキング";
-  S.ja.arenaGames = "戦";
-  S.ja.arenaReset = "アリーナ履歴をリセット";
-  S.ja.arenaNote = "これはあなたのプロンプトに対するあなたの好みをブラインドで測ったものです。世界的な品質ランキングではなく、プールにはキーで実行できるモデルだけが含まれます。";
-
-  S.ar.navArena = "الحلبة العمياء";
-  S.ar.navArenaSub = "جولات A/B عمياء على موجّهاتك، تصنيف Elo شخصي";
-  S.ar.arenaTitle = "الحلبة العمياء";
-  S.ar.arenaSub = "إجابتان مجهولتان لموجّهك. اختر الأفضل؛ تُكشف الأسماء بعد التصويت ويتحدّث تصنيف Elo الشخصي. تعمل فقط على النماذج التي تستطيع مفاتيحك المجانية استدعاءها.";
-  S.ar.arenaPool = "مجموعتك:";
-  S.ar.arenaPh = "اكتب مهمة حقيقية تهمك…";
-  S.ar.arenaGo = "ابدأ جولة عمياء";
-  S.ar.arenaNext = "جولة أخرى";
-  S.ar.arenaNeedKeys = "تحتاج الحلبة إلى نموذجين قابلين للتشغيل التلقائي على الأقل. أضف مفاتيح API مجانية (Google AI Studio وGroq وOpenRouter) في الإعدادات.";
-  S.ar.arenaModel = "النموذج";
-  S.ar.arenaBetter = "أفضل";
-  S.ar.arenaRunning = "جارٍ التوليد…";
-  S.ar.arenaRoundErr = "فشل أحد الطرفين، فلن تُحتسب هذه الجولة. ابدأ جولة أخرى.";
-  S.ar.arenaReveal = "الكشف:";
-  S.ar.arenaBoard = "ترتيبك الشخصي";
-  S.ar.arenaGames = "جولات";
-  S.ar.arenaReset = "امسح سجل الحلبة";
-  S.ar.arenaNote = "هذا تفضيلك أنت على موجّهاتك أنت، مقاسًا بشكل أعمى. ليس ترتيبًا عالميًا للجودة؛ المجموعة تضم فقط النماذج التي تستطيع مفاتيحك تشغيلها.";
-
-
-  /* ---------------- v0.29: AI debates, support, visit counter ---------------- */
-
-  S.en.navTopics = "AI Debates";
-  S.en.navTopicsSub = "Energy, jobs, the bubble: both sides, with sources";
-  S.en.topicsTitle = "AI Debates";
-  S.en.topicsSub = "The big AI-and-society questions, summarized honestly: the numbers people cite, both sides of each argument, and where things stand. Every claim links a source.";
-  S.en.topicsNumbers = "The numbers people cite";
-  S.en.topicsCaseA = "The concern";
-  S.en.topicsCaseB = "The counter-view";
-  S.en.topicsStatus = "Where it stands";
-  S.en.topicsDisclaimer = "Curated summaries of public reporting and research, refreshed with the data updates. Not investment, career or legal advice.";
-  S.en.footSupport = "Support ♥";
-  S.en.supportTitle = "Support WhichAI";
-  S.en.supportText = "WhichAI is free, has no ads, no sponsors and no server: the only costs are the domain and the hours that keep 100+ models honest and up to date. If it saved you time, a small donation keeps it independent.";
-  S.en.supportBtn = "Donate ♥";
-  S.en.visitsLabel = "visits";
-
-  S.it.navTopics = "Dibattiti AI";
-  S.it.navTopicsSub = "Energia, lavoro, bolla: le due campane, con fonti";
-  S.it.topicsTitle = "Dibattiti AI";
-  S.it.topicsSub = "Le grandi domande su AI e società, riassunte con onestà: i numeri che si citano, le due campane di ogni argomento e a che punto siamo. Ogni affermazione ha la fonte.";
-  S.it.topicsNumbers = "I numeri che si citano";
-  S.it.topicsCaseA = "La preoccupazione";
-  S.it.topicsCaseB = "La contro-tesi";
-  S.it.topicsStatus = "A che punto siamo";
-  S.it.topicsDisclaimer = "Sintesi curate di stampa e ricerca pubblica, aggiornate coi refresh dei dati. Non sono consigli finanziari, di carriera o legali.";
-  S.it.footSupport = "Sostienici ♥";
-  S.it.supportTitle = "Sostieni WhichAI";
-  S.it.supportText = "WhichAI è gratuito, senza pubblicità, sponsor né server: gli unici costi sono il dominio e le ore per tenere onesti e aggiornati 100+ modelli. Se ti ha fatto risparmiare tempo, una piccola donazione lo mantiene indipendente.";
-  S.it.supportBtn = "Dona ♥";
-  S.it.visitsLabel = "visite";
-
-  S.fr.navTopics = "Débats IA";
-  S.fr.navTopicsSub = "Énergie, emploi, bulle : les deux camps, avec sources";
-  S.fr.topicsTitle = "Débats IA";
-  S.fr.topicsSub = "Les grandes questions IA et société, résumées honnêtement : les chiffres cités, les deux camps de chaque débat et où en sont les choses. Chaque affirmation cite sa source.";
-  S.fr.topicsNumbers = "Les chiffres cités";
-  S.fr.topicsCaseA = "L'inquiétude";
-  S.fr.topicsCaseB = "Le contre-argument";
-  S.fr.topicsStatus = "Où on en est";
-  S.fr.topicsDisclaimer = "Synthèses de presse et de recherche publiques, mises à jour avec les données. Ni conseil financier, ni de carrière, ni juridique.";
-  S.fr.footSupport = "Soutenir ♥";
-  S.fr.supportTitle = "Soutenir WhichAI";
-  S.fr.supportText = "WhichAI est gratuit, sans pub, sans sponsor ni serveur : les seuls coûts sont le domaine et les heures passées à garder 100+ modèles honnêtes et à jour. Un petit don le garde indépendant.";
-  S.fr.supportBtn = "Faire un don ♥";
-  S.fr.visitsLabel = "visites";
-
-  S.es.navTopics = "Debates de IA";
-  S.es.navTopicsSub = "Energía, empleo, burbuja: ambos lados, con fuentes";
-  S.es.topicsTitle = "Debates de IA";
-  S.es.topicsSub = "Las grandes preguntas sobre IA y sociedad, resumidas con honestidad: las cifras que se citan, ambos lados de cada debate y dónde estamos. Cada afirmación enlaza su fuente.";
-  S.es.topicsNumbers = "Las cifras que se citan";
-  S.es.topicsCaseA = "La preocupación";
-  S.es.topicsCaseB = "El contraargumento";
-  S.es.topicsStatus = "Dónde estamos";
-  S.es.topicsDisclaimer = "Resúmenes curados de prensa e investigación públicas, actualizados con los datos. No es consejo financiero, laboral ni legal.";
-  S.es.footSupport = "Apóyanos ♥";
-  S.es.supportTitle = "Apoya WhichAI";
-  S.es.supportText = "WhichAI es gratis, sin anuncios, sin patrocinadores y sin servidor: los únicos costes son el dominio y las horas para mantener honestos y al día 100+ modelos. Una pequeña donación lo mantiene independiente.";
-  S.es.supportBtn = "Donar ♥";
-  S.es.visitsLabel = "visitas";
-
-  S.de.navTopics = "KI-Debatten";
-  S.de.navTopicsSub = "Energie, Jobs, Blase: beide Seiten, mit Quellen";
-  S.de.topicsTitle = "KI-Debatten";
-  S.de.topicsSub = "Die großen Fragen zu KI und Gesellschaft, ehrlich zusammengefasst: die zitierten Zahlen, beide Seiten jedes Arguments und der Stand der Dinge. Jede Aussage verlinkt ihre Quelle.";
-  S.de.topicsNumbers = "Die zitierten Zahlen";
-  S.de.topicsCaseA = "Die Sorge";
-  S.de.topicsCaseB = "Die Gegenposition";
-  S.de.topicsStatus = "Stand der Dinge";
-  S.de.topicsDisclaimer = "Kuratierte Zusammenfassungen öffentlicher Berichte und Forschung, mit den Daten-Refreshes aktualisiert. Keine Finanz-, Karriere- oder Rechtsberatung.";
-  S.de.footSupport = "Unterstützen ♥";
-  S.de.supportTitle = "WhichAI unterstützen";
-  S.de.supportText = "WhichAI ist kostenlos, ohne Werbung, Sponsoren oder Server: die einzigen Kosten sind die Domain und die Stunden, die 100+ Modelle ehrlich und aktuell halten. Eine kleine Spende hält es unabhängig.";
-  S.de.supportBtn = "Spenden ♥";
-  S.de.visitsLabel = "Besuche";
-
-  S.pt.navTopics = "Debates de IA";
-  S.pt.navTopicsSub = "Energia, empregos, bolha: os dois lados, com fontes";
-  S.pt.topicsTitle = "Debates de IA";
-  S.pt.topicsSub = "As grandes questões de IA e sociedade, resumidas com honestidade: os números citados, os dois lados de cada debate e onde as coisas estão. Cada afirmação tem fonte.";
-  S.pt.topicsNumbers = "Os números citados";
-  S.pt.topicsCaseA = "A preocupação";
-  S.pt.topicsCaseB = "O contraponto";
-  S.pt.topicsStatus = "Onde estamos";
-  S.pt.topicsDisclaimer = "Resumos curados de imprensa e pesquisa públicas, atualizados com os dados. Não é conselho financeiro, de carreira ou jurídico.";
-  S.pt.footSupport = "Apoie ♥";
-  S.pt.supportTitle = "Apoie o WhichAI";
-  S.pt.supportText = "O WhichAI é grátis, sem anúncios, sem patrocinadores e sem servidor: os únicos custos são o domínio e as horas para manter 100+ modelos honestos e atualizados. Uma pequena doação o mantém independente.";
-  S.pt.supportBtn = "Doar ♥";
-  S.pt.visitsLabel = "visitas";
-
-  S.zh.navTopics = "AI 议题";
-  S.zh.navTopicsSub = "能源、就业、泡沫：正反两面，附来源";
-  S.zh.topicsTitle = "AI 议题";
-  S.zh.topicsSub = "关于 AI 与社会的重大问题，诚实总结：人们引用的数字、每个议题的正反两面、以及当前进展。每个论断都附来源。";
-  S.zh.topicsNumbers = "人们引用的数字";
-  S.zh.topicsCaseA = "担忧";
-  S.zh.topicsCaseB = "反方观点";
-  S.zh.topicsStatus = "当前进展";
-  S.zh.topicsDisclaimer = "基于公开报道与研究的整理摘要，随数据更新刷新。不构成投资、职业或法律建议。";
-  S.zh.footSupport = "支持我们 ♥";
-  S.zh.supportTitle = "支持 WhichAI";
-  S.zh.supportText = "WhichAI 免费、无广告、无赞助、无服务器：唯一的成本是域名和让 100+ 模型保持诚实与最新的时间。一点小额捐助能让它保持独立。";
-  S.zh.supportBtn = "捐助 ♥";
-  S.zh.visitsLabel = "次访问";
-
-  S.hi.navTopics = "AI बहसें";
-  S.hi.navTopicsSub = "ऊर्जा, नौकरियाँ, बुलबुला: दोनों पक्ष, स्रोतों सहित";
-  S.hi.topicsTitle = "AI बहसें";
-  S.hi.topicsSub = "AI और समाज के बड़े सवाल, ईमानदारी से संक्षेप में: लोग जो आँकड़े देते हैं, हर बहस के दोनों पक्ष, और अभी स्थिति क्या है। हर दावे का स्रोत जुड़ा है।";
-  S.hi.topicsNumbers = "जो आँकड़े दिए जाते हैं";
-  S.hi.topicsCaseA = "चिंता";
-  S.hi.topicsCaseB = "प्रति-तर्क";
-  S.hi.topicsStatus = "स्थिति";
-  S.hi.topicsDisclaimer = "सार्वजनिक रिपोर्टिंग और शोध के संकलित सारांश, डेटा अपडेट के साथ ताज़ा। यह वित्तीय, करियर या कानूनी सलाह नहीं है।";
-  S.hi.footSupport = "सहयोग ♥";
-  S.hi.supportTitle = "WhichAI का सहयोग करें";
-  S.hi.supportText = "WhichAI मुफ़्त है: कोई विज्ञापन, प्रायोजक या सर्वर नहीं। लागत केवल डोमेन और 100+ मॉडलों को ईमानदार व ताज़ा रखने के घंटे हैं। छोटा दान इसे स्वतंत्र रखता है।";
-  S.hi.supportBtn = "दान करें ♥";
-  S.hi.visitsLabel = "विज़िट";
-
-  S.ru.navTopics = "Дебаты об ИИ";
-  S.ru.navTopicsSub = "Энергия, работа, пузырь: обе стороны, с источниками";
-  S.ru.topicsTitle = "Дебаты об ИИ";
-  S.ru.topicsSub = "Большие вопросы об ИИ и обществе, честно и кратко: цифры, которые приводят, обе стороны каждого спора и текущее положение. Каждое утверждение со ссылкой.";
-  S.ru.topicsNumbers = "Цифры, которые приводят";
-  S.ru.topicsCaseA = "Опасение";
-  S.ru.topicsCaseB = "Контраргумент";
-  S.ru.topicsStatus = "Положение дел";
-  S.ru.topicsDisclaimer = "Кураторские сводки публичных материалов и исследований, обновляются вместе с данными. Не финансовый, карьерный или юридический совет.";
-  S.ru.footSupport = "Поддержать ♥";
-  S.ru.supportTitle = "Поддержать WhichAI";
-  S.ru.supportText = "WhichAI бесплатен: без рекламы, спонсоров и сервера. Расходы только на домен и часы, которые держат 100+ моделей честными и актуальными. Небольшое пожертвование сохраняет независимость.";
-  S.ru.supportBtn = "Пожертвовать ♥";
-  S.ru.visitsLabel = "визитов";
-
-  S.ja.navTopics = "AI論争";
-  S.ja.navTopicsSub = "エネルギー、雇用、バブル：両論併記、出典つき";
-  S.ja.topicsTitle = "AI論争";
-  S.ja.topicsSub = "AIと社会をめぐる大きな問いを誠実に要約：よく引用される数字、各論点の両側の主張、現状。すべての主張に出典があります。";
-  S.ja.topicsNumbers = "よく引用される数字";
-  S.ja.topicsCaseA = "懸念";
-  S.ja.topicsCaseB = "反論";
-  S.ja.topicsStatus = "現状";
-  S.ja.topicsDisclaimer = "公開報道と研究のキュレーション要約で、データ更新とともに刷新。投資・キャリア・法律の助言ではありません。";
-  S.ja.footSupport = "支援する ♥";
-  S.ja.supportTitle = "WhichAIを支援";
-  S.ja.supportText = "WhichAIは無料で、広告もスポンサーもサーバーもありません。コストはドメイン代と、100以上のモデルを誠実に最新に保つ時間だけ。小さな寄付が独立を支えます。";
-  S.ja.supportBtn = "寄付する ♥";
-  S.ja.visitsLabel = "回の訪問";
-
-  S.ar.navTopics = "نقاشات الذكاء الاصطناعي";
-  S.ar.navTopicsSub = "الطاقة، الوظائف، الفقاعة: الجانبان، مع المصادر";
-  S.ar.topicsTitle = "نقاشات الذكاء الاصطناعي";
-  S.ar.topicsSub = "الأسئلة الكبرى حول الذكاء الاصطناعي والمجتمع، ملخّصة بصدق: الأرقام المتداولة، وجانبا كل نقاش، وأين وصلت الأمور. كل ادعاء بمصدره.";
-  S.ar.topicsNumbers = "الأرقام المتداولة";
-  S.ar.topicsCaseA = "القلق";
-  S.ar.topicsCaseB = "الرأي المقابل";
-  S.ar.topicsStatus = "أين وصلنا";
-  S.ar.topicsDisclaimer = "ملخصات منسّقة من تقارير وأبحاث عامة، تُحدَّث مع تحديثات البيانات. ليست نصيحة مالية أو مهنية أو قانونية.";
-  S.ar.footSupport = "ادعمنا ♥";
-  S.ar.supportTitle = "ادعم WhichAI";
-  S.ar.supportText = "WhichAI مجاني، بلا إعلانات ولا رعاة ولا خادم: التكلفة الوحيدة هي النطاق والساعات التي تُبقي أكثر من 100 نموذج صادقة ومحدثة. تبرع صغير يبقيه مستقلًا.";
-  S.ar.supportBtn = "تبرّع ♥";
-  S.ar.visitsLabel = "زيارة";
-
-
-  /* ---------------- v0.30: API status, key safety, catalog density ---------------- */
-
-  S.en.keyShow = "Show";
-  S.en.keyHide = "Hide";
-  S.en.keymodeWarn = "Your keys are being written to this browser's storage. On a shared or work computer, prefer session only.";
-  S.en.keyRiskTitle = "What a key can do, and what happens here";
-  S.en.apiLive = "API live";
-  S.en.apiLocal = "Offline · using the built-in catalog";
-  S.en.catalogShowAll = "Show all";
-  S.en.catalogShowLess = "Show less";
-
-  S.it.keyShow = "Mostra";
-  S.it.keyHide = "Nascondi";
-  S.it.keymodeWarn = "Le chiavi vengono scritte nella memoria di questo browser. Su un computer condiviso o di lavoro, meglio solo per la sessione.";
-  S.it.keyRiskTitle = "Cosa può fare una chiave, e cosa succede qui";
-  S.it.apiLive = "API attiva";
-  S.it.apiLocal = "Offline · catalogo integrato";
-  S.it.catalogShowAll = "Mostra tutti";
-  S.it.catalogShowLess = "Mostra meno";
-
-  S.fr.keyShow = "Afficher";
-  S.fr.keyHide = "Masquer";
-  S.fr.keymodeWarn = "Vos clés sont écrites dans le stockage de ce navigateur. Sur un ordinateur partagé ou professionnel, préférez la session seule.";
-  S.fr.keyRiskTitle = "Ce qu'une clé permet, et ce qui se passe ici";
-  S.fr.apiLive = "API active";
-  S.fr.apiLocal = "Hors ligne · catalogue intégré";
-  S.fr.catalogShowAll = "Tout afficher";
-  S.fr.catalogShowLess = "Afficher moins";
-
-  S.es.keyShow = "Mostrar";
-  S.es.keyHide = "Ocultar";
-  S.es.keymodeWarn = "Tus claves se están guardando en el almacenamiento de este navegador. En un ordenador compartido o de trabajo, mejor solo la sesión.";
-  S.es.keyRiskTitle = "Qué puede hacer una clave, y qué ocurre aquí";
-  S.es.apiLive = "API activa";
-  S.es.apiLocal = "Sin conexión · catálogo integrado";
-  S.es.catalogShowAll = "Ver todos";
-  S.es.catalogShowLess = "Ver menos";
-
-  S.de.keyShow = "Anzeigen";
-  S.de.keyHide = "Verbergen";
-  S.de.keymodeWarn = "Deine Schlüssel werden im Speicher dieses Browsers abgelegt. Auf einem geteilten oder dienstlichen Rechner besser nur für die Sitzung.";
-  S.de.keyRiskTitle = "Was ein Schlüssel kann, und was hier passiert";
-  S.de.apiLive = "API aktiv";
-  S.de.apiLocal = "Offline · eingebauter Katalog";
-  S.de.catalogShowAll = "Alle anzeigen";
-  S.de.catalogShowLess = "Weniger anzeigen";
-
-  S.pt.keyShow = "Mostrar";
-  S.pt.keyHide = "Ocultar";
-  S.pt.keymodeWarn = "As suas chaves estão a ser gravadas no armazenamento deste navegador. Num computador partilhado ou de trabalho, prefira apenas a sessão.";
-  S.pt.keyRiskTitle = "O que uma chave permite, e o que acontece aqui";
-  S.pt.apiLive = "API ativa";
-  S.pt.apiLocal = "Offline · catálogo integrado";
-  S.pt.catalogShowAll = "Ver todos";
-  S.pt.catalogShowLess = "Ver menos";
-
-  S.zh.keyShow = "显示";
-  S.zh.keyHide = "隐藏";
-  S.zh.keymodeWarn = "密钥正在写入此浏览器的存储。在共用或办公电脑上，建议只保留本次会话。";
-  S.zh.keyRiskTitle = "密钥能做什么，以及这里会发生什么";
-  S.zh.apiLive = "API 在线";
-  S.zh.apiLocal = "离线 · 使用内置目录";
-  S.zh.catalogShowAll = "显示全部";
-  S.zh.catalogShowLess = "收起";
-
-  S.hi.keyShow = "दिखाएँ";
-  S.hi.keyHide = "छिपाएँ";
-  S.hi.keymodeWarn = "आपकी कुंजियाँ इस ब्राउज़र के स्टोरेज में लिखी जा रही हैं। साझा या ऑफ़िस कंप्यूटर पर केवल सत्र वाला विकल्प बेहतर है।";
-  S.hi.keyRiskTitle = "एक कुंजी क्या कर सकती है, और यहाँ क्या होता है";
-  S.hi.apiLive = "API चालू";
-  S.hi.apiLocal = "ऑफ़लाइन · अंतर्निहित सूची";
-  S.hi.catalogShowAll = "सभी दिखाएँ";
-  S.hi.catalogShowLess = "कम दिखाएँ";
-
-  S.ru.keyShow = "Показать";
-  S.ru.keyHide = "Скрыть";
-  S.ru.keymodeWarn = "Ключи записываются в хранилище этого браузера. На общем или рабочем компьютере лучше выбрать только сессию.";
-  S.ru.keyRiskTitle = "Что может ключ и что происходит здесь";
-  S.ru.apiLive = "API работает";
-  S.ru.apiLocal = "Офлайн · встроенный каталог";
-  S.ru.catalogShowAll = "Показать все";
-  S.ru.catalogShowLess = "Показать меньше";
-
-  S.ja.keyShow = "表示";
-  S.ja.keyHide = "非表示";
-  S.ja.keymodeWarn = "キーがこのブラウザのストレージに保存されます。共有や職場のパソコンでは、セッション限定をおすすめします。";
-  S.ja.keyRiskTitle = "キーで何ができるか、ここで何が起きるか";
-  S.ja.apiLive = "API 稼働中";
-  S.ja.apiLocal = "オフライン · 内蔵カタログ";
-  S.ja.catalogShowAll = "すべて表示";
-  S.ja.catalogShowLess = "表示を減らす";
-
-  S.ar.keyShow = "إظهار";
-  S.ar.keyHide = "إخفاء";
-  S.ar.keymodeWarn = "يجري حفظ مفاتيحك في تخزين هذا المتصفح. على حاسوب مشترك أو حاسوب العمل، يُفضّل خيار الجلسة فقط.";
-  S.ar.keyRiskTitle = "ما الذي يستطيعه المفتاح، وماذا يحدث هنا";
-  S.ar.apiLive = "واجهة API تعمل";
-  S.ar.apiLocal = "دون اتصال · الفهرس المدمج";
-  S.ar.catalogShowAll = "عرض الكل";
-  S.ar.catalogShowLess = "عرض أقل";
-
-
-  /* v0.30: the read-only API means "no server" is no longer accurate.
-     These overrides restate the privacy promise precisely, in every language. */
-
-  S.en.footerText = "Runs in your browser: no account, no tracking. Your goals, prompts and keys never leave your device.";
-  S.en.privacyTip = "No account, no tracking. Goals, prompts and API keys stay in your browser. The WhichAI API is read-only and serves only the public model catalog.";
-  S.en.settingsSub = "API keys enable automatic execution in Compare. They stay in this browser and are sent only to the provider you call, never to WhichAI's own API, which is read-only and accepts no data.";
-  S.en.keymodeHint = "\"Session only\" keeps the key in memory and forgets it when the tab closes. \"Saved on this device\" writes it to browser storage, where it survives a restart and where any script on this page could read it. That is why it stays opt-in.";
-  S.en.supportText = "WhichAI is free, has no ads and no sponsors: the only costs are the domain and the hours that keep 100+ models honest and up to date. If it saved you time, a small donation keeps it independent.";
-
-  S.it.footerText = "Gira nel tuo browser: nessun account, nessun tracciamento. Obiettivi, prompt e chiavi non lasciano mai il tuo dispositivo.";
-  S.it.privacyTip = "Nessun account, nessun tracciamento. Obiettivi, prompt e chiavi API restano nel browser. L'API di WhichAI è di sola lettura e serve solo il catalogo pubblico dei modelli.";
-  S.it.settingsSub = "Le chiavi API abilitano l'esecuzione automatica in Compare. Restano in questo browser e vengono inviate solo al provider che chiami, mai all'API di WhichAI, che è di sola lettura e non accetta dati.";
-  S.it.keymodeHint = "\"Solo per questa sessione\" tiene la chiave in memoria e la dimentica alla chiusura della scheda. \"Salvata su questo dispositivo\" la scrive nella memoria del browser, dove sopravvive al riavvio e dove qualunque script di questa pagina potrebbe leggerla. Per questo resta una scelta esplicita.";
-  S.it.supportText = "WhichAI è gratuito, senza pubblicità e senza sponsor: gli unici costi sono il dominio e le ore che tengono 100+ modelli onesti e aggiornati. Se ti ha fatto risparmiare tempo, una piccola donazione lo mantiene indipendente.";
-
-  S.fr.footerText = "Fonctionne dans votre navigateur : aucun compte, aucun suivi. Vos objectifs, prompts et clés ne quittent jamais votre appareil.";
-  S.fr.privacyTip = "Aucun compte, aucun suivi. Objectifs, prompts et clés API restent dans le navigateur. L'API WhichAI est en lecture seule et ne sert que le catalogue public.";
-  S.fr.settingsSub = "Les clés API activent l'exécution automatique dans Compare. Elles restent dans ce navigateur et ne sont envoyées qu'au fournisseur appelé, jamais à l'API WhichAI, qui est en lecture seule et n'accepte aucune donnée.";
-  S.fr.keymodeHint = "« Session seule » garde la clé en mémoire et l'oublie à la fermeture de l'onglet. « Enregistrée sur cet appareil » l'écrit dans le stockage du navigateur, où elle survit à un redémarrage et où tout script de cette page pourrait la lire. D'où le choix explicite.";
-  S.fr.supportText = "WhichAI est gratuit, sans publicité ni sponsors : les seuls coûts sont le domaine et les heures qui gardent plus de 100 modèles honnêtes et à jour. S'il vous a fait gagner du temps, un petit don le garde indépendant.";
-
-  S.es.footerText = "Funciona en tu navegador: sin cuenta, sin rastreo. Tus objetivos, prompts y claves nunca salen de tu dispositivo.";
-  S.es.privacyTip = "Sin cuenta, sin rastreo. Objetivos, prompts y claves API se quedan en el navegador. La API de WhichAI es de solo lectura y sirve únicamente el catálogo público.";
-  S.es.settingsSub = "Las claves API permiten la ejecución automática en Compare. Se quedan en este navegador y solo se envían al proveedor que llamas, nunca a la API de WhichAI, que es de solo lectura y no acepta datos.";
-  S.es.keymodeHint = "«Solo esta sesión» guarda la clave en memoria y la olvida al cerrar la pestaña. «Guardada en este dispositivo» la escribe en el almacenamiento del navegador, donde sobrevive a un reinicio y donde cualquier script de esta página podría leerla. Por eso es opcional.";
-  S.es.supportText = "WhichAI es gratis, sin anuncios ni patrocinadores: los únicos costes son el dominio y las horas que mantienen más de 100 modelos honestos y actualizados. Si te ahorró tiempo, una pequeña donación lo mantiene independiente.";
-
-  S.de.footerText = "Läuft in deinem Browser: kein Konto, kein Tracking. Ziele, Prompts und Schlüssel verlassen dein Gerät nie.";
-  S.de.privacyTip = "Kein Konto, kein Tracking. Ziele, Prompts und API-Schlüssel bleiben im Browser. Die WhichAI-API ist schreibgeschützt und liefert nur den öffentlichen Katalog.";
-  S.de.settingsSub = "API-Schlüssel ermöglichen die automatische Ausführung in Compare. Sie bleiben in diesem Browser und gehen nur an den Anbieter, den du aufrufst, nie an die WhichAI-API, die schreibgeschützt ist und keine Daten annimmt.";
-  S.de.keymodeHint = "\"Nur diese Sitzung\" hält den Schlüssel im Speicher und vergisst ihn beim Schließen des Tabs. \"Auf diesem Gerät gespeichert\" schreibt ihn in den Browser-Speicher, wo er einen Neustart überlebt und wo jedes Skript dieser Seite ihn lesen könnte. Darum bleibt es freiwillig.";
-  S.de.supportText = "WhichAI ist kostenlos, ohne Werbung und ohne Sponsoren: die einzigen Kosten sind die Domain und die Stunden, die 100+ Modelle ehrlich und aktuell halten. Wenn es dir Zeit gespart hat, hält eine kleine Spende es unabhängig.";
-
-  S.pt.footerText = "Funciona no seu navegador: sem conta, sem rastreio. Os seus objetivos, prompts e chaves nunca saem do dispositivo.";
-  S.pt.privacyTip = "Sem conta, sem rastreio. Objetivos, prompts e chaves API ficam no navegador. A API do WhichAI é só de leitura e serve apenas o catálogo público.";
-  S.pt.settingsSub = "As chaves API permitem a execução automática no Compare. Ficam neste navegador e são enviadas apenas ao fornecedor que chama, nunca à API do WhichAI, que é só de leitura e não aceita dados.";
-  S.pt.keymodeHint = "\"Apenas esta sessão\" mantém a chave em memória e esquece-a ao fechar o separador. \"Guardada neste dispositivo\" escreve-a no armazenamento do navegador, onde sobrevive a um reinício e onde qualquer script desta página a poderia ler. Por isso continua opcional.";
-  S.pt.supportText = "O WhichAI é gratuito, sem anúncios e sem patrocinadores: os únicos custos são o domínio e as horas que mantêm mais de 100 modelos honestos e atualizados. Se lhe poupou tempo, um pequeno donativo mantém-no independente.";
-
-  S.zh.footerText = "在你的浏览器中运行：无需账户，不做追踪。你的目标、提示词和密钥从不离开设备。";
-  S.zh.privacyTip = "无需账户，不做追踪。目标、提示词和 API 密钥都留在浏览器里。WhichAI 的 API 只读，仅提供公开的模型目录。";
-  S.zh.settingsSub = "API 密钥用于在 Compare 中自动执行。密钥留在此浏览器，只发送给你调用的服务商，绝不会发给 WhichAI 自己的 API，它只读且不接收任何数据。";
-  S.zh.keymodeHint = "“仅本次会话”把密钥保存在内存中，关闭标签页即遗忘。“保存在此设备”会写入浏览器存储，重启后仍在，且本页面上的任何脚本都可能读取。因此需要你主动选择。";
-  S.zh.supportText = "WhichAI 免费、无广告、无赞助：唯一的成本是域名，以及让 100 多个模型保持诚实和最新所花的时间。如果它帮你省了时间，一点小额捐助能让它保持独立。";
-
-  S.hi.footerText = "आपके ब्राउज़र में चलता है: कोई खाता नहीं, कोई ट्रैकिंग नहीं। आपके लक्ष्य, प्रॉम्प्ट और कुंजियाँ कभी डिवाइस नहीं छोड़ते।";
-  S.hi.privacyTip = "कोई खाता नहीं, कोई ट्रैकिंग नहीं। लक्ष्य, प्रॉम्प्ट और API कुंजियाँ ब्राउज़र में ही रहती हैं। WhichAI का API केवल-पढ़ने वाला है और सिर्फ़ सार्वजनिक मॉडल सूची देता है।";
-  S.hi.settingsSub = "API कुंजियाँ Compare में स्वचालित निष्पादन चालू करती हैं। वे इसी ब्राउज़र में रहती हैं और केवल उस प्रदाता को जाती हैं जिसे आप बुलाते हैं, कभी WhichAI के अपने API को नहीं, जो केवल-पढ़ने वाला है और कोई डेटा नहीं लेता।";
-  S.hi.keymodeHint = "\"केवल इस सत्र\" कुंजी को मेमोरी में रखता है और टैब बंद होते ही भूल जाता है। \"इस डिवाइस पर सहेजा\" उसे ब्राउज़र स्टोरेज में लिखता है, जहाँ वह रीस्टार्ट के बाद भी रहती है और जहाँ इस पेज की कोई भी स्क्रिप्ट उसे पढ़ सकती है। इसीलिए यह वैकल्पिक है।";
-  S.hi.supportText = "WhichAI मुफ़्त है, न विज्ञापन न प्रायोजक: एकमात्र खर्च डोमेन और वे घंटे हैं जो 100+ मॉडलों को ईमानदार और अद्यतन रखते हैं। अगर इसने आपका समय बचाया, तो छोटा दान इसे स्वतंत्र रखता है।";
-
-  S.ru.footerText = "Работает в вашем браузере: без аккаунта, без отслеживания. Ваши цели, промпты и ключи никогда не покидают устройство.";
-  S.ru.privacyTip = "Без аккаунта, без отслеживания. Цели, промпты и ключи API остаются в браузере. API WhichAI работает только на чтение и отдаёт лишь публичный каталог моделей.";
-  S.ru.settingsSub = "Ключи API включают автозапуск в Compare. Они остаются в этом браузере и уходят только тому провайдеру, которого вы вызываете, но никогда в собственный API WhichAI: он только на чтение и не принимает данных.";
-  S.ru.keymodeHint = "«Только эта сессия» держит ключ в памяти и забывает его при закрытии вкладки. «Сохранён на этом устройстве» записывает его в хранилище браузера, где он переживёт перезапуск и где любой скрипт этой страницы сможет его прочитать. Поэтому это осознанный выбор.";
-  S.ru.supportText = "WhichAI бесплатен, без рекламы и спонсоров: единственные расходы это домен и часы, которые держат 100+ моделей честными и актуальными. Если он сэкономил вам время, небольшое пожертвование сохранит его независимость.";
-
-  S.ja.footerText = "ブラウザ内で動作します。アカウント不要、追跡なし。目標もプロンプトもキーも端末から出ません。";
-  S.ja.privacyTip = "アカウント不要、追跡なし。目標・プロンプト・API キーはブラウザに留まります。WhichAI の API は読み取り専用で、公開モデルカタログのみを返します。";
-  S.ja.settingsSub = "API キーは Compare の自動実行に使います。キーはこのブラウザに留まり、呼び出したプロバイダーだけに送られます。読み取り専用でデータを受け取らない WhichAI の API に送られることはありません。";
-  S.ja.keymodeHint = "「このセッションのみ」はキーをメモリに保持し、タブを閉じると忘れます。「この端末に保存」はブラウザのストレージに書き込むため再起動後も残り、このページ上のどのスクリプトからも読める可能性があります。だから任意設定のままにしています。";
-  S.ja.supportText = "WhichAI は無料で、広告もスポンサーもありません。かかるのはドメイン代と、100 以上のモデルを正確かつ最新に保つ時間だけです。時間の節約になったなら、少額の寄付が独立性を守ります。";
-
-  S.ar.footerText = "يعمل داخل متصفحك: بلا حساب وبلا تتبّع. أهدافك ومطالباتك ومفاتيحك لا تغادر جهازك أبدًا.";
-  S.ar.privacyTip = "بلا حساب وبلا تتبّع. الأهداف والمطالبات ومفاتيح API تبقى في المتصفح. واجهة WhichAI للقراءة فقط ولا تقدّم سوى فهرس النماذج العام.";
-  S.ar.settingsSub = "مفاتيح API تتيح التشغيل التلقائي في Compare. تبقى في هذا المتصفح وتُرسل فقط إلى المزوّد الذي تستدعيه، ولا تُرسل أبدًا إلى واجهة WhichAI نفسها، فهي للقراءة فقط ولا تقبل أي بيانات.";
-  S.ar.keymodeHint = "\"هذه الجلسة فقط\" يبقي المفتاح في الذاكرة وينساه عند إغلاق التبويب. \"محفوظ على هذا الجهاز\" يكتبه في تخزين المتصفح، حيث يبقى بعد إعادة التشغيل ويمكن لأي سكربت في هذه الصفحة قراءته. لذلك يظل اختيارًا صريحًا.";
-  S.ar.supportText = "WhichAI مجاني، بلا إعلانات ولا رعاة: التكلفة الوحيدة هي النطاق والساعات التي تُبقي أكثر من 100 نموذج صادقة ومحدثة. إن وفّر عليك وقتًا، فتبرّع صغير يبقيه مستقلًا.";
-
-
-  S.en.trustLine = "No account · No tracking · Nothing you write leaves your browser";
-  S.it.trustLine = "Nessun account · Nessun tracciamento · Nulla di ciò che scrivi esce dal browser";
-  S.fr.trustLine = "Aucun compte · Aucun suivi · Rien de ce que vous écrivez ne quitte le navigateur";
-  S.es.trustLine = "Sin cuenta · Sin rastreo · Nada de lo que escribes sale del navegador";
-  S.de.trustLine = "Kein Konto · Kein Tracking · Nichts, was du schreibst, verlässt den Browser";
-  S.pt.trustLine = "Sem conta · Sem rastreio · Nada do que escreve sai do navegador";
-  S.zh.trustLine = "无需账户 · 不做追踪 · 你写的内容不会离开浏览器";
-  S.hi.trustLine = "कोई खाता नहीं · कोई ट्रैकिंग नहीं · आपका लिखा ब्राउज़र से बाहर नहीं जाता";
-  S.ru.trustLine = "Без аккаунта · Без отслеживания · Ничего написанного не покидает браузер";
-  S.ja.trustLine = "アカウント不要 · 追跡なし · 書いた内容はブラウザから出ません";
-  S.ar.trustLine = "بلا حساب · بلا تتبّع · لا شيء مما تكتبه يغادر متصفحك";
-
-
-  /* v0.32: the live data check shown on the Model Radar */
-
-  S.en.radarCheckClean = "Data check: everything matches the public sources";
-  S.en.radarCheckReview = "item(s) from the data check need review";
-  S.en.radarCheckBroken = "Data check: a shipped free route is broken";
-  S.en.radarCheckSkipped = "Data check could not run today";
-
-  S.it.radarCheckClean = "Controllo dati: tutto coincide con le fonti pubbliche";
-  S.it.radarCheckReview = "voce/i dal controllo dati da rivedere";
-  S.it.radarCheckBroken = "Controllo dati: una route gratuita spedita non funziona";
-  S.it.radarCheckSkipped = "Il controllo dati oggi non e' riuscito";
-
-  S.fr.radarCheckClean = "Verification des donnees : tout correspond aux sources publiques";
-  S.fr.radarCheckReview = "element(s) a revoir apres la verification";
-  S.fr.radarCheckBroken = "Verification : une route gratuite livree est cassee";
-  S.fr.radarCheckSkipped = "La verification n'a pas pu etre faite aujourd'hui";
-
-  S.es.radarCheckClean = "Comprobacion de datos: todo coincide con las fuentes publicas";
-  S.es.radarCheckReview = "elemento(s) que revisar tras la comprobacion";
-  S.es.radarCheckBroken = "Comprobacion: una ruta gratuita incluida esta rota";
-  S.es.radarCheckSkipped = "Hoy no se pudo hacer la comprobacion";
-
-  S.de.radarCheckClean = "Datencheck: alles stimmt mit den offentlichen Quellen uberein";
-  S.de.radarCheckReview = "Punkt(e) aus dem Datencheck zu prufen";
-  S.de.radarCheckBroken = "Datencheck: eine ausgelieferte Gratis-Route ist kaputt";
-  S.de.radarCheckSkipped = "Der Datencheck war heute nicht moglich";
-
-  S.pt.radarCheckClean = "Verificacao de dados: tudo corresponde as fontes publicas";
-  S.pt.radarCheckReview = "item(ns) da verificacao a rever";
-  S.pt.radarCheckBroken = "Verificacao: uma rota gratuita incluida esta partida";
-  S.pt.radarCheckSkipped = "Hoje nao foi possivel fazer a verificacao";
-
-  S.zh.radarCheckClean = "数据核对：与公开来源完全一致";
-  S.zh.radarCheckReview = "项需要复核";
-  S.zh.radarCheckBroken = "数据核对：内置的免费线路已失效";
-  S.zh.radarCheckSkipped = "今天无法完成数据核对";
-
-  S.hi.radarCheckClean = "डेटा जाँच: सब कुछ सार्वजनिक स्रोतों से मेल खाता है";
-  S.hi.radarCheckReview = "मद जिनकी समीक्षा ज़रूरी है";
-  S.hi.radarCheckBroken = "डेटा जाँच: भेजा गया मुफ़्त रूट काम नहीं कर रहा";
-  S.hi.radarCheckSkipped = "आज डेटा जाँच नहीं हो सकी";
-
-  S.ru.radarCheckClean = "Проверка данных: всё совпадает с публичными источниками";
-  S.ru.radarCheckReview = "пункт(ов) требуют проверки";
-  S.ru.radarCheckBroken = "Проверка данных: встроенный бесплатный маршрут не работает";
-  S.ru.radarCheckSkipped = "Сегодня проверку выполнить не удалось";
-
-  S.ja.radarCheckClean = "データ照合：公開ソースとすべて一致";
-  S.ja.radarCheckReview = "件の確認が必要です";
-  S.ja.radarCheckBroken = "データ照合：同梱の無料ルートが機能していません";
-  S.ja.radarCheckSkipped = "本日はデータ照合を実行できませんでした";
-
-  S.ar.radarCheckClean = "فحص البيانات: كل شيء يطابق المصادر العامة";
-  S.ar.radarCheckReview = "عنصر/عناصر تحتاج مراجعة";
-  S.ar.radarCheckBroken = "فحص البيانات: مسار مجاني مضمّن لا يعمل";
-  S.ar.radarCheckSkipped = "تعذّر إجراء فحص البيانات اليوم";
-
-
-  /* v0.33: the journey chrome (the act copy itself stays English) */
-
-  S.en.journeyCue = "or keep scrolling";
-  S.en.journeyStatModels = "models tracked";
-  S.en.journeyStatMeasured = "with a measured score";
-  S.en.journeyStatFree = "usable for free";
-  S.en.journeyStatOpen = "you can download";
-  S.en.journeySnapshot = "Snapshot";
-  S.en.journeyDetected = "Detected";
-  S.en.journeyConfidence = "confidence";
-  S.en.journeyBestPick = "Best pick";
-  S.en.journeyFreeAlt = "Free alternative";
-  S.en.journeyWritePrompt = "Write the prompt for it";
-  S.en.journeySeeEvidence = "See the evidence";
-
-  S.it.journeyCue = "oppure continua a scorrere";
-  S.it.journeyStatModels = "modelli tracciati";
-  S.it.journeyStatMeasured = "con un punteggio misurato";
-  S.it.journeyStatFree = "utilizzabili gratis";
-  S.it.journeyStatOpen = "che puoi scaricare";
-  S.it.journeySnapshot = "Snapshot";
-  S.it.journeyDetected = "Rilevato";
-  S.it.journeyConfidence = "affidabilita";
-  S.it.journeyBestPick = "Scelta migliore";
-  S.it.journeyFreeAlt = "Alternativa gratuita";
-  S.it.journeyWritePrompt = "Scrivi il prompt per questo";
-  S.it.journeySeeEvidence = "Vedi le prove";
-
-  S.fr.journeyCue = "ou continuez a faire defiler";
-  S.fr.journeyStatModels = "modeles suivis";
-  S.fr.journeyStatMeasured = "avec un score mesure";
-  S.fr.journeyStatFree = "utilisables gratuitement";
-  S.fr.journeyStatOpen = "que vous pouvez telecharger";
-  S.fr.journeySnapshot = "Instantane";
-  S.fr.journeyDetected = "Detecte";
-  S.fr.journeyConfidence = "confiance";
-  S.fr.journeyBestPick = "Meilleur choix";
-  S.fr.journeyFreeAlt = "Alternative gratuite";
-  S.fr.journeyWritePrompt = "Ecrire le prompt pour lui";
-  S.fr.journeySeeEvidence = "Voir les preuves";
-
-  S.es.journeyCue = "o sigue bajando";
-  S.es.journeyStatModels = "modelos seguidos";
-  S.es.journeyStatMeasured = "con puntuacion medida";
-  S.es.journeyStatFree = "utilizables gratis";
-  S.es.journeyStatOpen = "que puedes descargar";
-  S.es.journeySnapshot = "Instantanea";
-  S.es.journeyDetected = "Detectado";
-  S.es.journeyConfidence = "confianza";
-  S.es.journeyBestPick = "Mejor opcion";
-  S.es.journeyFreeAlt = "Alternativa gratuita";
-  S.es.journeyWritePrompt = "Escribe el prompt para el";
-  S.es.journeySeeEvidence = "Ver las pruebas";
-
-  S.de.journeyCue = "oder weiter scrollen";
-  S.de.journeyStatModels = "erfasste Modelle";
-  S.de.journeyStatMeasured = "mit gemessenem Wert";
-  S.de.journeyStatFree = "kostenlos nutzbar";
-  S.de.journeyStatOpen = "zum Herunterladen";
-  S.de.journeySnapshot = "Stand";
-  S.de.journeyDetected = "Erkannt";
-  S.de.journeyConfidence = "Konfidenz";
-  S.de.journeyBestPick = "Beste Wahl";
-  S.de.journeyFreeAlt = "Kostenlose Alternative";
-  S.de.journeyWritePrompt = "Prompt dafuer schreiben";
-  S.de.journeySeeEvidence = "Belege ansehen";
-
-  S.pt.journeyCue = "ou continue a deslizar";
-  S.pt.journeyStatModels = "modelos seguidos";
-  S.pt.journeyStatMeasured = "com pontuacao medida";
-  S.pt.journeyStatFree = "utilizaveis gratis";
-  S.pt.journeyStatOpen = "que pode descarregar";
-  S.pt.journeySnapshot = "Instantaneo";
-  S.pt.journeyDetected = "Detetado";
-  S.pt.journeyConfidence = "confianca";
-  S.pt.journeyBestPick = "Melhor escolha";
-  S.pt.journeyFreeAlt = "Alternativa gratuita";
-  S.pt.journeyWritePrompt = "Escrever o prompt para ele";
-  S.pt.journeySeeEvidence = "Ver as provas";
-
-  S.zh.journeyCue = "或继续向下滚动";
-  S.zh.journeyStatModels = "已收录模型";
-  S.zh.journeyStatMeasured = "有实测分数";
-  S.zh.journeyStatFree = "可免费使用";
-  S.zh.journeyStatOpen = "可下载权重";
-  S.zh.journeySnapshot = "数据快照";
-  S.zh.journeyDetected = "识别为";
-  S.zh.journeyConfidence = "置信度";
-  S.zh.journeyBestPick = "最佳选择";
-  S.zh.journeyFreeAlt = "免费替代";
-  S.zh.journeyWritePrompt = "为它写提示词";
-  S.zh.journeySeeEvidence = "查看依据";
-
-  S.hi.journeyCue = "या स्क्रॉल करते रहें";
-  S.hi.journeyStatModels = "ट्रैक किए गए मॉडल";
-  S.hi.journeyStatMeasured = "मापे गए स्कोर के साथ";
-  S.hi.journeyStatFree = "मुफ़्त में उपयोग योग्य";
-  S.hi.journeyStatOpen = "जिन्हें डाउनलोड कर सकते हैं";
-  S.hi.journeySnapshot = "स्नैपशॉट";
-  S.hi.journeyDetected = "पहचाना गया";
-  S.hi.journeyConfidence = "विश्वास";
-  S.hi.journeyBestPick = "सर्वोत्तम विकल्प";
-  S.hi.journeyFreeAlt = "मुफ़्त विकल्प";
-  S.hi.journeyWritePrompt = "इसके लिए प्रॉम्प्ट लिखें";
-  S.hi.journeySeeEvidence = "प्रमाण देखें";
-
-  S.ru.journeyCue = "или продолжайте прокручивать";
-  S.ru.journeyStatModels = "моделей отслеживается";
-  S.ru.journeyStatMeasured = "с измеренной оценкой";
-  S.ru.journeyStatFree = "доступны бесплатно";
-  S.ru.journeyStatOpen = "можно скачать";
-  S.ru.journeySnapshot = "Срез данных";
-  S.ru.journeyDetected = "Определено";
-  S.ru.journeyConfidence = "уверенность";
-  S.ru.journeyBestPick = "Лучший выбор";
-  S.ru.journeyFreeAlt = "Бесплатная альтернатива";
-  S.ru.journeyWritePrompt = "Написать промпт для неё";
-  S.ru.journeySeeEvidence = "Посмотреть доказательства";
-
-  S.ja.journeyCue = "またはスクロールを続ける";
-  S.ja.journeyStatModels = "収録モデル";
-  S.ja.journeyStatMeasured = "実測スコアあり";
-  S.ja.journeyStatFree = "無料で使える";
-  S.ja.journeyStatOpen = "ダウンロードできる";
-  S.ja.journeySnapshot = "スナップショット";
-  S.ja.journeyDetected = "判定";
-  S.ja.journeyConfidence = "確度";
-  S.ja.journeyBestPick = "最適な選択";
-  S.ja.journeyFreeAlt = "無料の代替";
-  S.ja.journeyWritePrompt = "これ用のプロンプトを書く";
-  S.ja.journeySeeEvidence = "根拠を見る";
-
-  S.ar.journeyCue = "أو تابع التمرير";
-  S.ar.journeyStatModels = "نماذج مُتابَعة";
-  S.ar.journeyStatMeasured = "بدرجة مُقاسة";
-  S.ar.journeyStatFree = "يمكن استخدامها مجانًا";
-  S.ar.journeyStatOpen = "يمكنك تنزيلها";
-  S.ar.journeySnapshot = "لقطة البيانات";
-  S.ar.journeyDetected = "تم التعرف";
-  S.ar.journeyConfidence = "الثقة";
-  S.ar.journeyBestPick = "الخيار الأفضل";
-  S.ar.journeyFreeAlt = "بديل مجاني";
-  S.ar.journeyWritePrompt = "اكتب المطالبة المناسبة له";
-  S.ar.journeySeeEvidence = "اطّلع على الأدلة";
-
-  /* ---------- v0.35: the catalog that updates itself ---------- */
-  S.en.livePill = "Live data";
-  S.en.liveDataLine = "Live data: official Artificial Analysis scores and OpenRouter prices, read {when}; {n} models added automatically.";
-  S.en.liveAutoChip = "auto-added";
-  S.en.liveAutoTitle = "Added automatically from live public data (Artificial Analysis via OpenRouter). No editorial review yet.";
-  S.en.liveHealed = "The free route {from} was retired by OpenRouter: switched automatically to {to}.";
-  S.it.livePill = "Dati live";
-  S.it.liveDataLine = "Dati live: punteggi ufficiali Artificial Analysis e prezzi OpenRouter, letti {when}; {n} modelli aggiunti in automatico.";
-  S.it.liveAutoChip = "aggiunto in automatico";
-  S.it.liveAutoTitle = "Aggiunto in automatico dai dati pubblici live (Artificial Analysis via OpenRouter). Nessuna recensione editoriale ancora.";
-  S.it.liveHealed = "La route gratuita {from} è stata ritirata da OpenRouter: sostituita in automatico con {to}.";
-  S.fr.livePill = "Données en direct";
-  S.fr.liveDataLine = "Données en direct : scores officiels Artificial Analysis et prix OpenRouter, lus {when} ; {n} modèles ajoutés automatiquement.";
-  S.fr.liveAutoChip = "ajouté automatiquement";
-  S.fr.liveAutoTitle = "Ajouté automatiquement à partir des données publiques en direct (Artificial Analysis via OpenRouter). Pas encore de revue éditoriale.";
-  S.fr.liveHealed = "La route gratuite {from} a été retirée par OpenRouter : remplacée automatiquement par {to}.";
-  S.es.livePill = "Datos en vivo";
-  S.es.liveDataLine = "Datos en vivo: puntuaciones oficiales de Artificial Analysis y precios de OpenRouter, leídos {when}; {n} modelos añadidos automáticamente.";
-  S.es.liveAutoChip = "añadido automáticamente";
-  S.es.liveAutoTitle = "Añadido automáticamente desde datos públicos en vivo (Artificial Analysis vía OpenRouter). Aún sin reseña editorial.";
-  S.es.liveHealed = "OpenRouter retiró la ruta gratuita {from}: se cambió automáticamente a {to}.";
-  S.de.livePill = "Live-Daten";
-  S.de.liveDataLine = "Live-Daten: offizielle Artificial-Analysis-Werte und OpenRouter-Preise, gelesen {when}; {n} Modelle automatisch hinzugefügt.";
-  S.de.liveAutoChip = "automatisch hinzugefügt";
-  S.de.liveAutoTitle = "Automatisch aus öffentlichen Live-Daten hinzugefügt (Artificial Analysis über OpenRouter). Noch keine redaktionelle Bewertung.";
-  S.de.liveHealed = "Die kostenlose Route {from} wurde von OpenRouter eingestellt: automatisch auf {to} umgestellt.";
-  S.pt.livePill = "Dados ao vivo";
-  S.pt.liveDataLine = "Dados ao vivo: pontuações oficiais da Artificial Analysis e preços da OpenRouter, lidos {when}; {n} modelos adicionados automaticamente.";
-  S.pt.liveAutoChip = "adicionado automaticamente";
-  S.pt.liveAutoTitle = "Adicionado automaticamente a partir de dados públicos ao vivo (Artificial Analysis via OpenRouter). Ainda sem análise editorial.";
-  S.pt.liveHealed = "A rota gratuita {from} foi retirada pela OpenRouter: substituída automaticamente por {to}.";
-  S.zh.livePill = "实时数据";
-  S.zh.liveDataLine = "实时数据：Artificial Analysis 官方评分与 OpenRouter 价格，读取于{when}；已自动添加 {n} 个模型。";
-  S.zh.liveAutoChip = "自动添加";
-  S.zh.liveAutoTitle = "根据实时公开数据自动添加（Artificial Analysis，经 OpenRouter）。尚无编辑评测。";
-  S.zh.liveHealed = "OpenRouter 已下线免费路由 {from}：已自动切换为 {to}。";
-  S.hi.livePill = "लाइव डेटा";
-  S.hi.liveDataLine = "लाइव डेटा: Artificial Analysis के आधिकारिक स्कोर और OpenRouter की कीमतें, {when} पढ़ी गईं; {n} मॉडल अपने आप जोड़े गए।";
-  S.hi.liveAutoChip = "अपने आप जोड़ा गया";
-  S.hi.liveAutoTitle = "लाइव सार्वजनिक डेटा से अपने आप जोड़ा गया (OpenRouter के ज़रिए Artificial Analysis)। अभी कोई संपादकीय समीक्षा नहीं।";
-  S.hi.liveHealed = "OpenRouter ने मुफ़्त रूट {from} बंद कर दिया: अपने आप {to} पर बदल दिया गया।";
-  S.ru.livePill = "Живые данные";
-  S.ru.liveDataLine = "Живые данные: официальные оценки Artificial Analysis и цены OpenRouter, получены {when}; автоматически добавлено моделей: {n}.";
-  S.ru.liveAutoChip = "добавлено автоматически";
-  S.ru.liveAutoTitle = "Добавлено автоматически из живых публичных данных (Artificial Analysis через OpenRouter). Редакционного обзора пока нет.";
-  S.ru.liveHealed = "OpenRouter отключил бесплатный маршрут {from}: автоматически заменён на {to}.";
-  S.ja.livePill = "ライブデータ";
-  S.ja.liveDataLine = "ライブデータ：Artificial Analysis の公式スコアと OpenRouter の価格（{when}取得）。{n} モデルを自動追加。";
-  S.ja.liveAutoChip = "自動追加";
-  S.ja.liveAutoTitle = "公開ライブデータから自動追加（OpenRouter 経由の Artificial Analysis）。編集レビューはまだありません。";
-  S.ja.liveHealed = "無料ルート {from} は OpenRouter で終了しました：自動的に {to} に切り替えました。";
-  S.ar.livePill = "بيانات مباشرة";
-  S.ar.liveDataLine = "بيانات مباشرة: درجات Artificial Analysis الرسمية وأسعار OpenRouter، قُرئت {when}؛ أُضيف {n} نموذجًا تلقائيًا.";
-  S.ar.liveAutoChip = "أُضيف تلقائيًا";
-  S.ar.liveAutoTitle = "أُضيف تلقائيًا من البيانات العامة المباشرة (Artificial Analysis عبر OpenRouter). لا توجد مراجعة تحريرية بعد.";
-  S.ar.liveHealed = "أوقفت OpenRouter المسار المجاني {from}: تم التبديل تلقائيًا إلى {to}.";
 
   var I18n = {
     LANGS: LANGS,

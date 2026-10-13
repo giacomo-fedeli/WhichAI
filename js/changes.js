@@ -50,7 +50,7 @@
       note: "The image-generation lab ships its first multimodal frontier model. Outside WhichAI's text-model scope for now; tracked here because it reshapes the image side of the market.",
       src: { label: "Release trackers", url: "https://llm-stats.com/llm-updates" } },
     { date: "2026-07-21", type: "new-model", title: "Gemini 3.6 Flash (+3.5 Flash-Lite)", dbId: "gemini-3-6-flash",
-      note: "Google refreshes the free workhorse: $1.50/$7.50 per 1M (output down from $9), 1M context, day one in AI Studio, API and app. Flash-Lite lands at $0.30/$2.50 for routing jobs. WhichAI's BYOK default is now gemini-3.6-flash.",
+      note: "Google refreshes the free workhorse: $1.50/$7.50 per 1M (output down from $9), 1M context, day one in AI Studio, API and app. Flash-Lite lands at $0.30/$2.50 for routing jobs.",
       src: { label: "Pricing guide", url: "https://apidog.com/blog/gemini-3-6-flash-pricing/" } },
     { date: "2026-07-19", type: "new-model", title: "Qwen week: 3.8 Max preview, Audio 3.0, Image 3.0", dbId: "qwen-3-8-max-preview",
       note: "Alibaba previews its next flagship (July 19) and ships new audio (July 20) and image (July 21) models. No index score published for 3.8 Max yet; listed as a clearly-marked preview.",

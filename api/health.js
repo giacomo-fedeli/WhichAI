@@ -46,6 +46,7 @@ module.exports = async function handler(req, res) {
       { path: "/api/refresh", what: "the automated data check against public sources" }
       ,{ path: "/api/live", what: "automatically refreshed OpenRouter routes, pricing and attributed benchmarks" }
       ,{ path: "/api/catalog", what: "the self-updating catalog: official AA scores, prices, new models, live free routes" }
+      ,{ path: "/api/news", what: "the Radar news wire: lab blogs, TechCrunch AI, Hacker News, Hugging Face (titles and links)" }
     ],
     docs: "https://whichai.wiki/docs/API.md",
     license: "CC BY 4.0 (attribution: WhichAI, whichai.wiki). Scores: Artificial Analysis, relayed by OpenRouter.",

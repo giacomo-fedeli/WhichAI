@@ -1,6 +1,10 @@
 /*
- * WhichAI - Guided AI finder (v0.22.0)
- * Short adaptive questionnaire → transparent, rule-based recommendation.
+ * WhichAI - Guided AI finder (v0.36.0)
+ * Two ways in, both rule-based and transparent:
+ *   - quick answer: pick a task, get the router's best app with its reasons,
+ *     free tier and sources (what the old Model guide cards showed, one at a time)
+ *   - guided: a short adaptive questionnaire for a personal pick.
+ * The task chosen in the quick answer carries into the guided questions.
  * No API calls: candidates and facts come from js/models-db.js and js/benchmarks.js,
  * every boost is explained in the "Why this pick" list. Question/answer copy is
  * English by design (same content policy as prompts and benchmarks).
@@ -21,8 +25,8 @@
   function DB() { return window.PromptCompassModelsDB || null; }
   function Bench() { return window.PromptCompassBenchmarks || null; }
 
-  function freshState() {
-    return { step: 0, task: null, mode: null, budget: null, needs: [], extra: null };
+  function freshState(started) {
+    return { step: 0, task: null, mode: null, budget: null, needs: [], extra: null, started: !!started };
   }
 
   /* ---------------- Questions ---------------- */
@@ -76,7 +80,7 @@
 
   var APP_META = {
     claude: { label: "Claude", bestFor: "polished writing, careful reasoning, long documents",
-      limit: "No free API for auto-run; free-tier limits vary with demand.",
+      limit: "No free API tier; free-tier limits in the app vary with demand.",
       models: { free: "sonnet-5", low: "claude-opus-5", any: "claude-opus-5", creative: "fable-5", devLow: "sonnet-5", devAny: "claude-opus-5" } },
     chatgpt: { label: "ChatGPT", bestFor: "all-round work, brainstorming, files and data tooling",
       limit: "Free tier has message caps; the strongest modes need Plus or Pro.",
@@ -90,7 +94,7 @@
   };
 
   var OPEN_OFFERS = {
-    "qwen3-coder": { bestFor: "free auto-run coding via OpenRouter (1M context)", limit: "Free route is rate-limited (~20 req/min, 200/day)." },
+    "qwen3-coder": { bestFor: "open-weight coding with a 1M context, cheap on API hosts", limit: "Its free OpenRouter route was retired: paid routes or self-hosting only." },
     "glm-5-2": { bestFor: "the strongest open-weight coder, cheap on API hosts", limit: "No free hosted route on OpenRouter right now." },
     "kimi-k3": { bestFor: "frontier-level agentic and coding work at a third of US prices", limit: "Brand new - tooling still maturing; API is paid." },
     "nemotron-3-ultra": { bestFor: "free, extremely fast drafts and volume work via OpenRouter", limit: "A clear step below frontier quality." },
@@ -235,8 +239,8 @@
       if (state.task === "coding") {
         if (state.budget === "free") {
           var fr = bestFreeRoute(db);
-          offers.splice(1, 0, fr ? modelOffer(fr.model.id, ["Free on OpenRouter right now (" + fr.route.id + ")" + (fr.route.aa != null ? ", AA " + fr.route.aa : "") + " - auto-run works right here in Compare/Chains."])
-            : modelOffer("qwen3-coder", ["Runnable for free via OpenRouter - auto-run works right here in Compare/Chains."]));
+          offers.splice(1, 0, fr ? modelOffer(fr.model.id, ["Free on OpenRouter right now (" + fr.route.id + ")" + (fr.route.aa != null ? ", AA " + fr.route.aa : "") + ": call it from your own code at no cost, within the route's rate limits."])
+            : modelOffer("nemotron-3-ultra", ["Free on OpenRouter, within the route's rate limits (the live list of free routes could not be read, so this is the last one we checked)."]));
         } else {
           var val = liveBest(db, function (m) { return !appOf(m.vendor) && blended(m) > 0; }, function (m) { return m.score.coding; });
           offers.splice(1, 0, val ? modelOffer(val.id, ["Best live Coding Index outside Anthropic, OpenAI and Google (" + val.score.coding + "), at $" + val.spec.priceIn + "/$" + val.spec.priceOut + " per 1M tokens on OpenRouter."])
@@ -244,8 +248,8 @@
         }
       } else if (state.budget === "free") {
         var fr2 = bestFreeRoute(db, "nemotron") || bestFreeRoute(db);
-        offers.splice(2, 0, fr2 ? modelOffer(fr2.model.id, ["Free on OpenRouter right now (" + fr2.route.id + ") - auto-run works right here."])
-          : modelOffer("nemotron-3-ultra", ["Free on OpenRouter - auto-run works right here."]));
+        offers.splice(2, 0, fr2 ? modelOffer(fr2.model.id, ["Free on OpenRouter right now (" + fr2.route.id + "), within the route's rate limits."])
+          : modelOffer("nemotron-3-ultra", ["Free on OpenRouter, within the route's rate limits."]));
       }
     }
     // Privacy: the strongest model you can download, from the live catalog
@@ -276,8 +280,24 @@
     var qs = questions();
     var card = el("div", "card finder-card");
 
+    /* The quick answer above already lists the tasks: until the reader asks
+       for the personal route, the guided card is one line and a button. */
+    if (!state.started && state.step === 0) {
+      card.classList.add("finder-teaser");
+      var th = el("div", "finder-head");
+      th.appendChild(el("h3", "finder-title", deps.T("finderGuidedTitle")));
+      card.appendChild(th);
+      card.appendChild(el("p", "finder-sub", deps.T("finderSub")));
+      var go = el("button", "btn-ghost", deps.T("finderStart"));
+      go.type = "button";
+      go.addEventListener("click", function () { state.started = true; render(); });
+      card.appendChild(go);
+      root.appendChild(card);
+      return;
+    }
+
     var head = el("div", "finder-head");
-    head.appendChild(el("h2", "finder-title", deps.T("finderTitle")));
+    head.appendChild(el("h3", "finder-title", deps.T("finderGuidedTitle")));
     var dots = el("div", "finder-dots");
     var totalSteps = qs.length;
     for (var i = 0; i < totalSteps; i++) {
@@ -416,15 +436,15 @@
     if (state.needs.indexOf("privacy") !== -1) {
       card.appendChild(el("p", "router-meta", "Note: WhichAI itself runs entirely in your browser - no account, no server. For maximum privacy, open-weight models can run fully on your own hardware."));
     }
-    card.appendChild(el("p", "router-meta", "Guidance from public benchmarks (official indices read " + snapshotDate() + ", refreshed automatically) and vendor pages, plus transparent rules - not gospel. Sources are linked in the Model guide."));
+    card.appendChild(el("p", "router-meta", "Guidance from public benchmarks (official indices read " + snapshotDate() + ", refreshed automatically) and vendor pages, plus transparent rules - not gospel. Sources are linked in the quick answer above and in each model's details."));
     var nav = el("div", "finder-nav");
     var again = el("button", "btn-link", deps.T("finderRestart"));
     again.type = "button";
-    again.addEventListener("click", function () { state = freshState(); render(); });
+    again.addEventListener("click", function () { state = freshState(true); render(); });
     nav.appendChild(again);
     var sw = el("button", "btn-link", deps.T("finderSwitchGoal"));
     sw.type = "button";
-    sw.addEventListener("click", function () { deps.switchToGoal(); });
+    sw.addEventListener("click", function () { deps.switchToGoal(state.task); });
     nav.appendChild(sw);
     if (window.WhichAIShare && res.top) {
       var shareB = el("button", "btn-copy", deps.T("shareBtn"));
@@ -445,6 +465,105 @@
     card.appendChild(nav);
   }
 
+  /* ---------------- Quick answer: one task, the router's pick ---------------- */
+
+  var TASK_ICONS = {
+    writing: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M4 20l1-4L16.5 4.5a2.1 2.1 0 013 3L8 19l-4 1z"/><path d="M13.5 7.5l3 3"/></svg>',
+    coding: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M8 7l-5 5 5 5"/><path d="M16 7l5 5-5 5"/></svg>',
+    analysis: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M4 20V10"/><path d="M10 20V4"/><path d="M16 20v-7"/><path d="M22 20H2"/></svg>',
+    research: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5L21 21"/></svg>',
+    brainstorming: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 014 10.5c-.8.7-1 1.5-1 2.5h-6c0-1-.2-1.8-1-2.5A6 6 0 0112 3z"/></svg>',
+    education: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M2 8l10-4 10 4-10 4L2 8z"/><path d="M6 10v5c0 1.5 2.7 3 6 3s6-1.5 6-3v-5"/></svg>',
+    business: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="3" y="8" width="18" height="12" rx="2"/><path d="M9 8V6a3 3 0 016 0v2"/><path d="M3 13h18"/></svg>',
+    general: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8L12 3z"/></svg>'
+  };
+
+  var quick = { root: null, deps: null, task: null };
+
+  function brandMark(subject, label, opts) {
+    var b = window.WhichAIBrands;
+    return b ? b.createMark(subject, label, opts || {}) : null;
+  }
+
+  function renderQuick() {
+    var q = quick.root, d = quick.deps;
+    if (!q || !d) return;
+    q.textContent = "";
+    q.appendChild(el("p", "quick-title", d.T("quickTitle")));
+    var row = el("div", "quick-tasks");
+    row.setAttribute("role", "group");
+    row.setAttribute("aria-label", d.T("quickTitle"));
+    row.setAttribute("data-morph-to", "task");
+    TASKS.forEach(function (k, i) {
+      var b = el("button", "quick-task" + (quick.task === k ? " is-on" : ""));
+      b.type = "button";
+      b.setAttribute("aria-pressed", quick.task === k ? "true" : "false");
+      b.style.setProperty("--i", String(i));
+      var ic = el("span", "quick-icon");
+      ic.innerHTML = TASK_ICONS[k];
+      b.appendChild(ic);
+      b.appendChild(el("span", "quick-label", d.T("task_" + k)));
+      b.addEventListener("click", function () { quick.task = quick.task === k ? null : k; renderQuick(); });
+      row.appendChild(b);
+    });
+    q.appendChild(row);
+    if (!quick.task) {
+      q.appendChild(el("p", "quick-hint", d.T("quickHint")));
+      return;
+    }
+    var bench = Bench();
+    if (!bench) return;
+    var rec = bench.recommend(quick.task);
+    var top = rec.ranking[0];
+    var app = bench.apps[top.app];
+    var card = el("div", "quick-answer");
+    var head = el("div", "qa-head");
+    head.appendChild(el("span", "qa-kicker", d.T("quickBestFor").replace("{task}", d.T("task_" + quick.task))));
+    head.appendChild(el("span", "badge", rec.confidence + " " + d.T("journeyConfidence")));
+    card.appendChild(head);
+    var pick = el("div", "qa-pick");
+    var mark = brandMark(top.app, app.label, { wordmark: true, providerWordmark: true, className: "ai-brand-lockup" });
+    if (mark) pick.appendChild(mark); else pick.textContent = app.label;
+    if (top.live) pick.appendChild(el("span", "qa-live", top.live.name + " · " + top.live.label + " " + top.live.value));
+    card.appendChild(pick);
+    card.appendChild(el("p", "qa-summary", rec.summary));
+    var ol = el("ol", "qa-rank");
+    rec.ranking.forEach(function (r, i) {
+      var a = bench.apps[r.app];
+      var li = el("li", "qa-rank-row" + (i === 0 ? " is-top" : ""));
+      var nm = el("span", "qa-app");
+      var mk = brandMark(r.app, a.label, { small: true });
+      if (mk) nm.appendChild(mk); else nm.textContent = a.label;
+      li.appendChild(nm);
+      li.appendChild(el("span", "qa-note", r.note));
+      li.appendChild(el("span", "qa-free", d.T("freeTier") + " " + a.freeModel));
+      ol.appendChild(li);
+    });
+    card.appendChild(ol);
+    var src = el("p", "router-meta qa-src");
+    src.appendChild(document.createTextNode(bench.CONFIDENCE_NOTES[rec.confidence] + " " + d.T("sourcesLabel") + " "));
+    rec.sourceIds.forEach(function (sid, i) {
+      var s0 = bench.sources.filter(function (x) { return x.id === sid; })[0];
+      if (!s0) return;
+      if (i) src.appendChild(document.createTextNode(" · "));
+      var a = document.createElement("a");
+      a.href = s0.url; a.target = "_blank"; a.rel = "noopener noreferrer"; a.textContent = s0.label;
+      src.appendChild(a);
+    });
+    card.appendChild(src);
+    var acts = el("div", "qa-actions");
+    var write = el("button", "btn-primary", d.T("quickWrite").replace("{app}", app.label));
+    write.type = "button";
+    write.addEventListener("click", function () { d.useModel(top.app, quick.task); });
+    acts.appendChild(write);
+    var personal = el("button", "btn-ghost", d.T("quickPersonal"));
+    personal.type = "button";
+    personal.addEventListener("click", function () { Finder.startWith(quick.task); if (d.focusGuided) d.focusGuided(); });
+    acts.appendChild(personal);
+    card.appendChild(acts);
+    q.appendChild(card);
+  }
+
   var Finder = {
     init: function (rootEl, dependencies) {
       root = rootEl;
@@ -452,7 +571,16 @@
       if (!state) state = freshState();
       render();
     },
-    rerender: function () { if (root && deps) render(); },
+    rerender: function () { if (root && deps) render(); renderQuick(); },
+    initQuick: function (rootEl, dependencies) { quick.root = rootEl; quick.deps = dependencies; renderQuick(); },
+    pickTask: function (task) { if (TASKS.indexOf(task) !== -1) { quick.task = task; renderQuick(); } },
+    /** jump into the guided questions with the task already answered */
+    startWith: function (task) {
+      state = freshState(true);
+      if (TASKS.indexOf(task) !== -1) { state.task = task; state.step = 1; }
+      if (root && deps) render();
+    },
+    TASK_ICONS: TASK_ICONS,
     /* exposed for tests */
     _recommend: function (answers) { state = answers; return recommend(); },
     _questions: function (answers) { state = answers; return questions(); }

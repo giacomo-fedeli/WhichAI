@@ -2,7 +2,7 @@
  "project": "WhichAI",
  "site": "https://whichai.wiki",
  "license": "CC BY 4.0 (attribution: WhichAI, whichai.wiki)",
- "generated": "2026-10-03",
+ "generated": "2026-10-13",
  "snapshot": "October 3, 2026",
  "scaleNote": "Artificial Analysis Intelligence Index, official scale (the number published on artificialanalysis.ai), relayed by OpenRouter. Static snapshot retrieved October 3, 2026; the live site refreshes it automatically every hour. A value marked ~ is converted from the older BenchLM-mirror scale because no current official measurement is published; models nobody has measured carry no index score and never enter a ranking.",
  "specNote": "Context, price, modality and listing dates come from the public OpenRouter model list (refreshed automatically on the live site; static copy retrieved October 3, 2026) and vendor pages. Missing values are not published or not yet verified - shown as -.",
@@ -1328,7 +1328,7 @@
      "agents": 86
     }
    },
-   "review": "Google shipped 3.7 Flash on August 13 and 3.8 Flash three weeks later at the same price, 2.7 points higher, with audio and video input added. The best score-per-dollar on the whole table. WhichAI still defaults auto-run to gemini-3.6-flash because that free tier is confirmed and this one is not."
+   "review": "Google shipped 3.7 Flash on August 13 and 3.8 Flash three weeks later at the same price, scoring higher on the index and adding audio and video input. Free-tier availability was not confirmed at launch."
   },
   {
    "id": "gemini-3-7-flash",
@@ -1372,7 +1372,7 @@
      "agents": 84
     }
    },
-   "review": "Google's August workhorse, aimed squarely at coding and agents: 85.8% on Terminal-bench 2.1, 97.0% on long-context recall at 128K, and half the price of 3.6 Flash until the end of the year. WhichAI still defaults auto-run to gemini-3.6-flash because that model's free tier is confirmed and this one's is not - switch it in Settings if Google has enabled yours."
+   "review": "Google's August workhorse, aimed squarely at coding and agents: 85.8% on Terminal-bench 2.1, 97.0% on long-context recall at 128K, and half the price of 3.6 Flash until the end of the year. Free-tier availability was not confirmed at launch."
   },
   {
    "id": "gemini-3-6-flash",
@@ -1388,8 +1388,7 @@
     "free",
     "paid",
     "api",
-    "prompt-target",
-    "auto-run"
+    "prompt-target"
    ],
    "labels": [
     "speed",
@@ -1415,7 +1414,7 @@
      "agents": 76
     }
    },
-   "review": "Google's July refresh of the free workhorse: 3.5 Flash quality with cheaper output ($7.50 vs $9), 1M context, day one in AI Studio, the API and the app. The new default of the Gemini line."
+   "review": "Google's July refresh of the free workhorse: 3.5 Flash quality with cheaper output ($7.50 vs $9), 1M context, day one in AI Studio, the API and the app."
   },
   {
    "id": "gemini-3-5-flash-lite",
@@ -1475,8 +1474,7 @@
    "tags": [
     "free",
     "api",
-    "prompt-target",
-    "auto-run"
+    "prompt-target"
    ],
    "labels": [
     "speed",
@@ -1497,7 +1495,7 @@
      "agents": 76
     }
    },
-   "review": "Remarkable: the newest Flash now outscores the older 3.1 Pro on the AA index - frontier-adjacent quality, free, and the model WhichAI auto-runs with your AI Studio key."
+   "review": "A Flash model that outscores the older 3.1 Pro on the AA index, with the most generous free tier of the big assistants and a free API through Google AI Studio."
   },
   {
    "id": "gemini-3-pro",
@@ -2215,8 +2213,7 @@
     "free",
     "open-weights",
     "api",
-    "prompt-target",
-    "auto-run"
+    "prompt-target"
    ],
    "labels": [
     "local",
@@ -2279,14 +2276,13 @@
    "or": [
     "meta-llama/llama-3.3-70b-instruct"
    ],
-   "access": "Open weights · FREE on Groq (WhichAI default runner)",
+   "access": "Open weights · served on Groq",
    "tags": [
     "free",
     "open-weights",
     "api",
     "legacy",
-    "prompt-target",
-    "auto-run"
+    "prompt-target"
    ],
    "labels": [
     "local",
@@ -2304,7 +2300,7 @@
      "agents": 14
     }
    },
-   "review": "Older but dependable - the default model WhichAI auto-runs with a free Groq key."
+   "review": "Older but dependable: a well-understood open model, now far below the 2026 open leaders on the index."
   },
   {
    "id": "llama-3-1-405b",
@@ -2807,13 +2803,11 @@
    "spec": {
     "ctx": "1M"
    },
-   "access": "Open weights · FREE on OpenRouter (qwen/qwen3-coder:free, 1M context) - WhichAI auto-runs it with a free OpenRouter key",
+   "access": "Open weights · 1M context · its free OpenRouter route (qwen/qwen3-coder:free) has been retired; paid routes and self-hosting remain",
    "tags": [
-    "free",
     "open-weights",
     "api",
-    "prompt-target",
-    "auto-run"
+    "prompt-target"
    ],
    "labels": [
     "coding",
@@ -2832,7 +2826,7 @@
      "agents": 58
     }
    },
-   "review": "The strongest free coding route on OpenRouter right now - 1M context, tool use, zero cost within the daily free limits."
+   "review": "An open coding model with 1M context and tool use that was, for months, the go-to free coding route. That route is gone; the Market chapter lists the free routes that exist today."
   },
   {
    "id": "kimi-k3",
@@ -3494,13 +3488,12 @@
     "ctx": "1M",
     "speed": "400+ tok/s on some hosts"
    },
-   "access": "FREE on OpenRouter (nvidia/nemotron-3-ultra-550b-a55b:free - WhichAI default runner) · open weights · Perplexity Pro",
+   "access": "FREE on OpenRouter (nvidia/nemotron-3-ultra-550b-a55b:free, rate-limited) · open weights · Perplexity Pro",
    "tags": [
     "free",
     "open-weights",
     "api",
-    "prompt-target",
-    "auto-run"
+    "prompt-target"
    ],
    "labels": [
     "speed",
@@ -3532,13 +3525,11 @@
    "or": [
     "nvidia/nemotron-3-super-120b-a12b"
    ],
-   "access": "FREE on OpenRouter (nvidia/nemotron-3-super-120b-a12b:free) · open weights",
+   "access": "Open weights · its free OpenRouter route (nvidia/nemotron-3-super-120b-a12b:free) has been retired",
    "tags": [
-    "free",
     "open-weights",
     "api",
-    "prompt-target",
-    "auto-run"
+    "prompt-target"
    ],
    "labels": [
     "speed",
@@ -3558,7 +3549,7 @@
      "agents": 40
     }
    },
-   "review": "The 120B sibling - lighter, faster, still free; good for volume tasks."
+   "review": "The 120B sibling: lighter and faster, good for volume tasks."
   },
   {
    "id": "mistral-medium-3-5",

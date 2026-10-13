@@ -18,7 +18,7 @@
 
   function initCounter() {
     var code = (cfg().goatCode || "").trim();
-    var slots = [document.getElementById("visit-counter"), document.getElementById("welcome-visits")].filter(Boolean);
+    var slots = [document.getElementById("visit-counter")].filter(Boolean);
     if (!code) { slots.forEach(function (s) { s.hidden = true; }); return; }
 
     // 1) count this visit (async, non-blocking, no cookies)

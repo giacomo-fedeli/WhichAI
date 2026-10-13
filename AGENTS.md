@@ -10,17 +10,17 @@ Questo file vale per qualunque agente AI con accesso diretto ai file che lavora 
 
 ## Stato e missione
 
-Progetto attivo e avanzato (v0.25+, ~25 sessioni). NON ricominciare da capo: la cartella contiene tutto. Piattaforma client-side che (1) trasforma un obiettivo in prompt ottimizzati per 13 famiglie di modelli AI, (2) consiglia quale modello usare (router benchmark), (3) database ricercabile di 100+ modelli con score, (4) confronto side-by-side con auto-run BYOK (Gemini/Groq/OpenRouter), (5) catene multi-step con Run all e condivisione via URL, (6) finder guidato, prompt doctor, stack optimizer, model radar, wiki SEO statica. PWA installabile, 11 lingue (arabo RTL), responsive.
+Progetto attivo e avanzato (v0.36, ~37 sessioni). NON ricominciare da capo: la cartella contiene tutto. Missione attuale: piattaforma a pagina unica in 6 capitoli collegati (niente copertina, niente menu): (1) Ranking a tier calcolato dai punteggi ufficiali Artificial Analysis, con scatter prezzo/intelligenza, (2) Compare testa a testa, (3) Model Radar con lanci, prezzi e news automatiche, (4) Market (prezzi, valore, free route, calcolatore), (5) AI Debates + glossario, (6) Tools: Find your AI (prioritario), Prompt generator per 13 famiglie di modelli, Prompt Doctor, Stack Optimizer. Dati e news si aggiornano da soli; wiki SEO statica; PWA installabile, 11 lingue (arabo RTL), responsive, tema chiaro/scuro.
 
 ## Regole fisse
 
 - Budget zero o quasi: mai servizi a pagamento senza ok esplicito di Jack.
 - Stack: HTML/CSS/JS vanilla, zero build, librerie solo se strettamente necessarie. Un file per modulo in `js/`.
-- Privacy by design: niente server, niente account, chiavi API solo in localStorage (session-only di default).
+- Privacy by design: niente account, nessuna chiave API (BYOK rimosso nella v0.36), nessun tracciamento; le API del sito sono in sola lettura e non ricevono testo dell'utente.
 - Contenuti (prompt, benchmark, DB) in inglese; UI tradotta via `js/i18n.js` (11 lingue, chiavi identiche in tutte — c'è un test che lo verifica).
 - Ad OGNI release: bump di `APP_VERSION` in `js/app.js`, badge+footer in `index.html`, costante `CACHE` in `sw.js`. Aggiorna `STATUS.md` a fine sessione (vedi anche `AI-SYNC.md` per il tag `[GPT-5.6]`).
 - Deploy: lo fa SOLO Jack (upload GitHub → Vercel auto-deploy, o `npx vercel`). Non tentare push/deploy da agente.
-- Test PRIMA di ogni commit: `node tests/run-tests.mjs` e `node tests/smoke-dom.mjs` dalla root — commit solo se entrambi passano.
+- Test PRIMA di ogni commit: `npm test` dalla root (6 suite offline) — commit solo se tutto passa.
 - Dati (dalla v0.35): punteggi ufficiali Artificial Analysis, prezzi, nuovi modelli misurati e route :free si aggiornano DA SOLI (api/catalog.js + js/live-catalog.js, e ogni deploy li ricuoce nel bundle). Nessun refresh manuale dei numeri. Resta umano solo il lavoro editoriale: recensioni dei modelli marcati "auto-added", voci rumored, AI Debates, glossario. NON reintrodurre punteggi scritti a mano in models-db.js: per i modelli con misura ufficiale il valore viene dalla fonte.
 - Separa sempre "cosa ho fatto io" vs "cosa deve fare Jack", con passi semplici.
 - Spiegazioni a Jack in italiano, semplici e dirette.
@@ -30,6 +30,8 @@ Progetto attivo e avanzato (v0.25+, ~25 sessioni). NON ricominciare da capo: la 
 GitHub github.com/giacomo-fedeli/WhichAI · Vercel project "promptcompass" (team jackfdls-projects) · Sito live https://whichai.wiki (alias https://promptcompass.vercel.app) · Autore: Giacomo Fedeli, linkedin.com/in/giacomo-fedeli-277765239.
 
 ## Imported Claude Cowork project instructions
+
+> Nota (v0.36): nel testo importato sotto, la missione cita ancora l'auto-run BYOK (4) e le catene (5): sono stati tolti dal sito su richiesta di Jack. La missione attuale è quella in "Stato e missione" qui sopra.
 
 Sei il Chief AI Architect & Build Partner del progetto PromptCompass (https://promptcompass.vercel.app) ora aggiornato con il dominio wichai.wiki.
 

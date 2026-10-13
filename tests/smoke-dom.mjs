@@ -1,20 +1,33 @@
-/* WhichAI — DOM smoke test (v0.22): boots the real app inside jsdom and walks
-   every view, the finder, the glossary, model compare and the chain roadmap.
-   Run: node tests/smoke-dom.mjs  (needs `npm i jsdom` reachable via NODE_PATH) */
+/* WhichAI - DOM smoke test (v0.36): boots the real page inside jsdom and walks
+   the six chapters top to bottom: ranking, compare, radar, market, debates,
+   tools; then the drawer, old addresses, language, theme, and fresh data
+   landing while the page is open.
+   jsdom has no IntersectionObserver, so every chapter mounts at once: the
+   same code path a browser takes when the reader scrolls past each one.
+   Run: node tests/smoke-dom.mjs  (needs jsdom from devDependencies) */
 import { readFileSync } from "fs";
 import { createRequire } from "module";
 const require = createRequire(import.meta.url);
-const { JSDOM } = require("jsdom");
+const { JSDOM, VirtualConsole } = require("jsdom");
 
 let pass = 0, fail = 0;
 const failures = [];
 function check(name, cond, detail) {
   if (cond) { pass++; console.log("  ok  " + name); }
-  else { fail++; failures.push(name + (detail ? " — " + detail : "")); console.log("FAIL  " + name + (detail ? " — " + detail : "")); }
+  else { fail++; failures.push(name + (detail ? " - " + detail : "")); console.log("FAIL  " + name + (detail ? " - " + detail : "")); }
 }
+const tick = (ms) => new Promise(r => setTimeout(r, ms || 30));
 
 const html = readFileSync("index.html", "utf8");
-const dom = new JSDOM(html, { url: "https://whichai.wiki/", runScripts: "outside-only", pretendToBeVisual: true });
+/* The page's own console reaches ours; jsdom's "navigation not implemented"
+   (a download link being clicked) is noise, and anything the app reports as
+   a failed render is collected and fails the run at the end. */
+const pageErrors = [];
+const vc = new VirtualConsole();
+vc.sendTo(console, { omitJSDOMErrors: true });
+vc.on("error", (...args) => pageErrors.push(args.map(String).join(" ")));
+vc.on("jsdomError", (e) => { if (!/Not implemented: navigation/.test(e.message)) { pageErrors.push(e.message); console.error(e.message); } });
+const dom = new JSDOM(html, { url: "https://whichai.wiki/", runScripts: "outside-only", pretendToBeVisual: true, virtualConsole: vc });
 const w = dom.window;
 const d = w.document;
 w.scrollTo = () => {};
@@ -24,357 +37,256 @@ w.confirm = () => true;
 w.URL.createObjectURL = w.URL.createObjectURL || (() => "blob:test");
 w.URL.revokeObjectURL = w.URL.revokeObjectURL || (() => {});
 
-/* A user who saved settings while qwen3-coder:free was the shipped default.
-   OpenRouter has since retired that route: the v0.35 section below checks
-   that the app heals it by itself. */
-w.sessionStorage.setItem("pc_settings_v1", JSON.stringify({ orModels: { qwen: "qwen/qwen3-coder:free", nemotron: "nvidia/nemotron-3-ultra-550b-a55b:free", glm: "my/own-model:free" } }));
+/* A returning visitor from v0.35: API keys and retired tools in storage. */
+w.localStorage.setItem("pc_settings_v1", JSON.stringify({ geminiKey: "AIza-old", orModels: { qwen: "qwen/qwen3-coder:free" } }));
+w.localStorage.setItem("pc_chains_v1", "[]");
+w.sessionStorage.setItem("pc_settings_v1", "{}");
+w.localStorage.setItem("pc_keymode", "local");
 
-const scripts = ["js/engine.js", "js/benchmarks.js", "js/chains.js", "js/i18n.js", "js/models-db.js", "js/live-seed.js", "js/live-catalog.js", "js/merge.js", "js/charts.js", "js/glossary.js", "js/finder.js", "js/modelcompare.js", "js/stack.js", "js/doctor.js", "js/changes.js", "js/radar.js", "js/live-data.js", "js/sharecard.js", "js/brands.js", "js/welcome.js", "js/config.js", "js/api.js", "js/stage.js", "js/journey.js", "js/support.js", "js/topics.js", "js/arena.js", "js/app.js"];
+const scripts = [...html.matchAll(/<script src="(js\/[\w.-]+\.js)"><\/script>/g)].map(m => m[1]);
 let bootError = null;
 for (const s of scripts) {
   try { w.eval(readFileSync(s, "utf8")); }
   catch (e) { bootError = s + ": " + e.message; break; }
 }
-check("boot: all scripts execute without throwing", !bootError, bootError);
+check("boot: all " + scripts.length + " scripts execute without throwing", !bootError, bootError);
 if (bootError) { console.log("aborting"); process.exit(1); }
+await tick(80);
 
-check("boot: generator visible, nav active", !d.getElementById("generator-view").hidden && d.getElementById("nav-generator").classList.contains("active"));
-check("boot: footer links present (4 + hidden support)", d.querySelectorAll(".footer-links a").length === 5);
-check("v0.26: welcome is minimal and has four staged actions", !!d.getElementById("welcome-brand") && d.querySelectorAll(".welcome-action").length === 4);
-check("v0.26: all 13 generator families have local brand icons", d.querySelectorAll(".model-check[data-ai-brand] .ai-brand-icon").length === 13);
-check("v0.26: native welcome controller initialized", !!w.WhichAIWelcome && typeof w.WhichAIWelcome.leave === "function");
+const R = w.WhichAIRanking;
+const top = R.tiers("aa", false).list;
 
-/* --- Guided finder --- */
-d.getElementById("mode-finder").click();
-check("finder: mode switch shows finder", !d.getElementById("finder-wrap").hidden && d.getElementById("generator-view").classList.contains("finder-on"));
-check("finder: first question rendered (8 task options)", d.querySelectorAll("#finder-wrap .finder-opt").length === 8);
-d.querySelectorAll("#finder-wrap .finder-opt")[0].click(); // writing
-check("finder: advanced to Q2", d.querySelectorAll("#finder-wrap .finder-opt").length === 3);
-d.querySelectorAll("#finder-wrap .finder-opt")[0].click(); // app
-d.querySelectorAll("#finder-wrap .finder-opt")[0].click(); // free
-// multi-select question: toggle one need then Next
-d.querySelectorAll("#finder-wrap .finder-opt")[0].click(); // toggle "web"
-const nextBtn = [...d.querySelectorAll("#finder-wrap button")].find(b => b.className.includes("btn-primary"));
-nextBtn.click();
-d.querySelectorAll("#finder-wrap .finder-opt")[0].click(); // writing kind: creative
-check("finder: results rendered with top match", !!d.querySelector("#finder-wrap .finder-top"));
-check("finder: result has why-list and actions", d.querySelectorAll("#finder-wrap .finder-why li").length >= 1 && !!d.querySelector("#finder-wrap .finder-actions"));
-d.getElementById("mode-goal").click();
-check("finder: switch back to goal mode", d.getElementById("finder-wrap").hidden);
+/* ---------- boot ---------- */
+check("boot: no cover and no menu of views", !d.getElementById("welcome") && !d.querySelector("[id^='nav-']") && !d.body.classList.contains("welcome-active"));
+check("boot: keys and tools of older versions are wiped", ["pc_settings_v1", "pc_chains_v1", "pc_keymode"].every(k => w.localStorage.getItem(k) === null) && w.sessionStorage.getItem("pc_settings_v1") === null);
+check("boot: every chapter rendered", d.querySelectorAll("#tier-list .tier-row").length === 5 && d.querySelectorAll("#vs-stage .vs-select").length >= 2 && !!d.querySelector("#radar-wrap .radar-grid") && !!d.querySelector("#market-wrap .mk-ladder") && !!d.querySelector("#topics-wrap .deb-deck") && d.querySelectorAll("#quick-wrap .quick-task").length === 8);
+check("boot: the 13 generator families carry brand icons", d.querySelectorAll(".model-check[data-ai-brand] .ai-brand-icon").length === 13);
+check("boot: the version is shown", d.getElementById("foot-version").textContent === "WhichAI v0.36" && w.WhichAIApp.version === "v0.36");
 
-/* --- Generator flow --- */
-d.getElementById("goal").value = "Write a landing page headline for a budgeting app";
-d.getElementById("generate").click();
-check("generate: tabs + router card", d.getElementById("tabs").children.length >= 3 && !d.getElementById("router-card").hidden);
-
-/* --- Glossary via hash --- */
-w.location.hash = "#glossary";
-await new Promise(r => setTimeout(r, 30));
-check("glossary: view shown via footer hash", !d.getElementById("glossary-view").hidden);
-check("glossary: >= 21 terms rendered", d.querySelectorAll("#glossary-list .gl-item").length >= 21);
-d.getElementById("glossary-search").value = "token";
-d.getElementById("glossary-search").dispatchEvent(new w.Event("input"));
-check("glossary: search filters", d.querySelectorAll("#glossary-list .gl-item").length < 10 && d.querySelectorAll("#glossary-list .gl-item").length > 0);
-
-/* --- Model guide + insights + detail specs --- */
-w.location.hash = "#guide";
-await new Promise(r => setTimeout(r, 30));
-check("guide: task cards built", d.getElementById("guide-grid").children.length === 8);
-check("guide: insights charts rendered", !d.getElementById("insights-wrap").hidden && d.querySelectorAll("#chart-top svg, #chart-pp svg").length === 2);
-w.WhichAIApp.openModel("kimi-k3");
-await new Promise(r => setTimeout(r, 30));
-const detail = d.getElementById("db-detail");
-check("guide: openModel shows Kimi K3 detail with specs", !detail.hidden && detail.textContent.includes("Kimi K3") && detail.querySelectorAll(".db-spec").length >= 3);
-check("guide: detail has Compare button", [...detail.querySelectorAll("button")].some(b => b.textContent.includes("Compare")));
-
-/* --- Compare specs tab --- */
-w.location.hash = "#compare-specs";
-await new Promise(r => setTimeout(r, 30));
-check("compare: specs tab active, outputs hidden", !d.getElementById("cmp-specs-wrap").hidden && d.getElementById("cmp-outputs-wrap").hidden);
-check("compare: mc grid rendered with 2 selects", d.querySelectorAll("#cmp-specs-wrap .mc-select").length >= 2 && !!d.querySelector("#cmp-specs-wrap .mc-grid"));
-check("compare: mc charts rendered", d.querySelectorAll("#cmp-specs-wrap svg").length >= 2);
-const addBtn = d.querySelector("#cmp-specs-wrap .mc-add");
-addBtn.click();
-check("compare: third model added", d.querySelectorAll("#cmp-specs-wrap .mc-select").length === 3);
-w.location.hash = "#compare-outputs";
-await new Promise(r => setTimeout(r, 30));
-check("compare: outputs tab restores via explicit hash", !d.getElementById("cmp-outputs-wrap").hidden && d.getElementById("cmp-specs-wrap").hidden);
-
-/* --- Chains: build, roadmap, reorder, add, remove --- */
-w.location.hash = "#chains";
-await new Promise(r => setTimeout(r, 30));
-d.getElementById("chain-goal").value = "Launch a newsletter about local food";
-d.getElementById("chain-build").click();
-check("chains: 3 steps + 3 roadmap nodes", d.getElementById("chain-steps").children.length === 3 && d.querySelectorAll("#chain-map .chain-node").length === 3);
-check("chains: roadmap shows model + io", d.querySelector("#chain-map .chain-node-model").textContent.length > 2 && d.querySelector("#chain-map .chain-io").textContent.includes("your goal"));
-d.getElementById("chain-addstep").click();
-check("chains: add step → 4 nodes", d.querySelectorAll("#chain-map .chain-node").length === 4 && d.getElementById("chain-steps").children.length === 4);
-check("chains: custom step editable", !!d.querySelector("#chain-steps .chain-custom-instr"));
-const firstName = d.querySelector("#chain-map .chain-node-name").textContent;
-const downBtns = [...d.querySelectorAll("#chain-steps .chain-step-tools button")].filter(b => b.textContent === "↓");
-downBtns[0].click();
-check("chains: move down reorders roadmap", d.querySelector("#chain-map .chain-node-name").textContent !== firstName);
-const removeBtns = [...d.querySelectorAll("#chain-steps .chain-step-tools button")].filter(b => b.textContent === "✕");
-removeBtns[3].click();
-check("chains: remove step → 3 nodes", d.querySelectorAll("#chain-map .chain-node").length === 3);
-
-/* --- v0.23: key storage, data tools, model deep link --- */
-w.location.hash = "#settings";
-await new Promise(r => setTimeout(r, 30));
-check("v23: key mode radios present, session default", d.getElementById("keymode-session").checked === true && d.getElementById("keymode-local").checked === false);
-d.getElementById("gemini-key").value = "AIza-test";
-d.getElementById("settings-save").click();
-check("v23: keys saved to sessionStorage by default", !!w.sessionStorage.getItem("pc_settings_v1") && !w.localStorage.getItem("pc_settings_v1"));
-d.getElementById("keymode-local").click();
-d.getElementById("keymode-local").dispatchEvent(new w.Event("change"));
-check("v23: switching mode moves keys to localStorage", !!w.localStorage.getItem("pc_settings_v1") && !w.sessionStorage.getItem("pc_settings_v1"));
-d.getElementById("keys-clear").click();
-check("v23: clear keys empties fields", d.getElementById("gemini-key").value === "" && JSON.parse(w.localStorage.getItem("pc_settings_v1")).geminiKey === "");
-check("v23: data tools present", !!d.getElementById("data-export") && !!d.getElementById("data-import") && !!d.getElementById("data-wipe"));
-d.getElementById("data-export").click();
-check("v23: export does not throw", true);
-w.location.hash = "#model=kimi-k3";
-await new Promise(r => setTimeout(r, 260));
-check("v23: #model= deep link opens detail", !d.getElementById("guide-view").hidden && d.getElementById("db-detail").textContent.includes("Kimi K3"));
-
-/* --- v0.25: inline detail, official links, compare default, radar --- */
-check("v25: radar dot on More button at boot", d.getElementById("nav-more").classList.contains("has-dot"));
-w.location.hash = "#guide";
-await new Promise(r => setTimeout(r, 30));
-d.getElementById("db-search").value = "gpt";
-d.getElementById("db-search").dispatchEvent(new w.Event("input"));
-const hits = d.querySelectorAll("#db-results .db-hit");
-check("v25: search lists several hits", hits.length >= 5);
-hits[2].click();
-const det = d.getElementById("db-detail");
-check("v25: detail opens inline right under the clicked row", det.parentNode === d.getElementById("db-results") && hits[2].nextElementSibling === det && !det.hidden && hits[2].classList.contains("open"));
-check("v25: detail has official link + follow", [...det.querySelectorAll("a.btn-official")].length >= 1 && [...det.querySelectorAll("button")].some(b => b.className.includes("radar-star")));
-hits[2].click();
-check("v25: clicking again closes the detail", det.hidden && !hits[2].classList.contains("open"));
-// compare default: no active output comparison in a fresh view -> specs
-w.eval('window.__wa_cmp_probe = 1');
-w.location.hash = "#compare";
-await new Promise(r => setTimeout(r, 30));
-check("v25: plain #compare defaults to Model comparison", !d.getElementById("cmp-specs-wrap").hidden && d.getElementById("cmp-outputs-wrap").hidden);
-// official link on generated prompt panels
-w.location.hash = "";
-await new Promise(r => setTimeout(r, 30));
-d.getElementById("mode-goal").click();
-d.getElementById("goal").value = "Plan a launch email";
-d.getElementById("generate").click();
-check("v25: prompt panels carry official app links", d.querySelectorAll("#panels .btn-official").length >= 3);
-// radar view
-w.location.hash = "#radar";
-await new Promise(r => setTimeout(r, 30));
-check("v25: radar renders items + filters + upcoming", d.querySelectorAll("#radar-wrap .radar-item").length >= 8 && d.querySelectorAll("#radar-wrap .radar-filters .chip").length === 6);
-const star = d.querySelector("#radar-wrap .radar-star");
-star.click();
-check("v25: follow star toggles", d.querySelector("#radar-wrap .radar-star").textContent.includes("★"));
-check("v25: radar visit clears the dot", !d.getElementById("nav-more").classList.contains("has-dot"));
-// share buttons exist (canvas is not clickable in jsdom)
-w.location.hash = "#stack";
-await new Promise(r => setTimeout(r, 30));
-const goBtn2 = d.querySelector("#stack-wrap .stack-go");
-if (goBtn2 && !goBtn2.disabled) { goBtn2.click(); }
-check("v25: stack result offers share as image", [...d.querySelectorAll("#stack-wrap button")].some(b => b.textContent.includes("Share") || b.textContent.includes("image")));
-
-/* --- v0.29: AI debates, support defaults, brand -> welcome --- */
-w.location.hash = "#topics";
-await new Promise(r => setTimeout(r, 30));
-check("v29: debates view renders 6 items", !d.getElementById("topics-view").hidden && d.querySelectorAll("#topics-wrap .topic-item").length === 6);
-check("v29: each debate has sides + sources", d.querySelectorAll("#topics-wrap .topic-side").length === 12 && d.querySelectorAll("#topics-wrap .topic-srcs a").length >= 12);
-check("v29: counter + donate stay hidden without config", d.getElementById("visit-counter").hidden && d.getElementById("foot-support").hidden && d.getElementById("about-support").hidden);
-d.querySelector(".brand").click();
-await new Promise(r => setTimeout(r, 30));
-check("v29: brand click returns to the minimal welcome", d.body.classList.contains("welcome-active") && !d.body.classList.contains("app-entered"));
-d.querySelectorAll(".welcome-action")[0].click();
-await new Promise(r => setTimeout(r, 1200));
-check("v29: welcome can be left again after returning", d.body.classList.contains("app-entered"));
-
-/* --- v0.28: blind arena (no keys in jsdom -> need-keys path) --- */
-w.location.hash = "#arena";
-await new Promise(r => setTimeout(r, 30));
-check("v28: arena view opens", !d.getElementById("arena-view").hidden);
-check("v28: arena explains missing keys + links Settings", !!d.querySelector("#arena-wrap .arena-warn") && [...d.querySelectorAll("#arena-wrap button")].length >= 1);
-
-/* --- v0.24: demo card, More menu, stack, doctor --- */
-w.location.hash = "";
-await new Promise(r => setTimeout(r, 30));
-check("v24: demo card rendered with actions", !d.getElementById("demo-card").hidden && d.querySelectorAll("#demo-card button").length === 2);
-const moreBtn = d.getElementById("nav-more");
-moreBtn.click();
-check("v24: More panel opens with every tool listed", (() => {
-  const items = [...d.querySelectorAll("#nav-more-panel .more-item")];
-  return !d.getElementById("nav-more-panel").hidden && items.length >= 9 &&
-    items.every(a => /^#[a-z-]+$/.test(a.getAttribute("href")) && d.getElementById(a.getAttribute("href").slice(1) + "-view"));
-})());
-w.location.hash = "#stack";
-await new Promise(r => setTimeout(r, 30));
-check("v24: stack view opens, panel closed", !d.getElementById("stack-view").hidden && d.getElementById("nav-more-panel").hidden);
-const taskChips = d.querySelectorAll("#stack-wrap .stack-chips")[0].querySelectorAll("button");
-taskChips[0].click(); // writing
-taskChips[2].click(); // research
-const goBtn = d.querySelector("#stack-wrap .stack-go");
-goBtn.click();
-check("v24: stack result rendered with cost card", !!d.querySelector("#stack-wrap .stack-cost") && d.querySelectorAll("#stack-wrap .stack-grid .finder-result").length >= 1);
-w.location.hash = "#doctor";
-await new Promise(r => setTimeout(r, 30));
-check("v24: doctor view opens", !d.getElementById("doctor-view").hidden && !!d.getElementById("doctor-input"));
-d.getElementById("doctor-input").value = "write a poem";
-[...d.querySelectorAll("#doctor-wrap button")].find(b => b.className.includes("btn-primary")).click();
-check("v24: doctor score + checklist + optimized panes", !!d.querySelector("#doctor-wrap .doctor-score") && d.querySelectorAll("#doctor-wrap .doctor-check").length === 10 && d.querySelector("#doctor-wrap .doctor-after").textContent.length > 200);
-check("v24: doctor before pane shows original", d.querySelector("#doctor-wrap .doctor-before").textContent === "write a poem");
-
-/* --- About anchors + language + theme --- */
-w.location.hash = "#about-faq";
-await new Promise(r => setTimeout(r, 220));
-check("about: footer anchor opens About", !d.getElementById("about-view").hidden);
-const langSel = d.getElementById("lang-select");
-langSel.value = "it";
-langSel.dispatchEvent(new w.Event("change"));
-check("i18n live: nav + footer links in Italian", d.getElementById("foot-similar").textContent === "Strumenti simili" && d.getElementById("mode-finder").textContent === "Percorso guidato");
-langSel.value = "ar";
-langSel.dispatchEvent(new w.Event("change"));
-check("i18n live: Arabic flips direction", d.documentElement.dir === "rtl");
-langSel.value = "en";
-langSel.dispatchEvent(new w.Event("change"));
-const themeBtn = d.getElementById("theme-toggle");
-const t0 = d.documentElement.getAttribute("data-theme");
-themeBtn.click();
-const t1 = d.documentElement.getAttribute("data-theme");
-check("theme: toggle cycles (" + t0 + "→" + t1 + ")", t0 !== t1);
-
-
-/* --- v0.30: API client degradation, key safety, catalog density --- */
+/* ---------- the bridges: each chapter hands something to the next ---------- */
 {
-  /* jsdom has no fetch. The whole point of the API client is that the app is
-     identical when the backend cannot be reached, so this is the real test. */
-  check("v30: api client loaded and inert without fetch", typeof w.WhichAIApi === "object" && typeof w.WhichAIApi.get === "function");
-  const pill = d.getElementById("api-status");
-  check("v30: api status element exists", !!pill);
+  const duel = d.getElementById("bridge-duel");
+  check("bridge: the top two models travel to Compare", duel.querySelectorAll(".token-chip").length === 2 && duel.textContent.includes(top[0].name) && duel.textContent.includes(top[1].name));
+  check("bridge: the newest arrival travels to the Radar", d.getElementById("bridge-newest").textContent.length > 4);
+  check("bridge: the leader's price travels to the Market", /\$\d/.test(d.getElementById("bridge-price").textContent) && d.getElementById("bridge-price").textContent.includes(top[0].name));
+  check("bridge: a number from the first debate travels to Debates", !!d.querySelector("#bridge-debate .token-big"));
+  check("bridge: four task icons travel to the Tools", d.querySelectorAll("#bridge-task .token-task").length === 4);
+  const pairs = ["duel", "newest", "price", "debate", "task"];
+  check("bridge: every token has a landing spot on the page", pairs.every(k => !!d.querySelector('[data-morph-from="' + k + '"]') && !!d.querySelector('[data-morph-to="' + k + '"]')));
+}
+
+/* ---------- 01 ranking ---------- */
+{
+  const S = d.querySelector("#tier-list .tier-S");
+  check("ranking: the S tier opens with the live leader", !!S && S.querySelector(".mchip .mchip-name").textContent === top[0].name);
+  check("ranking: four KPI tiles", d.querySelectorAll("#rank-kpis .kpi").length === 4);
+  check("ranking: the scatter is on a log axis with a frontier", !!d.querySelector("#scatter svg.wc-log") && !!d.querySelector("#scatter .wc-frontier"));
+  check("ranking: every chip has a dot in the scatter (cross-highlight)", (() => {
+    const ids = [...d.querySelectorAll("#tier-list .mchip")].map(c => c.getAttribute("data-id")).slice(0, 10);
+    return ids.length > 5 && ids.filter(id => d.querySelector('#scatter .wc-pt[data-id="' + id + '"]')).length >= ids.length - 2;
+  })());
+  const coding = d.querySelector('#rank-controls .seg-btn[data-metric="coding"]');
+  coding.click();
+  await tick();
+  const codingTop = R.tiers("coding", false).list[0];
+  check("ranking: switching to Coding re-ranks the tiers", d.querySelector('#rank-controls .seg-btn[data-metric="coding"]').getAttribute("aria-pressed") === "true" && d.querySelector("#tier-list .tier-S .mchip-name").textContent === codingTop.name);
+  d.querySelector('#rank-controls .seg-btn[data-metric="aa"]').click();
+  await tick();
+  const openChip = [...d.querySelectorAll("#rank-controls .chip-toggle")][1];
+  openChip.click();
+  await tick();
+  const shownIds = [...d.querySelectorAll("#tier-list .mchip")].map(c => c.getAttribute("data-id"));
+  const DBm = w.PromptCompassModelsDB.models;
+  check("ranking: the open-weights filter shows only open models", shownIds.length > 3 && shownIds.every(id => DBm.find(m => m.id === id).tags.includes("open-weights")));
+  [...d.querySelectorAll("#rank-controls .chip-toggle")][0].click();
+  await tick();
+  check("ranking: All brings everyone back", d.querySelectorAll("#tier-list .mchip").length > shownIds.length);
+
+  const search = d.getElementById("rank-search");
+  search.value = "kimi";
+  search.dispatchEvent(new w.Event("input"));
+  const hits = d.querySelectorAll("#rank-results .rank-hit");
+  check("ranking: the search finds any model", hits.length >= 1 && !d.getElementById("rank-results").hidden);
+  hits[0].click();
+  await tick(60);
+  const drawer = d.getElementById("drawer");
+  check("drawer: opens on the model with tier and rank", !drawer.hidden && /Kimi/.test(drawer.textContent) && !!drawer.querySelector(".badge-rank") && !!drawer.querySelector(".tier-badge"));
+  check("drawer: the address is a shareable #model= link", w.location.hash.indexOf("#model=") === 0);
+  check("drawer: has Compare, Follow, official site and wiki page", [...drawer.querySelectorAll("button")].some(b => /Compare/.test(b.textContent)) && !!drawer.querySelector(".radar-star") && !!drawer.querySelector('a[href^="/models/"]'));
+  d.dispatchEvent(new w.KeyboardEvent("keydown", { key: "Escape", bubbles: true }));
+  await tick(320);
+  check("drawer: Escape closes it and gives the address back", drawer.hidden && w.location.hash.indexOf("#model=") !== 0);
+  search.value = "";
+  search.dispatchEvent(new w.Event("input"));
+
+  w.WhichAIApp.openModel("gemini-3-5-pro");
+  await tick();
+  check("drawer: a rumored model shows no rank", !drawer.querySelector(".badge-rank"));
+  w.WhichAIApp.closeDrawer(true);
+  await tick(300);
+}
+
+/* ---------- 02 compare ---------- */
+{
+  const sel = [...d.querySelectorAll("#vs-stage .vs-select")].map(s => s.value);
+  check("compare: opens on the live top two", sel[0] === top[0].id && sel[1] === top[1].id, sel.join(" vs "));
+  check("compare: bars drawn for the pair", d.querySelectorAll("#vs-body .vs-row").length >= 4);
+  w.WhichAIApp.openModel("kimi-k3");
+  await tick();
+  [...d.getElementById("drawer").querySelectorAll("button")].find(b => /Compare/.test(b.textContent)).click();
+  await tick(300);
+  const after = [...d.querySelectorAll("#vs-stage .vs-select")].map(s => s.value);
+  check("compare: 'Compare' in a model card brings that model in", after.includes("kimi-k3") && w.location.hash === "#compare");
+}
+
+/* ---------- 03 radar ---------- */
+{
+  check("radar: launches and price moves listed", d.querySelectorAll("#radar-wrap .radar-item").length >= 5);
+  check("radar: the news column explains itself with no network", !!d.querySelector("#radar-wrap .radar-news") && d.querySelector("#radar-wrap .radar-news").textContent.length > 20);
+  check("radar: the data-check line stays hidden when the API is unreachable", d.querySelector("#radar-wrap .radar-check").hidden === true);
+  const latest = d.getElementById("radar-latest");
+  check("radar: the newest arrival is the landing spot of the bridge", !latest.hidden && latest.textContent.length > 4);
+  const star = d.querySelector("#radar-wrap .radar-star");
+  star.click();
+  check("radar: follow star toggles", d.querySelector("#radar-wrap .radar-star").textContent.includes("★"));
+}
+
+/* ---------- 04 market ---------- */
+{
+  check("market: the ladder has one step per tier S to C", d.querySelectorAll("#market-wrap .mk-ladder .mk-step").length === 4);
+  const leader = d.getElementById("mk-leader");
+  check("market: the leader's price is the landing spot of the bridge", !leader.hidden && leader.textContent.includes(top[0].name) && leader.getAttribute("data-id") === top[0].id);
+  check("market: best value and the calculator render", d.querySelectorAll("#market-wrap .mk-bars .mk-bar").length >= 3 && !!d.querySelector("#market-wrap .mk-calc"));
+  leader.click();
+  await tick();
+  check("market: clicking the leader opens its card", !d.getElementById("drawer").hidden && d.getElementById("drawer").textContent.includes(top[0].name));
+  w.WhichAIApp.closeDrawer(true);
+  await tick(300);
+}
+
+/* ---------- 05 debates + glossary ---------- */
+{
+  const cards = d.querySelectorAll("#topics-wrap .deb-card");
+  check("debates: six debates in the deck", cards.length === 6);
+  const firstPanel = d.querySelector("#topics-wrap .deb-panel").textContent;
+  cards[1].click();
+  await tick();
+  check("debates: choosing another debate swaps the panel", d.querySelector("#topics-wrap .deb-panel").textContent !== firstPanel);
+  check("debates: both sides and sources shown", d.querySelectorAll("#topics-wrap .deb-side").length === 2 && d.querySelectorAll("#topics-wrap .topic-srcs a").length >= 2);
+  let comply = false;
+  for (const c of d.querySelectorAll("#topics-wrap .deb-card")) { c.click(); if (d.querySelector("#topics-wrap .deb-comply")) comply = true; }
+  check("debates: the regulation debate links to ComplyAI.wiki", comply);
+  check("glossary: >= 21 terms rendered", d.querySelectorAll("#glossary-list .gl-item").length >= 21);
+  const gs = d.getElementById("glossary-search");
+  gs.value = "token";
+  gs.dispatchEvent(new w.Event("input"));
+  const n = d.querySelectorAll("#glossary-list .gl-item").length;
+  check("glossary: search filters", n > 0 && n < 10);
+  check("support: counter and donate stay hidden without config", d.getElementById("visit-counter").hidden && d.getElementById("foot-support").hidden && d.getElementById("about-support").hidden);
+}
+
+/* ---------- 06 tools: quick answer -> guided finder -> prompt -> doctor -> stack ---------- */
+{
+  const quickBtns = d.querySelectorAll("#quick-wrap .quick-task");
+  quickBtns[1].click(); // coding
+  check("quick: one tap gives an answer with sources", !!d.querySelector("#quick-wrap .quick-answer") && d.querySelectorAll("#quick-wrap .qa-rank-row").length === 4 && !!d.querySelector("#quick-wrap .qa-src a"));
+  d.querySelector("#quick-wrap .qa-actions .btn-primary").click();
+  await tick(500);
+  const checked = [...d.querySelectorAll('.model-check input[type="checkbox"]')].filter(c => c.checked).map(c => c.value);
+  check("quick: 'write the prompt' pre-fills the generator", w.location.hash === "#prompt" && d.getElementById("task-type").value === "coding" && checked.length >= 1);
+
+  check("finder: the guided path starts as a short teaser", !!d.querySelector("#finder-wrap .finder-teaser"));
+  d.querySelector("#finder-wrap .finder-teaser .btn-ghost").click();
+  check("finder: first question shows 8 tasks", d.querySelectorAll("#finder-wrap .finder-opt").length === 8);
+  d.querySelectorAll("#finder-wrap .finder-opt")[0].click(); // writing
+  check("finder: advanced to Q2", d.querySelectorAll("#finder-wrap .finder-opt").length === 3);
+  d.querySelectorAll("#finder-wrap .finder-opt")[0].click(); // app
+  d.querySelectorAll("#finder-wrap .finder-opt")[0].click(); // free
+  d.querySelectorAll("#finder-wrap .finder-opt")[0].click(); // toggle a need
+  [...d.querySelectorAll("#finder-wrap button")].find(b => b.className.includes("btn-primary")).click();
+  d.querySelectorAll("#finder-wrap .finder-opt")[0].click(); // creative
+  check("finder: results with a top match, reasons and actions", !!d.querySelector("#finder-wrap .finder-top") && d.querySelectorAll("#finder-wrap .finder-why li").length >= 1 && !!d.querySelector("#finder-wrap .finder-actions"));
+
+  d.getElementById("goal").value = "Write a landing page headline for a budgeting app";
+  d.getElementById("generate").click();
+  await tick();
+  check("prompt: tabs, router card and official links", d.getElementById("tabs").children.length >= 1 && !d.getElementById("router-card").hidden && d.querySelectorAll("#panels .panel").length === d.getElementById("tabs").children.length);
+  [...d.querySelectorAll("#tool-checks input, .model-check input")].forEach(c => { c.checked = true; c.dispatchEvent(new w.Event("change", { bubbles: true })); });
+  d.getElementById("generate").click();
+  await tick();
+  check("prompt: all 13 families can be generated at once", d.getElementById("tabs").children.length === 13);
+  const docBtn = [...d.querySelectorAll("#panels .panel")][0].querySelector(".panel-btns button.btn-ghost");
+  docBtn.click();
+  await tick(60);
+  const di = d.getElementById("doctor-input");
+  check("prompt -> doctor: a generated prompt opens in the Doctor", w.location.hash === "#doctor" && !!di && di.value.length > 200);
+  di.value = "write a poem";
+  [...d.querySelectorAll("#doctor-wrap button")].find(b => b.className.includes("btn-primary")).click();
+  check("doctor: score, ten checks, before and after", !!d.querySelector("#doctor-wrap .doctor-score") && d.querySelectorAll("#doctor-wrap .doctor-check").length === 10 && d.querySelector("#doctor-wrap .doctor-after").textContent.length > 200 && d.querySelector("#doctor-wrap .doctor-before").textContent === "write a poem");
+
+  const taskChips = d.querySelectorAll("#stack-wrap .stack-chips")[0].querySelectorAll("button");
+  taskChips[0].click();
+  taskChips[2].click();
+  d.querySelector("#stack-wrap .stack-go").click();
+  check("stack: result with a cost card and picks", !!d.querySelector("#stack-wrap .stack-cost") && d.querySelectorAll("#stack-wrap .stack-grid .finder-result").length >= 1);
+  check("stack: offers to share the result as an image", [...d.querySelectorAll("#stack-wrap button")].some(b => /Share|image/i.test(b.textContent)));
+}
+
+/* ---------- old addresses still land somewhere sensible ---------- */
+{
+  const MAP = { "#guide": "#ranking", "#compare-specs": "#compare", "#compare-outputs": "#compare", "#chains": "#prompt", "#merge": "#prompt", "#arena": "#compare", "#live": "#market", "#topics": "#debates", "#finder": "#find", "#generator": "#prompt", "#settings": "#data", "#about-methodology": "#about-method" };
+  const wrong = [];
+  for (const [from, to] of Object.entries(MAP)) {
+    w.location.hash = from;
+    await tick(40);
+    if (w.location.hash !== to) wrong.push(from + "->" + w.location.hash);
+  }
+  check("links: every retired address is rewritten to its new home", wrong.length === 0, wrong.join(", "));
+  check("links: an About anchor opens its section", d.getElementById("about-method").open === true);
+  w.location.hash = "#goal=" + encodeURIComponent("Write a haiku about rain");
+  await tick(80);
+  check("links: #goal= pre-fills the prompt generator", d.getElementById("goal").value === "Write a haiku about rain");
+  w.location.hash = "#compare=gpt-5-5,kimi-k3";
+  await tick(60);
+  const pair = [...d.querySelectorAll("#vs-stage .vs-select")].map(s2 => s2.value);
+  check("links: #compare=a,b (from the wiki) loads that pair", pair[0] === "gpt-5-5" && pair[1] === "kimi-k3" && w.location.hash === "#compare");
+  w.location.hash = "#model=kimi-k3";
+  await tick(60);
+  check("links: #model= opens the card", !d.getElementById("drawer").hidden && /Kimi K3/.test(d.getElementById("drawer").textContent));
+}
+
+/* ---------- language and theme ---------- */
+{
+  const langSel = d.getElementById("lang-select");
+  langSel.value = "it";
+  langSel.dispatchEvent(new w.Event("change"));
+  const it = w.PromptCompassI18n.STRINGS.it;
+  check("i18n: Italian relabels the page and the chapters", d.querySelector("#tier-list .tier-S .tier-name").textContent === it.tierS && d.querySelector("[data-i18n='skipLink']").textContent === it.skipLink);
+  check("i18n: the open model card follows the language", !d.getElementById("drawer").hidden && d.getElementById("drawer").textContent.includes(it.drawerCompare));
+  langSel.value = "ar";
+  langSel.dispatchEvent(new w.Event("change"));
+  check("i18n: Arabic flips the direction", d.documentElement.dir === "rtl" && d.documentElement.lang === "ar");
+  w.WhichAIApp.closeDrawer(true);
+  await tick(300);
+  check("i18n: a closed drawer stays hidden in RTL", d.getElementById("drawer").hidden && d.getElementById("drawer-backdrop").hidden);
+  langSel.value = "en";
+  langSel.dispatchEvent(new w.Event("change"));
+  check("i18n: back to English, left to right", d.documentElement.dir === "ltr" && d.querySelector("#tier-list .tier-S .tier-name").textContent === w.PromptCompassI18n.STRINGS.en.tierS);
+  const t0 = d.documentElement.getAttribute("data-theme");
+  d.getElementById("theme-toggle").click();
+  const t1 = d.documentElement.getAttribute("data-theme");
+  check("theme: toggles light <-> dark (" + t0 + " -> " + t1 + ")", t0 !== t1 && ["light", "dark"].includes(t1));
+}
+
+/* ---------- your data ---------- */
+{
   let threw = false;
-  try { w.WhichAIApi.renderStatus(pill); } catch (e) { threw = true; }
-  check("v30: renderStatus never throws when offline", !threw);
-
-  w.location.hash = "#guide";
-  await new Promise(r => setTimeout(r, 260));
-  const cards = [...d.querySelectorAll("#catalog-grid .guide-card")];
-  check("v30: catalog rendered", cards.length >= 4);
-  const folded = cards.find(c => c.querySelector(".catalog-more"));
-  check("v30: long categories are folded", !!folded && folded.querySelectorAll(".catalog-extra").length > 0);
-  if (folded) {
-    const btn = folded.querySelector(".catalog-more");
-    const before = btn.textContent;
-    btn.click();
-    check("v30: show all expands the category", folded.className.includes("catalog-open") && btn.getAttribute("aria-expanded") === "true" && btn.textContent !== before);
-    btn.click();
-    check("v30: clicking again folds it back", !folded.className.includes("catalog-open"));
-  }
-
-  w.location.hash = "#settings";
-  await new Promise(r => setTimeout(r, 220));
-  const reveal = d.querySelector('.key-reveal[data-key-target="gemini-key"]');
-  const keyInput = d.getElementById("gemini-key");
-  check("v30: key reveal button wired", !!reveal && keyInput.type === "password");
-  if (reveal) {
-    reveal.click();
-    check("v30: reveal shows the key", keyInput.type === "text" && reveal.getAttribute("aria-pressed") === "true");
-    reveal.click();
-    check("v30: reveal hides it again", keyInput.type === "password");
-  }
-  /* An earlier block left the app in device mode on purpose, so start from a
-     known state rather than assuming one. */
-  const warn = d.getElementById("keymode-warn");
-  const localRadio = d.getElementById("keymode-local");
-  const sessionRadio = d.getElementById("keymode-session");
-  sessionRadio.checked = true;
-  sessionRadio.dispatchEvent(new w.Event("change"));
-  check("v30: storage warning hidden in session mode", !!warn && warn.hidden === true);
-  localRadio.checked = true;
-  localRadio.dispatchEvent(new w.Event("change"));
-  check("v30: storage warning appears in device mode", warn.hidden === false);
-  sessionRadio.checked = true;
-  sessionRadio.dispatchEvent(new w.Event("change"));
-  check("v30: warning disappears again in session mode", warn.hidden === true);
-
-  w.location.hash = "#about-different";
-  await new Promise(r => setTimeout(r, 220));
-  check("v30: positioning section reachable and populated", !d.getElementById("about-view").hidden && d.querySelectorAll("#about-different .cmp-table tbody tr").length >= 4);
-  check("v30: API documented in About", d.querySelectorAll("#about-api .api-list li").length >= 5);
+  try { d.getElementById("data-export").click(); } catch (e) { threw = true; }
+  check("data: export does not throw", !threw);
+  check("api: the client is inert without fetch", typeof w.WhichAIApi.get === "function");
 }
 
-
-/* --- v0.32: the radar's live data check must never break the page --- */
-{
-  w.location.hash = "#radar";
-  await new Promise(r => setTimeout(r, 280));
-  check("v32: radar still renders with no API reachable", d.querySelectorAll("#radar-wrap .radar-item, #radar-wrap .card").length > 5);
-  const line = d.querySelector("#radar-wrap .radar-check");
-  check("v32: the check line exists and stays hidden when unreachable", !!line && line.hidden === true);
-  check("v32: the feed is complete without the API", !d.getElementById("radar-view").hidden && d.querySelector("#radar-wrap .guide-head h1"));
-}
-
-
-/* --- v0.33: the journey must exist and must not need WebGL --- */
-{
-  check("v33: journey module loaded and inert without a GPU", typeof w.WhichAIJourney === "object" && typeof w.WhichAIStage === "object");
-  check("v33: the stage declines gracefully in jsdom", (() => {
-    const v = w.WhichAIStage.verdict();
-    return typeof v.use3d === "boolean" && typeof v.reason === "string";
-  })());
-  check("v33: four acts rendered", d.querySelectorAll("#journey .act").length === 4);
-  check("v33: the spine has one dot per act", d.querySelectorAll(".spine-dot").length === 4);
-  check("v33: act one shows live counts, not written numbers", (() => {
-    const stats = [...d.querySelectorAll(".act-stat strong")].map(n => Number(n.textContent));
-    return stats.length === 4 && stats[0] === w.PromptCompassModelsDB.models.length && stats.every(n => n > 0);
-  })());
-  check("v33: act two ladder matches the live top five", (() => {
-    const rows = [...d.querySelectorAll("#act-ladder .act-rank-row")];
-    if (rows.length !== 5) return false;
-    const top = w.PromptCompassModelsDB.models
-      .filter(m => m.score && typeof m.score.aa === "number" && m.status !== "rumored" && m.status !== "private")
-      .sort((a, b) => b.score.aa - a.score.aa)[0];
-    return rows[0].textContent.includes(top.name);
-  })());
-  check("v33: act four lists every tool", d.querySelectorAll(".act-tool").length === 8);
-
-  /* The act that has to work: a goal in, a real recommendation out. */
-  const input = d.getElementById("act-goal-input");
-  input.value = "write a python script that parses a csv";
-  d.getElementById("act-goal-form").dispatchEvent(new w.Event("submit", { cancelable: true, bubbles: true }));
-  const answer = d.getElementById("act-answer");
-  check("v33: a typed goal produces an answer", !answer.hidden && answer.textContent.length > 60);
-  check("v33: the answer names a task, a pick and a free alternative",
-    /coding/.test(answer.textContent) && !!answer.querySelector(".act-answer-pick strong") && !!answer.querySelector(".act-answer-free"));
-  check("v33: the answer offers a way into the app", !!answer.querySelector(".act-answer-go"));
-
-  /* The rank badge is computed, never read from prose. */
-  w.WhichAIApp.openModel("claude-opus-5");
-  const badge = d.querySelector("#db-detail .badge-rank");
-  check("v33: the model card shows a computed rank", !!badge && /^#\d+ of \d+$/.test(badge.textContent));
-  w.WhichAIApp.openModel("gpt-5-5");
-  check("v33: an unmeasured model shows a guess, never a rank", (() => {
-    const un = d.querySelector("#db-detail .badge-unmeasured");
-    const rk = d.querySelector("#db-detail .badge-rank");
-    return !un || !rk;
-  })());
-}
-
-
-/* --- v0.34: the live market view --- */
-{
-  w.location.hash = "#live";
-  await new Promise(r => setTimeout(r, 220));
-  check("v34: the live view opens from the More menu", !d.getElementById("live-view").hidden && !!d.getElementById("nav-live"));
-  check("v34: the live module rendered something without a network", d.getElementById("live-wrap").children.length > 0);
-  /* jsdom has no reachable feed, so this is the unreachable-source path: the
-     view must explain itself rather than sit blank or throw. */
-  const txt = d.getElementById("live-wrap").textContent;
-  check("v34: with no feed it says so instead of showing nothing", txt.length > 20);
-  check("v34: the editorial catalog is untouched by the live view", w.PromptCompassModelsDB.models.every(m => !("liveScore" in m) && !("openrouter" in m)));
-}
-
-/* --- v0.35: fresh data lands while the app is open --- */
+/* ---------- v0.35: fresh data lands while the page is open ---------- */
 {
   const Live = require("../api/_live-core.js");
   const Core = require("../api/_catalog-core.js");
@@ -383,41 +295,33 @@ check("theme: toggle cycles (" + t0 + "→" + t1 + ")", t0 !== t1);
   const fixture = JSON.parse(readFileSync("tests/fixtures/openrouter-2026-10-03.json", "utf8"));
   const delta = Core.computeDelta(DBnode, Live.normalize(fixture, DBnode, Date.now()), { now: Date.now() });
 
-  check("v35: before any live data the pill stays hidden", d.getElementById("live-pill").hidden);
+  check("live: before any live data the pill stays hidden", d.getElementById("live-pill").hidden);
   const n0 = w.PromptCompassModelsDB.models.length;
   w.fetch = async (url) => ({ ok: String(url) === "/api/catalog", status: 200, json: async () => JSON.parse(JSON.stringify(delta)) });
   const r = await w.WhichAILiveCatalog.refresh();
-  check("v35: GET /api/catalog is applied in the page", r && r.ok && w.PromptCompassModelsDB.models.length === n0 + delta.added.length);
-  check("v35: the live pill appears and says how fresh the data is", !d.getElementById("live-pill").hidden && /Live data/.test(d.getElementById("live-pill").textContent));
-  check("v35: the copy is saved for the next visit", !!w.localStorage.getItem("whichai_live_catalog_v1"));
-
-  const qwen = d.getElementById("or-model-qwen");
-  check("v35: a retired shipped free route heals itself", qwen.value === "qwen/qwen3.8-27b:free" && !d.getElementById("or-heal-note").hidden);
-  const saved = JSON.parse(w.sessionStorage.getItem("pc_settings_v1") || w.localStorage.getItem("pc_settings_v1") || "{}");
-  check("v35: the healed route is saved, the user's own route is untouched", saved.orModels.qwen === "qwen/qwen3.8-27b:free" && saved.orModels.glm === "my/own-model:free");
-
-  w.location.hash = "#guide";
-  await new Promise(r2 => setTimeout(r2, 40));
-  check("v35: the guide says the data is live", /Live data/.test(d.getElementById("guide-updated").textContent));
-  const frontier = [...d.querySelectorAll("#catalog-grid .guide-card")][0];
-  check("v35: the frontier card is computed from the live index", !!frontier && /Claude Opus 5\.5/.test(frontier.textContent) && /AA 57\.6/.test(frontier.textContent));
-  const search = d.getElementById("db-search");
+  await tick(60);
+  check("live: GET /api/catalog is applied in the page", r && r.ok && w.PromptCompassModelsDB.models.length === n0 + delta.added.length);
+  check("live: the pill appears and says how fresh the data is", !d.getElementById("live-pill").hidden && /Live data/.test(d.getElementById("live-pill").textContent));
+  check("live: the copy is saved for the next visit", !!w.localStorage.getItem("whichai_live_catalog_v1"));
+  check("live: the ranking re-tiers by itself (new leader in S)", d.querySelector("#tier-list .tier-S .mchip-name").textContent === "Claude Opus 5.5");
+  check("live: the bridges follow (Compare duel and Market price)", d.getElementById("bridge-duel").textContent.includes("Claude Opus 5.5") && d.getElementById("mk-leader").textContent.includes("Claude Opus 5.5"));
+  check("live: the free list in the Market is the live one", d.querySelectorAll("#market-wrap .mk-free .mk-free-row").length >= 1);
+  const search = d.getElementById("rank-search");
   search.value = "Opus 5.5";
   search.dispatchEvent(new w.Event("input"));
-  const hit = d.querySelector('#db-results .db-hit[data-mid="claude-opus-5-5"]');
-  check("v35: a model measured after the last deploy is searchable", !!hit && /auto/.test(hit.textContent));
+  check("live: a model measured after the last deploy is searchable", !!d.querySelector('#rank-results .rank-hit[data-id="claude-opus-5-5"]'));
   w.WhichAIApp.openModel("claude-opus-5-5");
-  const det = d.getElementById("db-detail");
-  check("v35: its card shows the official score, a rank and the auto chip", /AA 57\.6/.test(det.textContent) && !!det.querySelector(".badge-rank") && !!det.querySelector(".chip-auto"));
+  const det = d.getElementById("drawer");
+  check("live: its card shows the official score, a rank and the auto chip", /AA 57\.6/.test(det.textContent) && !!det.querySelector(".badge-rank") && !!det.querySelector(".chip-auto"));
   w.WhichAIApp.openModel("muse-spark-1-3");
-  check("v35: a converted score shows ~ and no rank", /AA ~/.test(det.textContent) && !det.querySelector(".badge-rank"));
-
-  check("v35: the welcome ladder follows the live leader", /Claude Opus 5\.5/.test((d.querySelector("#act-ladder .act-rank-row") || {}).textContent || ""));
+  check("live: a converted score shows ~ and no rank", /AA ~/.test(det.textContent) && !det.querySelector(".badge-rank"));
   const rec = w.PromptCompassBenchmarks.recommend("general");
-  check("v35: the general summary is computed, not typed", /Right now Claude Opus 5\.5/.test(rec.summary));
+  check("live: the general summary is computed, not typed", /Right now Claude Opus 5\.5/.test(rec.summary));
   const feed = w.WhichAIChanges.past();
-  check("v35: the Radar lists automatic arrivals among curated entries", feed.some(e => e.auto && /Claude Opus 5\.5/.test(e.title)) && feed.some(e => !e.auto));
+  check("live: the Radar lists automatic arrivals among curated entries", feed.some(e => e.auto && /Claude Opus 5\.5/.test(e.title)) && feed.some(e => !e.auto));
 }
 
-console.log("\n" + pass + " passed, " + fail + " failed" + (fail ? "\n\nFAILURES:\n" + failures.join("\n") : " — SMOKE ALL GREEN"));
+check("page: nothing failed to render and nothing threw", pageErrors.length === 0, pageErrors.slice(0, 3).join(" | "));
+
+console.log("\n" + pass + " passed, " + fail + " failed" + (fail ? "\n\nFAILURES:\n" + failures.join("\n") : " - SMOKE ALL GREEN"));
 process.exit(fail ? 1 : 0);

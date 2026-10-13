@@ -22,3 +22,6 @@ Claude, ChatGPT, Gemini — i tre più usati. Copy volutamente version-agnostic 
 
 ## D7 — Design system (2026-07-06)
 Palette neutra (quasi-nero, grigi, bianco), un solo colore d'accento (blu, solo per stati di focus), tipografia Inter, niente decorazioni superflue. Tutto in un solo `styles.css` con variabili CSS.
+
+## D8 — Una pagina sola a capitoli; BYOK, Chains, Merge, Arena tolti (2026-10-13, v0.36)
+Su richiesta di Jack il sito diventa una pagina unica in 6 capitoli in ordine fisso (ranking, compare, radar, market, debates, tools), collegati da animazioni che portano un oggetto da un capitolo al successivo; niente copertina e niente menu di viste. Si tolgono le funzioni che servivano solo a eseguire prompt nel browser (auto-run con chiavi personali, Chains, Merge, Output comparison, Blind Arena): erano le uniche a chiedere chiavi API all'utente e a dipendere da route gratuite che sparivano senza preavviso. D3 è superata. Gli indirizzi vecchi restano validi tramite una mappa di reindirizzamento. Il design sostituisce D7: un colore d'accento per capitolo, tier S-D con colori propri, tema chiaro e scuro.

@@ -48,7 +48,6 @@ module.exports = async function handler(req, res) {
       free: models.filter(function (m) { return (m.tags || []).indexOf("free") >= 0; }).length,
       openWeights: models.filter(function (m) { return (m.tags || []).indexOf("open-weights") >= 0; }).length,
       inGenerator: models.filter(function (m) { return (m.tags || []).indexOf("prompt-target") >= 0; }).length,
-      autoRun: models.filter(function (m) { return (m.tags || []).indexOf("auto-run") >= 0; }).length,
       rumored: models.filter(function (m) { return m.status === "rumored"; }).length,
       addedAutomatically: models.filter(function (m) { return m.auto === true; }).length
     },

@@ -1,10 +1,54 @@
 # WhichAI (ex PromptCompass) — STATUS
 
-Ultimo aggiornamento: 2026-10-03 (sessione 36 - Claude)
-Versione app: v0.35.0 (in cartella; live v0.34 verificata il 3 ottobre. Il sito ora si aggiorna DA SOLO: vedi sessione 36. GitHub Actions non serve più per i dati)
+Ultimo aggiornamento: 2026-10-13 (sessione 37 - Claude)
+Versione app: v0.36.0 (in cartella, da pubblicare con un push. Live: v0.35, che si aggiorna da sola nei dati)
 Sito live: https://whichai.wiki · https://promptcompass.vercel.app resta come alias
 
-## Fase corrente: Growth - fase 2 (backend reale, automazione dati, risposta alla review esterna)
+## Fase corrente: Growth - fase 3 (una pagina sola a capitoli, dati e news che si aggiornano da soli)
+
+## Fatto (sessione 37, 2026-10-13 - Claude): una pagina sola a capitoli (v0.36)
+
+Richiesta di Jack (in sintesi): niente copertina a scomparsa, niente menu come strada principale, pagine sequenziali collegate da animazioni; prima la classifica a tier (model guide), poi Compare (senza output comparison), Model radar con news che restano aggiornate (API), AI Live Markets, AI debates; Chains via; in fondo Find your AI (prioritario) + generator + Prompt Doctor + Stack Optimizer; scatter leggibile; unire le cose simili; link visibili a ComplyAI.wiki e warrightnow.vercel.app; design curato; comandi PowerShell a fine lavoro.
+
+### 1. La struttura: sei capitoli, letti dall'alto in basso
+| # | Capitolo (id) | Contenuto | Cosa "vola" al capitolo dopo |
+| --- | --- | --- | --- |
+| 01 | Ranking `#ranking` | tier list S-D calcolata (Intelligence / Coding / Agentic), filtri (open weights, free route, sotto $1, legacy), ricerca di qualunque modello, 4 KPI, scatter prezzo/intelligenza | i primi due modelli → Compare |
+| 02 | Compare `#compare` | testa a testa 2-3 modelli; segue da solo i primi due finché non scegli | l'ultimo arrivo → Radar |
+| 03 | Radar `#radar` | lanci e cambi prezzo dal catalogo live + news wire (`/api/news`) | il prezzo del leader → Market |
+| 04 | Market `#market` | prezzo del leader, il modo più economico per entrare in ogni tier, miglior valore, free route vive, price moves, calcolatore mensile | un numero del 1° dibattito → Debates |
+| 05 | Debates `#debates` | 6 AI debates (mazzo + pannello) + glossario; link a ComplyAI.wiki sui temi di legge | 4 icone dei task → Tools |
+| 06 | Tools `#tools` | 1 Find your AI (risposta rapida + percorso guidato), 2 Prompt generator, 3 Prompt Doctor, 4 Stack Optimizer | - |
+
+Footer: "More from the maker" (ComplyAI.wiki, War Right Now), About (differenze, dati, metodologia, FAQ, API, alternative, contribuire), Your data (export/import/reset/cancella). La scheda modello è un drawer unico (dialog accessibile, `#model=id`) apribile da tutti i capitoli.
+
+### 2. Collegamenti visibili (js/motion.js, nuovo)
+Barra di avanzamento, rail laterale (secondaria, non è un menu), colore d'accento che sfuma da un capitolo all'altro, rivelazioni allo scroll, capitoli montati solo quando ti avvicini, FLIP sulle chip quando cambi metrica, e 5 **morph**: un oggetto vero parte dal fondo di un capitolo e si trasforma mentre scorri fino ad atterrare nel successivo. Se ti fermi a metà plana e si posa (niente fantasmi a mezz'aria). Tutto spento con prefers-reduced-motion. Nessuno scroll "dirottato".
+
+### 3. Tolto o fuso (stack più leggero)
+- Tolti: copertina con 4 card, journey + scena 3D (Three.js: niente più dipendenza `three`), viste a hash + menu More, Chains, Merge studio, Output comparison, Blind Arena, Settings con chiavi API e auto-run BYOK, vecchio Live market (~675 KB scaricati a ogni apertura).
+- Fusi: Model guide + catalogo + insights → Ranking; Compare specs → Compare; Live market → Market; finder guidato + risposta rapida → Find your AI; glossario dentro Debates.
+- File rimossi: js/welcome.js, journey.js, stage.js, scene3d.js, chains.js, merge.js, arena.js, live-data.js, src/scene3d.src.js, tools/bundle-3d.mjs. Nuovi: js/motion.js, ranking.js, market.js, generator.js; api/news.js, api/_news-core.js.
+- Gli indirizzi vecchi funzionano ancora (mappa LEGACY in app.js: #guide→#ranking, #chains→#prompt, #settings→#data, #topics→#debates...). Le chiavi salvate dalle versioni vecchie vengono cancellate al primo caricamento.
+
+### 4. Scatter di nuovo leggibile
+Asse prezzo logaritmico (1-3-10); legacy esclusi di default (il "mostro" da $262/1M era un modello legacy); prezzo 0 in una corsia "Free"; frontiera del miglior valore; colori per tier; etichette solo dove non si sovrappongono; hover chip ↔ punto.
+
+### 5. News che restano aggiornate: GET /api/news
+Solo fonti gratuite e senza chiave: blog ufficiali OpenAI, Google DeepMind, Mistral AI (RSS), TechCrunch AI (solo titoli con nomi di lab/modelli), Hacker News (Algolia: storie AI con 100+ punti, ultimi 14 giorni), Hugging Face (blog + modelli in trend). Parser RSS/Atom senza librerie, ogni fonte fallisce da sola, cache edge 30 minuti, il browser tiene l'ultima lista buona. Sul sito locale (senza /api) il Radar dice che le news non sono raggiungibili: è normale, in produzione arrivano.
+
+### 6. Altre correzioni
+- `/api/refresh`: controlla le route `:free` citate nel testo del catalogo (il sito non ha più default suoi); il caso peggiore ora è "review". Tolto `functions.includeFiles` da vercel.json (non serve più leggere app.js).
+- Dati: tag `auto-run` eliminato; tag `free` tolto a Qwen3 Coder e Nemotron 3 Super (route ritirate); testi d'accesso Gemini Flash aggiornati; il finder non propone più Qwen3 Coder come gratis; glossario senza "WhichAI is BYOK"; nota del Radar senza "BYOK default".
+- Icona Kimi visibile (era una K bianca su sfondo bianco). Deep link `/#compare=a,b` (bottoni "Compare them live" del wiki). I deep link aprono subito il capitolo invece di scorrere tutta la pagina; il capitolo parte attaccato alla barra.
+- Wiki statico rigenerato (178 pagine): link ai nuovi capitoli + footer con i progetti di Jack.
+- i18n ricostruito: 373 chiavi × 11 lingue, solo quelle usate.
+
+### Test e versione
+- **541 test verdi**: 237 statici + 82 smoke DOM + 50 API + 59 live data + 69 catalog + 44 news (nuovo, anche in CI e nel workflow dati). I test statici e lo smoke sono stati riscritti per la nuova struttura.
+- Verifica visiva in Chromium: desktop, mobile, tema scuro, arabo RTL: zero errori JS, nessuno scroll orizzontale, i 5 morph volano e si posano.
+- v0.36 ovunque: APP_VERSION, footer, CACHE `whichai-v0.36.0`, package.json 0.36.0, appVersion dell'API.
+- [ ] **Jack**: push (comandi in chat). Dopo il deploy: aprire whichai.wiki, scorrere fino in fondo, provare /api/news.
 
 ## Fatto (sessione 36, 2026-10-03 - Claude): il sito si aggiorna da solo
 
@@ -536,15 +580,17 @@ File MODIFICATI = vista sandbox troncata alla dimensione vecchia (lato Windows c
 
 ## Manutenzione dataset benchmark
 
-`js/benchmarks.js` va aggiornato periodicamente (~mensile o quando escono modelli nuovi): rifare le 4 ricerche (LMArena overall/coding, SWE-bench, creative writing, free tier), aggiornare note/ranking/updated. Le fonti citate sono in `Bench.sources`.
+Dalla v0.35 punteggi, prezzi, modelli nuovi e free route si aggiornano da soli (`/api/catalog`), dalla v0.36 anche le news (`/api/news`). In `js/benchmarks.js` resta solo prosa editoriale (carattere delle app, fonti): va riletta quando un modello cambia natura, non a calendario.
 
 ## Da fare (prossime sessioni)
 
-1. Verificare v0.18 live: (a) telefono — nav scorrevole, PWA installabile; (b) lingua → العربية (layout RTL, prompt restano LTR) e Русский/日本語; cambio lingua → footer resta v0.18; (c) Chains → Share link → aprire l'URL in incognito → catena ricostruita; (d) OpenRouter Run via API; (e) condividere il link su WhatsApp/LinkedIn → anteprima con og-image.
-2. Candidati: dominio custom (unica voce a pagamento — decide Jack); Google Search Console (gratis, submit sitemap); analytics privacy-friendly opzionale; canale feedback (GitHub issue template); demo video/GIF per il README.
-3. Manutenzione ricorrente: refresh models-db + benchmark + slug OpenRouter free (~mensile, ultimo: 2026-07-11); **bump CACHE in sw.js + APP_VERSION in app.js a ogni release**; stime e rumored da riverificare; le route :free cambiano senza preavviso.
+1. Dopo il push della v0.36: verificare in produzione /api/news (fonti ok?), i morph su telefono vero, il wiki (link ai capitoli).
+2. Editoriale (non automatizzabile, da `docs/AUDIT-2026-09.md`): rileggere i due AI Debates più vecchi (regulation, copyright), recensioni dei modelli "auto-added" più importanti (Claude Opus 5.5, GPT-6.1 Sol), Stack Optimizer per Grok/Copilot.
+3. Candidati: canale feedback (GitHub issue template), una GIF del percorso a capitoli per il README e LinkedIn.
+4. Ricorrente: **bump CACHE in sw.js + APP_VERSION in app.js + footer + package.json a ogni release**. I numeri (punteggi, prezzi, modelli nuovi, free route, news) si aggiornano da soli: niente più refresh mensile a mano.
 
 ## Come riprendere il lavoro
 
-- Logica prompt: `js/engine.js`. Dataset+router: `js/benchmarks.js` (recommend). UI: `js/app.js` (renderRouter/renderResults). Un solo CSS.
-- Vincoli fissi: budget zero, niente servizi a pagamento senza ok di Jack, PC di Jack solo browser + Node 24.
+- Mappa (v0.36): `index.html` (una pagina, 6 capitoli `data-chapter`) · `styles.css` (unico CSS) · `js/app.js` (regia: lingua/tema, navigazione + LEGACY, drawer, ponti/morph, montaggio capitoli, dati utente, SW) · `js/motion.js` (animazioni di collegamento) · `js/ranking.js` (tier + scatter) · `js/modelcompare.js` · `js/radar.js` (+ `js/changes.js`) · `js/market.js` · `js/topics.js` + `js/glossary.js` · `js/finder.js` · `js/generator.js` (+ `js/engine.js`) · `js/doctor.js` · `js/stack.js` · dati: `js/models-db.js` + `js/benchmarks.js` + `js/live-catalog.js` · API: `api/*.js` (catalog, news, refresh...).
+- Vincoli fissi: budget zero, niente servizi a pagamento senza ok di Jack, nessuna chiave/account, contenuti in inglese e UI in 11 lingue.
+- Prima di consegnare: `npm test` (6 suite) e `node tools/build.mjs`.

@@ -1,5 +1,5 @@
 /*
- * WhichAI - client for the WhichAI API (v0.30.0)
+ * WhichAI - client for the WhichAI API (v0.36.0)
  *
  * The app ships a full copy of the catalog so it works offline and with no
  * network round trip. This module talks to /api on top of that, never
@@ -23,8 +23,11 @@
   }
 
   /* Resolves with the parsed body, or with null when anything at all goes
-     wrong. Callers never have to handle an error path: they handle null. */
-  function get(path, params) {
+     wrong. Callers never have to handle an error path: they handle null.
+     opts.timeout (ms) for slower endpoints such as /news, which reads several
+     public sources on a cold start; opts.fresh skips the in-page cache. */
+  function get(path, params, opts) {
+    opts = opts || {};
     if (!canFetch()) return Promise.resolve(null);
     var url = BASE + path;
     if (params) {
@@ -34,10 +37,10 @@
         .join("&");
       if (qs) url += "?" + qs;
     }
-    if (cache[url]) return Promise.resolve(cache[url]);
+    if (cache[url] && !opts.fresh) return Promise.resolve(cache[url]);
 
     var ctl = new AbortController();
-    var timer = setTimeout(function () { ctl.abort(); }, TIMEOUT_MS);
+    var timer = setTimeout(function () { ctl.abort(); }, opts.timeout || TIMEOUT_MS);
     return fetch(url, { signal: ctl.signal, headers: { Accept: "application/json" }, credentials: "omit" })
       .then(function (r) { return r.ok ? r.json() : null; })
       .then(function (j) {

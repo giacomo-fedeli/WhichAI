@@ -2,6 +2,38 @@
 
 (Older release-by-release history lives in `STATUS.md`, the project's working memory.)
 
+## v0.36.0 (2026-10-13)
+
+One page, six chapters, read top to bottom. No cover, no menu of views: the data comes first, every chapter hands something visible to the next, and the tools that turn a choice into a result close the page.
+
+### Added
+- **A single page in six chapters**: 01 Ranking, 02 Compare, 03 Radar, 04 Market, 05 Debates, 06 Tools (Find your AI, Prompt generator, Prompt Doctor, Stack Optimizer). The footer carries the maker's other projects (ComplyAI.wiki, War Right Now), About and "Your data".
+- **The Ranking chapter opens the site**: every model with an official score sorted into tiers S to D by percentile (S top 5%, A to 20%, B to 40%, C to 65%; ties share a tier), on the Intelligence, Coding or Agentic index, with filters (open weights, free route, under $1, legacy), a search for any model in the catalog, and four live KPIs. Tiers are computed, never chosen; a converted, guessed or rumored score is never ranked.
+- **A scatter nobody can squash**: price on a log axis (1-3-10), legacy models out unless asked for, $0 prices in their own "Free" lane, the best-value frontier drawn, dots coloured by tier and linked to the chips (hover one, the other lights up). Until v0.35 a single legacy model at $262 per 1M tokens pushed ninety others into a corner.
+- **Visible connections between chapters** (`js/motion.js`): a reading-progress bar, a side rail, an accent colour that blends from chapter to chapter, reveal on scroll, lazily mounted chapters, and five morphs: a real object leaves the end of one chapter and lands in the next while you scroll (the top two models become the Compare duel, the newest arrival becomes the Radar's headline, the leader's price opens the Market, a number from the first debate opens Debates, four task icons become the Finder's buttons). If scrolling stops mid-way, the object glides to the nearer end and lands. Everything turns off for prefers-reduced-motion.
+- **The Market chapter** (`js/market.js`), computed from the catalog the page already holds: what the leader costs, the cheapest way into each tier, best value (index points per dollar among models at or above the median), the free API routes that exist right now, live price moves, and a monthly cost calculator.
+- **`GET /api/news`** (`api/_news-core.js`): the Radar's news wire from free, keyless public sources: the OpenAI, Google DeepMind and Mistral AI blogs, TechCrunch AI (titles naming a lab or a model), Hacker News (AI stories with 100+ points in the last 14 days) and Hugging Face (blog and trending models). RSS and Atom parsed without a library, each source fails on its own, cached 30 minutes at the edge; the browser keeps the last good wire. `tests/news-tests.mjs`: 44 offline checks.
+- **One model card everywhere**: an accessible drawer (dialog, focus trap, Escape) with tier, rank, specs, review, Compare, Follow, official site and wiki page, shareable as `#model=id`.
+- **Find your AI first**: a one-tap answer per task (the best app, why, the free tier, the sources) above the four-question guided finder; "Write the prompt" hands the choice to the generator with the model and task pre-selected; the generator hands any prompt to the Doctor.
+- Deep link **`#compare=a,b`**, used by the wiki's "Compare them live" buttons.
+
+### Removed (to lighten the stack)
+- The welcome cover with four cards, the scroll journey and the Three.js scene (`three` is no longer a dependency).
+- The hash views and the More menu; Chains; the Merge studio; Output comparison; Blind Arena; Settings with API keys and in-browser auto-run (BYOK). Keys stored by older versions are deleted on the first visit.
+- The old Live market view, which downloaded about 675 KB of raw routes on every open.
+- Every old address still lands somewhere sensible (`#guide` to the Ranking, `#chains` to the generator, `#settings` to Your data, and so on).
+
+### Changed
+- `/api/refresh` checks the free routes the catalog text names (the site ships no defaults of its own any more); nothing it can find breaks the site, so its worst state is "review".
+- The catalog: the `auto-run` tag is retired; the free tag is removed from Qwen3 Coder and Nemotron 3 Super, whose free routes were retired; the Gemini Flash access lines are current; the finder no longer offers Qwen3 Coder as free.
+- i18n rebuilt around what the page uses: 373 keys in 11 languages, none missing, none dead.
+- The static wiki links to the new chapters and to the maker's other projects.
+- Deep links open in place instead of scrolling the whole page; a chapter starts flush under the bar.
+- Kimi's icon (a white K) gets its own dark tile, so it is visible.
+
+### Tests
+237 static + 82 DOM smoke + 50 API + 59 live data + 69 catalog + 44 news = **541 passing**. New: every i18n key the page uses exists in all 11 languages, every chapter hand-off leaves and lands where it should, every retired address is mapped, nothing removed is still loaded or cached.
+
 ## v0.35.0 (2026-10-03)
 
 The site updates itself. Scores, prices, new models and free routes now come from their public sources automatically, every hour, with nobody editing a file.

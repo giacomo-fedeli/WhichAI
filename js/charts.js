@@ -52,63 +52,147 @@
     return out;
   }
 
+  /* $0.03, $0.1, $0.3, $1, $3, $10, $30...: a log axis people can read. */
+  function logTicks(min, max) {
+    var out = [];
+    for (var e = Math.floor(Math.log10(min)) - 1; e <= Math.ceil(Math.log10(max)) + 1; e++) {
+      [1, 3].forEach(function (m) {
+        var v = Number((m * Math.pow(10, e)).toPrecision(12));
+        if (v >= min * 0.999 && v <= max * 1.001) out.push(v);
+      });
+    }
+    return out;
+  }
+  function money(v) {
+    if (v >= 1) return "$" + (Math.round(v * 10) / 10).toString();
+    return "$" + Number(v.toPrecision(2)).toString();
+  }
+
+  /* The price/performance frontier: walking from cheap to expensive, a model
+     belongs to it when nothing cheaper scores as well. */
+  function frontierOf(points) {
+    var sorted = points.slice().sort(function (a, b) { return a.x - b.x || b.y - a.y; });
+    var best = -Infinity, out = [];
+    sorted.forEach(function (p) { if (p.y > best) { best = p.y; out.push(p); } });
+    return out;
+  }
+
   /**
    * Scatter plot (price vs performance).
-   * points: [{ x, y, label, est }] - x = blended $/1M tokens, y = index score.
+   * points: [{ x, y, label, est, id, cls, quiet }] - x = blended $/1M tokens, y = index score.
+   * opts: { logX, frontier, xLabel, yLabel, aria, freeLabel, width, height }
+   * With logX a price of 0 sits in a "free" lane left of the axis instead of
+   * breaking the scale; ids end up in data-id so a page can link dots to chips.
    */
   function scatter(points, opts) {
     opts = opts || {};
     points = points.filter(function (p) { return p && Number.isFinite(p.x) && Number.isFinite(p.y) && p.x >= 0 && p.y >= 0; });
-    var W = 560, H = 330;
-    var padL = 46, padR = 16, padT = 16, padB = 40;
-    var xs = points.map(function (p) { return p.x; });
+    var W = opts.width || 560, H = opts.height || 330;
+    var log = !!opts.logX;
+    var free = log ? points.filter(function (p) { return p.x <= 0; }) : [];
+    var priced = log ? points.filter(function (p) { return p.x > 0; }) : points;
+    var padL = 46 + (free.length ? 34 : 0), padR = 16, padT = 16, padB = 40;
+    var xs = priced.map(function (p) { return p.x; });
     var ys = points.map(function (p) { return p.y; });
-    var xMax = Math.max(1, Math.max.apply(null, xs) * 1.15);
-    var xMin = 0;
-    var yMax = points.length ? Math.max.apply(null, ys) + 3 : 100;
-    var yMin = points.length ? Math.max(0, Math.min.apply(null, ys) - 4) : 0;
-    function X(v) { return padL + ((v - xMin) / (xMax - xMin)) * (W - padL - padR); }
+    var xMin, xMax, ticks;
+    if (log) {
+      var lo = xs.length ? Math.min.apply(null, xs) : 0.1, hi = xs.length ? Math.max.apply(null, xs) : 10;
+      xMin = Math.pow(10, Math.floor(Math.log10(lo) * 2) / 2);
+      xMax = Math.pow(10, Math.ceil(Math.log10(hi) * 2) / 2);
+      if (xMax <= xMin) xMax = xMin * 10;
+      ticks = logTicks(xMin, xMax);
+    } else {
+      xMax = Math.max(1, Math.max.apply(null, xs.length ? xs : [1]) * 1.15);
+      xMin = 0;
+      ticks = [0, 1, 2, 3, 4].map(function (i) { return xMin + (i / 4) * (xMax - xMin); });
+    }
+    /* round y bounds to a readable step, so ticks read 0, 10, 20... */
+    var ySpan = points.length ? Math.max.apply(null, ys) - Math.min.apply(null, ys) : 100;
+    var yStep = ySpan > 40 ? 10 : ySpan > 16 ? 5 : 2;
+    var yMax = points.length ? Math.ceil((Math.max.apply(null, ys) + yStep * 0.3) / yStep) * yStep : 100;
+    var yMin = points.length ? Math.max(0, Math.floor((Math.min.apply(null, ys) - yStep * 0.3) / yStep) * yStep) : 0;
+    function X(v) {
+      if (log) {
+        if (v <= 0) return padL - 22;
+        return padL + ((Math.log10(v) - Math.log10(xMin)) / (Math.log10(xMax) - Math.log10(xMin))) * (W - padL - padR);
+      }
+      return padL + ((v - xMin) / (xMax - xMin)) * (W - padL - padR);
+    }
     function Y(v) { return H - padB - ((v - yMin) / (yMax - yMin)) * (H - padT - padB); }
-    var out = '<svg class="wc-chart wc-scatter" viewBox="0 0 ' + W + " " + H + '" role="img" aria-label="' + esc(opts.aria || "Scatter chart") + '" preserveAspectRatio="xMinYMin meet">';
+    var out = '<svg class="wc-chart wc-scatter' + (log ? " wc-log" : "") + '" viewBox="0 0 ' + W + " " + H + '" role="img" aria-label="' + esc(opts.aria || "Scatter chart") + '" preserveAspectRatio="xMinYMin meet">';
     // gridlines + axis labels
-    var ySteps = 4, xSteps = 4, i;
+    var ySteps = Math.max(1, Math.round((yMax - yMin) / yStep)), i;
+    if (ySteps > 8) { yStep *= 2; ySteps = Math.ceil((yMax - yMin) / yStep); yMax = yMin + ySteps * yStep; }
     for (i = 0; i <= ySteps; i++) {
-      var yv = yMin + (i / ySteps) * (yMax - yMin);
+      var yv = yMin + i * yStep;
       out += '<line x1="' + padL + '" y1="' + fmt(Y(yv)) + '" x2="' + (W - padR) + '" y2="' + fmt(Y(yv)) + '" class="wc-grid"></line>';
       out += '<text x="' + (padL - 7) + '" y="' + fmt(Y(yv)) + '" text-anchor="end" dominant-baseline="middle" class="wc-tick">' + fmt(yv) + "</text>";
     }
-    for (i = 0; i <= xSteps; i++) {
-      var xv = xMin + (i / xSteps) * (xMax - xMin);
-      out += '<text x="' + fmt(X(xv)) + '" y="' + (H - padB + 16) + '" text-anchor="middle" class="wc-tick">$' + fmt(xv) + "</text>";
+    ticks.forEach(function (xv) {
+      if (log) out += '<line x1="' + fmt(X(xv)) + '" y1="' + padT + '" x2="' + fmt(X(xv)) + '" y2="' + (H - padB) + '" class="wc-grid wc-grid-v"></line>';
+      out += '<text x="' + fmt(X(xv)) + '" y="' + (H - padB + 16) + '" text-anchor="middle" class="wc-tick">' + (log ? money(xv) : "$" + fmt(xv)) + "</text>";
+    });
+    if (free.length) {
+      out += '<rect x="' + (padL - 34) + '" y="' + padT + '" width="24" height="' + (H - padT - padB) + '" rx="8" class="wc-free-lane"></rect>';
+      out += '<text x="' + (padL - 22) + '" y="' + (H - padB + 16) + '" text-anchor="middle" class="wc-tick wc-free-tick">' + esc(opts.freeLabel || "Free") + "</text>";
     }
     out += '<text x="' + ((padL + W - padR) / 2) + '" y="' + (H - 6) + '" text-anchor="middle" class="wc-axis">' + esc(opts.xLabel || "") + "</text>";
     out += '<text x="12" y="' + ((padT + H - padB) / 2) + '" text-anchor="middle" class="wc-axis" transform="rotate(-90 12 ' + ((padT + H - padB) / 2) + ')">' + esc(opts.yLabel || "") + "</text>";
+    if (opts.frontier && priced.length > 2) {
+      var fr = frontierOf(priced);
+      var d = "";
+      fr.forEach(function (p, k) {
+        var px = fmt(X(p.x)), py = fmt(Y(p.y));
+        if (!k) d += "M" + px + " " + py;
+        else d += " H" + px + " V" + py;
+      });
+      out += '<path d="' + d + '" class="wc-frontier"></path>';
+      fr.forEach(function (p) { p.onFrontier = true; });
+    }
     /* Greedy label placement: try a few vertical offsets and keep the first
        that does not overlap a label already placed. Cheap, and enough for the
        dozen labels a readable scatter carries. */
     var placed = [];
+    /* Returns a free baseline near y, or null: a label that cannot be placed
+       without overlapping another stays hidden (its dot keeps the tooltip). */
     function freeSpot(x, y, w, anchor) {
-      var offs = [0, 13, -13, 26, -26, 39];
+      var offs = [0, 13, -13, 26, -26];
       for (var k = 0; k < offs.length; k++) {
         var yy = y + offs[k];
         var x0 = anchor === "end" ? x - w : x, x1 = x0 + w;
+        if (yy - 10 < 2) continue;
         var hit = placed.some(function (b) { return x0 < b[2] && x1 > b[0] && yy - 10 < b[3] && yy + 2 > b[1]; });
         if (!hit) { placed.push([x0, yy - 10, x1, yy + 2]); return yy; }
       }
-      placed.push([anchor === "end" ? x - w : x, y - 10, anchor === "end" ? x : x + w, y + 2]);
-      return y;
+      return null;
     }
-    points.forEach(function (p) {
+    function isQuiet(p) {
+      if (p.quiet != null) return !!p.quiet;
+      return opts.frontier ? !(p.onFrontier || p.top) : false;
+    }
+    /* Quiet points first, so labelled ones (and their labels) sit on top. */
+    var order = points.slice().sort(function (a, b) { return (isQuiet(b) ? 1 : 0) - (isQuiet(a) ? 1 : 0); });
+    /* Labels are placed in the caller's order (strongest first), so a
+       crowded corner keeps the labels that matter and hides the rest
+       instead of overlapping them. A hidden label stays in the SVG for the
+       page to reveal on hover. */
+    var marks = order.map(function (p) {
       var cx = X(p.x), cy = Y(p.y);
+      var anchor = cx > W - 140 ? "end" : "start";
+      return { p: p, cx: cx, cy: cy, anchor: anchor, tx: anchor === "end" ? cx - 9 : cx + 9, quiet: isQuiet(p), ty: null };
+    });
+    marks.filter(function (m) { return !m.quiet; }).forEach(function (m) {
+      m.ty = freeSpot(m.tx, m.cy - 6, String(m.p.label || "").length * 6.6 + (m.p.est ? 12 : 0), m.anchor);
+      if (m.ty === null) m.quiet = true;
+    });
+    marks.forEach(function (m, k) {
+      var p = m.p;
       var name = esc(p.label) + (p.est ? " ~" : "");
-      out += '<g class="wc-pt"><title>' + name + " - $" + fmt(p.x) + "/1M blended · score " + fmt(p.y) + "</title>";
-      out += '<circle cx="' + fmt(cx) + '" cy="' + fmt(cy) + '" r="5.5" class="wc-dot' + (p.est ? " wc-est" : "") + '"></circle>';
-      var anchor = cx > W - 120 ? "end" : "start";
-      var tx = anchor === "end" ? cx - 9 : cx + 9;
-      var ty = p.quiet ? cy - 6 : freeSpot(tx, cy - 6, String(p.label || "").length * 6.4 + (p.est ? 12 : 0), anchor);
-      /* A quiet point keeps its dot and its tooltip but no label: with a
-         hundred models, labelling every one makes the chart unreadable. */
-      out += (p.quiet ? "" : '<text x="' + fmt(tx) + '" y="' + fmt(ty) + '" text-anchor="' + anchor + '" class="wc-ptlabel">' + name + "</text>") + "</g>";
+      var price = p.x > 0 ? "$" + fmt(p.x) + "/1M blended" : (opts.freeLabel || "Free");
+      out += '<g class="wc-pt' + (p.cls ? " " + esc(p.cls) : "") + (p.onFrontier ? " wc-on-frontier" : "") + (m.quiet ? " wc-quiet" : "") + '"' +
+        (p.id ? ' data-id="' + esc(p.id) + '"' : "") + ' style="--k:' + k + '"><title>' + name + " - " + price + " · score " + fmt(p.y) + "</title>";
+      out += '<circle cx="' + fmt(m.cx) + '" cy="' + fmt(m.cy) + '" r="5.5" class="wc-dot' + (p.est ? " wc-est" : "") + '"></circle>';
+      out += '<text x="' + fmt(m.tx) + '" y="' + fmt(m.ty === null ? m.cy - 6 : m.ty) + '" text-anchor="' + m.anchor + '" class="wc-ptlabel">' + name + "</text></g>";
     });
     out += "</svg>";
     return out;
@@ -157,7 +241,7 @@
     return out;
   }
 
-  var Charts = { barChart: barChart, scatter: scatter, groupedBars: groupedBars, esc: esc };
+  var Charts = { barChart: barChart, scatter: scatter, groupedBars: groupedBars, frontierOf: frontierOf, logTicks: logTicks, esc: esc };
   var root = typeof window !== "undefined" ? window : globalThis;
   root.WhichAICharts = Charts;
   if (typeof module !== "undefined" && module.exports) module.exports = Charts;

@@ -2,11 +2,11 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>WhichAI - which AI model to use, and the right prompt for it</title>
-  <meta name="description" content="Which AI should do this? Describe your goal once: WhichAI recommends the best model and writes an optimized prompt for each of 13 AI families. Free, private, no account." />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>WhichAI - which AI model is best right now, what it costs, and the right prompt for it</title>
+  <meta name="description" content="Every AI model with an official score, sorted into tiers automatically. Compare any two, follow launches and prices as they happen, then find the right AI for your task and the prompt it responds to. Free, private, no account." />
   <meta property="og:title" content="WhichAI" />
-  <meta property="og:description" content="Turn a plain-language goal into prompts optimized for each AI model - and know which model to use." />
+  <meta property="og:description" content="The live AI ranking, prices and news, and the right model and prompt for your task. Free, no account." />
   <meta property="og:url" content="https://whichai.wiki/" />
   <meta property="og:type" content="website" />
   <meta property="og:image" content="https://whichai.wiki/og-image.png" />
@@ -14,762 +14,533 @@
   <meta property="og:image:height" content="630" />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="WhichAI" />
-  <meta name="twitter:description" content="The right AI model, the right prompt - from one plain-language goal. Free, no account." />
+  <meta name="twitter:description" content="The live AI ranking, prices and news, and the right model and prompt for your task." />
   <meta name="twitter:image" content="https://whichai.wiki/og-image.png" />
   <link rel="canonical" href="https://whichai.wiki/" />
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Ccircle cx='12' cy='12' r='10' fill='%2317181c'/%3E%3Cpath d='M15.8 8.2l-2.4 5.2-5.2 2.4 2.4-5.2z' fill='white'/%3E%3C/svg%3E" />
   <link rel="manifest" href="manifest.webmanifest" />
-  <meta name="theme-color" content="#17181c" />
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://gc.zgo.at 'sha256-uVjMAdQkvQ3Tc+Gj0ADuYv/YlXHQ2pY4F+fpZpsZvR8='; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: https://*.goatcounter.com; connect-src 'self' https://generativelanguage.googleapis.com https://api.groq.com https://openrouter.ai https://*.goatcounter.com; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'" />
+  <meta name="theme-color" content="#f6f7f9" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://gc.zgo.at 'sha256-uVjMAdQkvQ3Tc+Gj0ADuYv/YlXHQ2pY4F+fpZpsZvR8='; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: https://*.goatcounter.com; connect-src 'self' https://*.goatcounter.com; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'" />
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-title" content="WhichAI" />
   <link rel="apple-touch-icon" href="icons/apple-touch-icon.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <script>try{var t=localStorage.getItem("pc_theme");if(!t){t=(window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches)?"dark":"light";}document.documentElement.setAttribute("data-theme",t);}catch(e){}</script>
   <link rel="stylesheet" href="styles.css" />
-  <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"WhichAI","alternateName":"PromptCompass","url":"https://whichai.wiki/","description":"Which AI should do this? Turn a plain-language goal into prompts optimized for each AI model - and know which model to use, with benchmarks translated into plain language.","applicationCategory":"UtilitiesApplication","operatingSystem":"Any (web)","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"author":{"@type":"Person","name":"Giacomo Fedeli","url":"https://www.linkedin.com/in/giacomo-fedeli-277765239/"}}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"WhichAI","alternateName":"PromptCompass","url":"https://whichai.wiki/","description":"The live AI model ranking, prices and news, computed from official measurements, plus a finder and a prompt generator for your own task.","applicationCategory":"UtilitiesApplication","operatingSystem":"Any (web)","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"author":{"@type":"Person","name":"Giacomo Fedeli","url":"https://www.linkedin.com/in/giacomo-fedeli-277765239/"}}</script>
 </head>
-<body class="welcome-active">
-  <header class="site-header">
-    <div class="header-inner">
-      <div class="brand">
-        <svg class="brand-icon" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+<body>
+  <a class="skip-link" href="#main" data-i18n="skipLink">Skip to content</a>
+
+  <header class="topbar" id="topbar">
+    <div class="topbar-in">
+      <a class="brand" href="#ranking" aria-label="WhichAI">
+        <svg class="brand-icon" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
           <circle cx="12" cy="12" r="9.2"></circle>
           <path class="brand-needle" d="M15.5 8.5l-2.2 5-5 2.2 2.2-5z" fill="currentColor" stroke="none"></path>
         </svg>
         <span class="brand-name">WhichAI</span>
-        <span class="badge">v0.35 · Growth</span>
-        <a class="badge badge-live" id="live-pill" href="#radar" hidden><span class="live-dot" aria-hidden="true"></span><span id="live-pill-text">Live data</span></a>
-        <span class="badge badge-privacy" title="No account, no tracking. Goals, prompts and API keys stay in your browser. The WhichAI API is read-only and serves only the public model catalog."><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><rect x="4" y="10" width="16" height="10" rx="2"></rect><path d="M8 10V7a4 4 0 0 1 8 0v3"></path></svg><span id="privacy-text">Private by design</span></span>
+      </a>
+      <span class="topbar-chapter" id="topbar-chapter" aria-hidden="true"><span class="tc-num">01</span><span class="tc-name">Ranking</span></span>
+      <div class="topbar-right">
+        <a class="live-pill" id="live-pill" href="#about-data" hidden><span class="live-dot" aria-hidden="true"></span><span id="live-pill-text">Live data</span></a>
+        <label class="visually-hidden" for="lang-select" data-i18n="langLabel">Language</label>
+        <select id="lang-select" class="lang-select"></select>
+        <button id="theme-toggle" class="icon-btn" type="button" aria-label="Switch light or dark theme"><span aria-hidden="true">☾</span></button>
       </div>
-      <nav class="site-nav" aria-label="Views">
-        <a href="#" id="nav-generator" class="active">Generator</a>
-        <a href="#guide" id="nav-guide">Model guide</a>
-        <a href="#compare" id="nav-compare">Compare</a>
-        <div class="nav-more-wrap">
-          <button id="nav-more" class="nav-more" type="button" aria-haspopup="true" aria-expanded="false">More ▾</button>
-          <div id="nav-more-panel" class="nav-more-panel" hidden>
-            <a href="#radar" id="nav-radar" class="more-item"><strong>Model Radar</strong><span class="more-sub" id="nav-radar-sub">What changed: new models, prices, free tiers</span></a>
-            <a href="#live" id="nav-live" class="more-item"><strong>Live market</strong><span class="more-sub" id="nav-live-sub">Routes, prices and source benchmarks, straight from the feed</span></a>
-            <a href="#topics" id="nav-topics" class="more-item"><strong>AI Debates</strong><span class="more-sub" id="nav-topics-sub">Energy, jobs, the bubble: both sides, with sources</span></a>
-            <a href="#chains" id="nav-chains" class="more-item"><strong>Chains</strong><span class="more-sub" id="nav-chains-sub">Multi-step workflows, one model per step</span></a>
-            <a href="#stack" id="nav-stack" class="more-item"><strong>Stack Optimizer</strong><span class="more-sub" id="nav-stack-sub">Which subscriptions to keep, what to use free</span></a>
-            <a href="#doctor" id="nav-doctor" class="more-item"><strong>Prompt Doctor</strong><span class="more-sub" id="nav-doctor-sub">Score a prompt, see the optimized version</span></a>
-            <a href="#arena" id="nav-arena" class="more-item"><strong>Blind Arena</strong><span class="more-sub" id="nav-arena-sub">Blind A/B rounds on your prompts, personal Elo</span></a>
-            <a href="#glossary" id="nav-glossary" class="more-item"><strong>Glossary</strong><span class="more-sub" id="nav-glossary-sub">Every AI term in one plain sentence</span></a>
-            <a href="#about" id="nav-about" class="more-item"><strong>About</strong><span class="more-sub" id="nav-about-sub">FAQ, methodology, similar tools</span></a>
-            <a href="#settings" id="nav-settings" class="more-item"><strong>Settings</strong><span class="more-sub" id="nav-settings-sub">Free API keys, your data, backup</span></a>
-          </div>
-        </div>
-        <select id="lang-select" class="lang-select" aria-label="Language"></select>
-        <button id="theme-toggle" class="icon-btn" type="button" aria-label="Toggle theme">☾</button>
-      </nav>
     </div>
+    <div class="topbar-progress" aria-hidden="true"><span id="progress-bar"></span></div>
   </header>
 
-  <!-- ============ Minimal welcome + shared-element entrance ============ -->
-  <section id="welcome" class="welcome" aria-labelledby="welcome-title">
-    <canvas id="stage-canvas" class="stage-canvas" aria-hidden="true"></canvas>
-    <div class="welcome-orb welcome-orb-a" aria-hidden="true"></div>
-    <div class="welcome-orb welcome-orb-b" aria-hidden="true"></div>
-    <div id="stage-tip" class="stage-tip" role="status" aria-live="polite" hidden></div>
-    <div class="welcome-scroll" id="welcome-scroll">
-    <div class="welcome-panel">
-    <div class="welcome-stage">
-      <div id="welcome-brand" class="welcome-brand" aria-label="WhichAI">
-        <svg class="welcome-logo" viewBox="0 0 64 64" fill="none" stroke="currentColor" aria-hidden="true">
-          <circle cx="32" cy="32" r="25.5" stroke-width="2.4"></circle>
-          <circle cx="32" cy="32" r="19" stroke-width="1" opacity=".26"></circle>
-          <path class="welcome-needle" d="M43.5 20.5 36 36l-15.5 7.5L28 28z" fill="currentColor" stroke="none"></path>
-        </svg>
-        <span id="welcome-title" class="welcome-wordmark">WhichAI</span>
-      </div>
-      <p id="welcome-value" class="welcome-value">The right AI for the job. The right prompt for it.</p>
-      <nav class="welcome-menu" aria-label="Start with WhichAI">
-        <button class="welcome-action" type="button" data-welcome-target="nav-generator" data-welcome-route="">
-          <span id="welcome-generator">Create a prompt</span><span class="welcome-arrow" aria-hidden="true">↗</span>
-        </button>
-        <button class="welcome-action" type="button" data-welcome-target="nav-guide" data-welcome-route="#guide">
-          <span id="welcome-guide">Choose an AI</span><span class="welcome-arrow" aria-hidden="true">↗</span>
-        </button>
-        <button class="welcome-action" type="button" data-welcome-target="nav-compare" data-welcome-route="#compare">
-          <span id="welcome-compare">Compare models</span><span class="welcome-arrow" aria-hidden="true">↗</span>
-        </button>
-        <button class="welcome-action" type="button" data-welcome-target="nav-more" data-welcome-route="more">
-          <span id="welcome-explore">Explore all tools</span><span class="welcome-arrow" aria-hidden="true">↗</span>
-        </button>
-      </nav>
-      <p id="welcome-visits" class="visit-counter" hidden></p>
-      <button type="button" class="journey-cue" id="journey-cue">
-        <span id="journey-cue-label">or keep scrolling</span>
-        <span class="journey-cue-arrow" aria-hidden="true"></span>
-      </button>
-    </div>
-    </div>
-
-    <!-- The journey: the same 118 models, read three ways, ending on your goal. -->
-    <div id="journey" class="journey">
-      <nav class="journey-spine" id="journey-spine" aria-label="Where you are"></nav>
-
-      <section class="act" id="act-map" data-act="1" data-progress="0.16">
-        <div class="act-inner">
-          <p class="act-eyebrow" id="act-map-eyebrow">Act one · the map</p>
-          <h2 class="act-title" id="act-map-title">Every model, placed by what it costs and what it can do</h2>
-          <p class="act-body" id="act-map-body">This is not an illustration. Each point is a real model from the catalog: left is cheap, right is expensive, higher is a stronger measured score, and the newest arrivals sit closest to you. Move the cursor to look around, or drag with a finger.</p>
-          <div class="act-stats" id="act-map-stats"></div>
-        </div>
-      </section>
-
-      <section class="act" id="act-rank" data-act="2" data-progress="0.5">
-        <div class="act-inner">
-          <p class="act-eyebrow" id="act-rank-eyebrow">Act two · the ranking</p>
-          <h2 class="act-title" id="act-rank-title">A ranking is where most tools stop</h2>
-          <p class="act-body" id="act-rank-body">The same points, sorted by the public index everyone quotes. It takes four seconds to read, it is genuinely useful, and it still has not told you what to do with the thing you actually have to write this morning.</p>
-          <ol class="act-ladder" id="act-ladder"></ol>
-        </div>
-      </section>
-
-      <section class="act" id="act-goal" data-act="3" data-progress="0.84">
-        <div class="act-inner">
-          <p class="act-eyebrow" id="act-goal-eyebrow">Act three · your job</p>
-          <h2 class="act-title" id="act-goal-title">So start from the job, not from the leaderboard</h2>
-          <p class="act-body" id="act-goal-body">Describe what you need to get done, in any language. The whole catalog collapses onto the models that fit it.</p>
-          <form class="act-goal-form" id="act-goal-form" autocomplete="off">
-            <input type="text" id="act-goal-input" class="act-goal-input" placeholder="Summarise a 40 page report for my manager" aria-label="What do you need to get done?" />
-            <button type="submit" class="btn-primary act-goal-go" id="act-goal-go">See the pick</button>
-          </form>
-          <div class="act-answer" id="act-answer" hidden></div>
-        </div>
-      </section>
-
-      <section class="act" id="act-tools" data-act="4" data-progress="1">
-        <div class="act-inner">
-          <p class="act-eyebrow" id="act-tools-eyebrow">Act four · the rest of it</p>
-          <h2 class="act-title" id="act-tools-title">Everything else is built on the same two answers</h2>
-          <p class="act-body" id="act-tools-body">Which model, and what to send it. Every tool below is one of those two questions asked in a different shape.</p>
-          <div class="act-tools" id="act-tools-grid"></div>
-        </div>
-      </section>
-    </div>
-    </div>
-  </section>
+  <nav class="rail" id="rail" aria-label="Chapters" data-i18n-aria="railLabel">
+    <span class="rail-line" aria-hidden="true"><span class="rail-fill" id="rail-fill"></span></span>
+    <ol>
+      <li><a href="#ranking" data-rail="ranking"><span class="rail-dot" aria-hidden="true"></span><span class="rail-label" data-i18n="navRanking">Ranking</span></a></li>
+      <li><a href="#compare" data-rail="compare"><span class="rail-dot" aria-hidden="true"></span><span class="rail-label" data-i18n="navCompare">Compare</span></a></li>
+      <li><a href="#radar" data-rail="radar"><span class="rail-dot" aria-hidden="true"></span><span class="rail-label" data-i18n="navRadar">Model Radar</span></a></li>
+      <li><a href="#market" data-rail="market"><span class="rail-dot" aria-hidden="true"></span><span class="rail-label" data-i18n="navMarket">Market</span></a></li>
+      <li><a href="#debates" data-rail="debates"><span class="rail-dot" aria-hidden="true"></span><span class="rail-label" data-i18n="navTopics">AI Debates</span></a></li>
+      <li><a href="#tools" data-rail="tools"><span class="rail-dot" aria-hidden="true"></span><span class="rail-label" data-i18n="navTools">Tools</span></a></li>
+    </ol>
+  </nav>
 
   <div class="lang-note" id="lang-note" hidden></div>
 
-  <!-- ============ Generator view ============ -->
-  <main class="layout view" id="generator-view">
-    <div class="mode-switch" id="gen-mode-switch" role="tablist" aria-label="Generator modes">
-      <button id="mode-goal" class="mode-btn active" type="button" role="tab" aria-selected="true">Describe a goal</button>
-      <button id="mode-finder" class="mode-btn" type="button" role="tab" aria-selected="false">Guided finder - no prompt needed</button>
-    </div>
-    <section id="finder-wrap" class="finder-wrap" hidden></section>
-    <section class="card form-card" aria-labelledby="form-title">
-      <h1 id="form-title" class="card-title">Describe your goal</h1>
-      <p class="card-subtitle">WhichAI turns it into a prompt tailored to each AI model - and tells you which model is the best fit for the job, in plain language.</p>
+  <main id="main">
 
-      <div class="field">
-        <div class="label-row">
-          <label for="goal">Goal <span class="required">*</span></label>
-          <button type="button" id="load-example" class="btn-link">Try an example</button>
-        </div>
-        <textarea id="goal" rows="4" placeholder="e.g., Write a landing page headline and subheadline for a budgeting app aimed at freelancers"></textarea>
-        <p class="field-error" id="goal-error" hidden>Describe your goal to generate prompts.</p>
-        <div class="refine-row">
-          <button type="button" id="refine-goal" class="btn-link">Refine with AI</button>
-          <button type="button" id="open-doctor" class="btn-link">Prompt doctor</button>
-          <span class="field-hint refine-hint" id="refine-hint">Uses your free API key to make the goal clearer and more complete - you review before applying.</span>
-        </div>
-        <div id="refine-box" class="refine-box" hidden>
-          <label for="refine-text" id="refine-label">Suggested goal (editable):</label>
-          <textarea id="refine-text" rows="4"></textarea>
-          <div class="compare-actions refine-actions">
-            <button id="refine-apply" class="btn-primary btn-inline" type="button">Use this version</button>
-            <button id="refine-discard" class="btn-copy" type="button">Keep mine</button>
-            <span class="run-status" id="refine-status" hidden></span>
+    <!-- ============ 01 · The ranking ============ -->
+    <section class="chapter ch-ranking" id="ranking" data-chapter="ranking" data-accent="245 158 11" aria-labelledby="ranking-title">
+      <div class="wrap">
+        <header class="ch-head ch-hero" data-reveal>
+          <p class="ch-eyebrow"><span class="ch-num">01</span><span data-i18n="ch1Eyebrow">The ranking</span></p>
+          <h1 class="ch-title" id="ranking-title" data-i18n="ch1Title">Which AI is best right now?</h1>
+          <p class="ch-lede" data-i18n="ch1Lede">Every model with an official Artificial Analysis score, sorted into tiers by itself. New measurements land here automatically, usually within the hour.</p>
+          <div class="hero-actions">
+            <a class="btn-primary" href="#find" data-i18n="heroFind">Find the AI for my task</a>
+            <a class="btn-ghost" href="#prompt" data-i18n="heroPrompt">Write a better prompt</a>
+            <span class="hero-trust" data-i18n="trustLine">No account · No tracking · Nothing you write leaves your browser</span>
           </div>
-        </div>
-      </div>
+          <div class="kpis" id="rank-kpis" aria-live="polite"></div>
+        </header>
 
-      <div class="field">
-        <label for="context">Context <span class="optional">(optional)</span></label>
-        <textarea id="context" rows="3" placeholder="Background, audience, constraints, examples - anything the AI should know"></textarea>
-      </div>
-
-      <div class="field-grid">
-        <div class="field">
-          <label for="task-type">Task type</label>
-          <select id="task-type"></select>
-          <p class="field-hint" id="detect-hint" hidden></p>
-        </div>
-        <div class="field">
-          <label for="format">Output format</label>
-          <select id="format">
-            <option value="none" selected>No preference</option>
-            <option value="prose">Plain prose</option>
-            <option value="markdown">Markdown</option>
-            <option value="bullets">Bullet points</option>
-            <option value="table">Table</option>
-            <option value="json">JSON</option>
-            <option value="code">Code</option>
-          </select>
-        </div>
-        <div class="field">
-          <label for="length">Length</label>
-          <select id="length">
-            <option value="none" selected>No preference</option>
-            <option value="short">Short</option>
-            <option value="medium">Medium</option>
-            <option value="long">Long &amp; detailed</option>
-          </select>
-        </div>
-        <div class="field">
-          <label for="tone">Tone</label>
-          <select id="tone">
-            <option value="none" selected>No preference</option>
-            <option value="professional">Professional</option>
-            <option value="friendly">Friendly</option>
-            <option value="casual">Casual</option>
-            <option value="persuasive">Persuasive</option>
-            <option value="academic">Academic</option>
-          </select>
-        </div>
-      </div>
-
-      <div class="field">
-        <span class="group-label" id="models-label">Target models</span>
-        <div class="model-groups" role="group" aria-labelledby="models-label">
-          <p class="model-group-label">AI assistants</p>
-          <div class="model-checks">
-            <label class="model-check" data-ai-brand="claude"><input type="checkbox" value="claude" checked /> <span>Claude <small>Anthropic</small></span></label>
-            <label class="model-check" data-ai-brand="chatgpt"><input type="checkbox" value="chatgpt" checked /> <span>ChatGPT <small>OpenAI</small></span></label>
-            <label class="model-check" data-ai-brand="gemini"><input type="checkbox" value="gemini" checked /> <span>Gemini <small>Google</small></span></label>
-            <label class="model-check" data-ai-brand="perplexity"><input type="checkbox" value="perplexity" /> <span>Perplexity <small>search</small></span></label>
-          </div>
-          <p class="model-group-label">Ecosystem assistants</p>
-          <div class="model-checks">
-            <label class="model-check" data-ai-brand="grok"><input type="checkbox" value="grok" /> <span>Grok <small>xAI</small></span></label>
-            <label class="model-check" data-ai-brand="copilot"><input type="checkbox" value="copilot" /> <span>Copilot <small>Microsoft</small></span></label>
-            <label class="model-check" data-ai-brand="meta"><input type="checkbox" value="meta" /> <span>Meta AI <small>Meta</small></span></label>
-          </div>
-          <p class="model-group-label">Open models <small>free/cheap via Groq &amp; OpenRouter</small></p>
-          <div class="model-checks">
-            <label class="model-check" data-ai-brand="llama"><input type="checkbox" value="llama" /> <span>Llama <small>Meta</small></span></label>
-            <label class="model-check" data-ai-brand="glm"><input type="checkbox" value="glm" /> <span>GLM <small>Z.ai</small></span></label>
-            <label class="model-check" data-ai-brand="kimi"><input type="checkbox" value="kimi" /> <span>Kimi <small>Moonshot</small></span></label>
-            <label class="model-check" data-ai-brand="nemotron"><input type="checkbox" value="nemotron" /> <span>Nemotron <small>NVIDIA</small></span></label>
-            <label class="model-check" data-ai-brand="deepseek"><input type="checkbox" value="deepseek" /> <span>DeepSeek <small>open</small></span></label>
-            <label class="model-check" data-ai-brand="qwen"><input type="checkbox" value="qwen" /> <span>Qwen <small>Alibaba</small></span></label>
-          </div>
-        </div>
-        <p class="field-error" id="models-error" hidden>Select at least one target model.</p>
-      </div>
-
-      <button id="generate" class="btn-primary" type="button" title="Ctrl+Enter">Generate prompts</button>
-    </section>
-
-    <section class="results" aria-live="polite">
-      <div id="empty-state" class="empty-state">
-        <svg class="compass-idle" viewBox="0 0 24 24" width="34" height="34" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
-          <circle cx="12" cy="12" r="9.2"></circle>
-          <path class="needle" d="M15.5 8.5l-2.2 5-5 2.2 2.2-5z"></path>
-        </svg>
-        <p>Your optimized prompts will appear here - one version per model, plus a recommendation of which model fits this task best.</p>
-        <div id="demo-card" class="demo-card" hidden></div>
-        <ol class="steps-strip">
-          <li><span class="step-n">1</span> Describe your goal</li>
-          <li><span class="step-n">2</span> Copy the prompt tailored to each AI</li>
-          <li><span class="step-n">3</span> Compare the answers and iterate</li>
-        </ol>
-        <p class="trust-line">No account · No tracking · Nothing you write leaves your browser</p>
-      </div>
-
-      <div id="results-wrap" hidden>
-        <div id="router-card" class="card router-card" hidden></div>
-        <div class="results-head">
-          <h2 class="results-title">Optimized prompts</h2>
-          <button type="button" id="to-compare" class="btn-link">Compare outputs →</button>
-        </div>
-        <div id="tabs" class="tabs" role="tablist"></div>
-        <div id="panels"></div>
-      </div>
-    </section>
-  </main>
-
-  <!-- ============ Model guide view ============ -->
-  <main class="layout-guide view" id="guide-view" hidden>
-    <div class="guide-head">
-      <h1>Model guide</h1>
-      <p>Which AI app fits each kind of task - public benchmarks translated into plain language.</p>
-      <p class="guide-updated" id="guide-updated"></p>
-      <p class="api-status" id="api-status" hidden></p>
-    </div>
-
-    <div class="db-hero" id="modeldb-wrap">
-      <input type="text" id="db-search" class="db-search db-search-hero" placeholder="Search models, vendors, tags…" autocomplete="off" />
-      <div id="db-filters" class="db-filters" aria-label="Filter models"></div>
-      <p class="field-hint" id="db-hint"></p>
-      <div id="db-results" class="db-results"></div>
-      <div id="db-detail" hidden></div>
-    </div>
-
-    <section class="insights" id="insights-wrap" hidden>
-      <h2 id="insights-title">Market at a glance</h2>
-      <p class="guide-updated" id="insights-note"></p>
-      <div class="insights-grid">
-        <div class="card insight-card"><h3 id="chart-top-title">Top models - intelligence index</h3><div id="chart-top" class="chart-box"></div></div>
-        <div class="card insight-card"><h3 id="chart-pp-title">Price vs performance</h3><div id="chart-pp" class="chart-box"></div><p class="router-meta" id="chart-pp-note"></p></div>
-      </div>
-    </section>
-
-    <div class="guide-grid" id="guide-grid"></div>
-
-    <section class="catalog" id="catalog-wrap" hidden>
-      <h2>Model catalog</h2>
-      <p class="guide-updated" id="catalog-note"></p>
-      <div class="guide-grid" id="catalog-grid"></div>
-    </section>
-
-  </main>
-
-  <!-- ============ Compare view ============ -->
-  <main class="layout-guide view" id="compare-view" hidden>
-    <div class="guide-head">
-      <h1>Compare</h1>
-      <p>Run the same optimized prompt in each AI app, paste (or auto-run) the answers, and score them side by side. Everything stays in your browser.</p>
-    </div>
-
-    <div class="subtabs" role="tablist" aria-label="Compare modes">
-      <button id="cmp-tab-outputs" class="subtab active" type="button" role="tab" aria-selected="true">Output comparison</button>
-      <button id="cmp-tab-specs" class="subtab" type="button" role="tab" aria-selected="false">Model comparison</button>
-    </div>
-
-    <div id="cmp-outputs-wrap">
-    <div id="compare-empty" class="empty-state compare-empty">
-      <p>No active comparison. Generate prompts first, then click "Compare outputs" to bring them here. <a href="#">Go to the Generator</a></p>
-    </div>
-
-    <div id="compare-editor" hidden>
-      <p class="compare-meta" id="compare-meta"></p>
-      <div class="compare-grid" id="compare-grid"></div>
-      <div class="compare-actions">
-        <button id="compare-save" class="btn-primary btn-inline" type="button">Save comparison</button>
-        <button id="compare-newver" class="btn-copy" type="button">New version</button>
-        <button id="compare-export" class="btn-copy" type="button">Export .md</button>
-        <button id="compare-merge" class="btn-copy" type="button">Merge studio →</button>
-        <span class="field-hint" id="compare-saved" hidden></span>
-      </div>
-    </div>
-
-    <section class="history" id="compare-history">
-      <h2>Saved comparisons</h2>
-      <div id="history-list"></div>
-    </section>
-    </div>
-
-    <div id="cmp-specs-wrap" hidden></div>
-  </main>
-
-  <!-- ============ Merge studio view ============ -->
-  <main class="layout-guide view" id="merge-view" hidden>
-    <div class="guide-head">
-      <h1 id="merge-title">Merge studio</h1>
-      <p id="merge-sub">Read every answer side by side and hand-pick the best parts into one final draft. Nothing is automatic - you stay the editor.</p>
-      <p class="router-meta"><a href="#compare" id="merge-back">← Back to Compare</a></p>
-    </div>
-    <div id="merge-empty" class="empty-state compare-empty" hidden><p id="merge-empty-text">No outputs yet - run or paste answers in Compare first.</p></div>
-    <div id="merge-wrap" hidden>
-      <label class="merge-toggle"><input type="checkbox" id="merge-highlight" /> <span id="merge-highlight-label">Highlight sentences shared by 2+ models</span></label>
-      <div class="merge-grid">
-        <div class="merge-sources" id="merge-sources"></div>
-        <div class="merge-editor-col">
-          <div class="card merge-editor-card">
-            <div class="label-row"><label for="merge-draft" id="merge-draft-label">Your merged draft</label><span class="field-hint" id="merge-count"></span></div>
-            <textarea id="merge-draft" rows="18" placeholder="Pick a base output or add selections from the sources…"></textarea>
-            <div class="compare-actions">
-              <button id="merge-copy" class="btn-primary btn-inline" type="button">Copy draft</button>
-              <button id="merge-export" class="btn-copy" type="button">Export .md</button>
-              <button id="merge-clear" class="btn-copy" type="button">Clear</button>
-              <span class="field-hint" id="merge-msg" hidden></span>
+        <div class="rank-board card" data-reveal>
+          <p class="rank-summary" id="rank-summary" hidden></p>
+          <div class="rank-toolbar">
+            <div class="rank-controls" id="rank-controls"></div>
+            <div class="rank-search">
+              <label class="visually-hidden" for="rank-search" data-i18n="rankSearchPh">Find any model…</label>
+              <input type="search" id="rank-search" class="search-input" placeholder="Find any model…" data-i18n-ph="rankSearchPh" autocomplete="off" />
+              <div class="rank-results" id="rank-results" role="listbox" hidden></div>
             </div>
           </div>
-          <div class="card merge-add-card">
-            <h2 class="card-title" id="merge-addsource-title">Add another output</h2>
-            <div class="field"><input type="text" id="merge-src-name" placeholder="Label (e.g. GPT-5.6)" autocomplete="off" /></div>
-            <div class="field"><textarea id="merge-src-text" rows="3" placeholder="Paste an output you got elsewhere…"></textarea></div>
-            <button id="merge-src-add" class="btn-copy" type="button">Add source</button>
+          <div class="tier-list" id="tier-list" role="list"></div>
+          <p class="tier-note router-meta" id="tier-note"></p>
+        </div>
+
+        <figure class="scatter-card card" data-reveal>
+          <figcaption class="scatter-head">
+            <h2 class="block-title" data-i18n="scatterTitle">Price vs intelligence</h2>
+            <p class="block-sub" data-i18n="scatterNote">Up and to the left is more intelligence per dollar. Price is on a log scale, so cheap models are no longer squeezed into one corner; the dashed line is the best-value frontier.</p>
+          </figcaption>
+          <div class="scatter-box" id="scatter"></div>
+          <p class="router-meta scatter-legend"><span class="lg lg-S">S</span><span class="lg lg-A">A</span><span class="lg lg-B">B</span><span class="lg lg-C">C</span><span class="lg lg-D">D</span> <span data-i18n="scatterLegend">Dot colour = tier on the Intelligence index. Hover a dot or a chip to find it in the other view; click for details.</span></p>
+        </figure>
+
+        <div class="bridge" data-reveal>
+          <span class="bridge-line" aria-hidden="true"></span>
+          <div class="bridge-card">
+            <p class="bridge-kicker"><span class="bridge-num">02</span> <span data-i18n="navCompare">Compare</span></p>
+            <p class="bridge-text" data-i18n="bridge1">Close at the top? Put the two leaders side by side.</p>
+            <div class="bridge-token token-duel" id="bridge-duel" data-morph-from="duel"></div>
+            <a class="bridge-go" href="#compare" aria-label="Compare" data-i18n-aria="navCompare"><span aria-hidden="true">↓</span></a>
           </div>
         </div>
       </div>
-    </div>
-  </main>
+    </section>
 
-  <!-- ============ Chains view ============ -->
-  <main class="layout-guide view" id="chains-view" hidden>
-    <div class="guide-head">
-      <h1>Chains</h1>
-      <p>Break a complex goal into linked steps: each step gets its own optimized prompt, and the output of one step feeds the next. Auto-run steps where you have a free key; copy &amp; paste elsewhere.</p>
-    </div>
+    <!-- ============ 02 · Head to head ============ -->
+    <section class="chapter ch-compare" id="compare" data-chapter="compare" data-accent="59 130 246" aria-labelledby="compare-title">
+      <div class="wrap">
+        <header class="ch-head" data-reveal>
+          <p class="ch-eyebrow"><span class="ch-num">02</span><span data-i18n="ch2Eyebrow">Head to head</span></p>
+          <h2 class="ch-title" id="compare-title" data-i18n="ch2Title">Compare any two models</h2>
+          <p class="ch-lede" data-i18n="ch2Lede">Official indices, price, context and strengths, side by side. It opens on today's top two and follows the ranking until you pick your own; add a third whenever you like.</p>
+        </header>
+        <div class="vs-wrap">
+          <div class="vs-stage" id="vs-stage" data-morph-to="duel"></div>
+          <div class="vs-body" id="vs-body"></div>
+        </div>
 
-    <div class="card settings-card chain-setup">
-      <div class="field">
-        <label for="chain-goal">Goal <span class="required">*</span></label>
-        <textarea id="chain-goal" rows="3" placeholder="e.g., Launch a newsletter about local food producers"></textarea>
-        <p class="field-error" id="chain-goal-error" hidden>Describe your goal to build a chain.</p>
+        <div class="bridge" data-reveal>
+          <span class="bridge-line" aria-hidden="true"></span>
+          <div class="bridge-card">
+            <p class="bridge-kicker"><span class="bridge-num">03</span> <span data-i18n="navRadar">Model Radar</span></p>
+            <p class="bridge-text" data-i18n="bridge2">Something newer may already be out. Here is what changed this week.</p>
+            <div class="bridge-token token-newest" id="bridge-newest" data-morph-from="newest"></div>
+            <a class="bridge-go" href="#radar" aria-label="Model Radar" data-i18n-aria="navRadar"><span aria-hidden="true">↓</span></a>
+          </div>
+        </div>
       </div>
-      <div class="field">
-        <label for="chain-context">Context <span class="optional">(optional)</span></label>
-        <textarea id="chain-context" rows="2" placeholder="Background, audience, constraints"></textarea>
-      </div>
-      <div class="field">
-        <label for="chain-task-type">Task type</label>
-        <select id="chain-task-type"></select>
-        <p class="field-hint" id="chain-detect" hidden></p>
-      </div>
-      <button id="chain-build" class="btn-primary" type="button">Build chain</button>
-    </div>
+    </section>
 
-    <div id="chain-steps-wrap" hidden>
-      <div class="chain-map-wrap">
-        <p class="finder-block-title" id="chain-map-title">Workflow roadmap</p>
-        <div id="chain-map" class="chain-map" role="list"></div>
-      </div>
-      <div id="chain-steps"></div>
-      <div class="compare-actions">
-        <button id="chain-save" class="btn-primary btn-inline" type="button">Save chain</button>
-        <button id="chain-runall" class="btn-copy" type="button">Run all steps</button>
-        <button id="chain-export" class="btn-copy" type="button">Export .md</button>
-        <button id="chain-share" class="btn-copy" type="button">Share link</button>
-        <button id="chain-addstep" class="btn-copy" type="button">+ Add step</button>
-        <span class="field-hint" id="chain-saved" hidden></span>
-      </div>
-      <p class="run-status" id="chain-runall-status" hidden></p>
-    </div>
+    <!-- ============ 03 · What's new ============ -->
+    <section class="chapter ch-radar" id="radar" data-chapter="radar" data-accent="16 185 129" aria-labelledby="radar-title">
+      <div class="wrap">
+        <header class="ch-head" data-reveal>
+          <p class="ch-eyebrow"><span class="ch-num">03</span><span data-i18n="ch3Eyebrow">What's new</span></p>
+          <h2 class="ch-title" id="radar-title" data-i18n="ch3Title">Model radar: launches, prices, news</h2>
+          <p class="ch-lede" data-i18n="ch3Lede">Launches and price moves from the live catalog, next to headlines from the labs, the press, Hacker News and Hugging Face. Nobody has to post anything: it updates by itself.</p>
+        </header>
+        <div class="radar-latest" id="radar-latest" data-morph-to="newest" hidden></div>
+        <div id="radar-wrap" class="radar-wrap"></div>
 
-    <section class="history">
-      <h2>Saved chains</h2>
-      <div id="chain-history-list"></div>
+        <div class="bridge" data-reveal>
+          <span class="bridge-line" aria-hidden="true"></span>
+          <div class="bridge-card">
+            <p class="bridge-kicker"><span class="bridge-num">04</span> <span data-i18n="navMarket">Market</span></p>
+            <p class="bridge-text" data-i18n="bridge3">Every launch moves prices too. Here is what intelligence costs today.</p>
+            <div class="bridge-token token-price" id="bridge-price" data-morph-from="price"></div>
+            <a class="bridge-go" href="#market" aria-label="Market" data-i18n-aria="navMarket"><span aria-hidden="true">↓</span></a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ 04 · What it costs ============ -->
+    <section class="chapter ch-market" id="market" data-chapter="market" data-accent="6 182 212" aria-labelledby="market-title">
+      <div class="wrap">
+        <header class="ch-head" data-reveal>
+          <p class="ch-eyebrow"><span class="ch-num">04</span><span data-i18n="ch4Eyebrow">What it costs</span></p>
+          <h2 class="ch-title" id="market-title" data-i18n="ch4Title">The AI market, live</h2>
+          <p class="ch-lede" data-i18n="ch4Lede">API prices from OpenRouter, recomputed on every visit: the cheapest way into each tier, the best value, what is free right now, and what a month of your own use would cost.</p>
+        </header>
+        <div class="mk-leader" id="mk-leader" data-morph-to="price" hidden></div>
+        <div id="market-wrap" class="market-wrap"></div>
+
+        <div class="bridge" data-reveal>
+          <span class="bridge-line" aria-hidden="true"></span>
+          <div class="bridge-card">
+            <p class="bridge-kicker"><span class="bridge-num">05</span> <span data-i18n="navTopics">AI Debates</span></p>
+            <p class="bridge-text" data-i18n="bridge4">Behind the price tags: energy, jobs and a capital build-out measured in hundreds of billions. The debates, both sides.</p>
+            <div class="bridge-token token-debate" id="bridge-debate" data-morph-from="debate"></div>
+            <a class="bridge-go" href="#debates" aria-label="AI Debates" data-i18n-aria="navTopics"><span aria-hidden="true">↓</span></a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ 05 · The bigger picture ============ -->
+    <section class="chapter ch-debates" id="debates" data-chapter="debates" data-accent="139 92 246" aria-labelledby="debates-title">
+      <div class="wrap">
+        <header class="ch-head" data-reveal>
+          <p class="ch-eyebrow"><span class="ch-num">05</span><span data-i18n="ch5Eyebrow">The bigger picture</span></p>
+          <h2 class="ch-title" id="debates-title" data-i18n="ch5Title">AI debates, both sides</h2>
+          <p class="ch-lede" data-i18n="ch5Lede">Energy, jobs, money, copyright, regulation, open weights: the strongest case on each side, the numbers with their dates, and what would change the picture.</p>
+        </header>
+        <div id="topics-wrap" class="topics-wrap"></div>
+
+        <section class="glossary card" id="glossary" aria-labelledby="glossary-title" data-reveal>
+          <div class="glossary-head">
+            <div>
+              <h3 class="block-title" id="glossary-title" data-i18n="glossTitle">AI glossary</h3>
+              <p class="block-sub" data-i18n="navGlossarySub">Every AI term in one plain sentence</p>
+            </div>
+            <input type="search" id="glossary-search" class="search-input" placeholder="Search terms…" data-i18n-ph="glossSearchPh" autocomplete="off" aria-labelledby="glossary-title" />
+          </div>
+          <p class="router-meta" id="glossary-count"></p>
+          <div id="glossary-list" class="glossary-list"></div>
+        </section>
+
+        <div class="bridge" data-reveal>
+          <span class="bridge-line" aria-hidden="true"></span>
+          <div class="bridge-card">
+            <p class="bridge-kicker"><span class="bridge-num">06</span> <span data-i18n="navTools">Tools</span></p>
+            <p class="bridge-text" data-i18n="bridge5">Enough reading. What do you need to get done?</p>
+            <div class="bridge-token token-task" id="bridge-task" data-morph-from="task"></div>
+            <a class="bridge-go" href="#tools" aria-label="Tools" data-i18n-aria="navTools"><span aria-hidden="true">↓</span></a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ 06 · Put it to work ============ -->
+    <section class="chapter ch-tools" id="tools" data-chapter="tools" data-accent="244 63 94" aria-labelledby="tools-title">
+      <div class="wrap">
+        <header class="ch-head" data-reveal>
+          <p class="ch-eyebrow"><span class="ch-num">06</span><span data-i18n="ch6Eyebrow">Put it to work</span></p>
+          <h2 class="ch-title" id="tools-title" data-i18n="ch6Title">From the right AI to the right prompt</h2>
+          <p class="ch-lede" data-i18n="ch6Lede">Four tools on one path: find the AI for your task, write the prompt it responds to, check any prompt, then trim what you pay for.</p>
+        </header>
+
+        <ol class="pipeline">
+          <li class="tool-step step-find" id="find">
+            <div class="step-head" data-reveal>
+              <span class="step-n" aria-hidden="true">1</span>
+              <div>
+                <h3 class="step-title" data-i18n="step1Title">Find your AI</h3>
+                <p class="step-sub" data-i18n="step1Sub">A quick answer by task, or four questions for a personal pick. No prompt needed.</p>
+              </div>
+            </div>
+            <div class="quick card" id="quick-wrap"></div>
+            <div class="finder-wrap" id="finder-wrap"></div>
+          </li>
+
+          <li class="tool-step step-prompt" id="prompt">
+            <div class="step-head" data-reveal>
+              <span class="step-n" aria-hidden="true">2</span>
+              <div>
+                <h3 class="step-title" data-i18n="step2Title">Write the prompt</h3>
+                <p class="step-sub" data-i18n="step2Sub">One goal, a prompt tuned for each AI family you select, and the best pick for the task.</p>
+              </div>
+            </div>
+            <div class="gen" id="gen">
+              <div class="gen-form card">
+                <div class="field">
+                  <div class="label-row">
+                    <label for="goal"><span data-i18n="goalLabel">Goal</span> <span class="required" aria-hidden="true">*</span></label>
+                    <button type="button" id="load-example" class="btn-link" data-i18n="tryExample">Try an example</button>
+                  </div>
+                  <textarea id="goal" rows="3" placeholder="e.g., Write a landing page headline and subheadline for a budgeting app aimed at freelancers" data-i18n-ph="goalPh"></textarea>
+                  <p class="field-error" id="goal-error" hidden data-i18n="goalErr">Describe your goal to generate prompts.</p>
+                  <p class="field-hint" id="detect-hint" hidden></p>
+                </div>
+                <details class="gen-more" id="gen-more">
+                  <summary data-i18n="genMore">Context and options</summary>
+                  <div class="field">
+                    <label for="context"><span data-i18n="contextLabel">Context</span> <span class="optional" data-i18n="optionalTag">(optional)</span></label>
+                    <textarea id="context" rows="2" placeholder="Background, audience, constraints, examples - anything the AI should know" data-i18n-ph="contextPh"></textarea>
+                  </div>
+                  <div class="field-grid">
+                    <div class="field"><label for="task-type" data-i18n="taskLabel">Task type</label><select id="task-type"></select></div>
+                    <div class="field"><label for="format" data-i18n="formatLabel">Output format</label>
+                      <select id="format"><option value="none" selected>No preference</option><option value="prose">Plain prose</option><option value="markdown">Markdown</option><option value="bullets">Bullet points</option><option value="table">Table</option><option value="json">JSON</option><option value="code">Code</option></select></div>
+                    <div class="field"><label for="length" data-i18n="lengthLabel">Length</label>
+                      <select id="length"><option value="none" selected>No preference</option><option value="short">Short</option><option value="medium">Medium</option><option value="long">Long &amp; detailed</option></select></div>
+                    <div class="field"><label for="tone" data-i18n="toneLabel">Tone</label>
+                      <select id="tone"><option value="none" selected>No preference</option><option value="professional">Professional</option><option value="friendly">Friendly</option><option value="casual">Casual</option><option value="persuasive">Persuasive</option><option value="academic">Academic</option></select></div>
+                  </div>
+                </details>
+                <div class="field">
+                  <span class="group-label" id="models-label" data-i18n="targetsLabel">Target models</span>
+                  <div class="fam-groups" role="group" aria-labelledby="models-label">
+                    <p class="fam-label" data-i18n="groupAssistants">AI assistants</p>
+                    <div class="fam-chips">
+                      <label class="model-check" data-ai-brand="claude"><input type="checkbox" value="claude" checked /> <span>Claude <small>Anthropic</small></span></label>
+                      <label class="model-check" data-ai-brand="chatgpt"><input type="checkbox" value="chatgpt" checked /> <span>ChatGPT <small>OpenAI</small></span></label>
+                      <label class="model-check" data-ai-brand="gemini"><input type="checkbox" value="gemini" checked /> <span>Gemini <small>Google</small></span></label>
+                      <label class="model-check" data-ai-brand="perplexity"><input type="checkbox" value="perplexity" /> <span>Perplexity <small>search</small></span></label>
+                    </div>
+                    <p class="fam-label" data-i18n="groupEco">Ecosystem assistants</p>
+                    <div class="fam-chips">
+                      <label class="model-check" data-ai-brand="grok"><input type="checkbox" value="grok" /> <span>Grok <small>xAI</small></span></label>
+                      <label class="model-check" data-ai-brand="copilot"><input type="checkbox" value="copilot" /> <span>Copilot <small>Microsoft</small></span></label>
+                      <label class="model-check" data-ai-brand="meta"><input type="checkbox" value="meta" /> <span>Meta AI <small>Meta</small></span></label>
+                    </div>
+                    <p class="fam-label" data-i18n="groupOpen">Open models</p>
+                    <div class="fam-chips">
+                      <label class="model-check" data-ai-brand="llama"><input type="checkbox" value="llama" /> <span>Llama <small>Meta</small></span></label>
+                      <label class="model-check" data-ai-brand="glm"><input type="checkbox" value="glm" /> <span>GLM <small>Z.ai</small></span></label>
+                      <label class="model-check" data-ai-brand="kimi"><input type="checkbox" value="kimi" /> <span>Kimi <small>Moonshot</small></span></label>
+                      <label class="model-check" data-ai-brand="nemotron"><input type="checkbox" value="nemotron" /> <span>Nemotron <small>NVIDIA</small></span></label>
+                      <label class="model-check" data-ai-brand="deepseek"><input type="checkbox" value="deepseek" /> <span>DeepSeek <small>open</small></span></label>
+                      <label class="model-check" data-ai-brand="qwen"><input type="checkbox" value="qwen" /> <span>Qwen <small>Alibaba</small></span></label>
+                    </div>
+                  </div>
+                  <p class="field-error" id="models-error" hidden data-i18n="modelsErr">Select at least one target model.</p>
+                </div>
+                <div class="gen-go">
+                  <button id="generate" class="btn-primary" type="button" data-i18n="generateBtn">Generate prompts</button>
+                  <kbd class="kbd-hint">Ctrl + Enter</kbd>
+                </div>
+              </div>
+              <div class="gen-out" aria-live="polite">
+                <div id="gen-empty" class="gen-empty">
+                  <svg class="compass-idle" viewBox="0 0 24 24" width="36" height="36" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><circle cx="12" cy="12" r="9.2"></circle><path class="needle" d="M15.5 8.5l-2.2 5-5 2.2 2.2-5z"></path></svg>
+                  <p data-i18n="emptyLead">Your optimized prompts will appear here - one version per model, plus a recommendation of which model fits this task best.</p>
+                </div>
+                <div id="results-wrap" hidden>
+                  <div id="router-card" class="router-card card" hidden></div>
+                  <h4 class="results-title" data-i18n="resultsTitle">Optimized prompts</h4>
+                  <div id="tabs" class="tabs" role="tablist"></div>
+                  <div id="panels" class="panels"></div>
+                </div>
+              </div>
+            </div>
+          </li>
+
+          <li class="tool-step step-doctor" id="doctor">
+            <div class="step-head" data-reveal>
+              <span class="step-n" aria-hidden="true">3</span>
+              <div>
+                <h3 class="step-title" data-i18n="navDoctor">Prompt Doctor</h3>
+                <p class="step-sub" data-i18n="navDoctorSub">Score a prompt, see the optimized version</p>
+              </div>
+            </div>
+            <div id="doctor-wrap"></div>
+          </li>
+
+          <li class="tool-step step-stack" id="stack">
+            <div class="step-head" data-reveal>
+              <span class="step-n" aria-hidden="true">4</span>
+              <div>
+                <h3 class="step-title" data-i18n="navStack">Stack Optimizer</h3>
+                <p class="step-sub" data-i18n="navStackSub">Which subscriptions to keep, what to use free</p>
+              </div>
+            </div>
+            <div id="stack-wrap"></div>
+          </li>
+        </ol>
+      </div>
     </section>
   </main>
 
-  <!-- ============ Settings view ============ -->
-  <main class="layout-guide view" id="settings-view" hidden>
-    <div class="guide-head">
-      <h1>Settings</h1>
-      <p>API keys enable automatic execution in Compare. They stay in this browser and are sent only to the provider you call, never to WhichAI's own API, which is read-only and accepts no data.</p>
-    </div>
-
-    <div class="card settings-card">
-      <details class="faq set-guide">
-        <summary id="set-guide-title">How to get free API keys</summary>
-        <ol class="set-guide-steps">
-          <li><strong>Gemini</strong> - open <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener">aistudio.google.com/apikey</a>, sign in with Google, click "Create API key" and copy the key (starts with AIza…). No credit card.</li>
-          <li><strong>Groq - runs Llama</strong> - open <a href="https://console.groq.com/keys" target="_blank" rel="noopener">console.groq.com/keys</a>, create a free account, click "Create API Key" (starts with gsk_…).</li>
-          <li><strong>OpenRouter - open models</strong> - open <a href="https://openrouter.ai/keys" target="_blank" rel="noopener">openrouter.ai/keys</a>, sign up free, click "Create key" (starts with sk-or-…). Model IDs ending in ":free" cost nothing.</li>
-        </ol>
-        <p class="field-hint">Paste each key below, press "Test key" to verify it, then Save. Keys never leave this browser.</p>
-      </details>
-
-      <div class="field" id="key-storage-field">
-        <span class="group-label" id="keymode-label">Where to keep API keys</span>
-        <div class="model-checks">
-          <label class="model-check"><input type="radio" name="keymode" id="keymode-session" value="session" /> <span id="keymode-session-lbl">This session only (safer)</span></label>
-          <label class="model-check"><input type="radio" name="keymode" id="keymode-local" value="local" /> <span id="keymode-local-lbl">Saved on this device</span></label>
+  <!-- ============ Footer: the maker's other projects, about, your data ============ -->
+  <footer class="site-footer" id="footer">
+    <div class="wrap">
+      <section class="projects" id="projects" aria-labelledby="projects-title">
+        <h2 class="block-title" id="projects-title" data-i18n="footProjects">More from the maker of WhichAI</h2>
+        <div class="project-grid">
+          <a class="project-card project-comply" href="https://complyai.wiki" target="_blank" rel="noopener">
+            <span class="project-tag" data-i18n="projComplyTag">Compliance</span>
+            <strong class="project-name">ComplyAI<span>.wiki</span></strong>
+            <span class="project-desc" data-i18n="projComply">EU AI Act, GDPR and contract compliance tools for small businesses. Free to start.</span>
+            <span class="project-go"><span data-i18n="projVisit">Visit</span> ↗</span>
+          </a>
+          <a class="project-card project-war" href="https://warrightnow.vercel.app" target="_blank" rel="noopener">
+            <span class="project-tag" data-i18n="projWarTag">Geopolitics</span>
+            <strong class="project-name">War Right Now</strong>
+            <span class="project-desc" data-i18n="projWar">A live map of wars and geopolitical crises, with the latest news, market indicators and scenarios.</span>
+            <span class="project-go"><span data-i18n="projVisit">Visit</span> ↗</span>
+          </a>
         </div>
-        <p class="field-hint" id="keymode-hint">"Session only" keeps the key in memory and forgets it when the tab closes. "Saved on this device" writes it to browser storage, where it survives a restart - and where any script running on this page could read it. That is why it stays opt-in.</p>
-        <p class="key-warn" id="keymode-warn" hidden>Your keys are being written to this browser's storage. On a shared or work computer, prefer session only.</p>
-        <div class="test-row"><button id="keys-clear" class="btn-copy danger" type="button">Clear all API keys</button><span class="run-status" id="keys-clear-status" hidden></span></div>
+      </section>
 
-        <details class="faq key-risk">
-          <summary id="key-risk-title">What a key can do, and what happens here</summary>
-          <ul class="catalog-list">
-            <li><span class="router-app">What the key can do</span><span class="router-free">Anyone holding it can spend your quota with that provider, under your account. On free tiers that means rate limits and a suspended key; on a paid account it means a bill. It cannot read your provider account, your other keys, or anything on this device.</span></li>
-            <li><span class="router-app">Where it goes from here</span><span class="router-free">Straight from this browser to <code>generativelanguage.googleapis.com</code>, <code>api.groq.com</code> or <code>openrouter.ai</code> - the only three destinations this page's Content-Security-Policy allows. WhichAI's own API is never in that path: it is read-only, takes no request body and would have nothing to leak.</span></li>
-            <li><span class="router-app">Why not route it through a backend</span><span class="router-free">A proxy would mean your key sitting on someone else's machine and every prompt passing through it. Keeping the call in your browser is the more private design, not the lazier one - the trade-off is that browser storage is only as safe as the browser.</span></li>
-            <li><span class="router-app">If a key leaks</span><span class="router-free">Revoke it and issue a new one - it takes a minute and costs nothing: <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener">Google AI Studio</a> · <a href="https://console.groq.com/keys" target="_blank" rel="noopener">Groq</a> · <a href="https://openrouter.ai/keys" target="_blank" rel="noopener">OpenRouter</a>. Never reuse a key you also use in a deployed app.</span></li>
-            <li><span class="router-app">Good habits</span><span class="router-free">Use free-tier keys only, one per tool, and set a spend limit where the provider offers one. WhichAI works fully without any key: copy and paste covers every model.</span></li>
-          </ul>
-        </details>
-      </div>
+      <section class="about" id="about" aria-labelledby="about-title">
+        <h2 class="block-title" id="about-title" data-i18n="footAbout">About WhichAI</h2>
+        <div class="about-grid">
+          <details class="faq" id="about-diff">
+            <summary data-i18n="aboutDiff">How WhichAI differs from a leaderboard</summary>
+            <p class="about-text">Leaderboards measure models. WhichAI decides what to do with them. It does not run its own benchmarks and does not pretend to: it stands on published evaluations, cites them with a date, and adds the layer none of them cover - going from a goal written in plain language to a model choice <em>and</em> a prompt that model responds well to.</p>
+            <div class="cmp-table-wrap">
+              <table class="cmp-table">
+                <caption class="visually-hidden">Comparison between WhichAI and other AI model resources</caption>
+                <thead><tr><th scope="col">&nbsp;</th><th scope="col">LMArena · Artificial Analysis</th><th scope="col">Hugging Face</th><th scope="col">WhichAI</th></tr></thead>
+                <tbody>
+                  <tr><th scope="row">Question it answers</th><td>Which model scores higher?</td><td>Where do I get and run a model?</td><td>Which AI should do <em>this</em> job, what does it cost, and what do I send it?</td></tr>
+                  <tr><th scope="row">What you leave with</th><td>A ranking</td><td>Weights, datasets, spaces</td><td>A pick, the reason, the price and a prompt written for it</td></tr>
+                  <tr><th scope="row">Where numbers come from</th><td>Their own evaluations</td><td>Community uploads</td><td>Their official numbers, read automatically every hour and attributed</td></tr>
+                  <tr><th scope="row">Needs an account</th><td>No</td><td>For most things, yes</td><td>No, and nothing here stores one</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <p class="router-meta">If all you need is a ranking, use Artificial Analysis or LMArena directly - they are linked on every model page here. WhichAI is the layer on top, not a replacement.</p>
+          </details>
 
-      <h2 class="card-title">Google AI Studio - runs Gemini</h2>
-      <div class="field">
-        <label for="gemini-key">API key</label>
-        <span class="key-input-row"><input type="password" id="gemini-key" placeholder="AIza..." autocomplete="off" /><button type="button" class="key-reveal" data-key-target="gemini-key" aria-pressed="false" aria-label="Show or hide the Gemini key">Show</button></span>
-      </div>
-      <div class="field">
-        <label for="gemini-model">Model</label>
-        <input type="text" id="gemini-model" autocomplete="off" />
-        <p class="field-hint">Default: gemini-3.6-flash (free tier). Change only if Google renames its models.</p>
-      </div>
-      <div class="test-row"><button id="test-gemini" class="btn-copy btn-test" type="button">Test key</button><span class="run-status test-status" id="test-gemini-status" hidden></span></div>
+          <details class="faq" id="about-data">
+            <summary data-i18n="aboutData">How the data stays current</summary>
+            <p class="about-text">By itself, every hour, and without a machine ever inventing a number. Figures come from their publishers; words come from people.</p>
+            <ul class="catalog-list">
+              <li><span class="router-app">Scores: official, automatic</span> - the Artificial Analysis Intelligence, Coding and Agentic indices are read from OpenRouter's public model list, which relays the same official numbers published on artificialanalysis.ai. The backend re-reads them every hour; your browser lays them over the catalog on every visit.</li>
+              <li><span class="router-app">Tiers and charts recompute themselves</span> - the S to D tiers, the price map, the market figures and the head-to-head defaults are all computed in your browser from the current numbers. Nothing is ranked by hand.</li>
+              <li><span class="router-app">New models appear on their own</span> - as soon as Artificial Analysis measures a model it joins the catalog, the ranking and the Radar, marked "auto-added" until a person writes its review. Brand-new models from the big labs show in the Radar even before they are measured.</li>
+              <li><span class="router-app">News, read every 30 minutes</span> - headlines from the official OpenAI, Google DeepMind and Mistral AI blogs, TechCrunch AI, Hacker News stories with 100+ points and Hugging Face. Titles and links only: the text belongs to its publishers.</li>
+              <li><span class="router-app">Prices and free routes, automatic</span> - prices follow OpenRouter's list and are labelled as such; free routes are the ones that exist right now.</li>
+              <li><span class="router-app">Never automatic</span> - reviews, caveats, category ratings and the debates. A model without a current official measurement keeps a converted value marked "~" and is never ranked; a rumored model gets no score at all.</li>
+            </ul>
+            <p class="router-meta">The green "Live data" badge at the top says when the numbers were last read. If the sources are unreachable, the site keeps its last known values and says so.</p>
+          </details>
 
-      <h2 class="card-title">Groq - runs Llama</h2>
-      <div class="field">
-        <label for="groq-key">API key</label>
-        <span class="key-input-row"><input type="password" id="groq-key" placeholder="gsk_..." autocomplete="off" /><button type="button" class="key-reveal" data-key-target="groq-key" aria-pressed="false" aria-label="Show or hide the Groq key">Show</button></span>
-      </div>
-      <div class="field">
-        <label for="groq-model">Model</label>
-        <input type="text" id="groq-model" autocomplete="off" />
-        <p class="field-hint">Default: llama-3.3-70b-versatile (free tier). See console.groq.com/docs/models for alternatives.</p>
-      </div>
-      <div class="test-row"><button id="test-groq" class="btn-copy btn-test" type="button">Test key</button><span class="run-status test-status" id="test-groq-status" hidden></span></div>
+          <details class="faq" id="about-method">
+            <summary data-i18n="aboutMethod">Methodology</summary>
+            <ul class="catalog-list">
+              <li><span class="router-app">Overall score</span> - the official Artificial Analysis Intelligence Index, read automatically every hour. Models measured only on an older scale carry a converted value marked "~"; they, and models nobody has measured, are never ranked.</li>
+              <li><span class="router-app">Tiers</span> - on the selected index, current models are ranked: S is the top 5%, A the next 15%, B the next 20%, C the next 25%, D the rest; ties share a tier. Legacy models join only when you ask for them.</li>
+              <li><span class="router-app">Price map</span> - blended API price (3 parts input to 1 part output, USD per 1M tokens, OpenRouter) on a logarithmic axis. The best-value frontier links the models nothing cheaper beats.</li>
+              <li><span class="router-app">Market</span> - "cheapest way into each tier" takes the lowest blended price per tier; "best value" divides the index by the blended price among models at or above the median score; the calculator multiplies OpenRouter prices by the token counts it shows.</li>
+              <li><span class="router-app">Category ratings (0-100)</span> - WhichAI blends of public category leaderboards plus editorial judgment. Guidance, not measurements.</li>
+              <li><span class="router-app">Task router</span> - per-task rankings with a confidence level (high, medium, low) and linked sources. For general use, analysis and coding the order of Claude, ChatGPT and Gemini follows the live index of each maker's best model; the other tasks are editorial.</li>
+              <li><span class="router-app">Independence</span> - no sponsored placements, no affiliate rankings, no accounts, no tracking. Figures correct themselves when their source does; editorial corrections are welcome.</li>
+            </ul>
+            <p class="router-meta">Limits: benchmarks are partial proxies of real work; the live numbers are only as current as their publishers; OpenRouter's price can differ from a vendor's own list; category blends involve judgment.</p>
+          </details>
 
-      <h2 class="card-title">OpenRouter - runs open models (Nemotron, Qwen, GLM, Kimi, DeepSeek)</h2>
-      <div class="field">
-        <label for="openrouter-key">API key</label>
-        <span class="key-input-row"><input type="password" id="openrouter-key" placeholder="sk-or-..." autocomplete="off" /><button type="button" class="key-reveal" data-key-target="openrouter-key" aria-pressed="false" aria-label="Show or hide the OpenRouter key">Show</button></span>
-        <p class="field-hint">One free key unlocks auto-run for several open models. Model IDs ending in ":free" cost nothing (about 20 requests/min, 200/day). Get a key at openrouter.ai - no credit card needed.</p>
-      </div>
-      <div class="field-grid">
-        <div class="field">
-          <label for="or-model-nemotron">Nemotron model</label>
-          <input type="text" id="or-model-nemotron" autocomplete="off" />
+          <details class="faq" id="about-faq">
+            <summary data-i18n="footFaq">FAQ</summary>
+            <details class="faq faq-inner"><summary>Is WhichAI really free?</summary><p>Yes, completely. No account, no subscription, no ads, no tracking. It runs on free hosting and needs no key of any kind.</p></details>
+            <details class="faq faq-inner"><summary>Where do my data go?</summary><p>Nowhere. Your goals, prompts, preferences and watchlist live only in your browser. WhichAI runs a read-only API that serves the public model catalog and news headlines and nothing else: it accepts no request body, stores nothing and never sees what you type.</p></details>
+            <details class="faq faq-inner"><summary>Why are generated prompts in English?</summary><p>Every major model performs measurably best with English instructions. Each generated prompt tells the AI to answer in the language of your task, so you can write your goal in any language and get the answer in your language.</p></details>
+            <details class="faq faq-inner"><summary>How reliable are the numbers?</summary><p>The main score is the official Artificial Analysis Intelligence Index, read automatically every hour - the same number artificialanalysis.ai publishes. Where no current official number exists we show a clearly marked value ("~") and never rank it; rumored models get no score at all.</p></details>
+            <details class="faq faq-inner"><summary>Where did output comparison, Chains and Blind Arena go?</summary><p>Version 0.36 turned WhichAI into one page and removed the tools that needed your own API keys (output comparison, Merge studio, Chains, Blind Arena). Everything left works without any key, account or setup.</p></details>
+            <details class="faq faq-inner"><summary>Can I contribute?</summary><p>Yes. The dataset is open under CC BY 4.0 (<code>/api/models</code>, <code>data/models.json</code>), and corrections are the most valuable thing you can send: a wrong score, a missing model, a bad translation, a screen that confused you.</p></details>
+          </details>
+
+          <details class="faq" id="about-api">
+            <summary data-i18n="aboutApi">The WhichAI API</summary>
+            <p class="about-text">Every endpoint is read-only, needs no key, sends CORS headers and is cached at the edge, so anyone can build on the dataset under CC BY 4.0.</p>
+            <ul class="catalog-list api-list">
+              <li><span class="router-app"><code>GET /api/health</code></span><span class="router-free">Status, data volume, data dates and the list of endpoints.</span></li>
+              <li><span class="router-app"><code>GET /api/catalog</code></span><span class="router-free">The self-updating layer: official scores, current prices, free routes and new models, as one small delta.</span></li>
+              <li><span class="router-app"><code>GET /api/models</code></span><span class="router-free">The full live catalog with search, filters, sorting and pagination. Add <code>?id=claude-opus-5</code> for one model.</span></li>
+              <li><span class="router-app"><code>GET /api/news</code></span><span class="router-free">The Radar news wire: lab blogs, TechCrunch AI, Hacker News and Hugging Face, titles and links.</span></li>
+              <li><span class="router-app"><code>GET /api/benchmarks</code></span><span class="router-free">The task rankings with sources. Add <code>?task=coding</code> to run the router server-side.</span></li>
+              <li><span class="router-app"><code>GET /api/recommend</code></span><span class="router-free">Send <code>?goal=</code> a plain-language goal: the answer is a recommended AI plus a free alternative.</span></li>
+              <li><span class="router-app"><code>GET /api/stats</code></span><span class="router-free">Totals, score distribution, tallies by vendor and tag, leaderboard.</span></li>
+            </ul>
+          </details>
+
+          <details class="faq" id="about-similar">
+            <summary data-i18n="footSimilar">Similar tools</summary>
+            <ul class="catalog-list">
+              <li><span class="router-app">Artificial Analysis · LMArena</span> - the measurements themselves.<span class="router-free">Better at: the full benchmark detail, methodology and history.</span></li>
+              <li><span class="router-app">PromptPerfect</span> - rewrites an existing prompt automatically, including image prompts.<span class="router-free">Better at: one-click optimization of a prompt you already have (paid credits).</span></li>
+              <li><span class="router-app">PromptBase</span> - a marketplace of human-reviewed prompts.<span class="router-free">Better at: buying one proven prompt for one specific job.</span></li>
+              <li><span class="router-app">Anthropic Console &amp; OpenAI Playground</span> - the vendors' own prompt tools.<span class="router-free">Better at: testing with real API calls for that one model.</span></li>
+            </ul>
+          </details>
+
+          <details class="faq" id="about-contribute">
+            <summary data-i18n="footContribute">Contribute</summary>
+            <ul class="catalog-list about-links">
+              <li><span class="router-app">Open dataset</span> - <a href="/api/models" target="_blank" rel="noopener">/api/models</a> and <a href="/data/models.json" target="_blank" rel="noopener">data/models.json</a><span class="router-free">Scores, prices and sources under CC BY 4.0. Attribution: WhichAI, whichai.wiki.</span></li>
+              <li><span class="router-app">Contact</span> - Giacomo Fedeli · <a href="https://www.linkedin.com/in/giacomo-fedeli-277765239/" target="_blank" rel="noopener">LinkedIn</a><span class="router-free">Feedback, corrections, collaborations, hello.</span></li>
+            </ul>
+          </details>
+
+          <section class="faq about-support" id="about-support" hidden>
+            <h3 class="card-title" id="support-title" data-i18n="supportTitle">Support WhichAI</h3>
+            <p class="about-text" id="support-text" data-i18n="supportText">WhichAI is free, has no ads and no sponsors. If it saved you time, a small donation keeps it independent.</p>
+            <a id="support-btn" class="btn-primary" href="#" target="_blank" rel="noopener" data-i18n="supportBtn">Donate ♥</a>
+          </section>
         </div>
-        <div class="field">
-          <label for="or-model-qwen">Qwen model</label>
-          <input type="text" id="or-model-qwen" autocomplete="off" />
+      </section>
+
+      <section class="your-data" id="data" aria-labelledby="data-title">
+        <h2 class="block-title" id="data-title" data-i18n="dataTitle">Your data</h2>
+        <p class="block-sub" id="data-hint" data-i18n="dataHint">Everything WhichAI saves lives in this browser: preferences, your watchlist and the last news it read. Export a backup before switching device or clearing the browser.</p>
+        <div class="data-actions">
+          <button id="data-export" class="btn-ghost" type="button" data-i18n="dataExport">Export backup (.json)</button>
+          <button id="data-import" class="btn-ghost" type="button" data-i18n="dataImport">Import backup</button>
+          <button id="prefs-reset" class="btn-ghost" type="button" data-i18n="prefsReset">Reset remembered preferences</button>
+          <button id="data-wipe" class="btn-ghost danger" type="button" data-i18n="dataWipe">Delete all data</button>
+          <input type="file" id="data-file" accept=".json,application/json" hidden />
         </div>
-        <div class="field">
-          <label for="or-model-glm">GLM model (optional)</label>
-          <input type="text" id="or-model-glm" placeholder="no free route - paid ID uses your credits" autocomplete="off" />
-        </div>
-        <div class="field">
-          <label for="or-model-kimi">Kimi model (optional)</label>
-          <input type="text" id="or-model-kimi" placeholder="no free route - paid ID uses your credits" autocomplete="off" />
-        </div>
-        <div class="field">
-          <label for="or-model-deepseek">DeepSeek model (optional)</label>
-          <input type="text" id="or-model-deepseek" placeholder="no free route - paid ID uses your credits" autocomplete="off" />
-        </div>
+        <p class="run-status" id="data-status" role="status" hidden></p>
+      </section>
+
+      <div class="foot-bottom">
+        <nav class="footer-links" aria-label="Wiki">
+          <a href="/models/" data-i18n="footModels">All models</a>
+          <a href="/best-ai-for/" data-i18n="footBestFor">Best AI for…</a>
+          <a href="/compare/" data-i18n="footHeadToHeads">Head-to-heads</a>
+          <a href="/glossary/" data-i18n="footGlossary">Glossary</a>
+          <a href="/data/models.json" data-i18n="footDataset">Open dataset</a>
+          <a href="#" id="foot-support" class="foot-support" target="_blank" rel="noopener" hidden data-i18n="footSupport">Support ♥</a>
+        </nav>
+        <p class="foot-line"><span id="foot-version">WhichAI v0.36</span> · <span data-i18n="footerText">Runs in your browser: no account, no tracking. Your goals and prompts never leave your device.</span></p>
+        <p id="visit-counter" class="visit-counter" hidden></p>
       </div>
-      <p class="field-hint">Defaults are free routes, checked against OpenRouter automatically: if a default route is retired, WhichAI switches to the best free route of the same family that exists right now (your own custom IDs are never touched). GLM, Kimi and DeepSeek usually have no free route - leave empty to keep copy &amp; paste, or set a paid ID (billed to your own OpenRouter credits) from openrouter.ai/models.</p>
-      <p class="field-hint or-heal-note" id="or-heal-note" hidden></p>
-      <div class="test-row"><button id="test-openrouter" class="btn-copy btn-test" type="button">Test key</button><span class="run-status test-status" id="test-openrouter-status" hidden></span></div>
-
-      <h2 class="card-title">Preferences</h2>
-      <p class="field-hint">WhichAI automatically remembers the last options you used in the Generator (models, task type, format, length, tone) and restores them next time.</p>
-      <button id="prefs-reset" class="btn-copy" type="button">Reset remembered preferences</button>
-
-      <h2 class="card-title" id="data-title">Your data</h2>
-      <p class="field-hint" id="data-hint">Everything WhichAI saves lives in this browser: preferences, comparisons, chains, merge drafts and (if you chose so) API keys. Export a backup before switching device or clearing the browser.</p>
-      <div class="compare-actions">
-        <button id="data-export" class="btn-copy" type="button">Export backup (.json)</button>
-        <button id="data-import" class="btn-copy" type="button">Import backup</button>
-        <button id="data-wipe" class="btn-copy danger" type="button">Delete all data</button>
-        <input type="file" id="data-file" accept=".json,application/json" hidden />
-      </div>
-      <p class="run-status" id="data-status" hidden></p>
-
-      <div class="compare-actions">
-        <button id="settings-save" class="btn-primary btn-inline" type="button">Save settings</button>
-        <span class="field-hint" id="settings-saved" hidden></span>
-      </div>
-
-      <p class="router-meta">Get free keys: <a href="https://aistudio.google.com" target="_blank" rel="noopener">Google AI Studio</a> · <a href="https://console.groq.com" target="_blank" rel="noopener">Groq Console</a> · <a href="https://openrouter.ai/keys" target="_blank" rel="noopener">OpenRouter</a>. Claude and ChatGPT have no free API - for those, use Copy &amp; paste in Compare.</p>
     </div>
-  </main>
-
-
-  <!-- ============ About view ============ -->
-  <main class="layout-guide view" id="about-view" hidden>
-    <div class="guide-head">
-      <h1>About WhichAI</h1>
-      <p>An open, free, sincere project with one goal: reduce the uncertainty of using AI - which model, which prompt, with evidence.</p>
-    </div>
-
-    <div class="card about-card" id="about-different">
-      <h2 class="card-title">How WhichAI is different from a leaderboard</h2>
-      <p class="about-text">Leaderboards measure models. WhichAI decides what to do with them. It does not run its own benchmarks and does not pretend to: it stands on published evaluations, cites them with a date, and adds the layer none of them cover - going from a goal written in plain language to a model choice <em>and</em> a prompt that model responds well to.</p>
-      <div class="cmp-table-wrap">
-        <table class="cmp-table">
-          <caption class="visually-hidden">Comparison between WhichAI and other AI model resources</caption>
-          <thead>
-            <tr><th scope="col">&nbsp;</th><th scope="col">LMArena · Artificial Analysis</th><th scope="col">Hugging Face</th><th scope="col">WhichAI</th></tr>
-          </thead>
-          <tbody>
-            <tr><th scope="row">Question it answers</th><td>Which model scores higher?</td><td>Where do I get and run a model?</td><td>Which AI should do <em>this</em> job, and what do I send it?</td></tr>
-            <tr><th scope="row">What you leave with</th><td>A ranking</td><td>Weights, datasets, spaces</td><td>A model pick, the reason, and a prompt written for it</td></tr>
-            <tr><th scope="row">Made for</th><td>Researchers tracking the frontier</td><td>ML engineers and builders</td><td>Anyone with a task and twelve open tabs</td></tr>
-            <tr><th scope="row">Where numbers come from</th><td>Their own evaluations</td><td>Community uploads</td><td>Their official numbers, read automatically every hour and attributed</td></tr>
-            <tr><th scope="row">Needs an account</th><td>No</td><td>For most things, yes</td><td>No, and nothing here stores one</td></tr>
-          </tbody>
-        </table>
-      </div>
-      <p class="router-meta">If all you need is a ranking, use Artificial Analysis or LMArena directly - they are linked on every model page here. WhichAI is the layer on top, not a replacement.</p>
-    </div>
-
-    <div class="card about-card" id="about-api">
-      <h2 class="card-title">The WhichAI API</h2>
-      <p class="about-text">The catalog is not locked inside the page. Every endpoint is read-only, needs no key, sends CORS headers and is cached at the edge, so anyone can build on the dataset under CC BY 4.0.</p>
-      <ul class="catalog-list api-list">
-        <li><span class="router-app"><code>GET /api/health</code></span><span class="router-free">Status, data volume, the editorial and live data dates and the list of endpoints.</span></li>
-        <li><span class="router-app"><code>GET /api/catalog</code></span><span class="router-free">The self-updating layer: official Artificial Analysis scores, current prices, live free routes and every model measured since the last deploy, as one small delta.</span></li>
-        <li><span class="router-app"><code>GET /api/models</code></span><span class="router-free">The full live catalog with search, tag and vendor filters, sorting and pagination. Add <code>?id=claude-opus-5</code> for one model.</span></li>
-        <li><span class="router-app"><code>GET /api/benchmarks</code></span><span class="router-free">The curated task rankings with sources. Add <code>?task=coding</code> to run the router server-side.</span></li>
-        <li><span class="router-app"><code>GET /api/recommend</code></span><span class="router-free">Send <code>?goal=</code> a plain-language goal: the server detects the task type and answers with a recommended AI plus a free alternative.</span></li>
-        <li><span class="router-app"><code>GET /api/stats</code></span><span class="router-free">Aggregates computed on the server: totals, score distribution, tallies by vendor and tag, leaderboard.</span></li>
-      </ul>
-      <p class="router-meta">Read-only by design: the API accepts GET and nothing else, takes no request body and stores nothing. Your goals, prompts and keys never reach it.</p>
-    </div>
-
-    <div class="card about-card" id="about-freshness">
-      <h2 class="card-title">How the data stays current</h2>
-      <p class="about-text">By itself, every hour, and without a machine ever inventing a number. Figures come from their publishers; words come from people. The split is deliberate:</p>
-      <ul class="catalog-list">
-        <li><span class="router-app">Scores: official, automatic</span> - the Artificial Analysis Intelligence, Coding and Agentic indices are read from OpenRouter's public model list, which relays the same official numbers published on artificialanalysis.ai. The backend re-reads them every hour; your browser lays them over the catalog on every visit.</li>
-        <li><span class="router-app">New models appear on their own</span> - as soon as Artificial Analysis measures a model, it joins the catalog, the rankings and the Radar, marked "auto-added" until a person writes its review. Brand-new models from the big labs show in the Radar even before they are measured, and are ranked only once they are.</li>
-        <li><span class="router-app">Prices and free routes, automatic</span> - prices follow OpenRouter's list and are labelled as such; a retired free route that powered auto-run is replaced by the best live route of the same family, without touching IDs you typed yourself.</li>
-        <li><span class="router-app">Every deploy bakes fresh data in</span> - the build reads the same sources, ships them inside the page and regenerates the static wiki, so even the first paint and the search-engine pages are current.</li>
-        <li><span class="router-app">Never automatic</span> - reviews, caveats and category ratings. A model without a current official measurement keeps a converted value marked "~" and is never ranked; a rumored model gets no score at all.</li>
-        <li><span class="router-app">Checked on every change</span> - continuous integration runs the static checks, a DOM smoke test that boots the real app, the API tests and the self-updating catalog against a real saved snapshot. A change that breaks any of them never reaches the site.</li>
-      </ul>
-      <p class="router-meta">The green "Live data" badge at the top says when the numbers were last read. If the sources are unreachable, the site keeps its last known values and says so.</p>
-    </div>
-
-    <div class="card about-card" id="about-faq">
-      <h2 class="card-title">FAQ</h2>
-      <details class="faq"><summary>Is WhichAI really free?</summary><p>Yes, completely. No account, no subscription, no ads, no tracking. It runs on free hosting and the optional auto-run features use your own free API keys (Google AI Studio, Groq). There is nothing to sell you.</p></details>
-      <details class="faq"><summary>Where do my data and API keys go?</summary><p>Nowhere. Everything (goals, prompts, comparisons, chains, keys) lives only in your browser. By default API keys are kept for the current session only; saving them on the device is an explicit opt-in in Settings. WhichAI runs a read-only API that serves the public model catalog and nothing else: it accepts no request body, stores nothing and never sees what you type. API keys are sent only to the provider you call (Google, Groq or OpenRouter), directly from your browser.</p></details>
-      <details class="faq"><summary>Why are generated prompts in English?</summary><p>Every major model performs measurably best with English instructions. Each generated prompt includes a rule telling the AI to answer in the language of your task - so you can write your goal in any language and get the answer in your language, with English-optimized instructions doing the heavy lifting.</p></details>
-      <details class="faq"><summary>How reliable are the benchmark numbers?</summary><p>The main score is the official Artificial Analysis Intelligence Index, read automatically every hour (via OpenRouter's public model list) - the same number artificialanalysis.ai publishes. Where no current official number exists we show a clearly marked value ("~") and never rank it; rumored models get no score at all. The badge at the top says when the data was last read.</p></details>
-      <details class="faq"><summary>What do the category scores and labels mean?</summary><p>Each model in the database gets one overall score (Artificial Analysis Intelligence Index where published) plus four category ratings - Coding, Reasoning, Writing, Agents &amp; tools - on a 0–100 scale. Category ratings are WhichAI blends of public category leaderboards and editorial judgment: use them to compare models at a glance, not as official measurements. Labels (like "free", "open weights", "in Generator") are filters: "in Generator" means you can generate optimized prompts for that model family right here.</p></details>
-      <details class="faq"><summary>Do I need API keys to use this?</summary><p>No. Copy &amp; paste works with every model. Keys only add convenience: with free Google AI Studio, Groq or OpenRouter keys, Compare and Chains can run Gemini, Llama and several open models (Nemotron, Qwen Coder…) automatically.</p></details>
-      <details class="faq"><summary>How does the model recommendation work?</summary><p>A curated dataset translates public benchmarks into per-task rankings with a confidence level and linked sources. It is guidance, not gospel - near-ties are declared as ties, and the router never hides its reasoning.</p></details>
-      <details class="faq"><summary>Can I contribute?</summary><p>Yes, in two ways. The dataset is open under CC BY 4.0 (<code>/api/models</code>, <code>data/models.json</code>) so you can build on it or check the numbers. And corrections are the most valuable thing you can send: a wrong score, a missing model, a bad translation, a screen that confused you. Contact details are below.</p></details>
-    </div>
-
-    <div class="card about-card" id="about-similar">
-      <h2 class="card-title">Similar tools - and what they do better</h2>
-      <p class="router-summary">WhichAI is not the only prompting tool. In the spirit of openness, here is the honest landscape:</p>
-      <ul class="catalog-list">
-        <li><span class="router-app">PromptPerfect</span> - AI-powered engine that rewrites an existing prompt for maximum quality, including image prompts (Midjourney, Stable Diffusion).<span class="router-free">Better at: one-click automated optimization of a prompt you already have (paid credits).</span></li>
-        <li><span class="router-app">AIPRM</span> - Chrome extension with 5,400+ curated prompt templates inside ChatGPT.<span class="router-free">Better at: ready-made templates with one click in the browser, if you live in ChatGPT (from $20/mo).</span></li>
-        <li><span class="router-app">PromptBase</span> - marketplace of expert-crafted, human-reviewed prompts ($1.99–9.99 each).<span class="router-free">Better at: buying one proven prompt for one specific job, with example outputs.</span></li>
-        <li><span class="router-app">PromptLayer</span> - Git-style prompt versioning and observability for teams.<span class="router-free">Better at: professional prompt lifecycle management for developer teams shipping LLM apps.</span></li>
-        <li><span class="router-app">Anthropic Console &amp; OpenAI Playground</span> - the vendors' own prompt-improvement and testing tools.<span class="router-free">Better at: testing with real API calls and vendor-official optimization for that one model.</span></li>
-      </ul>
-      <p class="router-meta">What WhichAI offers instead: prompts for 13 models from a single goal, benchmark-based model recommendations, side-by-side comparison and multi-step chains - 100% free, no account, everything in your browser.</p>
-    </div>
-
-    <div class="card about-card" id="about-methodology">
-      <h2 class="card-title">Methodology v1.0</h2>
-      <p class="router-meta">Updated: October 3, 2026 (v0.35: official scores, refreshed automatically).</p>
-      <ul class="catalog-list">
-        <li><span class="router-app">Overall score</span> - the official Artificial Analysis Intelligence Index, read automatically every hour from OpenRouter's public model list (one source, one scale for every model). Models measured only on an older scale carry a converted value marked "~"; they, and models nobody has measured, are never ranked.</li>
-        <li><span class="router-app">Category ratings (0-100)</span> - WhichAI blends of public category leaderboards (LMArena coding, SWE-bench, agentic and writing boards) plus editorial judgment. Guidance, not measurements.</li>
-        <li><span class="router-app">Task router</span> - per-task rankings with a confidence level (high / medium / low) and linked sources. For general use, analysis and coding the order of Claude, ChatGPT and Gemini follows the live index of each maker's best model; the other tasks are editorial. Near-ties are declared as ties.</li>
-        <li><span class="router-app">Prices, context, speed</span> - OpenRouter's public model list (read automatically, labelled "OpenRouter") and vendor pages for what it does not publish. Unpublished values show "n/a" and never enter charts.</li>
-        <li><span class="router-app">Status labels</span> - public, preview, private, legacy, rumored. Rumored and private models are info-only: they never appear in rankings or recommendations.</li>
-        <li><span class="router-app">Independence</span> - no sponsored placements, no affiliate rankings, no accounts, no tracking. Figures correct themselves when their source does; editorial corrections are welcome: the contact details are in Contribute below.</li>
-      </ul>
-      <p class="router-meta">Limits: benchmarks are partial proxies of real work; the live numbers are only as current as their publishers (an hour behind at most on our side); OpenRouter's price can differ from a vendor's own list; category blends involve judgment. When in doubt, run your own comparison in Compare.</p>
-    </div>
-
-    <div class="card about-card" id="about-support" hidden>
-      <h2 class="card-title" id="support-title">Support WhichAI</h2>
-      <p class="about-text" id="support-text">WhichAI is free, has no ads and no sponsors: the only costs are the domain and the hours that go into keeping 100+ models honest and up to date. If it saved you time, a small donation keeps it independent.</p>
-      <div class="compare-actions">
-        <a id="support-btn" class="btn-primary btn-inline btn-official" href="#" target="_blank" rel="noopener">Donate ♥</a>
-      </div>
-      <p class="router-meta">Donations never influence rankings: methodology and sources stay public.</p>
-    </div>
-
-    <div class="card about-card" id="about-contribute">
-      <h2 class="card-title">Contribute &amp; contact</h2>
-      <p class="about-text">The dataset is open (CC BY 4.0) and reachable through the API; the application source is not public. Wrong data, missing models, bad translations and confusing screens are the most useful things you can send:</p>
-      <ul class="catalog-list about-links">
-        <li><span class="router-app">Open dataset</span> - <a href="/api/models" target="_blank" rel="noopener">/api/models</a> and <a href="/data/models.json" target="_blank" rel="noopener">data/models.json</a><span class="router-free">109+ models with scores, prices and sources under CC BY 4.0. Attribution: WhichAI, whichai.wiki.</span></li>
-        <li><span class="router-app">Contact</span> - Giacomo Fedeli · <a href="https://www.linkedin.com/in/giacomo-fedeli-277765239/" target="_blank" rel="noopener">LinkedIn</a><span class="router-free">For anything else: feedback, collaborations, hello.</span></li>
-      </ul>
-    </div>
-  </main>
-
-  <!-- ============ Model Radar view ============ -->
-  <main class="layout-guide view" id="radar-view" hidden>
-    <div id="radar-wrap"></div>
-  </main>
-
-  <!-- ============ Live market view ============ -->
-  <main class="layout-guide view" id="live-view" hidden>
-    <div id="live-wrap"></div>
-  </main>
-
-  <!-- ============ AI Debates view ============ -->
-  <main class="layout-guide view" id="topics-view" hidden>
-    <div id="topics-wrap"></div>
-  </main>
-
-  <!-- ============ Blind Arena view ============ -->
-  <main class="layout-guide view" id="arena-view" hidden>
-    <div id="arena-wrap"></div>
-  </main>
-
-  <!-- ============ Stack Optimizer view ============ -->
-  <main class="layout-guide view" id="stack-view" hidden>
-    <div id="stack-wrap"></div>
-  </main>
-
-  <!-- ============ Prompt Doctor view ============ -->
-  <main class="layout-guide view" id="doctor-view" hidden>
-    <div id="doctor-wrap"></div>
-  </main>
-
-  <!-- ============ Glossary view ============ -->
-  <main class="layout-guide view" id="glossary-view" hidden>
-    <div class="guide-head">
-      <h1 id="glossary-title">AI glossary</h1>
-      <p id="glossary-sub">Every AI term in plain words - one sentence each, examples included.</p>
-    </div>
-    <input type="text" id="glossary-search" class="db-search db-search-hero" placeholder="Search terms…" autocomplete="off" />
-    <p class="field-hint" id="glossary-count"></p>
-    <div id="glossary-list" class="glossary-list"></div>
-  </main>
-
-  <footer class="site-footer">
-    <nav class="footer-links" aria-label="More from WhichAI">
-      <a href="#about-faq" id="foot-faq">FAQ</a>
-      <a href="#about-similar" id="foot-similar">Similar tools</a>
-      <a href="#about-contribute" id="foot-contribute">Contribute</a>
-      <a href="#glossary" id="foot-glossary">Glossary</a>
-      <a href="#" id="foot-support" class="foot-support" target="_blank" rel="noopener" hidden>Support ♥</a>
-    </nav>
-    <p>WhichAI v0.35 · Growth · Runs in your browser: no account, no tracking. Your goals, prompts and keys never leave your device.</p>
-    <p id="visit-counter" class="visit-counter" hidden></p>
   </footer>
 
-  <noscript><p style="text-align:center;padding:24px;">WhichAI needs JavaScript to run.</p></noscript>
+  <!-- ============ Model drawer: one model, from anywhere ============ -->
+  <div class="drawer-backdrop" id="drawer-backdrop" hidden></div>
+  <aside class="drawer" id="drawer" role="dialog" aria-modal="true" aria-labelledby="drawer-title" hidden>
+    <div class="drawer-bar">
+      <span class="drawer-kicker" id="drawer-title" data-i18n="drawerTitle">Model details</span>
+      <button type="button" class="icon-btn" id="drawer-close" aria-label="Close" data-i18n-aria="close"><span aria-hidden="true">✕</span></button>
+    </div>
+    <div class="drawer-body" id="drawer-body"></div>
+  </aside>
+
+  <noscript><p class="noscript">WhichAI needs JavaScript for its live ranking, charts and tools. The static wiki works without it: <a href="/models/">all models</a>, <a href="/best-ai-for/">best AI for each task</a>.</p></noscript>
 
   <script src="js/engine.js"></script>
   <script src="js/benchmarks.js"></script>
-  <script src="js/chains.js"></script>
   <script src="js/i18n.js"></script>
   <script src="js/models-db.js"></script>
   <script src="js/live-seed.js"></script>
   <script src="js/live-catalog.js"></script>
-  <script src="js/merge.js"></script>
+  <script src="js/brands.js"></script>
   <script src="js/charts.js"></script>
-  <script src="js/glossary.js"></script>
-  <script src="js/finder.js"></script>
-  <script src="js/modelcompare.js"></script>
-  <script src="js/stack.js"></script>
-  <script src="js/doctor.js"></script>
-  <script src="js/changes.js"></script>
-  <script src="js/radar.js"></script>
-  <script src="js/live-data.js"></script>
-  <script src="js/sharecard.js"></script>
+  <script src="js/motion.js"></script>
   <script src="js/config.js"></script>
   <script src="js/api.js"></script>
-  <script src="js/stage.js"></script>
-  <script src="js/journey.js"></script>
-  <script src="js/support.js"></script>
+  <script src="js/ranking.js"></script>
+  <script src="js/modelcompare.js"></script>
+  <script src="js/changes.js"></script>
+  <script src="js/radar.js"></script>
+  <script src="js/market.js"></script>
   <script src="js/topics.js"></script>
-  <script src="js/arena.js"></script>
-  <script src="js/brands.js"></script>
-  <script src="js/welcome.js"></script>
+  <script src="js/glossary.js"></script>
+  <script src="js/finder.js"></script>
+  <script src="js/generator.js"></script>
+  <script src="js/doctor.js"></script>
+  <script src="js/stack.js"></script>
+  <script src="js/sharecard.js"></script>
+  <script src="js/support.js"></script>
   <script src="js/app.js"></script>
 </body>
 </html>

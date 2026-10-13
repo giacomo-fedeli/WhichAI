@@ -42,6 +42,9 @@ jobs:
       - name: Self-updating catalog (delta, merge, API, build seed) on a real snapshot
         run: node tests/catalog-tests.mjs
 
+      - name: Radar news wire (feeds parsed offline, fail-soft, cache)
+        run: node tests/news-tests.mjs
+
       - name: Static wiki regenerates cleanly
         run: |
           node tools/build-seo.mjs

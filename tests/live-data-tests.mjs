@@ -1,5 +1,6 @@
-/* WhichAI - live market feed tests (v0.34).
-   Covers api/_live-core.js, api/live.js and js/live-data.js entirely offline:
+/* WhichAI - live market feed tests (v0.36).
+   Covers api/_live-core.js, api/live.js and the browser modules that read
+   public data (js/live-catalog.js, js/radar.js) entirely offline:
    the fetcher is injected, so nothing here depends on OpenRouter being up or
    on what it happens to be serving today.
 
@@ -159,13 +160,22 @@ function model(over) {
   check("an upstream error status does not become data", (await http500.get()).status === "unavailable");
 }
 
-/* ---------- 7. the browser module guards its own cache ---------- */
+/* ---------- 7. the browser modules guard their own caches (v0.36) ----------
+   Since v0.36 the page reads public data through two modules only: the
+   catalog delta (js/live-catalog.js) and the Radar news wire (js/radar.js).
+   Neither may carry anything the reader typed, and neither may trust a
+   cached or fetched payload it has not validated. */
 {
-  const src = readFileSync("js/live-data.js", "utf8");
-  check("the browser module sends nothing of the user's", !/apiKey|goal|prompt|localStorage\.setItem\("pc_/.test(src) && /No user text/i.test(src));
-  check("the browser module validates before trusting its cache", /function usable/.test(src) && /schemaVersion !== 1/.test(src));
-  check("a free default is verified before use, never silently replaced", /lookupFreeRoute/.test(src) && /never\s*\n?\s*\/\/?\s*replaced|is never\s+replaced/i.test(src.replace(/\s+/g, " ")) || /lookupFreeRoute/.test(src));
-  check("the browser module tells the reader each benchmark has its own scale", /own scale/i.test(src));
+  const cat = readFileSync("js/live-catalog.js", "utf8");
+  const radar = readFileSync("js/radar.js", "utf8");
+  check("the catalog module sends nothing of the user's: a bare GET with no body", /fetch\(ENDPOINT, \{ headers: \{ Accept: "application\/json" \} \}\)/.test(cat) && !/body:|apiKey|goal|prompt/.test(cat));
+  check("the catalog module validates a delta before trusting it", /function isDelta/.test(cat) && /d\.schemaVersion === SCHEMA/.test(cat) && /d\.kind === KIND/.test(cat));
+  check("the catalog module cleans every string and route it accepts", /function str\(/.test(cat) && /function route\(/.test(cat) && /TAGS_ALLOWED/.test(cat));
+  check("the catalog module never deletes a model or rewrites a review", !/\.review\s*=|models\.splice|models\.length\s*=|delete m\.(review|name|vendor)\b/.test(cat));
+  check("the news wire is a keyless GET with no parameters", /Api\.get\("\/news", null,/.test(radar) && !/apiKey|Authorization/.test(radar));
+  check("the news wire is validated before it is shown or cached", /function isWire/.test(radar) && /isWire\(d\) && d\.items\.length/.test(radar));
+  check("news links open safely in a new tab (https only, noopener)", /function safeHref/.test(radar) && /noopener noreferrer/.test(radar));
+  check("a failed news read keeps the last good wire instead of emptying it", /else if \(!wire\)/.test(radar) && /wireState = "cached"/.test(radar));
 }
 
 /* ---------- 8. the invariant that protects the whole site (v0.35) ----------

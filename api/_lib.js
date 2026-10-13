@@ -14,7 +14,7 @@ var CatalogCore = require("./_catalog-core.js");
 var LiveCatalog = require("../js/live-catalog.js");
 
 var API_VERSION = "1.1.0";
-var APP_VERSION = "v0.35";
+var APP_VERSION = "v0.36";
 
 /* meta(db): pass the catalog the endpoint actually served, so the dates and
    the scale note always describe the numbers next to them. */

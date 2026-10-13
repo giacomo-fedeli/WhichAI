@@ -1,4 +1,4 @@
-/* WhichAI - the self-updating catalog (v0.35).
+/* WhichAI - the self-updating catalog (v0.36).
    Everything here runs offline against a REAL OpenRouter response saved on
    October 3, 2026 (tests/fixtures/openrouter-2026-10-03.json): the delta,
    the browser merge, the /api/catalog endpoint, the build-time seed and wiki.
@@ -126,7 +126,7 @@ const delta = Core.computeDelta(DB, live, { now: WHEN });
     const ctx = {
       PromptCompassModelsDB: clone(DB), WhichAILiveSeed: seed,
       localStorage: { getItem: (k) => (k in store ? store[k] : null), setItem: (k, v) => { store[k] = String(v); } },
-      document: { readyState: "loading" }, addEventListener: () => {}, setTimeout: () => {},
+      document: { readyState: "loading", addEventListener: () => {} }, addEventListener: () => {}, setTimeout: () => {},
       /* The page's clock is pinned to the fixture's day: a test must not
          start failing in December because October is "too old" by then. */
       Date: PinnedDate, JSON, Intl, Object, Array, Math, String, Number, isNaN, CustomEvent: function () {}, dispatchEvent: () => {}
@@ -216,10 +216,11 @@ const delta = Core.computeDelta(DB, live, { now: WHEN });
   const sw = readFileSync("sw.js", "utf8");
   check("wiring: both are precached for offline use, the API never is", sw.includes("js/live-seed.js") && sw.includes("js/live-catalog.js") && sw.includes('url.pathname.indexOf("/api/") === 0'));
   const app = readFileSync("js/app.js", "utf8");
-  check("wiring: the app redraws when fresh data lands", app.includes("onChange(onLiveData)") && app.includes("_rankCache = null"));
-  check("wiring: a retired free default heals itself, a user's own route is left alone", app.includes("function healFreeRoutes") && app.includes("HISTORIC_OR_DEFAULTS") && /cur !== DEFAULT_OR_MODELS\[f\] && HISTORIC_OR_DEFAULTS\.indexOf\(cur\) === -1/.test(app));
-  check("wiring: the shipped Qwen default is a route that exists", JSON.stringify(FIXTURE).includes('"qwen/qwen3.8-27b:free"') && app.includes('qwen: "qwen/qwen3.8-27b:free"'));
-  check("wiring: rankings use official measurements only", /!m\.score\.est && m\.status !== "rumored"/.test(app) && readFileSync("js/journey.js", "utf8").includes("!m.score.est && m.status !== \"rumored\""));
+  const ranking = readFileSync("js/ranking.js", "utf8");
+  check("wiring: the app redraws every mounted chapter when fresh data lands", app.includes("onChange(onLiveData)") && /function onLiveData\(\) \{[\s\S]{0,600}WhichAIRanking\.rerender\(\)[\s\S]{0,600}WhichAIMarket\.rerender\(\)/.test(app));
+  check("wiring: the site ships no free-route default of its own (v0.36)", !/DEFAULT_OR_MODELS|HISTORIC_OR_DEFAULTS|healFreeRoutes/.test(app));
+  check("wiring: the free list shown is the live one", ["js/market.js", "js/stack.js", "js/finder.js"].every((f) => readFileSync(f, "utf8").includes("db.live.freeRoutes")));
+  check("wiring: rankings use official measurements only", /!m\.score\.est && m\.status !== "rumored"/.test(ranking));
 }
 
 console.log("\n" + pass + " passed, " + fail + " failed" + (fail ? "" : " — CATALOG ALL GREEN"));
