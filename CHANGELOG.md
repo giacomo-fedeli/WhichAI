@@ -11,6 +11,7 @@ The cards that flew from one chapter to the next are gone. A quiet dot grid behi
 - Crossing into the next chapter dissolves one pattern into the other from the bottom up, as a pure function of the scroll position: stop half-way and it stays half-way. While you read, the grid drifts up slower than the page and each pattern follows your reading.
 - Interactivity: dots swell and make room around the mouse pointer; a click on an empty part of the page sends a ripple. Nothing reacts to touch scrolling.
 - `WhichAIMotion.onFrame(fn)`: every frame's geometry (scroll, viewport, chapters, accent, layout version) for listeners.
+- **The maker's own page** ([giacomo-fedeli.vercel.app](https://giacomo-fedeli.vercel.app)) joins ComplyAI.wiki and War Right Now in the footer, in About > Contribute, and in the footer of every wiki page.
 
 ### Removed
 - The "morph" ghosts and their settling step (`data-morph-from` / `data-morph-to`, `.morph-ghost`). When the reader stopped mid-way the ghost had to glide to the nearer end, which read as a jolt. The bridge cards stay, still.

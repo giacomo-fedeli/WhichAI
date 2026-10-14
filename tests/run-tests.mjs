@@ -495,7 +495,7 @@ check("modules: every chapter module exports its interface", [Ranking.init, Rank
   check("removed: every page script is precached for offline use", SCRIPTS.every(s => sw.includes('"' + s + '"')));
 
   /* Jack's other projects are linked visibly. */
-  check("projects: ComplyAI.wiki and War Right Now are linked from the footer", /href="https:\/\/complyai\.wiki"[^>]*rel="noopener"/.test(html) && /href="https:\/\/warrightnow\.vercel\.app"[^>]*rel="noopener"/.test(html) && htmlIds.has("projects"));
+  check("projects: the maker's three other sites are linked from the footer", ["complyai\\.wiki", "warrightnow\\.vercel\\.app", "giacomo-fedeli\\.vercel\\.app"].every(h => new RegExp('href="https://' + h + '"[^>]*rel="noopener"').test(html)) && htmlIds.has("projects") && (html.match(/class="project-card /g) || []).length === 3);
 
   check("drawer: a real dialog with a close button", /id="drawer"[^>]*role="dialog"|role="dialog"[^>]*id="drawer"/.test(html) && /aria-modal="true"/.test(html) && htmlIds.has("drawer-close"));
   check("drawer: deep links use #model= and are kept in sync", app.includes("#model=") && app.includes("replaceState"));

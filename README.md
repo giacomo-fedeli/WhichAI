@@ -40,7 +40,7 @@ Read-only, keyless, CORS-enabled: `/api/health`, `/api/models`, `/api/benchmarks
 - **11 languages**: English, Italiano, Français, Español, Deutsch, Português, 中文, हिन्दी, Русский, 日本語 and العربية (full right-to-left layout). Light and dark themes.
 - **A static wiki**: 178 pages generated from the database (`node tools/build-seo.mjs`) - a page per model, per task, per glossary term and curated head-to-heads - regenerated with fresh data on every deploy.
 - **Installable (PWA)** with an offline fallback.
-- **More from the maker**: [ComplyAI.wiki](https://complyai.wiki) (AI rules and compliance for small businesses) and [War Right Now](https://warrightnow.vercel.app) (conflicts and crises, live).
+- **More from the maker**: [ComplyAI.wiki](https://complyai.wiki) (AI rules and compliance for small businesses), [War Right Now](https://warrightnow.vercel.app) (conflicts and crises, live) and [giacomo-fedeli.vercel.app](https://giacomo-fedeli.vercel.app) (who makes them).
 
 ## Run locally
 

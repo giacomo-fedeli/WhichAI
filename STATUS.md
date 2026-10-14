@@ -25,6 +25,9 @@ Era lo step 7, **API tests**. In CI OpenRouter risponde davvero: il 13 ottobre i
 - Fix: `tests/api-tests.mjs` ora è **ermetico**: ogni host esterno risponde con la risposta OpenRouter salvata il 3 ottobre (fixture) o non risponde; stesso risultato su ogni macchina. L'asserzione ora dice: lista vuota solo se il report è "clean".
 - Verificato con una simulazione della CI: clone pulito, `npm ci`, **Node 24**, tutte e 6 le suite verdi.
 
+### 4. Link alla pagina personale di Jack
+Nel footer ("More from the maker of WhichAI") c'e' una terza card: **giacomo-fedeli.vercel.app** (CV/portfolio, tag "Who makes this", 11 lingue). Il link e' anche in About > Contribute accanto a LinkedIn e nel footer di tutte le 178 pagine wiki. Griglia dei progetti: 3 colonne su desktop, 2 sotto 900px, 1 sotto 720px.
+
 ### Test e versione
 - **557 test verdi**: 250 statici + 83 smoke DOM + 52 API + 59 live data + 69 catalog + 44 news. Nuovi controlli: nessun riquadro volante rimasto, canvas dietro la pagina e fuori dall'accessibilità, un disegno per capitolo, mappa scroll→storia monotona e pura, disegni deterministici tra 0 e 1, nessun "settling".
 - QA in Chromium: desktop, mobile, scuro, reduced-motion, lente, onda, stop a metà transizione.
