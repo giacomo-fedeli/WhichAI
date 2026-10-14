@@ -1,9 +1,28 @@
-/* WhichAI - API test suite (v0.30).
+/* WhichAI - API test suite (v0.37).
    Boots the real serverless handlers behind a local node:http server and
    exercises every endpoint the way a caller would: happy paths, filters,
    pagination, caching, error shapes and the read-only guarantee.
+
+   Hermetic since v0.37: the handlers read OpenRouter (and the news feeds) in
+   production, so on a machine with internet the suite used to test whatever
+   the market looked like that day. In CI on October 13 the live data check
+   came back perfectly clean, which no fixture had ever produced, and a check
+   failed. Outside hosts now answer from the response saved on October 3
+   (tests/fixtures/openrouter-2026-10-03.json) or not at all, on every machine.
    Run: node tests/api-tests.mjs                                        */
+import { readFileSync } from "fs";
 import { createServer } from "../tools/api-dev.mjs";
+
+const FIXTURE = readFileSync(new URL("./fixtures/openrouter-2026-10-03.json", import.meta.url), "utf8");
+const realFetch = globalThis.fetch;
+let outsideCalls = 0;
+globalThis.fetch = async (url, opts) => {
+  const u = String(url);
+  if (/^http:\/\/(127\.0\.0\.1|localhost)[:/]/.test(u)) return realFetch(url, opts);
+  outsideCalls++;
+  if (u.indexOf("https://openrouter.ai/") === 0) return new Response(FIXTURE, { status: 200, headers: { "Content-Type": "application/json" } });
+  throw new Error("offline in tests: " + u);
+};
 
 let pass = 0, fail = 0;
 const failures = [];
@@ -114,7 +133,10 @@ const get = async (p, opts) => {
   check("refresh: always reports what the catalog currently holds", json.catalogModels > 100 && !!json.catalogUpdated);
   check("refresh: carries a severity the page can render", ["clean", "review", "broken", "unknown"].includes(json.severity));
   check("refresh: a skipped run says so instead of pretending it passed", json.skipped ? (json.severity === "unknown" && !!json.reason) : typeof json.actionable === "number");
-  check("refresh: always tells a human what is left to do", Array.isArray(json.needsHuman) && json.needsHuman.length > 0);
+  /* Since v0.36 a clean run can legitimately leave nothing for a person:
+     what must hold is that the list exists and is empty only when clean. */
+  check("refresh: tells a human what is left to do, nothing only when clean", Array.isArray(json.needsHuman) && (json.needsHuman.length > 0 || json.severity === "clean"));
+  check("refresh: reads the (saved) upstream instead of skipping", json.skipped !== true && json.upstreamModels > 100);
   check("refresh: never returns catalog edits, only findings", !("models" in json) && !("patch" in json));
   check("refresh: cached, not recomputed on every hit", /s-maxage=\d+/.test(res.headers.get("cache-control") || ""));
   const post = await fetch(base + "/api/refresh", { method: "POST" });
@@ -146,7 +168,10 @@ const get = async (p, opts) => {
   check("privacy: no key, token or cookie field in any payload", !/"(apikey|token|cookie|session|email)"/.test(blob));
 }
 
+check("hermetic: outside hosts answered by the saved data, never the network", outsideCalls > 0);
+
 server.close();
+globalThis.fetch = realFetch;
 console.log("\n" + pass + " passed, " + fail + " failed");
 if (fail) {
   console.log("\nFAILURES:");

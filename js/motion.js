@@ -1,17 +1,21 @@
 /*
- * WhichAI - motion: one page, six chapters, visibly connected (v0.36.0)
+ * WhichAI - motion: one page, six chapters, visibly connected (v0.37.0)
  *
- * The site is a single scroll now, so movement carries the story:
+ * The site is a single scroll, so movement carries the story:
  *   - progress   a hairline under the header and a chapter rail that fill as
  *                you read, and the chapter you are in, named in the header
  *   - accent     every chapter owns a colour; crossing from one chapter into
  *                the next blends the page accent between the two
  *   - reveal     blocks enter once, softly, when they reach the screen
  *   - mount      heavy chapters render only when the reader gets near them
- *   - morph      a "bridge" at the end of a chapter hands one element to the
- *                next one: a ghost lifts off the source, stays in view while
- *                you scroll, reshapes itself and lands on its target
  *   - flip       lists that reorder (tiers, filters) glide to their new place
+ *   - frames     every frame's geometry is handed to listeners (the dot field
+ *                behind the page, js/dotfield.js, draws its transitions from it)
+ *
+ * v0.37 removed the "morph" ghosts that carried a card from one chapter to the
+ * next: they had to settle somewhere when the reader stopped half-way, and the
+ * settling read as a jolt. The connection is now drawn by the dot field, which
+ * is a pure function of the scroll position and simply stops when you do.
  *
  * Only transform and opacity move every frame, geometry is measured once per
  * layout change, and everything turns itself off for prefers-reduced-motion.
@@ -24,11 +28,13 @@
   var reduced = !!(root.matchMedia && root.matchMedia("(prefers-reduced-motion: reduce)").matches);
 
   var chapters = [];   // { el, id, rgb:[r,g,b], top, bottom }
-  var morphs = [];     // { key, from, to, a, b, ghost, la, lb, state }
   var mounts = [];     // { el, fn, done }
   var listeners = [];  // onChapter callbacks
+  var frameFns = [];   // onFrame callbacks
   var current = -1;
-  var vh = 800, sy = 0, queued = false, dirty = true;
+  var vh = 800, vw = 1200, sy = 0, queued = false, dirty = true;
+  var accentRgb = [37, 99, 235];
+  var layoutVersion = 0;
   var bar = null, railFill = null, railLinks = [];
   var io = null, mountIo = null;
 
@@ -39,52 +45,21 @@
     var p = String(s || "").trim().split(/[\s,]+/).map(Number);
     return p.length === 3 && p.every(function (n) { return n >= 0 && n <= 255; }) ? p : [37, 99, 235];
   }
-  function docRect(el) {
-    if (!el || !el.getBoundingClientRect) return null;
-    var r = el.getBoundingClientRect();
-    if (!r.width && !r.height) return null;
-    return { left: r.left, top: r.top + sy, width: r.width, height: r.height };
-  }
 
   /* ---------- measuring: once per layout change, never per frame ---------- */
 
   var docH = 0;
 
-  function moved(r1, r2) {
-    return !r1 || !r2 || Math.abs(r1.width - r2.width) > 1 || Math.abs(r1.height - r2.height) > 1;
-  }
-
   function measure() {
     vh = root.innerHeight || 800;
+    vw = root.innerWidth || 1200;
     docH = doc.documentElement.scrollHeight || vh;
     chapters.forEach(function (c) {
       var r = c.el.getBoundingClientRect();
       c.top = r.top + sy;
       c.bottom = r.bottom + sy;
     });
-    morphs.forEach(function (m) {
-      /* Ends are looked up again on every measure: a chapter that renders
-         later (lazy mount, new data) can provide its target when it exists. */
-      var from = doc.querySelector('[data-morph-from="' + m.key + '"]');
-      var to = doc.querySelector('[data-morph-to="' + m.key + '"]');
-      if (from !== m.from || to !== m.to) {
-        if (m.ghost) { m.ghost.remove(); m.ghost = null; }
-        if (m.from) m.from.style.opacity = "";
-        if (m.to) m.to.style.opacity = "";
-        m.state = "idle";
-        m.from = from;
-        m.to = to;
-      }
-      var a = docRect(m.from), b = docRect(m.to);
-      /* Opacity never changes geometry, so a ghost in flight can be measured;
-         if the source or target changed size, rebuild it on the next frame. */
-      if (m.state === "flying" && (moved(a, m.a) || moved(b, m.b))) {
-        if (m.ghost) { m.ghost.remove(); m.ghost = null; }
-        m.state = "idle";
-      }
-      m.a = a;
-      m.b = b;
-    });
+    layoutVersion++;
     dirty = false;
   }
 
@@ -100,7 +75,10 @@
     if (dirty) measure();
     paintProgress();
     paintAccent();
-    if (!reduced) morphs.forEach(paintMorph);
+    if (frameFns.length) {
+      var state = { sy: sy, vh: vh, vw: vw, chapters: chapters, rgb: accentRgb, layout: layoutVersion };
+      frameFns.forEach(function (fn) { try { fn(state); } catch (e) { /* a broken listener must not stop the page */ } });
+    }
   }
 
   /* ---------- progress, rail and the current chapter ---------- */
@@ -139,132 +117,8 @@
       var t = clamp((line - (a.bottom - zone)) / Math.max(1, zone), 0, 1);
       rgb = [0, 1, 2].map(function (j) { return Math.round(lerp(a.rgb[j], b.rgb[j], t)); });
     }
+    accentRgb = rgb;
     doc.documentElement.style.setProperty("--accent-rgb", rgb.join(" "));
-  }
-
-  /* ---------- the morph: a ghost that carries one chapter into the next ---------- */
-
-  function stripIds(node) {
-    if (node.removeAttribute) {
-      node.removeAttribute("id");
-      node.removeAttribute("data-morph-from");
-      node.removeAttribute("data-morph-to");
-      node.removeAttribute("data-reveal");
-    }
-    var kids = node.children || [];
-    for (var i = 0; i < kids.length; i++) stripIds(kids[i]);
-    return node;
-  }
-
-  function layer(src, rect) {
-    var l = doc.createElement("div");
-    l.className = "ghost-layer";
-    var clone = stripIds(src.cloneNode(true));
-    clone.style.width = rect.width + "px";
-    clone.style.height = rect.height + "px";
-    clone.style.margin = "0";
-    clone.style.opacity = "1";
-    clone.style.transform = "none";
-    l.appendChild(clone);
-    return l;
-  }
-
-  function buildGhost(m) {
-    if (m.ghost) m.ghost.remove();
-    var g = doc.createElement("div");
-    g.className = "morph-ghost";
-    g.setAttribute("aria-hidden", "true");
-    m.la = layer(m.from, m.a);
-    m.lb = layer(m.to, m.b);
-    g.appendChild(m.la);
-    g.appendChild(m.lb);
-    doc.body.appendChild(g);
-    m.ghost = g;
-  }
-
-  function land(m, p) {
-    if (m.ghost) { m.ghost.remove(); m.ghost = null; }
-    m.state = "idle";
-    m.from.style.opacity = "";
-    m.to.style.opacity = "";
-    m.from.classList.toggle("morph-left", p >= 1);
-    m.to.classList.toggle("morph-landed", p >= 1);
-  }
-
-  function progress(m) {
-    var aC = m.a.top + m.a.height / 2, bC = m.b.top + m.b.height / 2;
-    if (bC - aC < 80) return null;
-    return (sy + vh * 0.5 - aC) / (bC - aC);
-  }
-
-  function paintMorph(m) {
-    if (!m.from || !m.to) return;
-    if (!m.a || !m.b || !m.from.isConnected || !m.to.isConnected) { if (m.ghost || m.state !== "idle") land(m, 0); return; }
-    var p = progress(m);
-    if (p === null) return;
-    if (p <= 0 || p >= 1) {
-      if (m.ghost || m.state !== "idle" || m.from.style.opacity || m.to.style.opacity) land(m, p);
-      else { m.from.classList.toggle("morph-left", p >= 1); m.to.classList.toggle("morph-landed", p >= 1); }
-      return;
-    }
-    /* A morph that settled while the reader paused stays put: landed on its
-       target until the reader leaves the bridge, or back on its source
-       until they scroll on. */
-    if (m.state === "settling") return;
-    if (m.state === "settled") {
-      if (m.settleDir === "end" || p < m.settleP + 0.04) return;
-      m.state = "idle";
-    }
-    if (m.state !== "flying" || !m.ghost) { m.state = "flying"; buildGhost(m); }
-    var e = ease(p);
-    var w = lerp(m.a.width, m.b.width, e);
-    var h = lerp(m.a.height, m.b.height, e);
-    var x = lerp(m.a.left, m.b.left, e);
-    /* Linear in p: the ghost rides the reading line between the two places. */
-    var y = lerp(m.a.top, m.b.top, p) - sy;
-    var g = m.ghost;
-    g.style.width = w.toFixed(1) + "px";
-    g.style.height = h.toFixed(1) + "px";
-    g.style.transform = "translate3d(" + x.toFixed(1) + "px," + y.toFixed(1) + "px,0)";
-    var lift = Math.sin(Math.PI * p);
-    g.style.boxShadow = "0 " + (8 + 28 * lift).toFixed(0) + "px " + (24 + 50 * lift).toFixed(0) + "px -18px rgba(15,17,21," + (0.18 + 0.22 * lift).toFixed(2) + ")";
-    var fadeA = clamp(1 - (e - 0.25) / 0.5, 0, 1);
-    m.la.style.opacity = fadeA.toFixed(3);
-    m.la.firstChild.style.transform = "scale(" + (w / m.a.width).toFixed(4) + ")";
-    m.lb.style.opacity = (1 - fadeA).toFixed(3);
-    m.lb.firstChild.style.transform = "scale(" + (w / m.b.width).toFixed(4) + ")";
-    m.from.style.opacity = clamp(1 - p * 4, 0.12, 1).toFixed(3);
-    m.to.style.opacity = "0";
-  }
-
-  /* Nobody reads a page through a floating ghost: when scrolling stops
-     mid-bridge, the ghost glides to the nearer end and lands there. */
-  function settleAll() {
-    if (reduced) return;
-    morphs.forEach(function (m) {
-      if (m.state !== "flying" || !m.ghost || !m.a || !m.b) return;
-      var p = progress(m);
-      if (p === null) return;
-      var toEnd = p >= 0.5;
-      var r = toEnd ? m.b : m.a;
-      var g = m.ghost;
-      m.state = "settling";
-      g.classList.add("is-settling");
-      g.style.width = r.width.toFixed(1) + "px";
-      g.style.height = r.height.toFixed(1) + "px";
-      g.style.transform = "translate3d(" + r.left.toFixed(1) + "px," + (r.top - sy).toFixed(1) + "px,0)";
-      m.la.style.opacity = toEnd ? "0" : "1";
-      m.lb.style.opacity = toEnd ? "1" : "0";
-      m.la.firstChild.style.transform = "scale(" + (r.width / m.a.width).toFixed(4) + ")";
-      m.lb.firstChild.style.transform = "scale(" + (r.width / m.b.width).toFixed(4) + ")";
-      setTimeout(function () {
-        if (m.state !== "settling") return;
-        land(m, toEnd ? 1 : 0);
-        m.state = "settled";
-        m.settleDir = toEnd ? "end" : "start";
-        m.settleP = p;
-      }, 300);
-    });
   }
 
   /* ---------- reveal and lazy mount ---------- */
@@ -296,12 +150,6 @@
       chapters = Array.prototype.slice.call(doc.querySelectorAll("[data-chapter]")).map(function (el) {
         return { el: el, id: el.getAttribute("data-chapter"), rgb: rgbOf(el.getAttribute("data-accent")), top: 0, bottom: 0 };
       });
-      var froms = doc.querySelectorAll("[data-morph-from]");
-      Array.prototype.forEach.call(froms, function (from) {
-        var key = from.getAttribute("data-morph-from");
-        if (morphs.some(function (m) { return m.key === key; })) return;
-        morphs.push({ key: key, from: null, to: null, a: null, b: null, ghost: null, state: "idle" });
-      });
       if (typeof root.IntersectionObserver === "function") {
         io = new root.IntersectionObserver(function (entries) {
           entries.forEach(function (en) {
@@ -319,12 +167,7 @@
         }, { rootMargin: "900px 0px 900px 0px" });
       }
       observeReveal(doc);
-      var idle = null;
-      root.addEventListener("scroll", function () {
-        schedule();
-        if (idle) clearTimeout(idle);
-        idle = setTimeout(settleAll, 180);
-      }, { passive: true });
+      root.addEventListener("scroll", schedule, { passive: true });
       root.addEventListener("resize", function () { dirty = true; schedule(); });
       if (typeof root.ResizeObserver === "function") {
         new root.ResizeObserver(function () { dirty = true; schedule(); }).observe(doc.body);
@@ -347,8 +190,16 @@
 
     /** geometry changed outside of a resize (new content, filters) */
     refresh: function () {
-      /* Content changed: the clones inside a ghost may be outdated. */
-      morphs.forEach(function (m) { if (m.ghost) { m.ghost.remove(); m.ghost = null; m.state = "idle"; } });
+      dirty = true;
+      schedule();
+    },
+
+    /** fn({ sy, vh, vw, chapters:[{ id, top, bottom }], rgb, layout }) on
+        every frame the page moves or changes size (layout counts re-measures);
+        called once right away */
+    onFrame: function (fn) {
+      if (typeof fn !== "function") return;
+      frameFns.push(fn);
       dirty = true;
       schedule();
     },
@@ -404,8 +255,7 @@
     },
 
     /* exposed for tests */
-    _ease: ease,
-    _morphs: function () { return morphs.map(function (m) { return m.key; }); }
+    _ease: ease
   };
 
   root.WhichAIMotion = Motion;

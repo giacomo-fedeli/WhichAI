@@ -1,6 +1,6 @@
 # PromptCompass — HANDOVER (trasferimento su nuovo computer)
 
-Data: 2026-10-13 · Versione in cartella: **v0.36.0** · Live: https://whichai.wiki (alias https://promptcompass.vercel.app)
+Data: 2026-10-14 · Versione in cartella: **v0.37.0** · Live: https://whichai.wiki (alias https://promptcompass.vercel.app)
 
 Questo file serve a riprendere il progetto su un altro computer con Claude Cowork **senza ricominciare da capo**. Il nuovo Claude deve leggere PRIMA questo file e STATUS.md, poi agire.
 
@@ -57,7 +57,7 @@ Contesto extra: [SE HAI COMPRATO IL DOMINIO SCRIVILO QUI, es. "ho comprato which
 
 ## D. Stato sintetico (per il nuovo Claude)
 
-- v0.36 (sessione 37): il sito è UNA pagina con 6 capitoli in ordine (ranking, compare, radar, market, debates, tools) collegati da animazioni "morph"; niente copertina, niente menu di viste; Chains, Merge, Blind Arena, Output comparison e chiavi API (BYOK) rimossi.
+- v0.36 (sessione 37): il sito è UNA pagina con 6 capitoli in ordine (ranking, compare, radar, market, debates, tools) collegati visivamente da uno sfondo a puntini guidato dallo scroll (v0.37, al posto dei vecchi riquadri "morph"); niente copertina, niente menu di viste; Chains, Merge, Blind Arena, Output comparison e chiavi API (BYOK) rimossi.
 - Dati automatici: `/api/catalog` (punteggi ufficiali, prezzi, modelli nuovi, free route) e `/api/news` (news del Radar); `/api/refresh` è l'audit giornaliero.
 - Architettura: vedi "Come riprendere il lavoro" in fondo a STATUS.md (mappa file per capitolo).
 - Docs: README.md (pubblico, inglese), STATUS.md (memoria progetto), CHANGELOG.md, AI-SYNC.md (coordinamento tra AI), docs/API.md, docs/SETUP-JACK.md (deploy), docs/DECISIONS.md.

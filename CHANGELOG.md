@@ -2,6 +2,28 @@
 
 (Older release-by-release history lives in `STATUS.md`, the project's working memory.)
 
+## v0.37.0 (2026-10-14)
+
+The cards that flew from one chapter to the next are gone. A quiet dot grid behind the page carries the change instead, and it stops the moment you stop scrolling.
+
+### Added
+- **The dot field** (`js/dotfield.js`): one fixed canvas behind the page with a fine grid of dots, like dotted paper. Each chapter lights its own halftone pattern in the chapter's colour: five tier rows (Ranking), two rings moving together (Compare), radar rings and a turning sweep (Radar), rising price lines (Market), two voices meeting in the middle (Debates), a compass (Tools).
+- Crossing into the next chapter dissolves one pattern into the other from the bottom up, as a pure function of the scroll position: stop half-way and it stays half-way. While you read, the grid drifts up slower than the page and each pattern follows your reading.
+- Interactivity: dots swell and make room around the mouse pointer; a click on an empty part of the page sends a ripple. Nothing reacts to touch scrolling.
+- `WhichAIMotion.onFrame(fn)`: every frame's geometry (scroll, viewport, chapters, accent, layout version) for listeners.
+
+### Removed
+- The "morph" ghosts and their settling step (`data-morph-from` / `data-morph-to`, `.morph-ghost`). When the reader stopped mid-way the ghost had to glide to the nearer end, which read as a jolt. The bridge cards stay, still.
+
+### Fixed
+- **CI was red on GitHub** (step "API tests"): with real network access the daily data check came back fully clean, its "needs a human" list was empty, and a test insisted it never could be. `tests/api-tests.mjs` is now hermetic (outside hosts answer from the saved October 3 response or not at all) and the assertion allows an empty list when the report is clean. The site itself was never affected: Vercel deploys independently of CI.
+
+### Performance
+Frames only while something changes; about 2.5 ms per frame for ~4,500 dots in software-rendered Chromium (about 1.3 ms for ~1,600 on a phone); measured scroll jank is the same with and without the field. Half the dots on slow devices, a wider grid on very large screens, a still picture for `prefers-reduced-motion`, hidden in print, and no dots at all without canvas.
+
+### Tests
+250 static + 83 DOM smoke + 52 API + 59 live data + 69 catalog + 44 news = **557 passing**, also on a clean clone with `npm ci` and Node 24.
+
 ## v0.36.0 (2026-10-13)
 
 One page, six chapters, read top to bottom. No cover, no menu of views: the data comes first, every chapter hands something visible to the next, and the tools that turn a choice into a result close the page.

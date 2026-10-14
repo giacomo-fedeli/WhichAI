@@ -1,4 +1,4 @@
-/* WhichAI - DOM smoke test (v0.36): boots the real page inside jsdom and walks
+/* WhichAI - DOM smoke test (v0.37): boots the real page inside jsdom and walks
    the six chapters top to bottom: ranking, compare, radar, market, debates,
    tools; then the drawer, old addresses, language, theme, and fresh data
    landing while the page is open.
@@ -26,7 +26,9 @@ const pageErrors = [];
 const vc = new VirtualConsole();
 vc.sendTo(console, { omitJSDOMErrors: true });
 vc.on("error", (...args) => pageErrors.push(args.map(String).join(" ")));
-vc.on("jsdomError", (e) => { if (!/Not implemented: navigation/.test(e.message)) { pageErrors.push(e.message); console.error(e.message); } });
+/* jsdom draws nothing: "getContext not implemented" is how the dot field
+   learns there is no canvas, and it must cope (checked below). */
+vc.on("jsdomError", (e) => { if (!/Not implemented: (navigation|HTMLCanvasElement\.prototype\.getContext)/.test(e.message)) { pageErrors.push(e.message); console.error(e.message); } });
 const dom = new JSDOM(html, { url: "https://whichai.wiki/", runScripts: "outside-only", pretendToBeVisual: true, virtualConsole: vc });
 const w = dom.window;
 const d = w.document;
@@ -61,7 +63,7 @@ check("boot: no cover and no menu of views", !d.getElementById("welcome") && !d.
 check("boot: keys and tools of older versions are wiped", ["pc_settings_v1", "pc_chains_v1", "pc_keymode"].every(k => w.localStorage.getItem(k) === null) && w.sessionStorage.getItem("pc_settings_v1") === null);
 check("boot: every chapter rendered", d.querySelectorAll("#tier-list .tier-row").length === 5 && d.querySelectorAll("#vs-stage .vs-select").length >= 2 && !!d.querySelector("#radar-wrap .radar-grid") && !!d.querySelector("#market-wrap .mk-ladder") && !!d.querySelector("#topics-wrap .deb-deck") && d.querySelectorAll("#quick-wrap .quick-task").length === 8);
 check("boot: the 13 generator families carry brand icons", d.querySelectorAll(".model-check[data-ai-brand] .ai-brand-icon").length === 13);
-check("boot: the version is shown", d.getElementById("foot-version").textContent === "WhichAI v0.36" && w.WhichAIApp.version === "v0.36");
+check("boot: the version is shown", d.getElementById("foot-version").textContent === "WhichAI v0.37" && w.WhichAIApp.version === "v0.37");
 
 /* ---------- the bridges: each chapter hands something to the next ---------- */
 {
@@ -71,8 +73,8 @@ check("boot: the version is shown", d.getElementById("foot-version").textContent
   check("bridge: the leader's price travels to the Market", /\$\d/.test(d.getElementById("bridge-price").textContent) && d.getElementById("bridge-price").textContent.includes(top[0].name));
   check("bridge: a number from the first debate travels to Debates", !!d.querySelector("#bridge-debate .token-big"));
   check("bridge: four task icons travel to the Tools", d.querySelectorAll("#bridge-task .token-task").length === 4);
-  const pairs = ["duel", "newest", "price", "debate", "task"];
-  check("bridge: every token has a landing spot on the page", pairs.every(k => !!d.querySelector('[data-morph-from="' + k + '"]') && !!d.querySelector('[data-morph-to="' + k + '"]')));
+  check("bridge: the tokens stay put (no flying cards since v0.37)", !d.querySelector("[data-morph-from], [data-morph-to], .morph-ghost"));
+  check("dots: without a canvas the field steps aside and the page is unaffected", typeof w.WhichAIDots === "object" && d.getElementById("dotfield").hidden === true);
 }
 
 /* ---------- 01 ranking ---------- */

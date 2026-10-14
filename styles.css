@@ -105,6 +105,9 @@ body {
   overflow-x: hidden;
 }
 body.drawer-open { overflow: hidden; }
+/* The dot field (js/dotfield.js): fixed behind everything that reads. */
+.dotfield { position: fixed; inset: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; display: block; }
+main, .site-footer { position: relative; z-index: 1; }
 img, svg { max-width: 100%; }
 a { color: inherit; }
 p { margin: 0 0 0.8em; }
@@ -401,7 +404,7 @@ textarea:focus, input[type="text"]:focus, select:not(.lang-select):focus { borde
 .wc-fillbar { opacity: 0.92; }
 
 /* ==========================================================
-   8. Bridges and the morph ghost
+   8. Bridges: what each chapter hands to the next
    ========================================================== */
 
 .bridge { position: relative; display: flex; flex-direction: column; align-items: center; padding-top: clamp(28px, 5vw, 56px); margin-top: clamp(28px, 4vw, 48px) !important; text-align: center; }
@@ -429,13 +432,6 @@ textarea:focus, input[type="text"]:focus, select:not(.lang-select):focus { borde
 .pulse-dot { width: 9px; height: 9px; border-radius: 50%; background: rgb(16 185 129); position: relative; flex: none; }
 .pulse-dot::after { content: ""; position: absolute; inset: -4px; border-radius: 50%; border: 2px solid rgb(16 185 129 / 0.6); animation: ping 1.8s var(--ease) infinite; }
 @keyframes ping { from { transform: scale(0.6); opacity: 1; } to { transform: scale(1.8); opacity: 0; } }
-.bridge-token.morph-left { opacity: 0.35; }
-
-.morph-ghost { position: fixed; left: 0; top: 0; z-index: 35; pointer-events: none; border-radius: 18px; overflow: hidden; background: var(--surface); border: 1px solid var(--border-2); will-change: transform, width, height; }
-.morph-ghost.is-settling { transition: transform 0.28s var(--ease), width 0.28s var(--ease), height 0.28s var(--ease), box-shadow 0.28s; }
-.morph-ghost.is-settling .ghost-layer, .morph-ghost.is-settling .ghost-layer > * { transition: opacity 0.24s, transform 0.28s var(--ease); }
-.ghost-layer { position: absolute; left: 0; top: 0; width: 100%; height: 100%; }
-.ghost-layer > * { transform-origin: 0 0; box-shadow: none !important; }
 
 /* ==========================================================
    9. 02 · Head to head
@@ -1061,11 +1057,10 @@ body > main.layout-guide .card { box-shadow: var(--shadow-1); }
   *, *::before, *::after { animation-duration: 0.001ms !important; animation-iteration-count: 1 !important; transition-duration: 0.001ms !important; scroll-behavior: auto !important; }
   [data-reveal] { opacity: 1; transform: none; }
   .vs-fill, .mk-fill { transition: none; }
-  .morph-ghost { display: none; }
 }
 
 @media print {
-  .topbar, .rail, .bridge, .drawer, .drawer-backdrop, .hero-actions { display: none !important; }
+  .topbar, .rail, .bridge, .drawer, .drawer-backdrop, .hero-actions, .dotfield { display: none !important; }
   [data-reveal] { opacity: 1; transform: none; }
   body { background: #fff; }
 }

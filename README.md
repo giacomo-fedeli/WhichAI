@@ -3,13 +3,13 @@
 
 Which AI model is best right now, what it costs, what changed this week - and the right AI and prompt for your own task. One page, read top to bottom.
 
-**Live:** https://whichai.wiki · **Status:** Growth · v0.36.0 · zero-cost architecture (free tiers only) · static frontend + read-only serverless API · responsive, installable (PWA) and offline-capable
+**Live:** https://whichai.wiki · **Status:** Growth · v0.37.0 · zero-cost architecture (free tiers only) · static frontend + read-only serverless API · responsive, installable (PWA) and offline-capable
 
 ## One page, six chapters
 
 There is no cover and no menu of views. The page opens on the data and every chapter hands something visible to the next one while you scroll:
 
-| # | Chapter | What it does | What travels to the next chapter |
+| # | Chapter | What it does | What it hands to the next chapter |
 | --- | --- | --- | --- |
 | 01 | **Ranking** | Every model with an official Artificial Analysis score, sorted into tiers S to D by percentile on the Intelligence, Coding or Agentic index. Filters (open weights, free route, under $1, legacy), a search for any model, and a price vs intelligence map on a log axis with the best-value frontier. | the top two models |
 | 02 | **Compare** | Two or three models side by side: official indices, price, context, strengths. Follows the live top two until you pick your own. | the newest arrival |
@@ -18,7 +18,7 @@ There is no cover and no menu of views. The page opens on the data and every cha
 | 05 | **Debates** | Six sourced AI debates with both sides, plus a plain-language glossary. Law and compliance topics link to [ComplyAI.wiki](https://complyai.wiki). | four task icons |
 | 06 | **Tools** | Find your AI (a one-tap answer per task, or four questions for a personal pick), the Prompt generator for 13 model families, the Prompt Doctor, and the Stack Optimizer. | - |
 
-The hand-offs are real objects that morph from one chapter into the next as you scroll (and land if you stop half-way); everything turns off for `prefers-reduced-motion`. Any model opens the same card (`#model=id`, shareable) from any chapter. Old addresses (`#guide`, `#chains`, `#settings`...) still land somewhere sensible.
+Behind the page, a fine grid of dots lights a different pattern for each chapter (tier rows, two rings meeting, a radar sweep, rising price lines, two voices, a compass). Crossing into the next chapter dissolves one pattern into the other, driven only by the scroll position, so it stops exactly when you stop; the dots make room around the pointer and ripple on a click, stay faint behind text, and everything turns off for `prefers-reduced-motion`. Any model opens the same card (`#model=id`, shareable) from any chapter. Old addresses (`#guide`, `#chains`, `#settings`...) still land somewhere sensible.
 
 ## The data maintains itself
 
@@ -69,7 +69,8 @@ Data corrections, bug reports and small PRs are welcome: see [CONTRIBUTING.md](C
 index.html            - the page: six chapters (data-chapter), footer, model drawer
 styles.css            - design system (light/dark, tier colours, responsive, RTL-aware)
 js/app.js             - conductor: language, theme, navigation (+ old addresses), drawer, chapter hand-offs, your data
-js/motion.js          - progress, accent blend, reveal, lazy mount, morphs between chapters
+js/motion.js          - progress, accent blend, reveal, lazy mount, frame geometry for listeners
+js/dotfield.js        - the dot grid behind the page: one pattern per chapter, scroll-driven, pointer-aware
 js/ranking.js         - 01 tiers, filters, search, log-scale scatter
 js/modelcompare.js    - 02 head to head
 js/radar.js           - 03 launches, price moves, news wire (js/changes.js: curated entries)

@@ -289,7 +289,7 @@ capped), links are `https` only.
 ```bash
 npm install
 node tools/api-dev.mjs 8787     # http://localhost:8787/api/health
-node tests/api-tests.mjs        # 50 checks against the real handlers
+node tests/api-tests.mjs        # 52 checks against the real handlers (offline)
 ```
 
 `tools/api-dev.mjs` mounts the same handler files Vercel runs, so a local pass

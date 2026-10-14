@@ -1,4 +1,4 @@
-/* WhichAI - sandbox test suite (v0.36)
+/* WhichAI - sandbox test suite (v0.37)
    Run: node tests/run-tests.mjs   (from the project root)
    Pure Node, no dependencies. Exits 1 on any failure.
 
@@ -34,7 +34,7 @@ const between = (needle, a, b) => {
 
 /* ---------- 1. syntax of every shipped file ---------- */
 {
-  check("index loads 25 scripts, app.js last", SCRIPTS.length === 25 && SCRIPTS[SCRIPTS.length - 1] === "js/app.js", String(SCRIPTS.length));
+  check("index loads 26 scripts, app.js last", SCRIPTS.length === 26 && SCRIPTS[SCRIPTS.length - 1] === "js/app.js", String(SCRIPTS.length));
   const apiFiles = ["api/_lib.js", "api/_live-core.js", "api/_catalog-core.js", "api/_refresh-core.js", "api/_news-core.js", "api/health.js", "api/models.js", "api/benchmarks.js", "api/recommend.js", "api/stats.js", "api/refresh.js", "api/live.js", "api/catalog.js", "api/news.js"];
   for (const f of SCRIPTS.concat(["sw.js"], apiFiles)) {
     try { execSync("node --check " + f, { stdio: "pipe" }); check("syntax " + f, true); }
@@ -437,21 +437,44 @@ check("modules: every chapter module exports its interface", [Ranking.init, Rank
   check("chapters: the tools end the page: finder first, then prompt, doctor, stack", ["find", "prompt", "doctor", "stack"].map(id => html.indexOf('id="' + id + '"')).every((p, i, a) => p > html.indexOf('id="tools"') && (i === 0 || p > a[i - 1])));
   check("chapters: the quick answer comes before the guided finder", html.indexOf('id="quick-wrap"') < html.indexOf('id="finder-wrap"') && html.indexOf('id="finder-wrap"') < html.indexOf('id="gen"'));
 
-  /* Every hand-off between chapters is a visible object that travels: it
-     leaves from the end of one chapter and lands inside the next. */
-  const HANDOFF = [["duel", "ranking", "compare"], ["newest", "compare", "radar"], ["price", "radar", "market"], ["debate", "market", "debates"], ["task", "debates", "tools"]];
+  /* Every chapter still hands the next one something to read (a bridge with
+     a live token: the top two, the newest arrival, the leader's price...).
+     Since v0.37 the tokens stay put: the card that used to fly from one
+     chapter to the next is gone, the dots behind the page carry the change. */
+  const BRIDGES = [["bridge-duel", "ranking", "compare"], ["bridge-newest", "compare", "radar"], ["bridge-price", "radar", "market"], ["bridge-debate", "market", "debates"], ["bridge-task", "debates", "tools"]];
+  for (const [id, from, to] of BRIDGES) check("bridge: " + id + " closes " + from + " and points to " + to, between('id="' + id + '"', from, to) && new RegExp('id="' + id + '"[\\s\\S]{0,400}href="#' + to + '"').test(html));
   const jsAll = SCRIPTS.map(f => readFileSync(f, "utf8")).join("\n");
-  for (const [key, from, to] of HANDOFF) {
-    const leaves = (html.match(new RegExp('data-morph-from="' + key + '"', "g")) || []).length === 1 && between('data-morph-from="' + key + '"', from, to);
-    const nextIdx = CH.indexOf(to) + 1 < CH.length ? CH[CH.indexOf(to) + 1] : null;
-    const lands = between('data-morph-to="' + key + '"', to, nextIdx) || new RegExp('setAttribute\\("data-morph-to", "' + key + '"\\)').test(jsAll);
-    check("morph: '" + key + "' leaves " + from + " and lands in " + to, leaves && lands);
-  }
+  check("bridge: no flying cards left (no morph attributes, ghosts or settling)", !/data-morph-(from|to)/.test(html + jsAll) && !/morph-ghost|settleAll|buildGhost|is-settling/.test(jsAll + css));
+
   const motion = readFileSync("js/motion.js", "utf8");
-  check("motion: everything turns off for prefers-reduced-motion", motion.includes("prefers-reduced-motion") && /@media \(prefers-reduced-motion: reduce\)/.test(css));
+  const dots = readFileSync("js/dotfield.js", "utf8");
+  const Dots = require("../js/dotfield.js");
+  check("motion: everything turns off for prefers-reduced-motion", motion.includes("prefers-reduced-motion") && dots.includes("prefers-reduced-motion") && /@media \(prefers-reduced-motion: reduce\)/.test(css));
   check("motion: chapters mount lazily, ahead of the reader", motion.includes("IntersectionObserver") && /rootMargin/.test(motion));
-  check("motion: a ghost never rests mid-air (it settles when scrolling stops)", /function settleAll/.test(motion) && /is-settling/.test(css));
-  check("motion: scrolling is never hijacked", !/preventDefault|scrollTo\(|wheel/.test(motion) && /passive: true/.test(motion));
+  check("motion: scrolling is never hijacked", !/preventDefault|scrollTo\(|wheel/.test(motion + dots) && /passive: true/.test(motion) && /passive: true/.test(dots));
+  check("motion: hands every frame's geometry to its listeners", /onFrame: function/.test(motion) && /layout: layoutVersion/.test(motion));
+
+  /* The dot field: decorative, behind everything, driven by the scroll. */
+  check("dots: one canvas behind the page, hidden from assistive tech", /<canvas class="dotfield" id="dotfield" aria-hidden="true"><\/canvas>/.test(html) && /\.dotfield \{[^}]*position: fixed;[^}]*z-index: 0;[^}]*pointer-events: none;/.test(css) && /main, \.site-footer \{ position: relative; z-index: 1; \}/.test(css));
+  check("dots: loaded after motion and before the app, precached, not printed", SCRIPTS.indexOf("js/dotfield.js") === SCRIPTS.indexOf("js/motion.js") + 1 && SCRIPTS.indexOf("js/dotfield.js") < SCRIPTS.indexOf("js/app.js") && sw.includes('"js/dotfield.js"') && /\.dotfield \{ display: none !important; \}|\.hero-actions, \.dotfield \{ display: none !important; \}/.test(css));
+  check("dots: a pattern for every chapter, in page order", JSON.stringify(Dots.patterns) === JSON.stringify(CH));
+  {
+    const chs = [{ top: 0, bottom: 3000 }, { top: 3000, bottom: 4500 }, { top: 4500, bottom: 9000 }];
+    const at = (sy) => Dots._storyAt(sy, 900, chs);
+    const seq = [0, 1000, 2100, 2300, 2500, 2700, 2900, 3000, 3600, 3800, 4200, 4600, 8000].map(at);
+    check("dots: the story position is a plain, monotonic function of the scroll", seq.every((v, i) => i === 0 || v >= seq[i - 1]) && seq[0] === 0 && seq[seq.length - 1] === 2 && at(2500) === at(2500));
+    check("dots: a change starts as the next chapter enters and ends near the top", at(3000 - 900 * 0.92) === 0 && at(3000 - 900 * 0.2) === 1 && at(3000 - 900 * 0.56) > 0.45 && at(3000 - 900 * 0.56) < 0.55);
+    const phis = [];
+    Dots._storyAt(3750, 900, chs, phis);
+    check("dots: the reading position inside each chapter is 0..1", phis.length === 3 && phis.every(p => p >= 0 && p <= 1) && phis[1] > 0.4 && phis[1] < 0.9);
+    const samples = [];
+    for (const id of CH) for (let x = 0; x <= 1440; x += 120) for (let y = 0; y <= 900; y += 90) for (const ph of [0, 0.5, 1]) samples.push([id, Dots._lit(id, x, y, 1440, 900, ph)]);
+    check("dots: every pattern lights dots between 0 and 1, and lights some", samples.every(([, v]) => v >= 0 && v <= 1.0001 && isFinite(v)) && CH.every(id => samples.some(([k, v]) => k === id && v > 0.4)));
+    check("dots: the same place and reading position always look the same", CH.every(id => Dots._lit(id, 1200, 400, 1440, 900, 0.3) === Dots._lit(id, 1200, 400, 1440, 900, 0.3)));
+  }
+  check("dots: no time-based settling: only the pointer, a click ripple and the first fade-in run on their own", !/settle/i.test(dots.replace(/\/\*[\s\S]*?\*\//g, "")) && /pointerType !== "mouse" && e\.pointerType !== "pen"/.test(dots) && /isControl\(e\.target\)/.test(dots));
+  check("dots: text stays clean (headings and ledes are masked)", /MASK_SEL = "\.ch-eyebrow, \.ch-title, \.ch-lede/.test(dots));
+  check("dots: no canvas, no dots, no error", /if \(!c\) \{ canvasEl\.hidden = true; return false; \}/.test(dots));
   check("motion: the progress bar and rail exist", htmlIds.has("progress-bar") && htmlIds.has("rail-fill"));
 
   /* Old addresses keep working: every retired view has a home. */
@@ -502,17 +525,17 @@ check("modules: every chapter module exports its interface", [Ranking.init, Rank
 
 /* ---------- 17. version coherence ---------- */
 {
-  check("version: APP_VERSION v0.36", app.includes('APP_VERSION = "v0.36"'));
-  check("version: footer v0.36", html.includes(">WhichAI v0.36<"));
-  check("version: SW cache v0.36.0", sw.includes('"whichai-v0.36.0"'));
-  check("version: package.json 0.36.0", JSON.parse(readFileSync("package.json", "utf8")).version === "0.36.0");
-  check("version: the API reports v0.36", readFileSync("api/_lib.js", "utf8").includes('APP_VERSION = "v0.36"'));
+  check("version: APP_VERSION v0.37", app.includes('APP_VERSION = "v0.37"'));
+  check("version: footer v0.37", html.includes(">WhichAI v0.37<"));
+  check("version: SW cache v0.37.0", sw.includes('"whichai-v0.37.0"'));
+  check("version: package.json 0.37.0", JSON.parse(readFileSync("package.json", "utf8")).version === "0.37.0" && JSON.parse(readFileSync("package-lock.json", "utf8")).version === "0.37.0");
+  check("version: the API reports v0.37", readFileSync("api/_lib.js", "utf8").includes('APP_VERSION = "v0.37"'));
   check("brands: 13 branded model controls in the generator", (html.match(/data-ai-brand=/g) || []).length === 13 && html.includes("js/brands.js"));
   check("brands: dark wordmarks use a light treatment", /\[data-theme="dark"\] \.ai-brand-wordmark\s*\{[^}]*invert\(1\)/s.test(css));
   check("brands: SW precaches the core brand assets", sw.includes("assets/brands/claude-color.svg") && sw.includes("assets/brands/qwen-color.svg"));
   check("csp: meta present, goatcounter the only third party", html.includes("Content-Security-Policy") && html.includes("https://gc.zgo.at") && html.includes("https://*.goatcounter.com"));
   {
-    const noDash = ["js/i18n.js", "js/models-db.js", "js/benchmarks.js", "js/engine.js", "js/finder.js", "js/glossary.js", "js/modelcompare.js", "js/charts.js", "js/app.js", "js/ranking.js", "js/market.js", "js/radar.js", "js/topics.js", "js/motion.js", "js/generator.js", "index.html", "manifest.webmanifest"];
+    const noDash = ["js/i18n.js", "js/models-db.js", "js/benchmarks.js", "js/engine.js", "js/finder.js", "js/glossary.js", "js/modelcompare.js", "js/charts.js", "js/app.js", "js/ranking.js", "js/market.js", "js/radar.js", "js/topics.js", "js/motion.js", "js/dotfield.js", "js/generator.js", "index.html", "manifest.webmanifest"];
     const dirty = noDash.filter(f => readFileSync(f, "utf8").includes("—"));
     check("text: no em dashes in visible files", dirty.length === 0, dirty.join(", "));
   }

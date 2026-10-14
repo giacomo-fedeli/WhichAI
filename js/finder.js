@@ -493,7 +493,6 @@
     var row = el("div", "quick-tasks");
     row.setAttribute("role", "group");
     row.setAttribute("aria-label", d.T("quickTitle"));
-    row.setAttribute("data-morph-to", "task");
     TASKS.forEach(function (k, i) {
       var b = el("button", "quick-task" + (quick.task === k ? " is-on" : ""));
       b.type = "button";

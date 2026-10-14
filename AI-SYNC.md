@@ -34,6 +34,7 @@ File modificati "host-side" possono apparire troncati lato sandbox di Claude. Se
 
 | Sessione | AI | Data | Commit | Area toccata | Nota per la prossima AI |
 |---|---|---|---|---|---|
+| 38 | Claude | 2026-10-14 | (vedi git log) | `js/dotfield.js` (NUOVO), `js/motion.js` (morph rimosso, `onFrame`), `index.html` (canvas, niente `data-morph-*`), `styles.css`, `js/finder.js`, `js/topics.js`, `js/app.js`, `sw.js`, `tests/api-tests.mjs` (ermetico), `tests/run-tests.mjs`, `tests/smoke-dom.mjs` | v0.37: sfondo a puntini guidato dallo scroll al posto dei riquadri volanti; CI rossa riparata (api-tests dipendeva dalla rete). 557 test verdi, anche con Node 24 su clone pulito. |
 | 37 | Claude | 2026-10-13 | (vedi git log) | **Ristrutturazione completa**: `index.html` + `styles.css` + `js/app.js` riscritti (una pagina, 6 capitoli); NUOVI `js/motion.js`, `js/ranking.js`, `js/market.js`, `js/generator.js`, `api/news.js`, `api/_news-core.js`, `tests/news-tests.mjs`; riscritti `js/modelcompare.js`, `js/radar.js`, `js/topics.js` (render), `js/i18n.js` (373 chiavi x11), `tests/run-tests.mjs`, `tests/smoke-dom.mjs`; RIMOSSI welcome/journey/stage/scene3d/chains/merge/arena/live-data | v0.36: niente copertina né menu, capitoli collegati da morph, Chains/Merge/Arena/BYOK/Output comparison tolti, scatter su scala log, news automatiche. 541 test verdi. |
 | 36 | Claude | 2026-10-03 | (vedi git log) | `api/_catalog-core.js`+`api/catalog.js`+`js/live-catalog.js`+`js/live-seed.js`+`js/wiki-live.js` (NUOVI), `js/models-db.js` (migrato alla scala ufficiale + liste `or`), `js/benchmarks.js` (riscritto), `api/_lib.js` (catalogo live per tutti gli endpoint), `tools/build.mjs` (seed + wiki rigenerato), finder/journey/radar/changes/app, `tests/catalog-tests.mjs` (NUOVO) | v0.35: **il sito si aggiorna da solo**. Punteggi = indice AA UFFICIALE relayato da OpenRouter (non più il mirror BenchLM). La regola della sessione 35 "due scale, mai mescolarle" è SUPERATA: ora c'è una scala sola. 521 test verdi. |
 | 35 | Claude | 2026-09-08 | 77dd828 | `api/_live-core.js`+`api/live.js`+`js/live-data.js` (integrati da Jack), `tests/live-data-tests.mjs` (NUOVO), `index.html`/`js/app.js`/`sw.js` (vista `#live` montata), `api/health.js`, `api/_lib.js`, `tools/api-dev.mjs`, i tre file di test | v0.34: il feed OpenRouter serve `/api/live`. **L'indice AA relayato da OpenRouter e' su una scala diversa dal mirror citato nel catalogo** (Opus 5: 50.7 vs 63.0): i due numeri non si toccano mai, e un test lo impone. 435 test verdi. |
@@ -116,4 +117,19 @@ Non serve fare nulla di manuale per "passare" da un'AI all'altra oltre a: aprire
 8. **/api/news**: ogni fonte fallisce da sola; se cambia un feed, si sistema in `SOURCES` di `api/_news-core.js` e si aggiorna la fixture inline in `tests/news-tests.mjs`.
 
 **Aperto per la prossima sessione**: Jack deve fare il push della v0.36. Poi verificare dal vivo il Radar (news), i morph su telefono e il wiki. Restano i punti editoriali di `docs/AUDIT-2026-09.md` (debates regulation/copyright, recensioni dei modelli auto-added più importanti).
+
+---
+
+### 2026-10-14 - Claude - sessione 38 (v0.37)
+
+**Aree toccate**: vedi riga 38 della tabella.
+
+**Cose da NON rifare / da sapere prima di toccare**:
+1. **Niente animazioni che "si sistemano da sole" quando lo scroll si ferma.** Jack le ha trovate a scatti. Tutto ciò che si muove con lo scroll deve essere una funzione della posizione di scroll (più al massimo un inseguimento critico di ~85 ms, che non va oltre). `js/dotfield.js` → `storyAt()` è la mappa; un test la verifica monotona e pura.
+2. **Lo sfondo è un canvas sotto tutto**: `main` e `.site-footer` hanno `position: relative; z-index: 1`. Un nuovo blocco fuori da `main` va messo sopra allo stesso modo, o i puntini gli passano davanti.
+3. **Testi puliti**: i selettori in `MASK_SEL` (titoli, sottotitoli, intestazioni) tengono i puntini deboli dietro il testo. Un nuovo tipo di titolo fuori dalle card va aggiunto lì.
+4. **Disegni**: uno per capitolo in `FIELDS` (`prep(phi, W, H)` + `at(x, y, P)` → 0..1). Un capitolo nuovo senza disegno usa la bussola. L'ordine dei disegni deve seguire `CHAPTERS` (test).
+5. **I test non devono dipendere dalla rete.** `tests/api-tests.mjs` ora intercetta `fetch`: ogni host esterno risponde con la fixture del 3 ottobre o fallisce. Il controllo rosso del 13 ottobre era proprio questo: la CI ha rete, la sandbox no.
+
+**Aperto per la prossima sessione**: push della v0.37 da parte di Jack, poi verificare la CI verde su GitHub e lo sfondo su telefono vero. Restano i punti editoriali di `docs/AUDIT-2026-09.md`.
 

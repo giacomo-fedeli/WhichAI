@@ -2,7 +2,7 @@
  "project": "WhichAI",
  "site": "https://whichai.wiki",
  "license": "CC BY 4.0 (attribution: WhichAI, whichai.wiki)",
- "generated": "2026-10-13",
+ "generated": "2026-10-14",
  "snapshot": "October 3, 2026",
  "scaleNote": "Artificial Analysis Intelligence Index, official scale (the number published on artificialanalysis.ai), relayed by OpenRouter. Static snapshot retrieved October 3, 2026; the live site refreshes it automatically every hour. A value marked ~ is converted from the older BenchLM-mirror scale because no current official measurement is published; models nobody has measured carry no index score and never enter a ranking.",
  "specNote": "Context, price, modality and listing dates come from the public OpenRouter model list (refreshed automatically on the live site; static copy retrieved October 3, 2026) and vendor pages. Missing values are not published or not yet verified - shown as -.",

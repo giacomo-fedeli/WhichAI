@@ -25,3 +25,7 @@ Palette neutra (quasi-nero, grigi, bianco), un solo colore d'accento (blu, solo 
 
 ## D8 — Una pagina sola a capitoli; BYOK, Chains, Merge, Arena tolti (2026-10-13, v0.36)
 Su richiesta di Jack il sito diventa una pagina unica in 6 capitoli in ordine fisso (ranking, compare, radar, market, debates, tools), collegati da animazioni che portano un oggetto da un capitolo al successivo; niente copertina e niente menu di viste. Si tolgono le funzioni che servivano solo a eseguire prompt nel browser (auto-run con chiavi personali, Chains, Merge, Output comparison, Blind Arena): erano le uniche a chiedere chiavi API all'utente e a dipendere da route gratuite che sparivano senza preavviso. D3 è superata. Gli indirizzi vecchi restano validi tramite una mappa di reindirizzamento. Il design sostituisce D7: un colore d'accento per capitolo, tier S-D con colori propri, tema chiaro e scuro.
+
+## D9 — Collegamenti tra capitoli: sfondo a puntini guidato dallo scroll (2026-10-14, v0.37)
+I riquadri che volavano da un capitolo all'altro (v0.36) sono tolti: quando il lettore si fermava a metà dovevano "posarsi", e questo dava scatti. Il collegamento visivo è ora uno sfondo a puntini su canvas, con un disegno per capitolo che si trasforma nel successivo in funzione della sola posizione di scroll (si ferma quando ti fermi), reattivo al puntatore, debole dietro i testi, spento con prefers-reduced-motion. Regola che ne segue: nessuna animazione legata allo scroll può completarsi da sola nel tempo.
+

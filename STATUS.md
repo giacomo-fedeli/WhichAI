@@ -1,10 +1,35 @@
 # WhichAI (ex PromptCompass) — STATUS
 
-Ultimo aggiornamento: 2026-10-13 (sessione 37 - Claude)
-Versione app: v0.36.0 (in cartella, da pubblicare con un push. Live: v0.35, che si aggiorna da sola nei dati)
+Ultimo aggiornamento: 2026-10-14 (sessione 38 - Claude)
+Versione app: v0.37.0 (in cartella, da pubblicare con un push. Live: v0.36, pubblicata da Jack il 13 ottobre)
 Sito live: https://whichai.wiki · https://promptcompass.vercel.app resta come alias
 
 ## Fase corrente: Growth - fase 3 (una pagina sola a capitoli, dati e news che si aggiornano da soli)
+
+## Fatto (sessione 38, 2026-10-14 - Claude): sfondo a puntini al posto dei riquadri volanti + CI riparata (v0.37)
+
+Richiesta di Jack: togliere le animazioni dei riquadri che passano da una sezione all'altra (*"non sono fluide, vanno a scatti se ti fermi a scorrere"*), oppure creare *"qualcosa di vettoriale a puntini che si muove nello sfondo come transizione"*, che si fermi a metà scorrimento, con interattività. E capire il check rosso su GitHub.
+
+### 1. Perché i riquadri andavano a scatti
+Il "morph" doveva per forza appoggiarsi da qualche parte quando il lettore si fermava a metà: dopo 180 ms il riquadro planava verso l'estremo più vicino. Quel planare, sommato alla ricostruzione del clone, era lo scatto. Non si poteva "aggiustare" senza togliere il motivo per cui esisteva: tolto del tutto (motion.js senza ghost/settle, niente attributi `data-morph-*`). I ponti tra capitoli restano, fermi: card con il token vivo (i primi due, l'ultimo arrivo, il prezzo...) e il bottone per scendere.
+
+### 2. Lo sfondo a puntini (js/dotfield.js, nuovo)
+- Una griglia fine di puntini (tipo carta puntinata, ~4.000 punti al massimo) su un unico `<canvas>` fisso dietro la pagina. Ogni capitolo accende un suo disegno a mezzatinta: 01 cinque righe di tier, 02 due anelli che si avvicinano (Venn), 03 radar con anelli e fascio che ruota, 04 tre linee di prezzo che salgono, 05 due onde che si incontrano al centro, 06 una bussola (il logo WhichAI). Colore = accento del capitolo; i puntini deboli sono grigio neutro.
+- Il passaggio da un disegno all'altro è una **funzione pura della posizione di scroll**: parte quando il capitolo successivo entra dal basso (92% dello schermo) e finisce quando arriva al 20%, salendo dal basso come un'onda. Se ti fermi, i puntini si fermano esattamente lì (verificato: stessa immagine 1,5 s dopo lo stop). Mentre leggi, la griglia scorre in su più lenta della pagina (parallasse) e il disegno segue la lettura (gli anelli viaggiano, il fascio gira).
+- Interattività: col mouse i puntini vicini si gonfiano e si spostano (lente); un clic su uno spazio vuoto manda un'onda. Niente su touch durante lo scroll.
+- Non disturba la lettura: dietro titoli, sottotitoli e intestazioni i puntini restano deboli (maschere misurate sul layout); le card li coprono; `pointer-events: none`.
+- Costo: frame solo quando qualcosa cambia; ~2,5 ms a frame in un Chromium senza GPU (desktop 4.482 punti), ~1,3 ms su mobile (1.593 punti); il jank misurato con e senza puntini è uguale. Metà punti su dispositivi lenti, griglia più larga su schermi enormi, immagine ferma con prefers-reduced-motion, nascosto in stampa. Senza canvas (jsdom) si toglie da solo.
+
+### 3. Il check rosso su GitHub (CI / Test suite)
+Era lo step 7, **API tests**. In CI OpenRouter risponde davvero: il 13 ottobre il controllo dati `/api/refresh` era perfettamente pulito, quindi `needsHuman` era vuoto, e il test pretendeva sempre almeno una voce. In sandbox non si vedeva perché OpenRouter non è raggiungibile (report "skipped", che ha sempre un messaggio). Il sito era comunque online: Vercel pubblica indipendentemente dalla CI.
+- Fix: `tests/api-tests.mjs` ora è **ermetico**: ogni host esterno risponde con la risposta OpenRouter salvata il 3 ottobre (fixture) o non risponde; stesso risultato su ogni macchina. L'asserzione ora dice: lista vuota solo se il report è "clean".
+- Verificato con una simulazione della CI: clone pulito, `npm ci`, **Node 24**, tutte e 6 le suite verdi.
+
+### Test e versione
+- **557 test verdi**: 250 statici + 83 smoke DOM + 52 API + 59 live data + 69 catalog + 44 news. Nuovi controlli: nessun riquadro volante rimasto, canvas dietro la pagina e fuori dall'accessibilità, un disegno per capitolo, mappa scroll→storia monotona e pura, disegni deterministici tra 0 e 1, nessun "settling".
+- QA in Chromium: desktop, mobile, scuro, reduced-motion, lente, onda, stop a metà transizione.
+- v0.37 ovunque (APP_VERSION, footer, CACHE `whichai-v0.37.0`, package.json + lock 0.37.0, appVersion API).
+- [ ] **Jack**: push (comandi in chat). Dopo: controllare che il check CI su GitHub sia verde.
 
 ## Fatto (sessione 37, 2026-10-13 - Claude): una pagina sola a capitoli (v0.36)
 
@@ -584,13 +609,13 @@ Dalla v0.35 punteggi, prezzi, modelli nuovi e free route si aggiornano da soli (
 
 ## Da fare (prossime sessioni)
 
-1. Dopo il push della v0.36: verificare in produzione /api/news (fonti ok?), i morph su telefono vero, il wiki (link ai capitoli).
+1. Dopo il push della v0.37: verificare che la CI su GitHub sia verde, lo sfondo a puntini su un telefono vero, /api/news in produzione.
 2. Editoriale (non automatizzabile, da `docs/AUDIT-2026-09.md`): rileggere i due AI Debates più vecchi (regulation, copyright), recensioni dei modelli "auto-added" più importanti (Claude Opus 5.5, GPT-6.1 Sol), Stack Optimizer per Grok/Copilot.
 3. Candidati: canale feedback (GitHub issue template), una GIF del percorso a capitoli per il README e LinkedIn.
 4. Ricorrente: **bump CACHE in sw.js + APP_VERSION in app.js + footer + package.json a ogni release**. I numeri (punteggi, prezzi, modelli nuovi, free route, news) si aggiornano da soli: niente più refresh mensile a mano.
 
 ## Come riprendere il lavoro
 
-- Mappa (v0.36): `index.html` (una pagina, 6 capitoli `data-chapter`) · `styles.css` (unico CSS) · `js/app.js` (regia: lingua/tema, navigazione + LEGACY, drawer, ponti/morph, montaggio capitoli, dati utente, SW) · `js/motion.js` (animazioni di collegamento) · `js/ranking.js` (tier + scatter) · `js/modelcompare.js` · `js/radar.js` (+ `js/changes.js`) · `js/market.js` · `js/topics.js` + `js/glossary.js` · `js/finder.js` · `js/generator.js` (+ `js/engine.js`) · `js/doctor.js` · `js/stack.js` · dati: `js/models-db.js` + `js/benchmarks.js` + `js/live-catalog.js` · API: `api/*.js` (catalog, news, refresh...).
+- Mappa (v0.36): `index.html` (una pagina, 6 capitoli `data-chapter`) · `styles.css` (unico CSS) · `js/app.js` (regia: lingua/tema, navigazione + LEGACY, drawer, ponti, montaggio capitoli, dati utente, SW) · `js/motion.js` (progresso, accento, reveal, montaggio, frame) · `js/dotfield.js` (sfondo a puntini guidato dallo scroll) · `js/ranking.js` (tier + scatter) · `js/modelcompare.js` · `js/radar.js` (+ `js/changes.js`) · `js/market.js` · `js/topics.js` + `js/glossary.js` · `js/finder.js` · `js/generator.js` (+ `js/engine.js`) · `js/doctor.js` · `js/stack.js` · dati: `js/models-db.js` + `js/benchmarks.js` + `js/live-catalog.js` · API: `api/*.js` (catalog, news, refresh...).
 - Vincoli fissi: budget zero, niente servizi a pagamento senza ok di Jack, nessuna chiave/account, contenuti in inglese e UI in 11 lingue.
 - Prima di consegnare: `npm test` (6 suite) e `node tools/build.mjs`.

@@ -198,7 +198,6 @@
     b.style.setProperty("--i", String(i));
     b.appendChild(el("span", "chip deb-tag deb-tag-" + t.id, tagLabel(t)));
     var num = el("span", "deb-num");
-    if (i === 0) num.setAttribute("data-morph-to", "debate");
     num.appendChild(content("strong", null, t.numbers[0].v));
     num.appendChild(content("small", null, t.numbers[0].label));
     b.appendChild(num);

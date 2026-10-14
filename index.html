@@ -33,6 +33,7 @@
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"WhichAI","alternateName":"PromptCompass","url":"https://whichai.wiki/","description":"The live AI model ranking, prices and news, computed from official measurements, plus a finder and a prompt generator for your own task.","applicationCategory":"UtilitiesApplication","operatingSystem":"Any (web)","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"author":{"@type":"Person","name":"Giacomo Fedeli","url":"https://www.linkedin.com/in/giacomo-fedeli-277765239/"}}</script>
 </head>
 <body>
+  <canvas class="dotfield" id="dotfield" aria-hidden="true"></canvas>
   <a class="skip-link" href="#main" data-i18n="skipLink">Skip to content</a>
 
   <header class="topbar" id="topbar">
@@ -114,7 +115,7 @@
           <div class="bridge-card">
             <p class="bridge-kicker"><span class="bridge-num">02</span> <span data-i18n="navCompare">Compare</span></p>
             <p class="bridge-text" data-i18n="bridge1">Close at the top? Put the two leaders side by side.</p>
-            <div class="bridge-token token-duel" id="bridge-duel" data-morph-from="duel"></div>
+            <div class="bridge-token token-duel" id="bridge-duel"></div>
             <a class="bridge-go" href="#compare" aria-label="Compare" data-i18n-aria="navCompare"><span aria-hidden="true">↓</span></a>
           </div>
         </div>
@@ -130,7 +131,7 @@
           <p class="ch-lede" data-i18n="ch2Lede">Official indices, price, context and strengths, side by side. It opens on today's top two and follows the ranking until you pick your own; add a third whenever you like.</p>
         </header>
         <div class="vs-wrap">
-          <div class="vs-stage" id="vs-stage" data-morph-to="duel"></div>
+          <div class="vs-stage" id="vs-stage"></div>
           <div class="vs-body" id="vs-body"></div>
         </div>
 
@@ -139,7 +140,7 @@
           <div class="bridge-card">
             <p class="bridge-kicker"><span class="bridge-num">03</span> <span data-i18n="navRadar">Model Radar</span></p>
             <p class="bridge-text" data-i18n="bridge2">Something newer may already be out. Here is what changed this week.</p>
-            <div class="bridge-token token-newest" id="bridge-newest" data-morph-from="newest"></div>
+            <div class="bridge-token token-newest" id="bridge-newest"></div>
             <a class="bridge-go" href="#radar" aria-label="Model Radar" data-i18n-aria="navRadar"><span aria-hidden="true">↓</span></a>
           </div>
         </div>
@@ -154,7 +155,7 @@
           <h2 class="ch-title" id="radar-title" data-i18n="ch3Title">Model radar: launches, prices, news</h2>
           <p class="ch-lede" data-i18n="ch3Lede">Launches and price moves from the live catalog, next to headlines from the labs, the press, Hacker News and Hugging Face. Nobody has to post anything: it updates by itself.</p>
         </header>
-        <div class="radar-latest" id="radar-latest" data-morph-to="newest" hidden></div>
+        <div class="radar-latest" id="radar-latest" hidden></div>
         <div id="radar-wrap" class="radar-wrap"></div>
 
         <div class="bridge" data-reveal>
@@ -162,7 +163,7 @@
           <div class="bridge-card">
             <p class="bridge-kicker"><span class="bridge-num">04</span> <span data-i18n="navMarket">Market</span></p>
             <p class="bridge-text" data-i18n="bridge3">Every launch moves prices too. Here is what intelligence costs today.</p>
-            <div class="bridge-token token-price" id="bridge-price" data-morph-from="price"></div>
+            <div class="bridge-token token-price" id="bridge-price"></div>
             <a class="bridge-go" href="#market" aria-label="Market" data-i18n-aria="navMarket"><span aria-hidden="true">↓</span></a>
           </div>
         </div>
@@ -177,7 +178,7 @@
           <h2 class="ch-title" id="market-title" data-i18n="ch4Title">The AI market, live</h2>
           <p class="ch-lede" data-i18n="ch4Lede">API prices from OpenRouter, recomputed on every visit: the cheapest way into each tier, the best value, what is free right now, and what a month of your own use would cost.</p>
         </header>
-        <div class="mk-leader" id="mk-leader" data-morph-to="price" hidden></div>
+        <div class="mk-leader" id="mk-leader" hidden></div>
         <div id="market-wrap" class="market-wrap"></div>
 
         <div class="bridge" data-reveal>
@@ -185,7 +186,7 @@
           <div class="bridge-card">
             <p class="bridge-kicker"><span class="bridge-num">05</span> <span data-i18n="navTopics">AI Debates</span></p>
             <p class="bridge-text" data-i18n="bridge4">Behind the price tags: energy, jobs and a capital build-out measured in hundreds of billions. The debates, both sides.</p>
-            <div class="bridge-token token-debate" id="bridge-debate" data-morph-from="debate"></div>
+            <div class="bridge-token token-debate" id="bridge-debate"></div>
             <a class="bridge-go" href="#debates" aria-label="AI Debates" data-i18n-aria="navTopics"><span aria-hidden="true">↓</span></a>
           </div>
         </div>
@@ -219,7 +220,7 @@
           <div class="bridge-card">
             <p class="bridge-kicker"><span class="bridge-num">06</span> <span data-i18n="navTools">Tools</span></p>
             <p class="bridge-text" data-i18n="bridge5">Enough reading. What do you need to get done?</p>
-            <div class="bridge-token token-task" id="bridge-task" data-morph-from="task"></div>
+            <div class="bridge-token token-task" id="bridge-task"></div>
             <a class="bridge-go" href="#tools" aria-label="Tools" data-i18n-aria="navTools"><span aria-hidden="true">↓</span></a>
           </div>
         </div>
@@ -499,7 +500,7 @@
           <a href="/data/models.json" data-i18n="footDataset">Open dataset</a>
           <a href="#" id="foot-support" class="foot-support" target="_blank" rel="noopener" hidden data-i18n="footSupport">Support ♥</a>
         </nav>
-        <p class="foot-line"><span id="foot-version">WhichAI v0.36</span> · <span data-i18n="footerText">Runs in your browser: no account, no tracking. Your goals and prompts never leave your device.</span></p>
+        <p class="foot-line"><span id="foot-version">WhichAI v0.37</span> · <span data-i18n="footerText">Runs in your browser: no account, no tracking. Your goals and prompts never leave your device.</span></p>
         <p id="visit-counter" class="visit-counter" hidden></p>
       </div>
     </div>
@@ -526,6 +527,7 @@
   <script src="js/brands.js"></script>
   <script src="js/charts.js"></script>
   <script src="js/motion.js"></script>
+  <script src="js/dotfield.js"></script>
   <script src="js/config.js"></script>
   <script src="js/api.js"></script>
   <script src="js/ranking.js"></script>
