@@ -1,5 +1,5 @@
 /*
- * WhichAI - the page conductor (v0.38.0)
+ * WhichAI - the page conductor (v0.39.0)
  *
  * One page, six chapters read top to bottom: the ranking, head to head, the
  * radar, the market, the debates and the tools. There is no menu to learn and
@@ -14,7 +14,7 @@
 (function () {
   "use strict";
 
-  var APP_VERSION = "v0.38";
+  var APP_VERSION = "v0.39";
   var BRAND = "WhichAI";
   var LANG_KEY = "pc_lang";
   var THEME_KEY = "pc_theme";

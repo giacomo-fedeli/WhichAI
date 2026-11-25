@@ -343,3 +343,28 @@ Regole (le soglie sono ipotesi di lavoro, non previsioni di traffico):
 - Dal repo: `README.md`, `CHANGELOG.md`, `docs/API.md`, `js/config.js`, `robots.txt`.
 
 Tutto ciò che è marcato **[?]** non è stato verificato in rete: controllare regole, prezzi e URL sul sito di ogni canale prima di usarlo.
+
+## 12. Registro esecuzione (aggiornare a ogni sessione)
+
+Questa sezione dice cosa è GIÀ stato fatto, così in una nuova chat non si ripete nulla. Identità usata per le iscrizioni: `whichai.wiki@proton.me` (nessuna password in questo file). Regole: niente servizi a pagamento, niente captcha aggirati (li risolve Jack), i form si compilano e si invia solo dopo l'ok di Jack.
+
+| Data | Canale | Stato | Note |
+|---|---|---|---|
+| 25/11/2026 | Future Tools | Inviata (da Jack a mano) | Il Cloudflare Turnstile fallisce nel browser integrato. Attesa revisione. |
+| 25/11/2026 | ShowMeBest.ai (free) | Inviata | Richiede link nel footer (presente). Revisione 72 h - 4 settimane. Il piano free non dà dofollow. |
+| 25/11/2026 | ToolPilot.ai (Free With Backlink) | Inviata da Jack | Logo: `C:\dev\PromptCompassFolder\promptcompass--main\docs\whichai-logo-500.jpg`. Link nel footer presente. Fino a 60 giorni. |
+| 25/11/2026 | Dang.ai (free) | In corso | Account creato da Jack. Link nel footer dalla v0.39. Serve push + deploy prima dell'invio. |
+| - | AI Tools Directory (free) | Da fare | Scarta testi scritti con AI: la descrizione la scrive Jack a mano. Non pagare il Fast Track. |
+| - | The Rundown tools | Da fare | Solo bozza email: l'invio richiede l'ok di Jack. |
+| - | AlternativeTo, SaaSHub | Da fare | Servono account con password: li crea Jack. |
+| - | GitHub (About, sito, topics) | Da fare | Dopo il login di Jack: description aggiornata, sito `https://whichai.wiki`, topics `ai, llm, benchmarks, model-comparison, prompt-engineering, pwa, vanilla-js, open-data`. |
+
+**Footer del sito (riga "AI directories")**: v0.38 ToolPilot e ShowMeBestAI; v0.39 aggiunge Dang.ai. Directory a pagamento scartate: TAAFT, Toolify, Futurepedia.
+
+**Lezioni operative**
+- Browser integrato: Turnstile fallisce e il form ToolPilot non si disegna. Usare l'estensione Claude in Chrome (tab propria); i campi del form ToolPilot non sono esposti, quindi si lavora a coordinate.
+- Upload file: il campo file non è raggiungibile dall'estensione. Il file lo sceglie Jack con "Select Image".
+- Accettare termini e inviare form spetta a Jack (o va chiesto esplicitamente).
+- Il controllo schermo del PC vede i browser solo in lettura: per Comet/Chrome non serve.
+
+**Prossime azioni**: (1) Jack: `npm test`, commit e push di v0.39; (2) Dang.ai: compilare il form dopo il deploy; (3) AI Tools Directory: testo scritto da Jack; (4) GitHub: login di Jack, poi aggiornamento About/topics; (5) controllare tra 1-2 settimane lo stato dei listing e il referrer in GoatCounter.

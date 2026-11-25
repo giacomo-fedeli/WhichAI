@@ -268,7 +268,9 @@ Sessione guidata dalla review tecnica ricevuta il 10/8 da Amulya Galmarini (ICT 
 - **Directory (browser integrato)**: Future Tools inviata da Jack a mano (il Cloudflare Turnstile fallisce nel browser integrato). ToolPilot e ShowMeBest approvano il listing gratuito solo con un link di ritorno nel footer; il piano free di ShowMeBest non da dofollow. AI Tools Directory scarta testi scritti con AI: descrizione da scrivere a mano.
 - **v0.38**: riga "AI directories" nel footer con link testuali (ToolPilot, ShowMeBestAI), chiave i18n x11, bump versione ovunque (app.js, api/_lib.js, sw.js CACHE, index.html, package*.json, README, test di coerenza versioni). Dang.ai da aggiungere dopo aver verificato cosa richiede.
 - **TEST**: statici 250/250, API 52/52, live 59/59, news 44/44. Smoke 82/83: l'unico errore e identico sul commit v0.37 pulito (sandbox senza rete). catalog-tests non parte in sandbox (serve il binario esbuild per Windows): **Jack lancia `npm test` sul PC**.
-- [ ] **Jack**: (1) `npm test`; (2) commit e `git push` di v0.38; (3) a deploy fatto, tornare a inviare i form di ToolPilot e ShowMeBest (e il link a footer gia online); (4) scrivere a mano la descrizione per AI Tools Directory; (5) login su GitHub per aggiornare About/sito/topics del repo.
+- **v0.39**: aggiunto il link Dang.ai alla riga footer (serve per il listing gratuito), bump versione ovunque.
+- **Directory - stato (25/11)**: Future Tools inviata (Jack); ShowMeBest free inviata (attesa 72h-4 sett.); ToolPilot free inviata da Jack (logo `docs/whichai-logo-500.jpg`); Dang.ai in corso (account gia creato da Jack). Registro completo in `docs/MARKETING.md` sezione "Registro esecuzione".
+- [ ] **Jack**: (1) `npm test`; (2) commit e `git push` di v0.39 (include v0.38 se non ancora pushata); (3) a deploy fatto, tornare a inviare i form di ToolPilot e ShowMeBest (e il link a footer gia online); (4) scrivere a mano la descrizione per AI Tools Directory; (5) login su GitHub per aggiornare About/sito/topics del repo.
 
 ## Fatto (sessione 30, 2026-07-30 - Claude)
 

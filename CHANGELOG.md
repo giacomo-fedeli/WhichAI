@@ -2,6 +2,13 @@
 
 (Older release-by-release history lives in `STATUS.md`, the project's working memory.)
 
+## v0.39.0 (2026-11-25)
+
+One more link in the footer row of AI directories.
+
+### Added
+- **Dang.ai** in the footer "AI directories" row (`index.html`): Dang.ai approves a free listing only when the site links back to it. Plain text link, no image, no script. Version bumped everywhere.
+
 ## v0.38.0 (2026-11-25)
 
 A small, honest footer row for the AI directories that list WhichAI.

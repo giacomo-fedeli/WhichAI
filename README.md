@@ -3,7 +3,7 @@
 
 Which AI model is best right now, what it costs, what changed this week - and the right AI and prompt for your own task. One page, read top to bottom.
 
-**Live:** https://whichai.wiki · **Status:** Growth · v0.38.0 · zero-cost architecture (free tiers only) · static frontend + read-only serverless API · responsive, installable (PWA) and offline-capable
+**Live:** https://whichai.wiki · **Status:** Growth · v0.39.0 · zero-cost architecture (free tiers only) · static frontend + read-only serverless API · responsive, installable (PWA) and offline-capable
 
 ## One page, six chapters
 

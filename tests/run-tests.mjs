@@ -525,11 +525,11 @@ check("modules: every chapter module exports its interface", [Ranking.init, Rank
 
 /* ---------- 17. version coherence ---------- */
 {
-  check("version: APP_VERSION v0.38", app.includes('APP_VERSION = "v0.38"'));
-  check("version: footer v0.38", html.includes(">WhichAI v0.38<"));
-  check("version: SW cache v0.38.0", sw.includes('"whichai-v0.38.0"'));
-  check("version: package.json 0.38.0", JSON.parse(readFileSync("package.json", "utf8")).version === "0.38.0" && JSON.parse(readFileSync("package-lock.json", "utf8")).version === "0.38.0");
-  check("version: the API reports v0.38", readFileSync("api/_lib.js", "utf8").includes('APP_VERSION = "v0.38"'));
+  check("version: APP_VERSION v0.39", app.includes('APP_VERSION = "v0.39"'));
+  check("version: footer v0.39", html.includes(">WhichAI v0.39<"));
+  check("version: SW cache v0.39.0", sw.includes('"whichai-v0.39.0"'));
+  check("version: package.json 0.39.0", JSON.parse(readFileSync("package.json", "utf8")).version === "0.39.0" && JSON.parse(readFileSync("package-lock.json", "utf8")).version === "0.39.0");
+  check("version: the API reports v0.39", readFileSync("api/_lib.js", "utf8").includes('APP_VERSION = "v0.39"'));
   check("brands: 13 branded model controls in the generator", (html.match(/data-ai-brand=/g) || []).length === 13 && html.includes("js/brands.js"));
   check("brands: dark wordmarks use a light treatment", /\[data-theme="dark"\] \.ai-brand-wordmark\s*\{[^}]*invert\(1\)/s.test(css));
   check("brands: SW precaches the core brand assets", sw.includes("assets/brands/claude-color.svg") && sw.includes("assets/brands/qwen-color.svg"));
