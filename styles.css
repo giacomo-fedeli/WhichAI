@@ -1066,3 +1066,8 @@ body > main.layout-guide .card { box-shadow: var(--shadow-1); }
   [data-reveal] { opacity: 1; transform: none; }
   body { background: #fff; }
 }
+
+/* v0.38: row of AI directories that list WhichAI (plain text links, no external images) */
+.foot-directories { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 14px; font-size: 13px; color: var(--muted); margin: 0; }
+.foot-directories a { color: var(--text-2); text-decoration: none; font-weight: 600; }
+.foot-directories a:hover { color: var(--text); text-decoration: underline; }

@@ -2,6 +2,16 @@
 
 (Older release-by-release history lives in `STATUS.md`, the project's working memory.)
 
+## v0.38.0 (2026-11-25)
+
+A small, honest footer row for the AI directories that list WhichAI.
+
+### Added
+- **"AI directories" row in the footer** (`index.html`, `styles.css`, key `footDirectories` in all 11 languages): plain text links to ToolPilot and ShowMeBestAI, which approve a free listing only when the site links back to them. No external images, no scripts, no tracking. The label says "AI directories", not "Listed on", because a listing is not claimed before it exists.
+
+### Tests
+Static 250, API 52, live data 59 and news 44 pass in the sandbox. DOM smoke 82/83 and the catalog suite do not run clean in the sandbox (the one smoke failure, "the Radar lists automatic arrivals among curated entries", is identical on the untouched v0.37 commit; the catalog suite needs the Windows esbuild binary). Run `npm test` on the PC before pushing.
+
 ## v0.37.0 (2026-10-14)
 
 The cards that flew from one chapter to the next are gone. A quiet dot grid behind the page carries the change instead, and it stops the moment you stop scrolling.

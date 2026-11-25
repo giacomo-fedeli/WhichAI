@@ -63,7 +63,7 @@ check("boot: no cover and no menu of views", !d.getElementById("welcome") && !d.
 check("boot: keys and tools of older versions are wiped", ["pc_settings_v1", "pc_chains_v1", "pc_keymode"].every(k => w.localStorage.getItem(k) === null) && w.sessionStorage.getItem("pc_settings_v1") === null);
 check("boot: every chapter rendered", d.querySelectorAll("#tier-list .tier-row").length === 5 && d.querySelectorAll("#vs-stage .vs-select").length >= 2 && !!d.querySelector("#radar-wrap .radar-grid") && !!d.querySelector("#market-wrap .mk-ladder") && !!d.querySelector("#topics-wrap .deb-deck") && d.querySelectorAll("#quick-wrap .quick-task").length === 8);
 check("boot: the 13 generator families carry brand icons", d.querySelectorAll(".model-check[data-ai-brand] .ai-brand-icon").length === 13);
-check("boot: the version is shown", d.getElementById("foot-version").textContent === "WhichAI v0.37" && w.WhichAIApp.version === "v0.37");
+check("boot: the version is shown", d.getElementById("foot-version").textContent === "WhichAI v0.38" && w.WhichAIApp.version === "v0.38");
 
 /* ---------- the bridges: each chapter hands something to the next ---------- */
 {

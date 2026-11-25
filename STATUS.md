@@ -262,6 +262,14 @@ Sessione guidata dalla review tecnica ricevuta il 10/8 da Amulya Galmarini (ICT 
 - [ ] **Jack (guida nel report della sessione)**: (1) rendi privato il repo su GitHub (Settings > General > Danger Zone) e verifica che Vercel continui a deployare; (2) `git push origin main`; (3) controlla che `/api/health` risponda in produzione; (4) abilita i workflow in Actions e lancia "Data refresh" a mano una volta; (5) crea la pagina Ko-fi e metti l'URL in `js/config.js` (donateUrl e' ancora vuoto); (6) verifica che il conteggio GoatCounter appaia davvero (hai messo `goatCode: "whichai"`: se l'account non esiste, la pill resta nascosta come da design); (7) rispondi ad Amulya con la bozza allegata.
 - **NOTA per la prossima sessione**: refresh dati scoperto dal 30/7 (oggi 19/8). OpenRouter ha gia' **GLM-5.3 (16/8)** non in catalogo. Il primo run del workflow lo segnalera' automaticamente.
 
+## Fatto (sessione 39, 2026-11-25 - Claude)
+
+- **Marketing v2**: `docs/MARKETING.md` riscritto (catalogo canali gratuiti, 23 idee di guerrilla, linee rosse, testi pronti, calendario). Le sessioni 31-38 non sono in questo file: vedi `AI-SYNC.md` e `CHANGELOG.md` (la versione reale e v0.37 prima di questa sessione).
+- **Directory (browser integrato)**: Future Tools inviata da Jack a mano (il Cloudflare Turnstile fallisce nel browser integrato). ToolPilot e ShowMeBest approvano il listing gratuito solo con un link di ritorno nel footer; il piano free di ShowMeBest non da dofollow. AI Tools Directory scarta testi scritti con AI: descrizione da scrivere a mano.
+- **v0.38**: riga "AI directories" nel footer con link testuali (ToolPilot, ShowMeBestAI), chiave i18n x11, bump versione ovunque (app.js, api/_lib.js, sw.js CACHE, index.html, package*.json, README, test di coerenza versioni). Dang.ai da aggiungere dopo aver verificato cosa richiede.
+- **TEST**: statici 250/250, API 52/52, live 59/59, news 44/44. Smoke 82/83: l'unico errore e identico sul commit v0.37 pulito (sandbox senza rete). catalog-tests non parte in sandbox (serve il binario esbuild per Windows): **Jack lancia `npm test` sul PC**.
+- [ ] **Jack**: (1) `npm test`; (2) commit e `git push` di v0.38; (3) a deploy fatto, tornare a inviare i form di ToolPilot e ShowMeBest (e il link a footer gia online); (4) scrivere a mano la descrizione per AI Tools Directory; (5) login su GitHub per aggiornare About/sito/topics del repo.
+
 ## Fatto (sessione 30, 2026-07-30 - Claude)
 
 - **AI DEBATES (richiesta Jack)**: nuova sezione `#topics` (menu More) + 7 pagine wiki statiche `/topics/`: i 6 grandi dibattiti AI-società (energia/data center, lavoro, bolla, copyright, regolamentazione, open vs closed) riassunti con onestà: numeri citati, preoccupazione E contro-tesi, "a che punto siamo", 2-4 fonti linkate ciascuno (IEA, Stanford HAI, WEF, Goldman, US Copyright Office, Commissione UE...). Contenuto EN, chrome tradotto ×11, disclaimer esplicito. Predisposto per diventare interattivo in futuro.
