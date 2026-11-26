@@ -267,6 +267,14 @@ check("modules: every chapter module exports its interface", [Ranking.init, Rank
   check("stack: privacy extra surfaces local option", s3.extras.some(x => x.kind === "privacy" && x.dbId === "inkling"));
   const s4 = Stack._optimize({ tasks: ["coding"], subs: [], budget: "0", needs: ["api"], done: true });
   check("stack: the API extra points at the Market, not a removed view", s4.extras.some(x => x.kind === "api" && /Market/.test(x.text) && !/Compare|Chains/.test(x.text)));
+  /* v0.40 (audit 2026-09, point 5): SuperGrok and Copilot were called redundant in every configuration without any calculation. */
+  const s5 = Stack._optimize({ tasks: ["writing"], subs: ["grok", "copilot"], budget: "20", needs: [], done: true });
+  check("stack: a subscription it cannot score is never called redundant", s5.redundant.length === 0 && s5.unassessed.length === 2 && s5.unassessed.every(u => /cannot call it redundant/.test(u.why)));
+  const s6 = Stack._optimize({ tasks: ["general"], subs: ["grok"], budget: "20", needs: [], done: true });
+  const grokMeasured = DB.models.some(m => m.vendor === "xAI" && m.status === "public" && m.score && !m.score.est && m.score.src === "aa");
+  check("stack: Grok is scored from official live data where it exists", !grokMeasured || (s6.unassessed.length === 0 && (s6.redundant.length === 1 ? /You lose/.test(s6.redundant[0].lose) : s6.stack.some(x => x.app === "grok"))));
+  check("stack: every cancel advice says what you lose", s1.redundant.every(r => /You lose/.test(r.lose)));
+  check("stack: retired Copilot Pro is not sold as a current plan", !/label: "Copilot Pro"/.test(readFileSync("js/stack.js", "utf8")));
 
   const weak = Doctor._analyze("write something");
   const strong = Doctor._analyze("Act as a senior editor. Rewrite my article for beginner developers as a 5-bullet list, max 200 words, avoid jargon. Context: our company sells devtools. For example keep the tone like our blog. Make sure it is accurate; if unsure, ask clarifying questions. Cite sources.");

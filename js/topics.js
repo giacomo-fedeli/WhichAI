@@ -81,13 +81,14 @@
       question: "What changes when you train, retrieve or publish with AI?",
       summary: "Data acquisition, model training, retrieved passages and generated outputs raise distinct questions. Access to a page is not automatically a license to reproduce it. A training dispute also does not determine ownership or infringement for every output you publish.",
       numbers: [
-        { v: "3 report parts", label: "US Copyright Office studies address replicas, output copyrightability and training; Part 3 is pre-publication", kind: "guidance", period: "2024-2025 publications", source: 0 },
+        { v: "1 Sep 2026", label: "US Justice Department statement of interest in the OpenAI copyright cases (S.D.N.Y.): training on written works is fair use; acquisition and infringing outputs are left open", kind: "reported", period: "Government filing, September 2026", source: 2 },
+        { v: "29 Sep 2026", label: "Third Circuit upholds Thomson Reuters v. Ross: copying Westlaw headnotes to build a competing, non-generative search tool was not fair use", kind: "reported", period: "Appeals decision, September 2026", source: 3 },
         { v: "4 factors", label: "US fair-use analysis considers purpose, nature, amount and market effect together", kind: "guidance", period: "US law; Part 3 analysis, May 2025", source: 1 }
       ],
-      evidenceNote: "The Copyright Office report is policy analysis, not a court judgment or blanket license. Its page still labels Part 3 pre-publication at this review. Fair use is a US doctrine; local exceptions and contracts differ.",
-      sideA: "Training and outputs can affect creators' licensing and sales markets. Where acquisition was unlawful or outputs substitute for protected expression, 'the model learned patterns' is not a complete answer. Creators need practical ways to discover use and negotiate permissions.",
-      sideB: "Some uses support research, analysis or other transformative purposes. Individual permission for every input can create costly barriers, especially for smaller developers. The Copyright Office examines varying uses and licensing mechanisms rather than treating all training alike.",
-      status: "The answer depends on jurisdiction, material, acquisition, use and output. This page explains questions to investigate; it does not clear a dataset or publication for legal use.",
+      evidenceNote: "Reviewed November 26, 2026. A statement of interest is the government's view, not a ruling: the court decides, and news plaintiffs asked it to disregard the filing. The Ross appeal concerns a non-generative tool. The Copyright Office still labels its Part 3 training report pre-publication (May 2025). Fair use is a US doctrine; local exceptions and contracts differ.",
+      sideA: "Training and outputs can affect creators' licensing and sales markets. Where acquisition was unlawful or outputs substitute for protected expression, 'the model learned patterns' is not a complete answer. Courts have refused fair use where copying built a directly competing product (Thomson Reuters v. Ross, upheld on appeal in September 2026). Creators need practical ways to discover use and negotiate permissions.",
+      sideB: "Some uses support research, analysis or other transformative purposes. Individual permission for every input can create costly barriers, especially for smaller developers. In September 2026 the US Justice Department argued in the OpenAI cases that training is highly transformative and that a general licensing duty would be legally wrong.",
+      status: "Since September 2026 the US executive branch has taken a side on training, while an appeals court has rejected fair use for a non-generative competitor; the generative cases are still undecided. The answer depends on jurisdiction, material, acquisition, use and output. This page explains questions to investigate; it does not clear a dataset or publication for legal use.",
       uncertainty: "Check the license for the intended use. No obvious verbatim copying does not mean a model is legally cleared, and a public URL does not establish that its contents are public domain.",
       watch: ["Published judgments and their precise factual scope, including appeals", "Training-data disclosures, license terms and workable opt-out mechanisms", "Evidence of reproduced expression or market substitution in a particular output"],
       decisions: [
@@ -97,19 +98,22 @@
       ],
       sources: [
         { label: "US Copyright Office, AI report series and publication status", url: "https://www.copyright.gov/ai/" },
-        { label: "US Copyright Office, Part 3: Generative AI Training (May 2025, pre-publication)", url: "https://www.copyright.gov/ai/Copyright-and-Artificial-Intelligence-Part-3-Generative-AI-Training-Report-Pre-Publication-Version.pdf" }
+        { label: "US Copyright Office, Part 3: Generative AI Training (May 2025, pre-publication)", url: "https://www.copyright.gov/ai/Copyright-and-Artificial-Intelligence-Part-3-Generative-AI-Training-Report-Pre-Publication-Version.pdf" },
+        { label: "IPWatchdog, DOJ sides with OpenAI in the New York Times case (September 3, 2026)", url: "https://ipwatchdog.com/2026/09/03/doj-sides-with-openai-warns-obstacles-to-ai-development-threaten-national-security/" },
+        { label: "Music Business Worldwide, Third Circuit upholds Thomson Reuters v. Ross (September 30, 2026)", url: "https://www.musicbusinessworldwide.com/us-appeals-court-rejects-fair-use-defense-over-ai-training-as-thomson-reuters-wins-copyright-case-backed-by-riaa-and-nmpa/" }
       ] },
     { id: "regulation", tag: "Policy", tagKey: "topicsTagPolicy", title: "Safety and regulation",
       question: "How do rules become safer systems in practice?",
       summary: "A risk framework, a voluntary code and binding law do different jobs. Useful governance connects a use case to evaluations, accountable people and a response to failure. Neither a compliance badge nor a benchmark score proves that an application is safe.",
       numbers: [
         { v: "2 Aug 2026", label: "General EU AI Act application date, with exceptions and staged obligations", kind: "guidance", period: "Commission overview updated August 2026", source: 0 },
-        { v: "2027 / 2028", label: "Revised high-risk dates: 2 December 2027 for listed areas; 2 August 2028 for regulated-product systems", kind: "guidance", period: "AI Omnibus timeline described by the Commission", source: 0 }
+        { v: "2027 / 2028", label: "Revised high-risk dates: 2 December 2027 for listed areas; 2 August 2028 for regulated-product systems", kind: "guidance", period: "AI Omnibus timeline described by the Commission", source: 0 },
+        { v: "2026/1744", label: "The AI Omnibus regulation amending the AI Act: published in the Official Journal on 24 July 2026, in force since 27 July 2026", kind: "reported", period: "Enacted law, July 2026", source: 2 }
       ],
-      evidenceNote: "GPAI obligations began in August 2025; prohibited practices and AI literacy had earlier dates. The Commission reports the AI Omnibus entered into force in July 2026. Check the official timeline and use case rather than applying one deadline to every system.",
+      evidenceNote: "Reviewed November 26, 2026. GPAI obligations began in August 2025; prohibited practices and AI literacy had earlier dates. The Omnibus moved only the Chapter III high-risk duties: most Article 50 transparency duties still apply from 2 August 2026, with a grace period to 2 December 2026 for marking AI-generated content in systems already on the market. It also adds a ban on AI that generates non-consensual intimate images of identifiable people. Check the official timeline and use case rather than applying one deadline to every system.",
       sideA: "Without accountability, incident handling and external scrutiny, written safety promises are hard to enforce. Harm can arise from connections to data and tools even when a base model passes evaluations. Duties need to reach the application and affected people.",
       sideB: "Proportionate requirements can focus effort on higher-risk uses. NIST's voluntary framework organizes work without treating every chatbot as a critical system. Clear guidance and reusable evaluation evidence can reduce duplicated effort for smaller teams.",
-      status: "The Commission overview now includes enacted simplification and later high-risk dates. NIST says AI RMF 1.0 is being revised. Versions, dates and jurisdiction are part of the evidence.",
+      status: "The EU simplification is enacted law, not a proposal. NIST says AI RMF 1.0 is being revised under the White House AI Action Plan; no revised draft was published at this review, and in April 2026 NIST released a concept note for a critical-infrastructure profile. Versions, dates and jurisdiction are part of the evidence.",
       uncertainty: "Obligations depend on role, sector, jurisdiction and intended use. A voluntary framework does not establish legal compliance; a base-model evaluation does not certify all downstream uses.",
       watch: ["Enforcement and incident reports showing how obligations are applied", "Evaluations covering the workflow, users and tool permissions", "Current legal text and guidance, distinguishing drafts from adopted rules"],
       decisions: [
@@ -119,7 +123,8 @@
       ],
       sources: [
         { label: "European Commission, AI Act and current application timeline", url: "https://digital-strategy.ec.europa.eu/en/policies/regulatory-framework-ai" },
-        { label: "NIST, AI Risk Management Framework and revision status", url: "https://www.nist.gov/itl/ai-risk-management-framework" }
+        { label: "NIST, AI Risk Management Framework and revision status", url: "https://www.nist.gov/itl/ai-risk-management-framework" },
+        { label: "White & Case, EU AI Omnibus enters into force (August 4, 2026)", url: "https://www.whitecase.com/insight-alert/eu-ai-omnibus-enters-force-amending-ai-act" }
       ] },
     { id: "open-vs-closed", tag: "Ecosystem", tagKey: "topicsTagEcosystem", title: "Open weights vs closed models",
       question: "What control do you gain, and what responsibility comes with it?",

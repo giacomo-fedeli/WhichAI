@@ -15,7 +15,7 @@ labels: bug
 
 **Environment**
 - Device (desktop / phone) and browser:
-- Theme (light / dark / sepia) and language:
-- Page or view (e.g. #guide, #arena, /models/... wiki page):
+- Theme (light / dark) and language:
+- Chapter or page (e.g. Ranking, Compare, a /models/... wiki page):
 
 **Screenshot (if visual)**

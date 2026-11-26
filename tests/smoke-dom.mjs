@@ -295,7 +295,10 @@ check("boot: the version is shown", d.getElementById("foot-version").textContent
   globalThis.window = globalThis.window || globalThis;
   const DBnode = require("../js/models-db.js");
   const fixture = JSON.parse(readFileSync("tests/fixtures/openrouter-2026-10-03.json", "utf8"));
-  const delta = Core.computeDelta(DBnode, Live.normalize(fixture, DBnode, Date.now()), { now: Date.now() });
+  // The fixture is a snapshot of 2026-10-03: pin "now" to that day so the 45-day arrivals window
+  // does not slide past it as real time goes by (the test used to fail on its own after Nov 17).
+  const FIXTURE_NOW = Date.parse("2026-10-03T12:00:00Z");
+  const delta = Core.computeDelta(DBnode, Live.normalize(fixture, DBnode, FIXTURE_NOW), { now: FIXTURE_NOW });
 
   check("live: before any live data the pill stays hidden", d.getElementById("live-pill").hidden);
   const n0 = w.PromptCompassModelsDB.models.length;
@@ -314,7 +317,9 @@ check("boot: the version is shown", d.getElementById("foot-version").textContent
   check("live: a model measured after the last deploy is searchable", !!d.querySelector('#rank-results .rank-hit[data-id="claude-opus-5-5"]'));
   w.WhichAIApp.openModel("claude-opus-5-5");
   const det = d.getElementById("drawer");
-  check("live: its card shows the official score, a rank and the auto chip", /AA 57\.6/.test(det.textContent) && !!det.querySelector(".badge-rank") && !!det.querySelector(".chip-auto"));
+  check("live: an editorial entry gets the official score and a rank, and keeps its review (no auto chip)", /AA 57\.6/.test(det.textContent) && !!det.querySelector(".badge-rank") && !det.querySelector(".chip-auto"));
+  w.WhichAIApp.openModel("grok-4-7");
+  check("live: a model added automatically shows the auto chip", !!det.querySelector(".chip-auto") && !!det.querySelector(".badge-rank"));
   w.WhichAIApp.openModel("muse-spark-1-3");
   check("live: a converted score shows ~ and no rank", /AA ~/.test(det.textContent) && !det.querySelector(".badge-rank"));
   const rec = w.PromptCompassBenchmarks.recommend("general");

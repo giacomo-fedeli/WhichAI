@@ -9,6 +9,10 @@ const require = createRequire(import.meta.url);
 
 globalThis.window = globalThis;
 const DB = require("../js/models-db.js");
+/* v0.40: an editorial entry for a model released after the editorial snapshot has no
+   "verified" figure of its own in the static file: its numbers arrive live. */
+const UPDATED_ISO = new Date(Date.parse(DB.updated)).toISOString().slice(0, 10);
+const afterSnapshot = (m) => !!(m.spec && m.spec.released && m.spec.released > UPDATED_ISO);
 const Bench = require("../js/benchmarks.js");
 const Glossary = require("../js/glossary.js");
 const Topics = require("../js/topics.js");
@@ -143,8 +147,8 @@ let pages = [];
 mkdirSync("models", { recursive: true });
 for (const m of DB.models) {
   const p = `/models/${m.id}.html`;
-  const scoreTxt = m.score && m.score.aa ? (m.score.est ? "estimated ~" + m.score.aa : "scores " + m.score.aa) : "has no published score";
-  const desc = `${m.name} by ${m.vendor}: review, price, context window and benchmarks. ${m.name} ${scoreTxt} on the AA Intelligence Index. Verified ${DB.updated}.`;
+  const scoreTxt = m.score && m.score.aa ? (m.score.est ? "estimated ~" + m.score.aa : "scores " + m.score.aa) : (afterSnapshot(m) ? "is scored from live data" : "has no published score");
+  const desc = `${m.name} by ${m.vendor}: review, price, context window and benchmarks. ${m.name} ${scoreTxt} on the AA Intelligence Index. ${afterSnapshot(m) ? "Numbers refreshed live." : "Verified " + DB.updated + "."}`;
   const chips = [chip(m.status, "chip-" + m.status)]
     .concat(m.tags.filter(t => t !== m.status).map(t => chip(t === "prompt-target" ? "in Generator" : t, "chip-" + t)))
     .concat((m.labels || []).map(l => chip(l, "chip-label"))).join(" ");
@@ -154,14 +158,14 @@ for (const m of DB.models) {
   }).join(" · ");
   const body = `    <div class="guide-head">
       <h1>${brand(m, m.name, { providerWordmark: true })}</h1>
-      <p>${brand(m.vendor, m.vendor, { wordmark: true })} · verified ${esc(DB.updated)}</p>
+      <p>${brand(m.vendor, m.vendor, { wordmark: true })} · ${afterSnapshot(m) ? "editorial entry, numbers read live" : "verified " + esc(DB.updated)}</p>
     </div>
     <div class="card about-card">
       <div class="db-chips">${chips}</div>
       <div class="db-specs" style="margin-top:14px">
         ${specRows(m)}
       </div>
-      ${m.score && m.score.est ? '<p class="router-meta">The score shown is a WhichAI estimate from adjacent benchmarks, not an official measurement.</p>' : ""}
+      ${m.score && m.score.est && (typeof m.score.aa === "number" || typeof m.score.guess === "number") ? '<p class="router-meta">The score shown is a WhichAI estimate from adjacent benchmarks, not an official measurement.</p>' : ""}
     </div>
     <div class="card about-card">
       <h2 class="card-title">In one line</h2>

@@ -1,0 +1,14 @@
+# Keeps the GitHub Actions used by the workflows current (security fixes,
+# runtime deprecations such as Node 20 -> 24). npm is deliberately NOT listed:
+# the only npm packages are test/build tools pinned by package-lock.json.
+version: 2
+updates:
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "monthly"
+    groups:
+      actions:
+        patterns: ["*"]
+    commit-message:
+      prefix: "ci"

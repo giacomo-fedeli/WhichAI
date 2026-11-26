@@ -17,14 +17,16 @@
 
   var TASKS = ["writing", "coding", "research", "analysis", "brainstorming", "education", "business", "general"];
 
-  /* Subscriptions we can reason about. Prices: vendor pages, July 2026 snapshot. */
+  /* Subscriptions we can reason about. Prices: vendor pages, July 2026 snapshot;
+     re-checked November 26, 2026: Copilot Pro is retired (Microsoft ended support on
+     August 1, 2026; Microsoft 365 Premium replaced it) and SuperGrok is $30/month. */
   var SUBS = [
     { id: "chatgpt", label: "ChatGPT Plus", price: 20, app: "chatgpt" },
     { id: "claude", label: "Claude Pro", price: 20, app: "claude" },
     { id: "gemini", label: "Google AI Pro", price: 19.99, app: "gemini" },
     { id: "perplexity", label: "Perplexity Pro", price: 20, app: "perplexity" },
-    { id: "copilot", label: "Copilot Pro", price: 20, app: "copilot" },
-    { id: "grok", label: "SuperGrok", price: 16, app: "grok", approx: true }
+    { id: "copilot", label: "Microsoft 365 Premium (ex Copilot Pro)", price: 19.99, app: "copilot", approx: true },
+    { id: "grok", label: "SuperGrok", price: 30, app: "grok", approx: true }
   ];
 
   var APP_DB = {
@@ -38,8 +40,31 @@
     claude: "free tier runs Claude Sonnet 5 (limits vary with demand)",
     chatgpt: "free tier runs GPT-5.5 with message caps",
     gemini: "the most generous free tier of the big assistants",
-    perplexity: "unlimited basic cited searches plus 5 Pro searches/day"
+    perplexity: "unlimited basic cited searches plus 5 Pro searches/day",
+    grok: "Grok has a free tier with lower limits"
   };
+
+  /* What a subscription gives that no benchmark here measures. Shown instead of
+     a verdict when the optimizer has no evidence for that app (v0.40: before,
+     SuperGrok and Copilot were always called redundant without any calculation). */
+  var UNIQUE = {
+    grok: "real-time X (Twitter) data inside the assistant",
+    copilot: "Copilot inside Word, Excel, PowerPoint and Outlook, plus the Office apps for up to six people"
+  };
+
+  /* Grok has no editorial task ranking, so it is scored only where a live,
+     official measurement exists: the same metric the benchmark router uses. */
+  var LIVE_METRIC = { general: "aa", analysis: "aa", coding: "coding" };
+  function bestOfVendor(vendor, metric) {
+    var db = DB(), best = null;
+    if (!db) return null;
+    db.models.forEach(function (m) {
+      if (m.vendor !== vendor || m.status !== "public" || !m.score || m.score.est || m.score.src !== "aa") return;
+      var v = metric === "coding" ? m.score.coding : m.score.aa;
+      if (typeof v === "number" && (!best || v > best.value)) best = { id: m.id, name: m.name, value: v };
+    });
+    return best;
+  }
 
   function freshState() {
     return { tasks: [], subs: [], budget: "20", needs: [], done: false };
@@ -75,7 +100,16 @@
     var scores = { claude: 0, chatgpt: 0, gemini: 0, perplexity: 0 };
     var pts = [5, 3, 2, 1];
     var rec = bench ? bench.recommend(task) : null;
-    if (rec) rec.ranking.forEach(function (r, i) { if (scores[r.app] != null) scores[r.app] += pts[i] || 0; });
+    var ranking = rec ? rec.ranking.slice() : [];
+    var grok = LIVE_METRIC[task] && rec && rec.metric ? bestOfVendor("xAI", LIVE_METRIC[task]) : null;
+    if (grok) {
+      /* measured apps in order of their live value, unmeasured ones (Perplexity) after */
+      scores.grok = 0;
+      var measured = ranking.filter(function (r) { return r.live; }).concat([{ app: "grok", live: grok }]);
+      measured.sort(function (a, b) { return b.live.value - a.live.value; });
+      ranking = measured.concat(ranking.filter(function (r) { return !r.live; }));
+    }
+    ranking.forEach(function (r, i) { if (scores[r.app] != null) scores[r.app] += pts[i] || 0; });
     if (state.needs.indexOf("web") !== -1) { scores.perplexity += 4; scores.gemini += 1.5; }
     if (state.needs.indexOf("files") !== -1) { scores.chatgpt += 1.5; scores.gemini += 1; }
     if (state.needs.indexOf("long") !== -1) { scores.claude += 1.5; scores.gemini += 1; }
@@ -88,8 +122,10 @@
     var perTask = {};   // task -> app
     var appTasks = {};  // app -> [tasks]
     var appScore = {};  // app -> total score across selected tasks
+    var assessed = {};  // app -> true when at least one selected task could score it
     state.tasks.forEach(function (t) {
       var sc = scoreApps(t);
+      Object.keys(sc).forEach(function (a) { assessed[a] = true; });
       var winner = Object.keys(sc).sort(function (a, b) { return sc[b] - sc[a]; })[0];
       perTask[t] = winner;
       (appTasks[winner] = appTasks[winner] || []).push(t);
@@ -116,13 +152,13 @@
       if (!paid) why.push("Free tier: " + (FREE_TIER_NOTE[app] || "available"));
       return {
         app: app,
-        label: bench && bench.apps[app] ? bench.apps[app].label : app,
+        label: bench && bench.apps[app] ? bench.apps[app].label : app === "grok" ? "Grok" : app,
         tasks: appTasks[app],
         paid: paid,
         price: paid && sub ? sub.price : 0,
         priceApprox: paid && sub ? !!sub.approx : false,
         why: why.slice(0, 3),
-        dbId: APP_DB[app] ? (paid ? APP_DB[app].paid : APP_DB[app].free) : null
+        dbId: APP_DB[app] ? (paid ? APP_DB[app].paid : APP_DB[app].free) : app === "grok" ? (bestOfVendor("xAI", "aa") || {}).id || null : null
       };
     });
 
@@ -134,7 +170,18 @@
       if (sub) { currentCost += sub.price; current.push(sub); }
     });
     var keepApps = paidApps;
-    var redundant = current.filter(function (sub) { return keepApps.indexOf(sub.app) === -1; });
+    /* "redundant" only when the optimizer actually scored that app; otherwise
+       it says it cannot judge, and why the subscription might still be worth it. */
+    var redundant = current.filter(function (sub) { return keepApps.indexOf(sub.app) === -1 && assessed[sub.app]; }).map(function (sub) {
+      var r = {}; for (var k in sub) r[k] = sub[k];
+      r.lose = "You lose the paid tier of " + sub.label + " (top models, higher limits)" + (FREE_TIER_NOTE[sub.app] ? "; you keep the free tier: " + FREE_TIER_NOTE[sub.app] : "") + ".";
+      return r;
+    });
+    var unassessed = current.filter(function (sub) { return keepApps.indexOf(sub.app) === -1 && !assessed[sub.app]; }).map(function (sub) {
+      var r = {}; for (var k in sub) r[k] = sub[k];
+      r.why = "No benchmark here covers " + sub.label + " for the tasks you picked, so WhichAI cannot call it redundant." + (UNIQUE[sub.app] ? " Keep it if you rely on " + UNIQUE[sub.app] + "." : "");
+      return r;
+    });
 
     var extras = [];
     if (state.needs.indexOf("privacy") !== -1) {
@@ -149,7 +196,7 @@
 
     return {
       perTask: perTask, stack: stack, newCost: newCost,
-      currentCost: currentCost, redundant: redundant, extras: extras,
+      currentCost: currentCost, redundant: redundant, unassessed: unassessed, extras: extras,
       updated: bench ? bench.updated : ""
     };
   }
@@ -170,6 +217,8 @@
     lines.push("Estimated new cost: $" + res.newCost.toFixed(2) + "/month");
     if (res.currentCost) lines.push("Current subscriptions: $" + res.currentCost.toFixed(2) + "/month");
     if (res.redundant.length) lines.push("Possibly redundant: " + res.redundant.map(function (r) { return r.label; }).join(", "));
+    res.redundant.forEach(function (r) { lines.push("- " + r.lose); });
+    (res.unassessed || []).forEach(function (r) { lines.push("Not assessed: " + r.label + ". " + r.why); });
     lines.push("");
     lines.push("Estimates based on public benchmarks and vendor prices (snapshot " + res.updated + "). Generated with WhichAI, https://whichai.wiki");
     var blob = new Blob([lines.join("\n")], { type: "text/markdown" });
@@ -290,7 +339,9 @@
     }
     if (res.redundant.length) {
       cost.appendChild(el("p", "finder-line finder-limit", deps.T("stackRedundant") + " " + res.redundant.map(function (r) { return r.label; }).join(", ")));
+      res.redundant.forEach(function (r) { cost.appendChild(el("p", "finder-line stack-lose", r.lose)); });
     }
+    (res.unassessed || []).forEach(function (r) { cost.appendChild(el("p", "finder-line stack-unassessed", r.why)); });
     cost.appendChild(el("p", "router-meta", "Estimates from public vendor prices and our benchmark router (snapshot " + res.updated + "). Your real usage may differ."));
     wrap.appendChild(cost);
 

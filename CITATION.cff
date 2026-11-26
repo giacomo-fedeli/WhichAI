@@ -1,0 +1,15 @@
+cff-version: 1.2.0
+message: "If you use the WhichAI dataset, please cite it as below. The data is licensed CC BY 4.0; attribution: WhichAI, https://whichai.wiki"
+title: "WhichAI: AI model ranking, prices and comparison (open dataset)"
+type: dataset
+authors:
+  - family-names: Fedeli
+    given-names: Giacomo
+url: "https://whichai.wiki"
+repository-code: "https://github.com/giacomo-fedeli/WhichAI"
+license: CC-BY-4.0
+keywords:
+  - AI models
+  - LLM benchmarks
+  - model comparison
+  - open data

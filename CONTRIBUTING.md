@@ -1,6 +1,6 @@
 # Contributing to WhichAI
 
-WhichAI is a free, open, client-side tool: vanilla HTML/CSS/JS, no build step, no server, no tracking. Contributions of every size are welcome, from a typo fix to a new data entry.
+WhichAI is a free site with an open dataset: vanilla HTML/CSS/JS, no framework, no accounts, no tracking, plus a small read-only serverless API. Contributions of every size are welcome, from a typo fix to a new data entry.
 
 ## The fastest ways to help
 
@@ -12,7 +12,7 @@ WhichAI is a free, open, client-side tool: vanilla HTML/CSS/JS, no build step, n
 ## Ground rules
 
 - Zero cost: no paid services, no build tooling, no frameworks, no chart libraries.
-- Privacy by design: no accounts, no server calls except the user's own BYOK API requests.
+- Privacy by design: no accounts, no tracking. The `/api` endpoints are read-only, serve public data and accept no request body.
 - Honest data: every score has a dated source; estimates are marked `est: true` and rendered with `~`; missing values are `n/a`, never invented.
 - Rumored or private models are `info-only` and never enter rankings.
 - Typography: no em dashes in user-visible text (there is a test for it).
@@ -21,11 +21,13 @@ WhichAI is a free, open, client-side tool: vanilla HTML/CSS/JS, no build step, n
 ## Project layout
 
 ```
-index.html          all views (hash routing)     js/models-db.js   model database (the crown jewel)
-styles.css          single stylesheet, 3 themes  js/benchmarks.js  per-task router + sources
-js/app.js           wiring, BYOK runners         js/changes.js     Model Radar feed
-js/engine.js        prompt generation            tools/build-seo.mjs  static wiki generator
-tests/              two suites (see below)       data/models.json  open dataset (CC BY 4.0)
+index.html           the one page: six chapters (Ranking, Compare, Radar, Market, Debates, Tools)
+styles.css           single stylesheet, light and dark themes, RTL-aware
+js/app.js            conductor: language, theme, navigation, model drawer
+js/models-db.js      the model database (the crown jewel)    js/benchmarks.js  per-task router + sources
+js/i18n.js           UI dictionary, 11 languages              js/changes.js     Model Radar entries
+api/                 read-only serverless endpoints (Vercel)  data/models.json  open dataset (CC BY 4.0)
+tools/               build-seo.mjs (static wiki), build.mjs   tests/             six offline suites
 ```
 
 ## Editing the model database
@@ -48,12 +50,14 @@ Rules the test suite enforces: unique ids, valid tags and labels, `private`/`rum
 ## Before opening a PR
 
 ```
-node tests/run-tests.mjs     # static suite, no dependencies
-node tests/smoke-dom.mjs     # full DOM boot (npm i jsdom once)
-node tools/build-seo.mjs     # if you touched data files
+npm install      # test-only dependencies (jsdom, esbuild)
+npm test         # six offline suites: static, DOM smoke, API, live data, catalog, news
+node tools/build-seo.mjs     # if you touched data files (regenerates the static wiki)
 ```
 
-Both suites must be green. Keep PRs small and single-topic; explain sources for any data change. Release rules: bump `APP_VERSION` (js/app.js), the badge and footer (index.html) and `CACHE` (sw.js) together.
+Everything must be green. Keep PRs small and single-topic; explain the source of any data change. Release rules: bump `APP_VERSION` (js/app.js and api/_lib.js), the footer version (index.html), `CACHE` (sw.js) and the package version together; a test checks that they agree.
+
+By opening a pull request you agree that your contribution may be included in the project under the licences described in [LICENSE.md](LICENSE.md).
 
 ## Not accepted
 

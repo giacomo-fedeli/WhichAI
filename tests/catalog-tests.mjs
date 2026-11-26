@@ -41,11 +41,17 @@ const delta = Core.computeDelta(DB, live, { now: WHEN });
   check("delta: most catalog entries find their OpenRouter route", delta.counts.matched >= 85, String(delta.counts.matched));
   check("delta: official measurements for most of the market", delta.counts.official >= 90, String(delta.counts.official));
   const addedIds = delta.added.map((a) => a.id);
-  const LAUNCHES = ["claude-opus-5-5", "claude-sonnet-5-5", "gpt-6-1-sol", "grok-4-7", "mimo-v2-6-pro"];
+  /* v0.40: Opus 5.5, Sonnet 5.5 and GPT-6.1 Sol now have editorial entries (reviews written by hand,
+     no index figure in the static file): the source must UPDATE them, not add them a second time. */
+  const LAUNCHES = ["grok-4-7", "mimo-v2-6-pro"];
   check("delta: the September launches appear on their own", LAUNCHES.every((id) => addedIds.includes(id)), LAUNCHES.filter((id) => !addedIds.includes(id)).join(","));
-  const opus55 = delta.added.find((a) => a.id === "claude-opus-5-5");
-  check("delta: a new model carries the official figure and says it is automatic", opus55 && opus55.score.aa === 57.6 && opus55.score.src === "aa" && opus55.score.est === false && opus55.auto === true && /automatically/.test(opus55.review));
-  check("delta: a new model gets vendor, family and price from the source", opus55.vendor === "Anthropic" && opus55.family === "claude" && opus55.spec.priceIn === 4 && opus55.spec.priceOut === 20);
+  const EDITED = ["claude-opus-5-5", "claude-sonnet-5-5", "gpt-6-1-sol"];
+  check("delta: a launch with an editorial entry is patched with the official figure, never added twice", EDITED.every((id) => !addedIds.includes(id) && delta.patches[id] && delta.patches[id].score && delta.patches[id].score.src === "aa" && delta.patches[id].score.est === false), EDITED.filter((id) => addedIds.includes(id) || !delta.patches[id]).join(","));
+  check("delta: the editorial Opus 5.5 gets exactly the figure published upstream", delta.patches["claude-opus-5-5"].score.aa === 57.6);
+  const grok47 = delta.added.find((a) => a.id === "grok-4-7");
+  const upGrok = FIXTURE.data.find((m) => m.id === "x-ai/grok-4.7");
+  check("delta: a new model carries the official figure and says it is automatic", grok47 && grok47.score.aa === upGrok.benchmarks.artificial_analysis.intelligence_index && grok47.score.src === "aa" && grok47.score.est === false && grok47.auto === true && /automatically/.test(grok47.review));
+  check("delta: a new model gets vendor, family and price from the source", grok47.vendor === "xAI" && grok47.family === "grok" && grok47.spec.priceIn === Number(upGrok.pricing.prompt) * 1e6 && grok47.spec.priceOut === Number(upGrok.pricing.completion) * 1e6);
   check("delta: only measured models are added", delta.added.every((a) => typeof a.score.aa === "number" && a.score.est === false));
   check("delta: routes and batch tiers are never added as models", delta.added.every((a) => a.or.every((id) => id.indexOf(":") === -1)));
   const claimed = new Set(DB.models.flatMap((m) => m.or || []));
@@ -200,7 +206,7 @@ const delta = Core.computeDelta(DB, live, { now: WHEN });
   const ctx = {};
   try { vm.runInNewContext(seedSrc, { window: ctx }); } catch (e) { /* checked below */ }
   check("build: the seed is a valid delta the browser will accept", LiveCatalog.isDelta(ctx.WhichAILiveSeed));
-  check("build: wiki pages exist for models measured since the last commit", existsSync("dist/models/claude-opus-5-5.html") && !existsSync("models/claude-opus-5-5.html"));
+  check("build: wiki pages exist for models measured since the last commit", existsSync("dist/models/grok-4-7.html") && !existsSync("models/grok-4-7.html"));
   const page = existsSync("dist/models/claude-opus-5.html") ? readFileSync("dist/models/claude-opus-5.html", "utf8") : "";
   check("build: wiki figures are marked for live refresh", /data-live-score="claude-opus-5"/.test(page) && /\/js\/wiki-live\.js/.test(page));
   check("build: the repository copy of the seed stays empty", /WhichAILiveSeed = null/.test(readFileSync("js/live-seed.js", "utf8")));

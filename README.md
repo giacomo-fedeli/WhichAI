@@ -1,4 +1,10 @@
 # WhichAI
+
+[![CI](https://github.com/giacomo-fedeli/WhichAI/actions/workflows/ci.yml/badge.svg)](https://github.com/giacomo-fedeli/WhichAI/actions/workflows/ci.yml)
+[![Live site](https://img.shields.io/badge/live-whichai.wiki-0a7cff)](https://whichai.wiki)
+[![Data licence: CC BY 4.0](https://img.shields.io/badge/data-CC%20BY%204.0-lightgrey)](LICENSE.md)
+[![No account, no tracking](https://img.shields.io/badge/privacy-no%20account%20%C2%B7%20no%20tracking-2ea44f)](#private-by-design)
+
 *(formerly PromptCompass - same project, new home: [whichai.wiki](https://whichai.wiki))*
 
 Which AI model is best right now, what it costs, what changed this week - and the right AI and prompt for your own task. One page, read top to bottom.
