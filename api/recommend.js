@@ -28,7 +28,7 @@ function freeAlternative(DBx, taskKey) {
   });
   var m = pool[0];
   if (!m) return null;
-  return { id: m.id, name: m.name, vendor: m.vendor, access: m.access, score: m.score.aa, estimated: !!m.score.est, page: "https://whichai.wiki/models/" + m.id + ".html" };
+  return { id: m.id, name: m.name, vendor: m.vendor, access: m.access, score: m.score.aa, estimated: !!m.score.est, page: "https://whichai.wiki/models/" + m.id };
 }
 
 module.exports = async function handler(req, res) {

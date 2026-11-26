@@ -130,7 +130,8 @@ function analyse(upstream, DB) {
     const outUp = perMillion(up.pricing && up.pricing.completion);
     const off = (a, b) => a != null && b != null && Math.abs(a - b) / Math.max(a, b) > PRICE_TOLERANCE;
     if (off(inHave, inUp) || off(outHave, outUp)) {
-      report.priceDrift.push({ id: model.id, name: model.name, catalog: { in: inHave, out: outHave }, upstream: { in: inUp, out: outUp, id: up.id } });
+      const held = require("./_catalog-core.js").suspiciousPriceDrift(inHave, outHave, inUp, outUp);
+      report.priceDrift.push({ id: model.id, name: model.name, catalog: { in: inHave, out: outHave }, upstream: { in: inUp, out: outUp, id: up.id }, held });
     }
     const ctxHave = parseFloat(String(model.spec.ctx || "").replace(/[^0-9.]/g, ""));
     const ctxUp = up.context_length ? up.context_length / 1000 : null;
@@ -167,7 +168,7 @@ function analyse(upstream, DB) {
   });
   report.automated = {
     scores: "official Artificial Analysis indices applied automatically by /api/catalog",
-    prices: report.priceDrift.length ? report.priceDrift.length + " price change(s) applied automatically (OpenRouter price, labelled as such)" : "no drift",
+    prices: report.priceDrift.length ? report.priceDrift.length + " price change(s): " + report.priceDrift.filter((p) => !p.held).length + " applied automatically (OpenRouter price, labelled as such), " + report.priceDrift.filter((p) => p.held).length + " held for review (opposite-direction change)" : "no drift",
     newModels: report.missingFromCatalog.length + " upstream model(s) newer than the editorial snapshot: measured ones are added automatically, unmeasured ones appear in the Radar",
     freeRoutes: "the free list on the site is read live by /api/catalog (" + report.upstreamFreeRoutes + " routes upstream today)"
   };
@@ -224,7 +225,7 @@ function markdown(r) {
     L.push("### Price drift");
     L.push("");
     for (const p of r.priceDrift.slice(0, 20)) {
-      L.push("- **" + p.name + "**: catalog $" + p.catalog.in + "/$" + p.catalog.out + " vs upstream $" + p.upstream.in + "/$" + p.upstream.out + " (`" + p.upstream.id + "`)");
+      L.push("- **" + p.name + "**: catalog $" + p.catalog.in + "/$" + p.catalog.out + " vs upstream $" + p.upstream.in + "/$" + p.upstream.out + " (`" + p.upstream.id + "`)" + (p.held ? " - **held**: input and output moved in opposite directions, editorial price kept; check the vendor page" : " - applied"));
     }
     L.push("");
   }

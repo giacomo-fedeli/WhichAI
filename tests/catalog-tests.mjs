@@ -195,6 +195,22 @@ const delta = Core.computeDelta(DB, live, { now: WHEN });
   globalThis.fetch = realFetch;
 }
 
+/* ---------- 5b. price policy (v0.40): follow OpenRouter, hold opposite-direction changes ---------- */
+{
+  check("price: a plain cut or rise is not suspicious", !Core.suspiciousPriceDrift(1, 6, 0.2, 1.2) && !Core.suspiciousPriceDrift(0.75, 3.75, 0.825, 4.125));
+  check("price: input down and output up (another provider behind the route) is held", Core.suspiciousPriceDrift(3, 15, 0.192, 16) && Core.suspiciousPriceDrift(3, 15, 4, 10));
+  check("price: missing or zero prices never count as suspicious", !Core.suspiciousPriceDrift(null, 15, 1, 2) && !Core.suspiciousPriceDrift(3, 15, 0, 0));
+  const fx = clone(FIXTURE);
+  const kimi = fx.data.find((m) => m.id === "moonshotai/kimi-k3");
+  const ed = DB.models.find((m) => m.id === "kimi-k3");
+  if (kimi && ed && ed.spec && ed.spec.priceIn) {
+    kimi.pricing.prompt = String(ed.spec.priceIn / 1e6 / 10); kimi.pricing.completion = String(ed.spec.priceOut * 1.1 / 1e6);
+    const d = Core.computeDelta(DB, Live.normalize(fx, DB, WHEN), { now: WHEN });
+    const pk = d.patches["kimi-k3"];
+    check("price: a held change keeps the editorial number and text, and is counted", pk && !pk.spec && !pk.priceWas && !pk.access && Array.isArray(pk.priceHeld) && d.counts.priceHeld >= 1);
+  } else check("price: kimi-k3 fixture present for the held-price test", false);
+}
+
 /* ---------- 6. the build bakes current data in, without touching the repo ---------- */
 {
   let out = "";

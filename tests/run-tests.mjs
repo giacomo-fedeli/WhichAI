@@ -533,11 +533,11 @@ check("modules: every chapter module exports its interface", [Ranking.init, Rank
 
 /* ---------- 17. version coherence ---------- */
 {
-  check("version: APP_VERSION v0.39", app.includes('APP_VERSION = "v0.39"'));
-  check("version: footer v0.39", html.includes(">WhichAI v0.39<"));
-  check("version: SW cache v0.39.0", sw.includes('"whichai-v0.39.0"'));
-  check("version: package.json 0.39.0", JSON.parse(readFileSync("package.json", "utf8")).version === "0.39.0" && JSON.parse(readFileSync("package-lock.json", "utf8")).version === "0.39.0");
-  check("version: the API reports v0.39", readFileSync("api/_lib.js", "utf8").includes('APP_VERSION = "v0.39"'));
+  check("version: APP_VERSION v0.40", app.includes('APP_VERSION = "v0.40"'));
+  check("version: footer v0.40", html.includes(">WhichAI v0.40<"));
+  check("version: SW cache v0.40.0", sw.includes('"whichai-v0.40.0"'));
+  check("version: package.json 0.40.0", JSON.parse(readFileSync("package.json", "utf8")).version === "0.40.0" && JSON.parse(readFileSync("package-lock.json", "utf8")).version === "0.40.0");
+  check("version: the API reports v0.40", readFileSync("api/_lib.js", "utf8").includes('APP_VERSION = "v0.40"'));
   check("brands: 13 branded model controls in the generator", (html.match(/data-ai-brand=/g) || []).length === 13 && html.includes("js/brands.js"));
   check("brands: dark wordmarks use a light treatment", /\[data-theme="dark"\] \.ai-brand-wordmark\s*\{[^}]*invert\(1\)/s.test(css));
   check("brands: SW precaches the core brand assets", sw.includes("assets/brands/claude-color.svg") && sw.includes("assets/brands/qwen-color.svg"));
@@ -551,6 +551,9 @@ check("modules: every chapter module exports its interface", [Ranking.init, Rank
     const sm = readFileSync("sitemap.xml", "utf8");
     const urlCount = (sm.match(/<loc>/g) || []).length;
     check("wiki: sitemap has 150+ urls (" + urlCount + ")", urlCount >= 150);
+    /* v0.40: vercel.json has cleanUrls:true, so a ".html" URL is a 308 redirect: never list or canonicalize one */
+    const smV40 = readFileSync("sitemap.xml", "utf8"), mp = readFileSync("models/fable-5.html", "utf8");
+    check("wiki: sitemap and canonical use the final, extensionless URLs", !/\.html<\/loc>/.test(smV40) && /<link rel="canonical" href="https:\/\/whichai\.wiki\/models\/fable-5" \/>/.test(mp) && !/href="\/(models|compare|glossary|topics|best-ai-for)\/[^"]+\.html"/.test(mp));
     check("wiki: model page generated + clean", existsSync("models/fable-5.html") && existsSync("models/index.html") && !readFileSync("models/fable-5.html", "utf8").includes("—"));
     check("wiki: best-ai-for + glossary + compare + dataset", existsSync("best-ai-for/coding.html") && existsSync("glossary/token.html") && existsSync("compare/fable-5-vs-gpt-5-6-sol.html") && existsSync("data/models.json"));
     const ds = JSON.parse(readFileSync("data/models.json", "utf8"));

@@ -2,6 +2,31 @@
 
 (Older release-by-release history lives in `STATUS.md`, the project's working memory.)
 
+## v0.40.0 (2026-11-26)
+
+CI back to green, nine new models reviewed by hand, two debates brought up to date, a Stack Optimizer that no longer guesses, a wiki Google can index cleanly, and an open-source licence.
+
+### Fixed
+- **CI and "Data refresh" were red since November 9** (not a site bug): `tests/smoke-dom.mjs` computed the Radar's 45-day arrivals window from today's date against a fixture of October 3. Reproduced on November 2 (green) and November 9 (red); the test now pins its clock to the fixture date and stays green in the future.
+- **Wiki URLs** (`tools/build-seo.mjs`, `js/app.js`, `api/models.js`, `api/recommend.js`): `vercel.json` has `cleanUrls: true`, so every `/x.html` answers with a 308 redirect to `/x`, yet the sitemap (188 URLs), every canonical tag and every internal link pointed at the `.html` form. All public URLs are now extensionless; files on disk keep their name. New test.
+- **Stack Optimizer** (`js/stack.js`): SuperGrok and Copilot were called "redundant" in every configuration without any calculation (audit 2026-09, point 5). Grok is now scored from official live measurements where they exist (general, analysis, coding); a subscription the optimizer cannot score is reported as "not assessed" with what it offers, never as redundant; every cancel advice says what you lose. Prices re-checked: Copilot Pro was retired by Microsoft (support ended August 1, 2026) and is shown as Microsoft 365 Premium ($19.99); SuperGrok is $30. Four new tests.
+- Stale relative claims in reviews (Fable 5.1 "highest score on this table", Fable 5 "tops the index", Opus 5, GPT-6 Astra) are now anchored to their launch date.
+- Static wiki pages for a model released after the editorial snapshot no longer say "verified October 3" or call a missing score an estimate.
+
+### Added
+- **Editorial entries for nine models that had arrived only as "auto-added"** (`js/models-db.js`), each from dated vendor or press sources: Claude Fable 5.2, Claude Opus 5.5, Claude Sonnet 5.5, GPT-6.2 Astra, GPT-6.2 Sol, GPT-6.1 Sol, Gemini 4 Carbon, Gemini 4 Neon, Qwen4 Max. No index figure is typed by hand: the static file carries none, and the official score arrives live through each `or` route. Vendor claims are labelled as such.
+- **Price policy**: prices follow OpenRouter by default; a change where input and output move in opposite directions (usually another provider behind the same route, e.g. Kimi K3) keeps the editorial price and is reported as "held" for a human (`suspiciousPriceDrift` in `api/_catalog-core.js`, report in `api/_refresh-core.js`, counter `priceHeld`). Four new tests.
+- **Dependabot** for GitHub Actions only (`.github/dependabot.yml`, monthly, grouped).
+
+### Changed
+- **AI Debates** (`js/topics.js`): *Copyright* adds the US Justice Department statement of interest in the OpenAI cases (September 1, 2026) and the Third Circuit ruling in Thomson Reuters v. Ross (September 29, 2026), with sources; *Regulation* adds Regulation (EU) 2026/1744 (AI Omnibus, in force July 27, 2026), the Article 50 grace period and the new ban on non-consensual intimate images, and NIST's revision status. Each carries its own review date.
+- **Rumored entries re-verified** (November 26, 2026): Gemini 3.5 Pro cancelled by Google (September 30), Gemini 3 Ultra never shipped, Grok 5 still unreleased (latest: Grok 4.7), Llama 5 still without any Meta announcement. Nemotron 3 Ultra: 1M context confirmed by NVIDIA's model card (hosted routes often serve the 256K default).
+- **GitHub Actions** updated to the current Node 24 majors: `actions/checkout@v7`, `actions/setup-node@v7`, `actions/upload-artifact@v7` (verified on each tag's `action.yml`).
+- **Licence**: the code is now **MIT** (`LICENSE.md`, `package.json`); the data stays CC BY 4.0 (`docs/DATA-LICENSE.md`).
+
+### Tests
+569 pass on a clean copy, the catalog suite included: static 255, DOM smoke 84, API 52, live data 59, catalog 75, news 44; production build ok.
+
 ## v0.39.0 (2026-11-25)
 
 One more link in the footer row of AI directories.

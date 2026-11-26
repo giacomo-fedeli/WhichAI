@@ -109,6 +109,18 @@ function aaOf(up) {
   return { intelligence: a.intelligence, coding: typeof a.coding === "number" ? a.coding : null, agentic: typeof a.agentic === "number" ? a.agentic : null };
 }
 
+/* Price policy (v0.40, decided by the site owner): prices follow OpenRouter by
+   default, but a change where input and output move in OPPOSITE directions is not
+   a vendor price cut - it is usually a different provider behind the same route
+   (e.g. Kimi K3 listed at $0.192/$16 against an official $3/$15). In that case the
+   editorial price is kept, for the number and the text alike, and the change is
+   reported for a human. Without an editorial price, OpenRouter is the fallback. */
+function suspiciousPriceDrift(oldIn, oldOut, newIn, newOut) {
+  if ([oldIn, oldOut, newIn, newOut].some((n) => typeof n !== "number" || !isFinite(n) || n <= 0)) return false;
+  const dIn = (newIn - oldIn) / oldIn, dOut = (newOut - oldOut) / oldOut;
+  return (dIn > 0.01 && dOut < -0.01) || (dIn < -0.01 && dOut > 0.01);
+}
+
 /* "$5/$30" inside a sentence becomes the new pair, and nothing else changes. */
 function rewritePrice(text, oldIn, oldOut, newIn, newOut) {
   if (typeof text !== "string" || oldIn == null || oldOut == null) return text;
@@ -220,7 +232,7 @@ function computeDelta(DB, live, opts) {
 
   /* 2. Patches for models the catalog already has. */
   const patches = {};
-  let scoreUpdates = 0, priceUpdates = 0, official = 0;
+  let scoreUpdates = 0, priceUpdates = 0, priceHeld = 0, official = 0;
   DB.models.forEach((m) => {
     const up = routeOf.get(m.id);
     if (!up) return;
@@ -241,7 +253,10 @@ function computeDelta(DB, live, opts) {
     const pin = up.pricePerMillion.input, pout = up.pricePerMillion.output;
     if (pin != null && pout != null && (pin > 0 || pout > 0)) {
       const differs = (a, b) => a == null || b == null || Math.abs(a - b) > Math.max(0.0005, 0.01 * Math.max(a, b));
-      if (differs(spec.priceIn, pin) || differs(spec.priceOut, pout)) {
+      if ((differs(spec.priceIn, pin) || differs(spec.priceOut, pout)) && suspiciousPriceDrift(spec.priceIn, spec.priceOut, pin, pout)) {
+        priceHeld++;
+        p.priceHeld = [pin, pout];
+      } else if (differs(spec.priceIn, pin) || differs(spec.priceOut, pout)) {
         p.spec = Object.assign(p.spec || {}, { priceIn: pin, priceOut: pout, priceSrc: "OpenRouter" });
         if (spec.priceIn != null && spec.priceOut != null) {
           priceUpdates++;
@@ -316,7 +331,7 @@ function computeDelta(DB, live, opts) {
     added,
     freeRoutes,
     arrivals,
-    counts: { catalog: DB.models.length, matched: routeOf.size, official: official + added.length, scoreUpdates, priceUpdates, added: added.length, freeRoutes: freeRoutes.length, arrivals: arrivals.length }
+    counts: { catalog: DB.models.length, matched: routeOf.size, official: official + added.length, scoreUpdates, priceUpdates, priceHeld, added: added.length, freeRoutes: freeRoutes.length, arrivals: arrivals.length }
   };
 }
 
@@ -330,5 +345,5 @@ function isDelta(d) {
 
 module.exports = {
   SCHEMA, KIND, SOURCE_URL, AA_URL, VENDORS, MAJOR, FAMILY_PREFIX,
-  computeDelta, isDelta, rewritePrice, fmtCtx, fmtDate, modalText, slugOf, cleanName, isVariantOfKnown, familyForRoute, aaOf
+  computeDelta, isDelta, rewritePrice, suspiciousPriceDrift, fmtCtx, fmtDate, modalText, slugOf, cleanName, isVariantOfKnown, familyForRoute, aaOf
 };

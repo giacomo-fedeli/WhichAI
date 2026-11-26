@@ -2,12 +2,112 @@
  "project": "WhichAI",
  "site": "https://whichai.wiki",
  "license": "CC BY 4.0 (attribution: WhichAI, whichai.wiki)",
- "generated": "2026-10-14",
+ "generated": "2026-11-26",
  "snapshot": "October 3, 2026",
  "scaleNote": "Artificial Analysis Intelligence Index, official scale (the number published on artificialanalysis.ai), relayed by OpenRouter. Static snapshot retrieved October 3, 2026; the live site refreshes it automatically every hour. A value marked ~ is converted from the older BenchLM-mirror scale because no current official measurement is published; models nobody has measured carry no index score and never enter a ranking.",
  "specNote": "Context, price, modality and listing dates come from the public OpenRouter model list (refreshed automatically on the live site; static copy retrieved October 3, 2026) and vendor pages. Missing values are not published or not yet verified - shown as -.",
- "count": 118,
+ "count": 127,
  "models": [
+  {
+   "id": "gpt-6-2-astra",
+   "name": "GPT-6.2 Astra",
+   "vendor": "OpenAI",
+   "family": "chatgpt",
+   "status": "public",
+   "or": [
+    "openai/gpt-6.2-astra"
+   ],
+   "spec": {
+    "released": "2026-11-17",
+    "priceIn": 8,
+    "priceOut": 40,
+    "note": "$0.40 per 1M cached input"
+   },
+   "access": "Released November 17, 2026 · API $8/$40 per 1M tokens ($0.40 cached), 20% below GPT-6 Astra",
+   "tags": [
+    "paid",
+    "api",
+    "prompt-target"
+   ],
+   "labels": [
+    "reasoning",
+    "agents",
+    "coding",
+    "research"
+   ],
+   "score": {
+    "aa": null,
+    "est": true,
+    "src": "guess"
+   },
+   "review": "OpenAI's frontier model for complex professional work, the successor to GPT-6 Astra at a fifth lower token price. OpenAI's own evaluations claim better results with fewer output tokens on agentic, scientific and professional benchmarks. Vendor-run numbers: wait for independent measurement before treating it as a clear upgrade over Sol for everyday work."
+  },
+  {
+   "id": "gpt-6-2-sol",
+   "name": "GPT-6.2 Sol",
+   "vendor": "OpenAI",
+   "family": "chatgpt",
+   "status": "public",
+   "or": [
+    "openai/gpt-6.2-sol"
+   ],
+   "spec": {
+    "released": "2026-11-17",
+    "priceIn": 2,
+    "priceOut": 10
+   },
+   "access": "Released November 17, 2026 · ChatGPT paid plans · API $2/$10 per 1M tokens (same as GPT-6.1 Sol)",
+   "tags": [
+    "paid",
+    "api",
+    "prompt-target"
+   ],
+   "labels": [
+    "coding",
+    "agents",
+    "value"
+   ],
+   "score": {
+    "aa": null,
+    "est": true,
+    "src": "guess"
+   },
+   "review": "OpenAI's everyday-work model, same token price as 6.1 Sol. OpenAI says it scores within half a point of Astra on Cognition's FrontierCode 2.0 at about a fifth of the cost and gets more done per message on the same plan. For most coding and office work it is the OpenAI model to start with."
+  },
+  {
+   "id": "gpt-6-1-sol",
+   "name": "GPT-6.1 Sol",
+   "vendor": "OpenAI",
+   "family": "chatgpt",
+   "status": "public",
+   "or": [
+    "openai/gpt-6.1-sol"
+   ],
+   "spec": {
+    "released": "2026-09-29",
+    "ctx": "1.05M",
+    "priceIn": 2,
+    "priceOut": 10,
+    "note": "$0.10 per 1M cached input"
+   },
+   "access": "Released late September 2026 · ChatGPT Plus, Pro, Business, Enterprise, Edu (Work mode and Codex) · API $2/$10 per 1M tokens ($0.10 cached)",
+   "tags": [
+    "paid",
+    "api",
+    "prompt-target"
+   ],
+   "labels": [
+    "coding",
+    "agents",
+    "value"
+   ],
+   "score": {
+    "aa": null,
+    "est": true,
+    "src": "guess"
+   },
+   "review": "The release that made Sol the sensible OpenAI default: OpenAI says it nearly matches GPT-6 Astra on agentic coding, computer use and professional work at roughly a fifth of the cost. Superseded by GPT-6.2 Sol at the same price on November 17, so prefer 6.2 unless you have pinned this version."
+  },
   {
    "id": "gpt-6",
    "name": "GPT-6 Astra",
@@ -52,7 +152,7 @@
      "agents": 93
     }
    },
-   "review": "OpenAI's next-numbered flagship, shipped September 4 after months of rumour. It ends OpenAI's run of point releases: 1.05M context, native image and file input, and a price that doubles Sol's. Worth knowing before you switch: it scores below both Anthropic flagships on the index, and Sol remains the better value for agentic work at a fifth of the output price."
+   "review": "OpenAI's next-numbered flagship, shipped September 4 after months of rumour. It ends OpenAI's run of point releases: 1.05M context, native image and file input, and a price that doubles Sol's. Worth knowing: at launch it scored below both Anthropic flagships on the index, and Sol remains the better value for agentic work at a fifth of the output price."
   },
   {
    "id": "gpt-5-6-sol",
@@ -677,6 +777,110 @@
    "review": "The small sibling - one of the easiest capable models to run fully offline on consumer hardware."
   },
   {
+   "id": "claude-fable-5-2",
+   "name": "Claude Fable 5.2",
+   "vendor": "Anthropic",
+   "family": "claude",
+   "status": "public",
+   "or": [
+    "anthropic/claude-fable-5.2"
+   ],
+   "spec": {
+    "released": "2026-11-09",
+    "priceIn": 8,
+    "priceOut": 40
+   },
+   "access": "Released November 9, 2026 · available across Anthropic's platforms · API $8/$40 per 1M tokens",
+   "tags": [
+    "paid",
+    "api",
+    "prompt-target"
+   ],
+   "labels": [
+    "writing",
+    "reasoning",
+    "coding",
+    "agents",
+    "vision"
+   ],
+   "score": {
+    "aa": null,
+    "est": true,
+    "src": "guess"
+   },
+   "review": "Anthropic's November flagship, shipped the same day as the vetted-only Mythos 5.2. Anthropic claims gains in coding, reasoning and vision, up to 30% faster output than 5.1, and better judgment on ambiguous requests, and it costs less per token than Fable 5.1. Anthropic itself still points most coding and knowledge work to Opus 5.5: pick Fable for the hardest, longest tasks."
+  },
+  {
+   "id": "claude-opus-5-5",
+   "name": "Claude Opus 5.5",
+   "vendor": "Anthropic",
+   "family": "claude",
+   "status": "public",
+   "or": [
+    "anthropic/claude-opus-5.5"
+   ],
+   "spec": {
+    "released": "2026-09-22",
+    "ctx": "1M",
+    "priceIn": 4,
+    "priceOut": 20,
+    "note": "128K max output (300K on Batch, beta) · Batch -50% · Fast mode $8/$40"
+   },
+   "access": "Released September 22, 2026 · Claude Pro, Max, Team, Enterprise · API $4/$20 per 1M tokens · also on Amazon Bedrock, Google Cloud and Microsoft Foundry",
+   "tags": [
+    "paid",
+    "api",
+    "prompt-target"
+   ],
+   "labels": [
+    "coding",
+    "reasoning",
+    "agents",
+    "long-context",
+    "enterprise"
+   ],
+   "score": {
+    "aa": null,
+    "est": true,
+    "src": "guess"
+   },
+   "review": "The Claude most people should default to. Anthropic says it works at roughly Fable 5.1's level on most tasks while costing about 40% less than Opus 5, and it calls it its strongest daily driver. Thinking is always on (depth set by an effort level, medium by default), and it carries the same expanded biology and cyber safeguards as Fable."
+  },
+  {
+   "id": "claude-sonnet-5-5",
+   "name": "Claude Sonnet 5.5",
+   "vendor": "Anthropic",
+   "family": "claude",
+   "status": "public",
+   "or": [
+    "anthropic/claude-sonnet-5.5"
+   ],
+   "spec": {
+    "released": "2026-09-28",
+    "priceIn": 2,
+    "priceOut": 10,
+    "note": "cache reads $0.20 per 1M"
+   },
+   "access": "Released September 28, 2026 · Claude apps · API $2/$10 per 1M tokens (unchanged from Sonnet 5) · also on AWS, Google Cloud and Azure",
+   "tags": [
+    "paid",
+    "api",
+    "prompt-target"
+   ],
+   "labels": [
+    "coding",
+    "agents",
+    "value",
+    "speed"
+   ],
+   "score": {
+    "aa": null,
+    "est": true,
+    "src": "guess"
+   },
+   "review": "Half the price of Opus 5.5 and close to it: Anthropic reports it slightly ahead on Terminal-Bench 4.0 and slightly behind on GDPval-AA and CursorBench, with Opus still stronger on long open-ended work. Over 30% faster output than Sonnet 5. The value pick for coding agents and high-volume work."
+  },
+  {
    "id": "claude-opus-5",
    "name": "Claude Opus 5",
    "vendor": "Anthropic",
@@ -719,7 +923,7 @@
      "agents": 95
     }
    },
-   "review": "Anthropic's July flagship: 1M context, thinking on by default, computer use, and the Agentic Index lead, at unchanged Opus pricing. The default choice for long agentic runs where you want one model to hold the whole task."
+   "review": "Anthropic's July flagship: 1M context, thinking on by default, computer use, and the Agentic Index lead at launch, at unchanged Opus pricing (Opus 5.5 replaced it on September 22 at a lower price). The default choice for long agentic runs where you want one model to hold the whole task."
   },
   {
    "id": "mythos-5-1",
@@ -827,7 +1031,7 @@
      "agents": 92
     }
    },
-   "review": "The highest measured score on this table. Anthropic's September refresh keeps Fable's purpose-built creative-writing strength and adds the thing that actually changes budgets: cache reads at a quarter of the old price, which makes long-document and repeated-context work roughly four times cheaper to run."
+   "review": "At its September 1 launch it held the highest measured score on this table (Fable 5.2 replaced it on November 9). Anthropic's September refresh keeps Fable's purpose-built creative-writing strength and adds the thing that actually changes budgets: cache reads at a quarter of the old price, which makes long-document and repeated-context work roughly four times cheaper to run."
   },
   {
    "id": "fable-5",
@@ -870,7 +1074,7 @@
      "agents": 90
     }
    },
-   "review": "Anthropic's newest flagship (Mythos-class) - tops the AA index at max effort and leads creative-writing boards for voice, subtext and character work; briefly export-controlled, now globally available."
+   "review": "Anthropic's first Mythos-class public model - topped the AA index at max effort at launch and led creative-writing boards for voice, subtext and character work; briefly export-controlled, now globally available."
   },
   {
    "id": "opus-4-8",
@@ -1184,12 +1388,81 @@
    "review": "The 2024 model that first made Claude famous for prose quality. Retired from frontier duty."
   },
   {
+   "id": "gemini-4-carbon",
+   "name": "Gemini 4 Carbon",
+   "vendor": "Google",
+   "family": "gemini",
+   "status": "public",
+   "or": [
+    "google/gemini-4-carbon"
+   ],
+   "spec": {
+    "released": "2026-11-10",
+    "priceIn": 2,
+    "priceOut": 10
+   },
+   "access": "Generally available November 10, 2026 · Gemini API (paid) · Google AI Ultra in the Gemini app · launch pricing $2/$10 per 1M tokens, announced as introductory until November 30, 2026, then $4 input and $20 output",
+   "tags": [
+    "paid",
+    "api",
+    "prompt-target"
+   ],
+   "labels": [
+    "reasoning",
+    "coding",
+    "agents",
+    "research"
+   ],
+   "score": {
+    "aa": null,
+    "est": true,
+    "src": "guess"
+   },
+   "review": "Google's strongest Gemini 4 tier, aimed at the hardest long-horizon coding and open-ended research. At launch Google said Argon would stay the better choice for most software and knowledge work, and Neon (November 18) now sits below Carbon at a lower price. Check the price you are billed: the launch rate was introductory and was announced to double after November 30."
+  },
+  {
+   "id": "gemini-4-neon",
+   "name": "Gemini 4 Neon",
+   "vendor": "Google",
+   "family": "gemini",
+   "status": "public",
+   "or": [
+    "google/gemini-4-neon"
+   ],
+   "spec": {
+    "released": "2026-11-18",
+    "ctx": "1M",
+    "priceIn": 3,
+    "priceOut": 15,
+    "note": "$0.15 per 1M cached input"
+   },
+   "access": "Released November 18, 2026 · Gemini API (paid) · Gemini app (Pro and Ultra) · Antigravity · API $3/$15 per 1M tokens",
+   "tags": [
+    "paid",
+    "api",
+    "prompt-target"
+   ],
+   "labels": [
+    "coding",
+    "reasoning",
+    "agents",
+    "research",
+    "long-context"
+   ],
+   "score": {
+    "aa": null,
+    "est": true,
+    "src": "guess"
+   },
+   "review": "The middle of the Gemini 4 line: between Carbon (hardest projects) and Hydrogen (fast everyday work), and able to orchestrate Hydrogen subagents in Antigravity. Google claims frontier-level coding, knowledge-work and science results at about a third lower cost per task than Carbon. The Gemini to try first for serious work."
+  },
+  {
    "id": "gemini-3-ultra",
    "name": "Gemini 3 Ultra",
    "vendor": "Google",
    "family": null,
    "status": "rumored",
-   "access": "Reported as upcoming - no official availability",
+   "access": "Never released (checked November 26, 2026) · superseded by the Gemini 4 line",
    "tags": [
     "rumored",
     "info-only"
@@ -1210,7 +1483,7 @@
      "agents": 85
     }
    },
-   "review": "Reported top tier above Gemini 3.1 Pro with wider API access said to be coming; Google has published nothing definitive - treat specs as rumor."
+   "review": "A rumored top tier above Gemini 3.1 Pro that Google never shipped. Google's top tiers are now Gemini 4 Argon, Carbon and Neon; this entry stays only so old links resolve, and the score is a placeholder estimate, never ranked."
   },
   {
    "id": "gemini-3-1-pro",
@@ -1261,7 +1534,7 @@
    "vendor": "Google",
    "family": null,
    "status": "rumored",
-   "access": "Not announced. Release-timing reports around the Kimi K3 launch called it imminent; nothing official from Google",
+   "access": "Cancelled: on September 30, 2026 Google said it no longer plans to release Gemini 3.5 Pro",
    "tags": [
     "rumored",
     "info-only"
@@ -1282,7 +1555,7 @@
      "agents": 86
     }
    },
-   "review": "The widely expected Pro refresh of the Gemini line. Third-party release trackers treated it as imminent in late July; until Google speaks, everything here (including the name) is rumor and the score is a placeholder estimate."
+   "review": "The Pro refresh expected through the summer never shipped: Google confirmed it dropped Gemini 3.5 Pro when it announced Gemini 4 Argon. Use Gemini 4 Neon or Argon instead. Kept for old links only; the score is a placeholder estimate, never ranked."
   },
   {
    "id": "gemini-3-8-flash",
@@ -1765,7 +2038,7 @@
    "vendor": "xAI",
    "family": null,
    "status": "rumored",
-   "access": "Not released - repeatedly delayed (prediction markets price a near-term launch low)",
+   "access": "Not released as of November 26, 2026 - xAI said in January it was in training; no launch date · latest shipped model: Grok 4.7 (September 21)",
    "tags": [
     "rumored",
     "info-only"
@@ -2034,7 +2307,7 @@
    "vendor": "Meta",
    "family": null,
    "status": "rumored",
-   "access": "Not announced - no weights, no model card",
+   "access": "Not announced as of November 26, 2026 - no Meta announcement, no weights, no model card",
    "tags": [
     "rumored",
     "info-only"
@@ -2580,6 +2853,40 @@
     }
    },
    "review": "The January 2025 release that shocked the market by open-sourcing o1-class reasoning. Historic; superseded."
+  },
+  {
+   "id": "qwen4-max",
+   "name": "Qwen4 Max",
+   "vendor": "Alibaba",
+   "family": "qwen",
+   "status": "public",
+   "or": [
+    "qwen/qwen4-max"
+   ],
+   "spec": {
+    "released": "2026-11-16",
+    "ctx": "1M",
+    "modal": "Text + vision"
+   },
+   "access": "Released November 16, 2026 · QwenCloud API and Token Plan · chat.qwen.ai · weights not released (smaller Qwen4 models announced as open-weight)",
+   "tags": [
+    "paid",
+    "api",
+    "prompt-target"
+   ],
+   "labels": [
+    "coding",
+    "agents",
+    "vision",
+    "multilingual",
+    "long-context"
+   ],
+   "score": {
+    "aa": null,
+    "est": true,
+    "src": "guess"
+   },
+   "review": "Alibaba's new flagship: a 2.4-trillion-parameter sparse mixture-of-experts with about 71B active per token, native vision and 1M context. Alibaba reports fewer tokens and lower cost per task than Qwen3.8 Max on its own work benchmark. Unlike much of the Qwen line it is closed: for downloadable weights wait for the smaller Qwen4 models."
   },
   {
    "id": "qwen-3-8-max-preview",
@@ -3486,7 +3793,8 @@
    ],
    "spec": {
     "ctx": "1M",
-    "speed": "400+ tok/s on some hosts"
+    "speed": "400+ tok/s on some hosts",
+    "note": "1M is the maximum in NVIDIA's model card (default 256K); hosted routes, including OpenRouter, often serve 256K"
    },
    "access": "FREE on OpenRouter (nvidia/nemotron-3-ultra-550b-a55b:free, rate-limited) · open weights · Perplexity Pro",
    "tags": [

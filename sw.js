@@ -1,6 +1,6 @@
-/* WhichAI service worker (v0.39): network-first, precached shell, offline fallback.
+/* WhichAI service worker (v0.40): network-first, precached shell, offline fallback.
    Bump CACHE on every release so old assets never linger. */
-var CACHE = "whichai-v0.39.0";
+var CACHE = "whichai-v0.40.0";
 var SHELL = [
   "./", "index.html", "styles.css", "manifest.webmanifest",
   "js/engine.js", "js/benchmarks.js", "js/i18n.js", "js/models-db.js", "js/live-seed.js", "js/live-catalog.js",

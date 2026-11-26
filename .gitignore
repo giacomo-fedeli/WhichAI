@@ -5,3 +5,6 @@ data/refresh-report.json
 data/refresh-report.md
 _to_delete
 *.zip
+
+# v0.40: transfer notes, kept on the PC only
+PromptCompass-Trasferimento.docx

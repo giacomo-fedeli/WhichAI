@@ -1,39 +1,21 @@
-# Licensing
+MIT License
 
-WhichAI has two halves with two different licences.
+Copyright (c) 2026 Giacomo Fedeli
 
-## The data: open (CC BY 4.0)
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
 
-The model catalog and everything derived from it - `data/models.json`, the
-`/api/models`, `/api/benchmarks` and `/api/stats` responses, the scores,
-prices, context windows, tags and source links - are published under the
-[Creative Commons Attribution 4.0 International licence](https://creativecommons.org/licenses/by/4.0/).
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
 
-You may copy, redistribute, remix and build on it, including commercially,
-provided you credit: **WhichAI, https://whichai.wiki**.
-
-The underlying benchmark numbers belong to the organisations that produced
-them (Artificial Analysis, LMArena, SWE-bench and the vendors). WhichAI
-curates, dates and cites them; it does not claim ownership of them.
-
-## The application: all rights reserved
-
-The source code of the application - everything under `js/`, `api/`, `tools/`,
-`tests/`, `styles.css`, `index.html` and the build configuration - is
-copyright (c) 2026 Giacomo Fedeli. All rights reserved.
-
-It is not open source. You may not copy, modify, redistribute or deploy it,
-in whole or in substantial part, without written permission.
-
-Reading it in your browser's developer tools is unavoidable and fine.
-Republishing it as your own is not.
-
-## Brand assets
-
-The logos under `assets/brands/` belong to their respective owners and are
-used to identify the products they refer to. Provenance and terms per file
-are documented in `assets/brands/README.md`.
-
-## Contact
-
-Giacomo Fedeli · https://www.linkedin.com/in/giacomo-fedeli-277765239/
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.

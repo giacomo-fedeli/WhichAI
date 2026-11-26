@@ -46,7 +46,7 @@ module.exports = async function handler(req, res) {
     return L.send(req, res, 200, {
       meta: L.meta(DBx),
       model: one,
-      links: { official: DBx.links[one.family] || DBx.vendorLinks[one.vendor] || null, page: "https://whichai.wiki/models/" + one.id + ".html" }
+      links: { official: DBx.links[one.family] || DBx.vendorLinks[one.vendor] || null, page: "https://whichai.wiki/models/" + one.id }
     });
   }
 

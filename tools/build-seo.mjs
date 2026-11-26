@@ -9,6 +9,9 @@ const require = createRequire(import.meta.url);
 
 globalThis.window = globalThis;
 const DB = require("../js/models-db.js");
+/* v0.40: public URLs are extensionless. vercel.json has cleanUrls:true, so every
+   "/x.html" answers with a 308 redirect to "/x": canonical tags, the sitemap and
+   internal links must point at the final URL. Files on disk keep their .html name. */
 /* v0.40: an editorial entry for a model released after the editorial snapshot has no
    "verified" figure of its own in the static file: its numbers arrive live. */
 const UPDATED_ISO = new Date(Date.parse(DB.updated)).toISOString().slice(0, 10);
@@ -36,7 +39,7 @@ const COMPARE_PAIRS = [
 const byId = id => DB.models.find(m => m.id === id);
 const linkFor = m => m.url || (m.family && DB.links && DB.links[m.family]) || (DB.vendorLinks && DB.vendorLinks[m.vendor]) || null;
 const pairsFor = id => COMPARE_PAIRS.filter(p => p.includes(id));
-const pairPath = p => `/compare/${p[0]}-vs-${p[1]}.html`;
+const pairPath = p => `/compare/${p[0]}-vs-${p[1]}`;
 
 function shell({ path, title, desc, body, crumb }) {
   return `<!DOCTYPE html>
@@ -137,7 +140,7 @@ function alternatives(m) {
   if (!pool.length) return "";
   return `<h2>Alternatives worth a look</h2>
       <ul class="catalog-list">
-        ${pool.map(x => `<li><span class="router-app"><a href="/models/${x.id}.html">${brand(x, x.name, { providerWordmark: true })}</a></span> (${brand(x.vendor, x.vendor)}) · AA ${x.score.aa}<span class="router-free">${esc(x.access)}</span></li>`).join("\n        ")}
+        ${pool.map(x => `<li><span class="router-app"><a href="/models/${x.id}">${brand(x, x.name, { providerWordmark: true })}</a></span> (${brand(x.vendor, x.vendor)}) · AA ${x.score.aa}<span class="router-free">${esc(x.access)}</span></li>`).join("\n        ")}
       </ul>`;
 }
 
@@ -146,7 +149,7 @@ let pages = [];
 /* ---------- model pages ---------- */
 mkdirSync("models", { recursive: true });
 for (const m of DB.models) {
-  const p = `/models/${m.id}.html`;
+  const p = `/models/${m.id}`;
   const scoreTxt = m.score && m.score.aa ? (m.score.est ? "estimated ~" + m.score.aa : "scores " + m.score.aa) : (afterSnapshot(m) ? "is scored from live data" : "has no published score");
   const desc = `${m.name} by ${m.vendor}: review, price, context window and benchmarks. ${m.name} ${scoreTxt} on the AA Intelligence Index. ${afterSnapshot(m) ? "Numbers refreshed live." : "Verified " + DB.updated + "."}`;
   const chips = [chip(m.status, "chip-" + m.status)]
@@ -195,7 +198,7 @@ for (const m of DB.models) {
       <p>Every model in the WhichAI database, with score, price and an honest one-line review. Data read <span data-live-updated>${esc(DB.updated)}</span>.</p>
       <div id="live-new-models" hidden></div>
     </div>
-    ${Object.keys(groups).map(v => `<div class="card about-card"><h2 class="card-title">${brand(v, v, { wordmark: true })}</h2><ul class="catalog-list">${groups[v].map(m => `<li><span class="router-app"><a href="/models/${m.id}.html">${brand(m, m.name, { providerWordmark: true })}</a></span>${m.score && m.score.aa ? " · AA " + (m.score.est ? "~" : "") + m.score.aa : ""} · ${esc(m.status)}</li>`).join("")}</ul></div>`).join("\n    ")}`;
+    ${Object.keys(groups).map(v => `<div class="card about-card"><h2 class="card-title">${brand(v, v, { wordmark: true })}</h2><ul class="catalog-list">${groups[v].map(m => `<li><span class="router-app"><a href="/models/${m.id}">${brand(m, m.name, { providerWordmark: true })}</a></span>${m.score && m.score.aa ? " · AA " + (m.score.est ? "~" : "") + m.score.aa : ""} · ${esc(m.status)}</li>`).join("")}</ul></div>`).join("\n    ")}`;
   writeFileSync("models/index.html", shell({ path: "/models/", title: `All ${DB.models.length} AI models compared (2026) | WhichAI`, desc: `Searchable list of ${DB.models.length} AI models from ${new Set(DB.models.map(m => m.vendor)).size} vendors with scores, prices and honest reviews. Updated ${DB.updated}.`, body, crumb: `<a href="/">WhichAI</a> / Models` }));
   pages.push("/models/");
 }
@@ -206,7 +209,7 @@ const TASK_LABELS = { writing: "writing and content", coding: "coding and develo
 for (const t of Engine.TASK_ORDER) {
   const rec = Bench.taskTypes[t];
   if (!rec) continue;
-  const p = `/best-ai-for/${t}.html`;
+  const p = `/best-ai-for/${t}`;
   const top = Bench.apps[rec.ranking[0].app];
   const body = `    <div class="guide-head">
       <h1>Best AI for ${esc(TASK_LABELS[t] || t)} (${esc(Bench.updated)})</h1>
@@ -233,7 +236,7 @@ for (const t of Engine.TASK_ORDER) {
       <p>Per-task rankings from public benchmarks, translated into plain language. Snapshot: ${esc(Bench.updated)}.</p>
     </div>
     <div class="card about-card"><ul class="catalog-list">
-      ${Engine.TASK_ORDER.map(t => { const appId = Bench.taskTypes[t].ranking[0].app; const app = Bench.apps[appId]; return `<li><span class="router-app"><a href="/best-ai-for/${t}.html">Best AI for ${esc(TASK_LABELS[t] || t)}</a></span><span class="router-free">Top pick: ${brand(appId, app.label, { wordmark: true, providerWordmark: true })}</span></li>`; }).join("\n      ")}
+      ${Engine.TASK_ORDER.map(t => { const appId = Bench.taskTypes[t].ranking[0].app; const app = Bench.apps[appId]; return `<li><span class="router-app"><a href="/best-ai-for/${t}">Best AI for ${esc(TASK_LABELS[t] || t)}</a></span><span class="router-free">Top pick: ${brand(appId, app.label, { wordmark: true, providerWordmark: true })}</span></li>`; }).join("\n      ")}
     </ul></div>`;
   writeFileSync("best-ai-for/index.html", shell({ path: "/best-ai-for/", title: "Best AI for each task, ranked with sources (2026) | WhichAI", desc: "Writing, coding, research, analysis and more: which AI app wins each task, with confidence levels, free tiers and linked sources.", body, crumb: `<a href="/">WhichAI</a> / Best AI for…` }));
   pages.push("/best-ai-for/");
@@ -242,7 +245,7 @@ for (const t of Engine.TASK_ORDER) {
 /* ---------- glossary pages ---------- */
 mkdirSync("glossary", { recursive: true });
 for (const t of Glossary.TERMS) {
-  const p = `/glossary/${t.id}.html`;
+  const p = `/glossary/${t.id}`;
   const body = `    <div class="guide-head">
       <h1>${esc(t.term)}</h1>
       <p>AI glossary · plain-language definition</p>
@@ -264,7 +267,7 @@ for (const t of Glossary.TERMS) {
       <p>${Glossary.TERMS.length} terms, one sentence each, with everyday examples.</p>
     </div>
     <div class="card about-card"><ul class="catalog-list">
-      ${Glossary.TERMS.map(t => `<li><span class="router-app"><a href="/glossary/${t.id}.html">${esc(t.term)}</a></span><span class="router-free">${esc(t.def.slice(0, 110))}${t.def.length > 110 ? "…" : ""}</span></li>`).join("\n      ")}
+      ${Glossary.TERMS.map(t => `<li><span class="router-app"><a href="/glossary/${t.id}">${esc(t.term)}</a></span><span class="router-free">${esc(t.def.slice(0, 110))}${t.def.length > 110 ? "…" : ""}</span></li>`).join("\n      ")}
     </ul></div>`;
   writeFileSync("glossary/index.html", shell({ path: "/glossary/", title: "AI glossary: every term in one plain sentence | WhichAI", desc: `${Glossary.TERMS.length} AI terms (token, context window, RAG, agent, hallucination…) explained simply, with examples.`, body, crumb: `<a href="/">WhichAI</a> / Glossary` }));
   pages.push("/glossary/");
@@ -293,7 +296,7 @@ for (const pr of COMPARE_PAIRS) {
     </div>
     <div class="card about-card">
       <div class="mc-grid mc-grid-2" style="grid-template-columns:130px 1fr 1fr">
-        <div class="mc-rowlabel"></div><div class="mc-cell"><strong><a href="/models/${a.id}.html">${brand(a, a.name, { providerWordmark: true })}</a></strong></div><div class="mc-cell"><strong><a href="/models/${b.id}.html">${brand(b, b.name, { providerWordmark: true })}</a></strong></div>
+        <div class="mc-rowlabel"></div><div class="mc-cell"><strong><a href="/models/${a.id}">${brand(a, a.name, { providerWordmark: true })}</a></strong></div><div class="mc-cell"><strong><a href="/models/${b.id}">${brand(b, b.name, { providerWordmark: true })}</a></strong></div>
         ${rows.map(r => `<div class="mc-rowlabel">${esc(r[0])}</div><div class="mc-cell">${r[0] === "Provider" ? brand(a.vendor, a.vendor, { wordmark: true }) : esc(r[1])}</div><div class="mc-cell">${r[0] === "Provider" ? brand(b.vendor, b.vendor, { wordmark: true }) : esc(r[2])}</div>`).join("\n        ")}
       </div>
       <p class="router-meta">n/a = not published or not yet verified. Scores marked ~ are WhichAI estimates and should not be compared 1:1 with measured scores.</p>
@@ -325,7 +328,7 @@ for (const pr of COMPARE_PAIRS) {
 /* ---------- AI debates pages ---------- */
 mkdirSync("topics", { recursive: true });
 for (const t of Topics.TOPICS) {
-  const p = `/topics/${t.id}.html`;
+  const p = `/topics/${t.id}`;
   const body = `    <div class="guide-head">
       <h1>${esc(t.title)}</h1>
       <p>${esc(t.question)} · updated ${esc(Topics.UPDATED)}</p>
@@ -357,7 +360,7 @@ for (const t of Topics.TOPICS) {
       <p>The big AI-and-society questions, summarized honestly with sources. Updated ${esc(Topics.UPDATED)}.</p>
     </div>
     <div class="card about-card"><ul class="catalog-list">
-      ${Topics.TOPICS.map(t => `<li><span class="router-app"><a href="/topics/${t.id}.html">${esc(t.title)}</a></span><span class="router-free">${esc(t.question)}</span></li>`).join("\n      ")}
+      ${Topics.TOPICS.map(t => `<li><span class="router-app"><a href="/topics/${t.id}">${esc(t.title)}</a></span><span class="router-free">${esc(t.question)}</span></li>`).join("\n      ")}
     </ul></div>`;
   writeFileSync("topics/index.html", shell({ path: "/topics/", title: "AI Debates: energy, jobs, the bubble and more, with sources | WhichAI", desc: "Honest two-sided summaries of the biggest AI debates: environment, jobs, the bubble, copyright, regulation, open weights.", body, crumb: `<a href="/">WhichAI</a> / AI Debates` }));
   pages.push("/topics/");
